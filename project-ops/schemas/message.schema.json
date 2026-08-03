@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nuttie.local/schemas/project-message.schema.json",
+  "title": "Nuttie agent message",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "messageId",
+    "sentAt",
+    "from",
+    "to",
+    "type",
+    "correlationId",
+    "subject",
+    "body",
+    "relatedArtifacts",
+    "responseRequired",
+    "source"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "messageId": { "type": "string", "pattern": "^MSG-[0-9]{8}-[0-9]{3,}$" },
+    "sentAt": { "type": "string", "format": "date-time" },
+    "from": { "$ref": "#/$defs/party" },
+    "to": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/party" }
+    },
+    "type": {
+      "enum": [
+        "TASK_ASSIGNED",
+        "ACK",
+        "HANDOFF_READY",
+        "CONSTRAINT_HANDOFF",
+        "REVIEW_REQUESTED",
+        "REVIEW_FEEDBACK",
+        "RISK_RAISED",
+        "DECISION_REQUIRED",
+        "DECISION_RESPONSE",
+        "STATUS_REPORT"
+      ]
+    },
+    "correlationId": { "type": "string", "minLength": 1 },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "body": { "type": "string", "minLength": 1, "maxLength": 5000 },
+    "relatedArtifacts": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "responseRequired": { "type": "boolean" },
+    "responseTo": { "type": ["string", "null"] },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": { "const": "agent_message" },
+        "reference": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

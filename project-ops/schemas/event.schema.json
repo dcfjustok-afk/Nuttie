@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nuttie.local/schemas/project-event.schema.json",
+  "title": "Nuttie project event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "recordedAt",
+    "type",
+    "actor",
+    "correlationId",
+    "summary",
+    "data",
+    "artifactRefs",
+    "source"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "eventId": { "type": "string", "pattern": "^EVT-[0-9]{8}-[0-9]{3,}$" },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "type": {
+      "enum": [
+        "TASK_ASSIGNED",
+        "AGENT_ACTIVATED",
+        "ACK",
+        "HANDOFF_READY",
+        "REVIEW_REQUESTED",
+        "REVIEW_FEEDBACK",
+        "RISK_RAISED",
+        "DECISION_REQUIRED",
+        "DECISION_ACCEPTED",
+        "FACT_CORRECTION",
+        "SCOPE_CHANGE",
+        "GATE_CHANGED",
+        "ARTIFACT_CREATED",
+        "TASK_COMPLETED"
+      ]
+    },
+    "actor": { "$ref": "#/$defs/party" },
+    "subject": { "$ref": "#/$defs/party" },
+    "correlationId": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "data": { "type": "object" },
+    "artifactRefs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": {
+          "enum": ["owner_message", "agent_message", "tool_event", "document", "pm_record"]
+        },
+        "reference": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
