@@ -1,0 +1,1906 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="color-scheme" content="light">
+  <title>Nuttie D-039 添加餐食首层方式 A/B/C 对比原型</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f3f4f2;
+      --surface: #ffffff;
+      --surface-soft: #f4f6f4;
+      --ink: #1b211d;
+      --muted: #59635c;
+      --line: #c6cdc8;
+      --line-strong: #8d9890;
+      --accent: #286847;
+      --accent-soft: #e2eee6;
+      --info: #245d7a;
+      --info-soft: #e4f0f5;
+      --warning: #7a5418;
+      --warning-soft: #fff2d8;
+      --danger: #8a2f2f;
+      --danger-soft: #fbe8e7;
+      --focus: #075fd8;
+      --phone-width: 390px;
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      letter-spacing: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--page);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 18px 16px 24px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--page);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [tabindex="-1"]:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .lab-shell {
+      width: min(100%, 820px);
+      margin: 0 auto;
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .lab-kicker {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .lab-header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      line-height: 1.35;
+    }
+
+    .candidate-badge {
+      flex: none;
+      padding: 5px 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .variant-panel,
+    .simulator-panel {
+      width: min(100%, var(--phone-width));
+      margin: 0 auto 10px;
+    }
+
+    .variant-label,
+    .simulator-title {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #dde1dd;
+    }
+
+    .segment {
+      min-height: 48px;
+      padding: 5px 4px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .segment[aria-selected="true"] {
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(26, 34, 28, 0.18);
+    }
+
+    .segment strong,
+    .segment small {
+      display: block;
+    }
+
+    .segment strong {
+      font-size: 0.9rem;
+    }
+
+    .segment small {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 0.66rem;
+      line-height: 1.2;
+    }
+
+    .variant-summary {
+      min-height: 34px;
+      margin: 6px 2px 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .simulator-panel {
+      padding: 9px 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .simulator-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sim-field {
+      display: grid;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .sim-field select {
+      width: 100%;
+      min-height: 44px;
+      padding: 6px 28px 6px 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 5px;
+      color: var(--ink);
+      background: var(--surface);
+      font-size: 0.76rem;
+      font-weight: 500;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .stage {
+      display: grid;
+      place-items: start center;
+    }
+
+    .phone {
+      display: flex;
+      width: min(100%, var(--phone-width));
+      height: min(700px, calc(100dvh - 270px));
+      min-height: 520px;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid #343b36;
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 12px 30px rgba(23, 31, 25, 0.14);
+    }
+
+    .status-bar {
+      display: flex;
+      min-height: 29px;
+      flex: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 18px 3px;
+      font-size: 0.67rem;
+      font-weight: 750;
+    }
+
+    .app-header {
+      display: grid;
+      min-height: 60px;
+      flex: none;
+      grid-template-columns: 44px minmax(0, 1fr) 74px;
+      align-items: center;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back-button,
+    .header-spacer {
+      width: 44px;
+      height: 44px;
+    }
+
+    .back-button {
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.45rem;
+    }
+
+    .back-button:disabled {
+      visibility: hidden;
+    }
+
+    .header-copy {
+      text-align: center;
+    }
+
+    .header-copy strong,
+    .header-copy small {
+      display: block;
+    }
+
+    .header-copy strong {
+      font-size: 0.98rem;
+    }
+
+    .header-copy small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.67rem;
+      font-weight: 500;
+    }
+
+    .write-count {
+      justify-self: end;
+      padding: 4px 6px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 0.63rem;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .app-main {
+      min-height: 0;
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 17px 16px 24px;
+      scrollbar-gutter: stable;
+    }
+
+    .screen-heading {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.35;
+    }
+
+    .screen-intro {
+      margin: 5px 0 15px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .section-heading {
+      margin: 17px 0 7px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .section-heading:first-child {
+      margin-top: 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .field > label,
+    .field-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .control,
+    .select-control,
+    .text-control {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .control[readonly] {
+      color: var(--muted);
+      background: var(--surface-soft);
+    }
+
+    .text-control {
+      min-height: 94px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px;
+    }
+
+    .button,
+    .button-primary,
+    .button-quiet,
+    .button-danger {
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .button-primary {
+      border-color: var(--accent);
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .button-quiet {
+      border-color: transparent;
+      color: var(--accent);
+      background: transparent;
+    }
+
+    .button-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--surface);
+    }
+
+    .button-block {
+      width: 100%;
+    }
+
+    .button-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .method-list,
+    .result-list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+
+    .method-button,
+    .result-button {
+      display: grid;
+      width: 100%;
+      min-height: 58px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 3px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .method-button strong,
+    .method-button small,
+    .result-button strong,
+    .result-button small {
+      display: block;
+    }
+
+    .method-button strong,
+    .result-button strong {
+      font-size: 0.88rem;
+      line-height: 1.3;
+    }
+
+    .method-button small,
+    .result-button small {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.35;
+    }
+
+    .chevron {
+      color: var(--muted);
+      font-size: 1.25rem;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .method-tile {
+      display: flex;
+      min-height: 86px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 7px;
+      padding: 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .method-tile strong {
+      font-size: 0.86rem;
+      line-height: 1.25;
+    }
+
+    .method-tile small {
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.3;
+    }
+
+    .hero-action {
+      padding: 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+    }
+
+    .hero-action .status-label {
+      margin-bottom: 5px;
+    }
+
+    .hero-action h3 {
+      margin: 0;
+      font-size: 0.98rem;
+    }
+
+    .hero-action p {
+      margin: 4px 0 11px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .status-box {
+      margin: 12px 0;
+      padding: 10px 11px;
+      border-left: 4px solid var(--info);
+      background: var(--info-soft);
+      font-size: 0.75rem;
+      line-height: 1.45;
+    }
+
+    .status-box.warning {
+      border-left-color: var(--warning);
+      background: var(--warning-soft);
+    }
+
+    .status-box.danger {
+      border-left-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .status-box.success {
+      border-left-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .status-label {
+      display: inline-block;
+      padding: 3px 5px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 0.64rem;
+      font-weight: 800;
+    }
+
+    .source-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 8px 0 14px;
+    }
+
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 9px;
+    }
+
+    .nutrition-grid .field:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+
+    .camera-stage,
+    .media-preview {
+      display: grid;
+      min-height: 158px;
+      place-items: center;
+      padding: 18px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background:
+        linear-gradient(90deg, transparent 49%, rgba(72, 82, 75, 0.14) 50%, transparent 51%),
+        linear-gradient(transparent 49%, rgba(72, 82, 75, 0.14) 50%, transparent 51%),
+        var(--surface-soft);
+      background-size: 28px 28px;
+      text-align: center;
+    }
+
+    .barcode-shape {
+      width: min(78%, 230px);
+      height: 72px;
+      border: 8px solid var(--surface);
+      background: repeating-linear-gradient(90deg, #28302a 0 2px, transparent 2px 5px, #28302a 5px 7px, transparent 7px 11px);
+      box-shadow: 0 0 0 1px var(--line-strong);
+    }
+
+    .media-preview strong,
+    .media-preview small {
+      display: block;
+      max-width: 230px;
+      background: var(--surface);
+    }
+
+    .media-preview strong {
+      padding: 5px 7px 2px;
+    }
+
+    .media-preview small {
+      padding: 2px 7px 5px;
+      font-size: 0.68rem;
+    }
+
+    .preview-table {
+      margin: 14px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .preview-row {
+      display: grid;
+      grid-template-columns: 94px minmax(0, 1fr);
+      gap: 8px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .preview-row dt {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .preview-row dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .success-mark {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      margin: 4px 0 14px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .result-summary {
+      margin: 14px 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-summary li {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.75rem;
+    }
+
+    .result-summary span:first-child {
+      color: var(--muted);
+    }
+
+    .inline-error {
+      margin: -5px 0 10px;
+      color: var(--danger);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .lab-footer {
+      width: min(100%, var(--phone-width));
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px 8px 18px;
+      }
+
+      .lab-header,
+      .variant-panel,
+      .simulator-panel,
+      .lab-footer {
+        width: min(100%, 390px);
+      }
+
+      .lab-header h1 {
+        font-size: 1.08rem;
+      }
+
+      .phone {
+        height: 620px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      body {
+        padding-inline: 0;
+      }
+
+      .lab-header,
+      .variant-panel,
+      .simulator-panel,
+      .lab-footer {
+        margin-inline: 8px;
+        width: calc(100% - 16px);
+      }
+
+      .candidate-badge {
+        max-width: 82px;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .simulator-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone {
+        width: 100%;
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .app-main {
+        padding-inline: 13px;
+      }
+
+      .nutrition-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nutrition-grid .field:last-child:nth-child(odd) {
+        grid-column: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.00001s !important;
+        animation-duration: 0.00001s !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="lab-shell">
+    <header class="lab-header">
+      <div>
+        <p class="lab-kicker">Nuttie · Product Design Lab</p>
+        <h1>D-039 添加餐食首层方式</h1>
+      </div>
+      <span class="candidate-badge">CANDIDATE</span>
+    </header>
+
+    <section class="variant-panel" aria-labelledby="variant-label">
+      <p class="variant-label" id="variant-label">方案预览，切换不代表选择</p>
+      <div class="segmented" role="tablist" aria-label="D-039 候选方案">
+        <button class="segment" id="variant-a" type="button" role="tab" aria-selected="true" aria-controls="phone-preview" data-variant="A">
+          <strong>A</strong>
+          <small>本地 / 最近优先</small>
+        </button>
+        <button class="segment" id="variant-b" type="button" role="tab" aria-selected="false" aria-controls="phone-preview" data-variant="B">
+          <strong>B</strong>
+          <small>记住上次方式</small>
+        </button>
+        <button class="segment" id="variant-c" type="button" role="tab" aria-selected="false" aria-controls="phone-preview" data-variant="C">
+          <strong>C</strong>
+          <small>六种方式平铺</small>
+        </button>
+      </div>
+      <p class="variant-summary" id="variant-summary">A：本地搜索和最近使用先出现；条码扫描与可选 AI 并列。三种方案均可完成同一记录任务。</p>
+    </section>
+
+    <section class="simulator-panel" aria-labelledby="simulator-title">
+      <p class="simulator-title" id="simulator-title">评审状态模拟（仅当前页面内存）</p>
+      <div class="simulator-grid">
+        <label class="sim-field is-hidden" id="b-memory-field" for="b-memory">
+          B 的上次方式
+          <select id="b-memory">
+            <option value="first">首次使用</option>
+            <option value="local">上次：本地搜索</option>
+            <option value="ai">上次：AI 图片</option>
+          </select>
+        </label>
+        <label class="sim-field" for="ai-config">
+          AI 配置
+          <select id="ai-config">
+            <option value="unconfigured">尚未配置</option>
+            <option value="fixture">示例配置 / 准入 UNKNOWN</option>
+          </select>
+        </label>
+        <label class="sim-field" for="permission-state">
+          媒体权限
+          <select id="permission-state">
+            <option value="allowed">相机与相册可用（模拟）</option>
+            <option value="camera-denied">相机已拒绝（模拟）</option>
+            <option value="album-denied">相册已拒绝（模拟）</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="stage" id="phone-preview" role="tabpanel" aria-labelledby="variant-a">
+      <div class="phone" data-testid="phone">
+        <div class="status-bar" aria-hidden="true">
+          <span>9:41</span>
+          <span>本地模式 · 100%</span>
+        </div>
+        <header class="app-header">
+          <button class="back-button" id="back-button" type="button" aria-label="返回上一页" disabled>←</button>
+          <div class="header-copy">
+            <strong>添加晚餐</strong>
+            <small id="header-variant">方案 A · 未做决定</small>
+          </div>
+          <span class="write-count" id="write-count">本次写入<br>0 条</span>
+        </header>
+        <div class="app-main" id="app-main"></div>
+        <div class="sr-only" id="live-region" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </section>
+
+    <p class="lab-footer">原型不联网、不写磁盘、不保存评审选择。刷新页面会恢复同一种子数据；Owner 明确回复前 D-039 保持 CANDIDATE。</p>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const variantCopy = {
+        A: "A：本地搜索和最近使用先出现；条码扫描与可选 AI 并列。三种方案均可完成同一记录任务。",
+        B: "B：首层根据上次方式变化；首次、本地、AI 三种状态可在评审控制中切换，AI 图片仍逐次预览。",
+        C: "C：搜索、扫描、拍照、相册、文字和自建食品在首层平铺；最近使用仍可到达。"
+      };
+
+      const foods = [
+        {
+          id: "yogurt",
+          name: "原味无糖酸奶",
+          detail: "本地数据包 · 100 克",
+          source: "本地数据包测试条目",
+          amount: "100",
+          unit: "克",
+          energy: "72",
+          protein: "8.7",
+          carbs: "5.1",
+          fat: "1.8",
+          fiber: "0",
+          sugar: "4.6",
+          sodium: "58"
+        },
+        {
+          id: "oats",
+          name: "即食燕麦片",
+          detail: "最近使用 · 40 克",
+          source: "本地数据包测试条目",
+          amount: "40",
+          unit: "克",
+          energy: "152",
+          protein: "5.3",
+          carbs: "25.6",
+          fat: "3.1",
+          fiber: "4.0",
+          sugar: "0.4",
+          sodium: "3"
+        },
+        {
+          id: "chicken",
+          name: "熟鸡胸肉",
+          detail: "最近使用 · 120 克",
+          source: "用户自建测试条目",
+          amount: "120",
+          unit: "克",
+          energy: "198",
+          protein: "37.2",
+          carbs: "0",
+          fat: "4.3",
+          fiber: "0",
+          sugar: "0",
+          sodium: "89"
+        },
+        {
+          id: "banana",
+          name: "香蕉",
+          detail: "本地数据包 · 1 根（118 克）",
+          source: "USDA 测试条目",
+          amount: "1",
+          unit: "根",
+          energy: "105",
+          protein: "1.3",
+          carbs: "27",
+          fat: "0.4",
+          fiber: "3.1",
+          sugar: "14.4",
+          sodium: "1"
+        }
+      ];
+
+      const barcodeFood = {
+        id: "barcode-soy",
+        name: "测试商品：无糖豆浆",
+        detail: "本地条码测试命中 · 400 毫升",
+        source: "本地条码测试条目",
+        amount: "400",
+        unit: "毫升",
+        energy: "132",
+        protein: "12.0",
+        carbs: "8.0",
+        fat: "6.0",
+        fiber: "2.4",
+        sugar: "2.0",
+        sodium: "168"
+      };
+
+      const aiFixture = {
+        id: "ai-fixture",
+        name: "糙米鸡肉蔬菜碗",
+        detail: "本地注入的 AI 测试候选",
+        source: "AI 本地测试候选 · 未保存",
+        amount: "1",
+        unit: "份",
+        energy: "486",
+        protein: "34",
+        carbs: "58",
+        fat: "13",
+        fiber: "7",
+        sugar: "6",
+        sodium: "520",
+        estimated: true
+      };
+
+      const createSeed = Object.freeze({
+        id: "user-created",
+        name: "自制番茄炒蛋",
+        detail: "用户自建",
+        source: "用户自建 · 本地",
+        amount: "1",
+        unit: "份",
+        energy: "238",
+        protein: "14.2",
+        carbs: "9.4",
+        fat: "15.8",
+        fiber: "2.1",
+        sugar: "5.6",
+        sodium: "310",
+        barcode: ""
+      });
+
+      const state = {
+        variant: "A",
+        bMemory: "first",
+        aiConfig: "unconfigured",
+        permission: "allowed",
+        screen: "entry",
+        history: [],
+        query: "无糖酸奶",
+        barcode: "4710000000001",
+        aiKind: "photo",
+        aiText: "晚餐吃了一碗糙米、鸡胸肉和烫青菜",
+        draft: null,
+        createDraft: { ...createSeed },
+        discardedKind: "",
+        savedEntries: [],
+        error: "",
+        errorField: ""
+      };
+
+      const appMain = document.getElementById("app-main");
+      const backButton = document.getElementById("back-button");
+      const writeCount = document.getElementById("write-count");
+      const liveRegion = document.getElementById("live-region");
+      const bMemoryField = document.getElementById("b-memory-field");
+      const bMemorySelect = document.getElementById("b-memory");
+      const aiConfigSelect = document.getElementById("ai-config");
+      const permissionSelect = document.getElementById("permission-state");
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function cloneFood(food) {
+        return { ...food };
+      }
+
+      function focusDescriptor(element = document.activeElement) {
+        if (!(element instanceof Element)) return null;
+        if (element.id) return { selector: `#${CSS.escape(element.id)}`, index: 0 };
+        const attributes = [
+          "data-route",
+          "data-food-id",
+          "data-barcode-result",
+          "data-use-barcode-food",
+          "data-open-ai-preview",
+          "data-ai-outcome",
+          "data-return-ai-preview",
+          "data-simulate-settings",
+          "data-simulate-system-settings",
+          "data-reset-flow",
+          "data-discard-draft"
+        ];
+        for (const attribute of attributes) {
+          if (!element.hasAttribute(attribute)) continue;
+          const value = element.getAttribute(attribute);
+          const selector = value ? `[${attribute}="${CSS.escape(value)}"]` : `[${attribute}]`;
+          return { selector, index: [...document.querySelectorAll(selector)].indexOf(element) };
+        }
+        const selector = element.matches("button, input, select, textarea") ? element.tagName.toLowerCase() : null;
+        return selector ? { selector, index: [...document.querySelectorAll(selector)].indexOf(element) } : null;
+      }
+
+      function announce(message) {
+        liveRegion.textContent = "";
+        window.setTimeout(() => {
+          liveRegion.textContent = message;
+        }, 10);
+      }
+
+      function pushScreen(screen, trigger = document.activeElement) {
+        state.history.push({ screen: state.screen, focus: focusDescriptor(trigger) });
+        state.screen = screen;
+        state.error = "";
+        state.errorField = "";
+        render(true);
+      }
+
+      function replaceScreen(screen) {
+        state.screen = screen;
+        state.error = "";
+        state.errorField = "";
+        render(true);
+      }
+
+      function goBack() {
+        if (state.history.length === 0) return;
+        const previous = state.history.pop();
+        state.screen = previous.screen;
+        state.error = "";
+        state.errorField = "";
+        render(true, previous.focus);
+        announce("已返回上一页");
+      }
+
+      function resetFlow(resetWrites = false) {
+        state.screen = "entry";
+        state.history = [];
+        state.draft = null;
+        state.createDraft = { ...createSeed };
+        state.discardedKind = "";
+        state.error = "";
+        state.errorField = "";
+        if (resetWrites) state.savedEntries = [];
+      }
+
+      function routeButton(route, title, detail, className = "method-button") {
+        return `<button class="${className}" type="button" data-route="${route}"><span><strong>${title}</strong><small>${detail}</small></span>${className === "method-button" ? '<span class="chevron" aria-hidden="true">›</span>' : ""}</button>`;
+      }
+
+      function tileButton(route, title, detail) {
+        return `<button class="method-tile" type="button" data-route="${route}"><strong>${title}</strong><small>${detail}</small></button>`;
+      }
+
+      function searchForm(compact = false) {
+        return `
+          <form data-form="search" ${compact ? "" : 'aria-label="搜索本地食品"'}>
+            <label class="field-label" for="local-search-${state.variant}">搜索本地食品</label>
+            <div class="search-row">
+              <input class="control" id="local-search-${state.variant}" name="query" type="search" value="${escapeHtml(state.query)}" autocomplete="off" enterkeyhint="search">
+              <button class="button-primary" type="submit">搜索</button>
+            </div>
+          </form>`;
+      }
+
+      function recentList() {
+        return `
+          <ul class="result-list" aria-label="最近使用食品">
+            <li><button class="result-button" type="button" data-food-id="oats"><span><strong>即食燕麦片</strong><small>今天早餐 · 40 克 · 152 千卡</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            <li><button class="result-button" type="button" data-food-id="chicken"><span><strong>熟鸡胸肉</strong><small>昨天晚餐 · 120 克 · 198 千卡</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+          </ul>`;
+      }
+
+      function commonHeading(intro) {
+        return `<h2 class="screen-heading" tabindex="-1" data-autofocus>选择添加方式</h2><p class="screen-intro">${intro}</p>`;
+      }
+
+      function renderEntryA() {
+        return `
+          ${commonHeading("先用不联网的食品资料完成记录；需要时再选择条码或 AI。")}
+          ${searchForm()}
+          <h3 class="section-heading">最近使用</h3>
+          ${recentList()}
+          <h3 class="section-heading">其他方式</h3>
+          <div class="method-grid">
+            ${tileButton("scan", "扫描条码", "只查本地食品资料")}
+            ${tileButton("ai-menu", "AI 辅助", "可选联网，发送前检查")}
+          </div>
+          <button class="button-quiet button-block" type="button" data-route="create">没有合适食品？自建食品</button>`;
+      }
+
+      function renderEntryB() {
+        if (state.bMemory === "local") {
+          return `
+            ${commonHeading("演示状态：上次使用本地搜索。首层保留上次方式，同时可切换其他入口。")}
+            <div class="hero-action">
+              <span class="status-label">上次：本地方式</span>
+              <h3>继续搜索本地食品</h3>
+              <p>当前查询仍只读取设备内食品资料。</p>
+              ${searchForm(true)}
+            </div>
+            <h3 class="section-heading">最近使用</h3>
+            ${recentList()}
+            <h3 class="section-heading">换一种方式</h3>
+            <div class="method-grid">
+              ${tileButton("scan", "扫描条码", "本地精确匹配")}
+              ${tileButton("ai-menu", "AI 辅助", "图片仍逐次预览")}
+              ${tileButton("create", "自建食品", "手工填写营养")}
+              ${tileButton("search", "全部本地结果", "打开搜索结果页")}
+            </div>`;
+        }
+
+        if (state.bMemory === "ai") {
+          return `
+            ${commonHeading("演示状态：上次使用 AI 图片。记住入口不等于记住发送同意。")}
+            <div class="hero-action">
+              <span class="status-label">上次：AI 图片</span>
+              <h3>继续用拍照识别</h3>
+              <p>每张图片仍显示目标 host、model 和载荷范围，并要求当次确认。</p>
+              <button class="button-primary button-block" type="button" data-route="ai-photo">拍照并逐次预览</button>
+            </div>
+            <h3 class="section-heading">最近使用</h3>
+            ${recentList()}
+            <h3 class="section-heading">换一种方式</h3>
+            <div class="method-grid">
+              ${tileButton("search", "本地搜索", "完全离线")}
+              ${tileButton("scan", "扫描条码", "只查本地资料")}
+              ${tileButton("ai-menu", "其他 AI 方式", "相册或文字")}
+              ${tileButton("create", "自建食品", "手工填写营养")}
+            </div>`;
+        }
+
+        return `
+          ${commonHeading("演示状态：首次使用，没有上次方式。先展示全部可完成路径。")}
+          ${searchForm()}
+          <h3 class="section-heading">最近使用</h3>
+          ${recentList()}
+          <h3 class="section-heading">其他方式</h3>
+          <div class="method-grid">
+            ${tileButton("scan", "扫描条码", "只查本地资料")}
+            ${tileButton("ai-menu", "AI 辅助", "发送前检查")}
+            ${tileButton("create", "自建食品", "完全手工")}
+            ${tileButton("search", "浏览本地结果", "不使用网络")}
+          </div>`;
+      }
+
+      function renderEntryC() {
+        return `
+          ${commonHeading("六种方式平铺在首层；选择后仍进入相同的检查与保存闭环。")}
+          <div class="method-grid" aria-label="全部添加方式">
+            ${tileButton("search", "搜索", "本地食品资料")}
+            ${tileButton("scan", "扫描", "本地条码匹配")}
+            ${tileButton("ai-photo", "拍照", "AI 图片候选")}
+            ${tileButton("ai-album", "相册", "AI 图片候选")}
+            ${tileButton("ai-text", "文字", "AI 描述候选")}
+            ${tileButton("create", "自建", "手工填写营养")}
+          </div>
+          <h3 class="section-heading">最近使用</h3>
+          ${recentList()}`;
+      }
+
+      function renderEntry() {
+        if (state.variant === "B") return renderEntryB();
+        if (state.variant === "C") return renderEntryC();
+        return renderEntryA();
+      }
+
+      function renderSearch() {
+        const normalized = state.query.trim().toLowerCase();
+        const matches = normalized
+          ? foods.filter((food) => food.name.toLowerCase().includes(normalized) || food.detail.toLowerCase().includes(normalized) || food.source.toLowerCase().includes(normalized))
+          : foods;
+        const shown = matches.length > 0 ? matches : [];
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>搜索本地食品</h2>
+          <p class="screen-intro">数据来自随 App 发版或签名导入的本地资料，以及用户自建食品。</p>
+          <form data-form="search-results">
+            <label class="field-label" for="search-results-input">食品名称</label>
+            <div class="search-row">
+              <input class="control" id="search-results-input" name="query" type="search" value="${escapeHtml(state.query)}" autocomplete="off" enterkeyhint="search">
+              <button class="button-primary" type="submit">搜索</button>
+            </div>
+          </form>
+          <h3 class="section-heading">${shown.length} 个本地结果</h3>
+          ${shown.length > 0 ? `
+            <ul class="result-list">
+              ${shown.map((food) => `<li><button class="result-button" type="button" data-food-id="${food.id}"><span><strong>${food.name}</strong><small>来源：${food.source} · ${food.detail} · ${food.energy} 千卡</small></span><span class="chevron" aria-hidden="true">›</span></button></li>`).join("")}
+            </ul>` : `
+            <div class="status-box warning">本地食品资料没有找到“${escapeHtml(state.query)}”。未进行在线查询。</div>
+            <div class="button-stack">
+              <button class="button" type="button" data-route="create">自建食品</button>
+              <button class="button" type="button" data-route="scan">扫描本地条码</button>
+            </div>`}
+          <h3 class="section-heading">最近使用</h3>
+          ${recentList()}`;
+      }
+
+      function renderScan() {
+        if (state.permission === "camera-denied") return renderPermissionDenied("camera", "scan");
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>扫描条码</h2>
+          <p class="screen-intro">扫描结果只与设备内条码索引匹配，不会转到在线食品服务。</p>
+          <div class="camera-stage" role="img" aria-label="条码扫描取景框的低保真模拟">
+            <div class="barcode-shape" aria-hidden="true"></div>
+          </div>
+          <div class="button-row">
+            <button class="button-primary" type="button" data-barcode-result="hit">模拟命中</button>
+            <button class="button" type="button" data-barcode-result="miss">模拟未命中</button>
+          </div>
+          <h3 class="section-heading">或输入条码</h3>
+          <form data-form="barcode">
+            <div class="field">
+              <label for="barcode-input">GTIN</label>
+              <input class="control" id="barcode-input" name="barcode" inputmode="numeric" pattern="[0-9]*" value="${escapeHtml(state.barcode)}" autocomplete="off">
+            </div>
+            <button class="button button-block" type="submit">查询本地条码</button>
+          </form>`;
+      }
+
+      function renderBarcodeHit() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>本地条码已命中</h2>
+          <p class="screen-intro">先核对食品、来源和营养字段，再进入统一编辑页。</p>
+          <div class="status-box success"><strong>${barcodeFood.name}</strong><br>${barcodeFood.detail}</div>
+          <dl class="preview-table">
+            <div class="preview-row"><dt>GTIN</dt><dd>${escapeHtml(state.barcode)}</dd></div>
+            <div class="preview-row"><dt>来源</dt><dd>${barcodeFood.source}</dd></div>
+            <div class="preview-row"><dt>能量</dt><dd>${barcodeFood.energy} 千卡 / ${barcodeFood.amount} ${barcodeFood.unit}</dd></div>
+            <div class="preview-row"><dt>字段</dt><dd>能量、三大营养、纤维、糖、钠</dd></div>
+          </dl>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-use-barcode-food>检查并保存</button>
+            <button class="button" type="button" data-route="create">复制为自建食品并修改</button>
+          </div>`;
+      }
+
+      function renderBarcodeMiss() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>本地条码未命中</h2>
+          <p class="screen-intro">“未命中”不是网络错误，也不会自动把照片或条码发送到 AI。</p>
+          <div class="status-box warning">本地食品资料未找到 GTIN ${escapeHtml(state.barcode)}。本次日记写入 0 条。</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-route="create">用此条码自建食品</button>
+            <button class="button" type="button" data-route="search">搜索本地食品</button>
+            <button class="button" type="button" data-route="ai-label">拍摄营养标签并逐次预览</button>
+          </div>`;
+      }
+
+      function renderCreate() {
+        const draft = state.createDraft;
+        const nameError = state.errorField === "create-name";
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>自建食品</h2>
+          <p class="screen-intro">手工输入会在统一编辑页再次检查；原型只保存到当前页面内存。</p>
+          <form data-form="create-food">
+            ${draft.barcode ? `<div class="field"><label for="create-barcode">来自未命中条码（GTIN）</label><input class="control" id="create-barcode" name="barcode" value="${escapeHtml(draft.barcode)}" readonly><span class="field-label">保存后该 GTIN 仍与用户食品关联。</span></div>` : ""}
+            <div class="field">
+              <label for="create-name">食品名称</label>
+              <input class="control" id="create-name" name="name" value="${escapeHtml(draft.name)}" required autocomplete="off"${nameError ? ' aria-invalid="true" aria-describedby="create-name-error"' : ""}>
+            </div>
+            ${nameError ? `<p class="inline-error" id="create-name-error" role="alert">${escapeHtml(state.error)}</p>` : ""}
+            <div class="nutrition-grid">
+              <div class="field"><label for="create-amount">份量</label><input class="control" id="create-amount" name="amount" type="number" min="0.1" step="0.1" value="${escapeHtml(draft.amount)}" required></div>
+              <div class="field"><label for="create-unit">单位</label><select class="select-control" id="create-unit" name="unit">${["份", "克", "毫升"].map((unit) => `<option${unit === draft.unit ? " selected" : ""}>${unit}</option>`).join("")}</select></div>
+              <div class="field"><label for="create-energy">能量（千卡）</label><input class="control" id="create-energy" name="energy" type="number" min="0" step="1" value="${escapeHtml(draft.energy)}" required></div>
+              <div class="field"><label for="create-protein">蛋白质（克）</label><input class="control" id="create-protein" name="protein" type="number" min="0" step="0.1" value="${escapeHtml(draft.protein)}"></div>
+              <div class="field"><label for="create-carbs">碳水（克）</label><input class="control" id="create-carbs" name="carbs" type="number" min="0" step="0.1" value="${escapeHtml(draft.carbs)}"></div>
+              <div class="field"><label for="create-fat">脂肪（克）</label><input class="control" id="create-fat" name="fat" type="number" min="0" step="0.1" value="${escapeHtml(draft.fat)}"></div>
+              <div class="field"><label for="create-fiber">纤维（克）</label><input class="control" id="create-fiber" name="fiber" type="number" min="0" step="0.1" value="${escapeHtml(draft.fiber)}"></div>
+              <div class="field"><label for="create-sugar">糖（克）</label><input class="control" id="create-sugar" name="sugar" type="number" min="0" step="0.1" value="${escapeHtml(draft.sugar)}"></div>
+              <div class="field"><label for="create-sodium">钠（毫克）</label><input class="control" id="create-sodium" name="sodium" type="number" min="0" step="1" value="${escapeHtml(draft.sodium)}"></div>
+            </div>
+            <button class="button-primary button-block" type="submit">继续检查</button>
+          </form>`;
+      }
+
+      function renderAiMenu() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>选择 AI 输入</h2>
+          <p class="screen-intro">AI 是可选路径。本地搜索、条码和自建食品不依赖此配置。</p>
+          <ul class="method-list">
+            <li>${routeButton("ai-photo", "拍照识餐", "图片在设备内准备后逐次预览")}</li>
+            <li>${routeButton("ai-album", "从相册选择", "图片在设备内准备后逐次预览")}</li>
+            <li>${routeButton("ai-label", "拍摄营养标签", "D-014：每次发送前预览并确认")}</li>
+            <li>${routeButton("ai-text", "文字描述", "发送边界仍由独立决策约束")}</li>
+          </ul>
+          <div class="status-box warning">D-053 尚未决定。示例 Provider 准入状态保持 UNKNOWN / BLOCKED，本原型不会建立网络请求。</div>`;
+      }
+
+      function renderAiUnconfigured() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>尚未配置 AI</h2>
+          <p class="screen-intro">没有 Base URL、model 和 key 时，AI 路径停在本机，其他添加方式照常可用。</p>
+          <div class="status-box warning">未读取凭据，未组装请求，网络请求 0 次，本次日记写入 0 条。</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-route="search">改用本地搜索</button>
+            <button class="button" type="button" data-route="create">改用自建食品</button>
+            <button class="button" type="button" data-simulate-settings>查看 AI 设置位置（模拟）</button>
+          </div>`;
+      }
+
+      function renderPermissionDenied(kind = "camera", origin = "ai") {
+        const isAlbum = kind === "album";
+        const label = isAlbum ? "相册" : "相机";
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>${label}权限已拒绝</h2>
+          <p class="screen-intro">权限拒绝只影响当前方式，不会阻止本地搜索、手工条码或自建食品。</p>
+          <div class="status-box warning">系统状态（模拟）：${label}不可用。本次没有读取媒体，也没有写入日记。</div>
+          <div class="button-stack">
+            ${origin === "scan" ? '<button class="button-primary" type="button" data-focus-barcode>输入条码</button>' : '<button class="button-primary" type="button" data-route="search">改用本地搜索</button>'}
+            ${origin === "scan" ? '<button class="button" type="button" data-route="search">搜索本地食品</button>' : ""}
+            <button class="button" type="button" data-route="create">自建食品</button>
+            <button class="button" type="button" data-simulate-system-settings>打开系统设置（模拟）</button>
+          </div>
+          ${origin === "scan" ? `
+            <h3 class="section-heading">手工输入条码</h3>
+            <form data-form="barcode">
+              <div class="field"><label for="denied-barcode-input">GTIN</label><input class="control" id="denied-barcode-input" name="barcode" inputmode="numeric" pattern="[0-9]*" value="${escapeHtml(state.barcode)}"></div>
+              <button class="button button-block" type="submit">查询本地条码</button>
+            </form>` : ""}`;
+      }
+
+      function aiKindLabel() {
+        if (state.aiKind === "album") return "相册图片";
+        if (state.aiKind === "label") return "营养标签照片";
+        if (state.aiKind === "text") return "文字描述";
+        return "拍摄图片";
+      }
+
+      function renderAiMediaDraft() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>准备 ${aiKindLabel()}</h2>
+          <p class="screen-intro">以下内容仅是低保真测试夹具，没有读取真实相机或相册。</p>
+          <div class="media-preview" role="img" aria-label="模拟餐食图片预览">
+            <div><strong>餐盘照片（模拟）</strong><small>设备内裁剪、压缩并移除 EXIF</small></div>
+          </div>
+          <div class="status-box">当前仍在本机。下一步只展示逐次发送预览，不会自动发送。</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-open-ai-preview>查看当次发送预览</button>
+            <button class="button" type="button" data-route="search">不用 AI，改用本地搜索</button>
+          </div>`;
+      }
+
+      function renderAiTextInput() {
+        const textError = state.errorField === "ai-text";
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>用文字描述餐食</h2>
+          <p class="screen-intro">文字仅在用户主动继续后进入预览。D-039 不决定非图片请求的最终确认形态。</p>
+          <form data-form="ai-text" novalidate>
+            <div class="field">
+              <label for="ai-text-input">本次描述</label>
+              <textarea class="text-control" id="ai-text-input" name="description" required${textError ? ' aria-invalid="true" aria-describedby="ai-text-error"' : ""}>${escapeHtml(state.aiText)}</textarea>
+            </div>
+            ${textError ? `<p class="inline-error" id="ai-text-error" role="alert">${escapeHtml(state.error)}</p>` : ""}
+            <button class="button-primary button-block" type="submit">继续到发送预览</button>
+          </form>
+          ${textError ? '<div class="status-box warning">网络请求 0 次 · 候选 0 条 · 本次日记写入 0 条</div>' : ""}
+          <button class="button-quiet button-block" type="button" data-route="create">改用手工录入</button>`;
+      }
+
+      function renderAiPreview() {
+        const payload = state.aiKind === "text"
+          ? `完整文本：“${escapeHtml(state.aiText)}”`
+          : `${aiKindLabel()} 1 张；设备内压缩；EXIF 已移除（模拟）`;
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>当次发送预览</h2>
+          <p class="screen-intro">本页用于检查目标与载荷。图片每次都重新确认；一次确认不会成为长期授权。</p>
+          ${state.aiKind === "text" ? "" : '<div class="media-preview" role="img" aria-label="待发送的模拟餐食图片"><div><strong>待发送图片（模拟）</strong><small>不包含原始 EXIF</small></div></div>'}
+          <dl class="preview-table">
+            <div class="preview-row"><dt>输入</dt><dd>${payload}</dd></div>
+            <div class="preview-row"><dt>目标 host</dt><dd>api.example.test</dd></div>
+            <div class="preview-row"><dt>model</dt><dd>sample-model</dd></div>
+            <div class="preview-row"><dt>不会发送</dt><dd>API key、完整日记、其他健康记录、原始 EXIF</dd></div>
+            <div class="preview-row"><dt>Provider 准入</dt><dd><strong>UNKNOWN / BLOCKED</strong>（D-053 未决定）</dd></div>
+          </dl>
+          <div class="status-box warning">正式实现应在 UNKNOWN 状态阻断发送。本页仅模拟取消、失败和候选编辑，不会联网。</div>
+          <div class="button-stack">
+            <button class="button" type="button" data-ai-outcome="cancel">取消发送并保留草稿</button>
+            <button class="button-danger" type="button" data-ai-outcome="failure">模拟确认后请求失败</button>
+            <button class="button" type="button" data-ai-outcome="fixture">载入本地测试候选</button>
+          </div>`;
+      }
+
+      function renderAiCancelled() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>已取消发送</h2>
+          <p class="screen-intro">草稿仍在当前任务内；没有创建网络请求，也没有产生食品候选。</p>
+          <div class="status-box success">网络请求 0 次 · 候选 0 条 · 本次日记写入 0 条</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-return-ai-preview>返回发送预览</button>
+            <button class="button" type="button" data-route="search">改用本地搜索</button>
+            <button class="button" type="button" data-route="create">改用手工录入</button>
+          </div>`;
+      }
+
+      function renderAiFailure() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>未收到 AI 响应</h2>
+          <p class="screen-intro">此页模拟超时或无法使用的响应。错误不会污染食品资料或日记。</p>
+          <div class="status-box danger">草稿已保留 · AI 候选 0 条 · 本次日记写入 0 条</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-return-ai-preview>返回预览后重试</button>
+            <button class="button" type="button" data-route="search">改用本地搜索</button>
+            <button class="button" type="button" data-route="create">改用手工录入</button>
+          </div>`;
+      }
+
+      function renderEditor() {
+        const food = state.draft || cloneFood(foods[0]);
+        const nameError = state.errorField === "edit-name";
+        const isAiCandidate = Boolean(food.estimated) || String(food.source).includes("AI");
+        const selectedMeal = food.meal || "晚餐";
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>检查并保存</h2>
+          <p class="screen-intro">所有来源都进入同一可编辑页。只有按下“保存到本机”才生成日记记录。</p>
+          <div class="source-line">
+            <span class="status-label">${escapeHtml(food.source)}</span>
+            ${food.estimated ? '<span class="status-label">AI 估算 · 可修改</span>' : '<span class="status-label">可修改</span>'}
+          </div>
+          <form data-form="editor">
+            ${food.barcode ? `<div class="field"><label for="edit-barcode">关联 GTIN</label><input class="control" id="edit-barcode" name="barcode" value="${escapeHtml(food.barcode)}" readonly></div>` : ""}
+            <div class="field"><label for="edit-name">食品名称</label><input class="control" id="edit-name" name="name" value="${escapeHtml(food.name)}" required${nameError ? ' aria-invalid="true" aria-describedby="edit-name-error"' : ""}></div>
+            ${nameError ? `<p class="inline-error" id="edit-name-error" role="alert">${escapeHtml(state.error)}</p>` : ""}
+            <div class="nutrition-grid">
+              <div class="field"><label for="edit-amount">份量</label><input class="control" id="edit-amount" name="amount" type="number" min="0.1" step="0.1" value="${escapeHtml(food.amount)}" required></div>
+              <div class="field"><label for="edit-unit">单位</label><select class="select-control" id="edit-unit" name="unit">${["份", "克", "毫升", "根"].map((unit) => `<option${unit === food.unit ? " selected" : ""}>${unit}</option>`).join("")}</select></div>
+              <div class="field"><label for="edit-energy">能量（千卡）</label><input class="control" id="edit-energy" name="energy" type="number" min="0" step="1" value="${escapeHtml(food.energy)}" required></div>
+              <div class="field"><label for="edit-protein">蛋白质（克）</label><input class="control" id="edit-protein" name="protein" type="number" min="0" step="0.1" value="${escapeHtml(food.protein)}"></div>
+              <div class="field"><label for="edit-carbs">碳水（克）</label><input class="control" id="edit-carbs" name="carbs" type="number" min="0" step="0.1" value="${escapeHtml(food.carbs)}"></div>
+              <div class="field"><label for="edit-fat">脂肪（克）</label><input class="control" id="edit-fat" name="fat" type="number" min="0" step="0.1" value="${escapeHtml(food.fat)}"></div>
+              <div class="field"><label for="edit-fiber">纤维（克）</label><input class="control" id="edit-fiber" name="fiber" type="number" min="0" step="0.1" value="${escapeHtml(food.fiber)}"></div>
+              <div class="field"><label for="edit-sugar">糖（克）</label><input class="control" id="edit-sugar" name="sugar" type="number" min="0" step="0.1" value="${escapeHtml(food.sugar)}"></div>
+              <div class="field"><label for="edit-sodium">钠（毫克）</label><input class="control" id="edit-sodium" name="sodium" type="number" min="0" step="1" value="${escapeHtml(food.sodium)}"></div>
+            </div>
+            <div class="field"><label for="edit-meal">餐次</label><select class="select-control" id="edit-meal" name="meal">${["早餐", "午餐", "晚餐", "零食"].map((meal) => `<option${meal === selectedMeal ? " selected" : ""}>${meal}</option>`).join("")}</select></div>
+            <button class="button-primary button-block" type="submit">保存到本机</button>
+          </form>
+          <button class="button-quiet button-block" type="button" data-discard-draft="${isAiCandidate ? "ai" : "local"}">${isAiCandidate ? "删除并放弃此 AI 候选" : "放弃本次添加"}</button>`;
+      }
+
+      function renderDiscarded() {
+        const isAi = state.discardedKind === "ai";
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>${isAi ? "AI 候选已删除" : "本次添加已放弃"}</h2>
+          <p class="screen-intro">候选草稿已从当前任务内存清除，没有生成食品记录或日记记录。</p>
+          <div class="status-box success">网络请求 0 次 · 候选 0 条 · 本候选日记写入 0 条</div>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-return-entry>返回添加方式</button>
+            <button class="button" type="button" data-route="search">改用本地搜索</button>
+          </div>`;
+      }
+
+      function renderSuccess() {
+        const saved = state.savedEntries.at(-1);
+        return `
+          <div class="success-mark" aria-hidden="true">✓</div>
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>已保存到本机</h2>
+          <p class="screen-intro">原型只写入当前页面内存；关闭或刷新后不会保留。</p>
+          <div class="status-box success">纯本地保存完成 · 网络请求 0 次 · 日记新增 1 条</div>
+          <ul class="result-summary">
+            <li><span>食品</span><strong>${escapeHtml(saved?.name || "")}</strong></li>
+            <li><span>餐次</span><strong>${escapeHtml(saved?.meal || "晚餐")}</strong></li>
+            <li><span>份量</span><strong>${escapeHtml(saved?.amount || "")} ${escapeHtml(saved?.unit || "")}</strong></li>
+            <li><span>能量</span><strong>${escapeHtml(saved?.energy || "0")} 千卡</strong></li>
+            <li><span>来源</span><strong>${escapeHtml(saved?.source || "")}</strong></li>
+            ${saved?.barcode ? `<li><span>关联 GTIN</span><strong>${escapeHtml(saved.barcode)}</strong></li>` : ""}
+          </ul>
+          <div class="button-stack">
+            <button class="button-primary" type="button" data-reset-flow>再添加一项</button>
+          </div>`;
+      }
+
+      function renderSettingsSimulation() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>AI 设置位置（模拟）</h2>
+          <p class="screen-intro">D-039 只验证添加餐食入口，不决定设置页面或真实配置控件。</p>
+          <div class="status-box">预期配置项：HTTPS Base URL、model、Keychain key。这里不会读取或保存任何值。</div>
+          <button class="button-primary button-block" type="button" data-return-entry>返回添加方式</button>`;
+      }
+
+      function renderSystemSettingsSimulation() {
+        return `
+          <h2 class="screen-heading" tabindex="-1" data-autofocus>系统设置跳转（模拟）</h2>
+          <p class="screen-intro">正式 App 可在用户主动选择后打开 iOS 设置；本原型不会离开当前页面。</p>
+          <div class="status-box">权限状态没有被修改。可使用顶部评审控件切回“可用”继续测试。</div>
+          <button class="button-primary button-block" type="button" data-return-entry>返回添加方式</button>`;
+      }
+
+      function screenMarkup() {
+        switch (state.screen) {
+          case "entry": return renderEntry();
+          case "search": return renderSearch();
+          case "scan": return renderScan();
+          case "barcode-hit": return renderBarcodeHit();
+          case "barcode-miss": return renderBarcodeMiss();
+          case "create": return renderCreate();
+          case "ai-menu": return renderAiMenu();
+          case "ai-unconfigured": return renderAiUnconfigured();
+          case "permission-camera": return renderPermissionDenied("camera", "ai");
+          case "permission-album": return renderPermissionDenied("album", "ai");
+          case "ai-media-draft": return renderAiMediaDraft();
+          case "ai-text-input": return renderAiTextInput();
+          case "ai-preview": return renderAiPreview();
+          case "ai-cancelled": return renderAiCancelled();
+          case "ai-failure": return renderAiFailure();
+          case "editor": return renderEditor();
+          case "discarded": return renderDiscarded();
+          case "success": return renderSuccess();
+          case "settings-simulation": return renderSettingsSimulation();
+          case "system-settings-simulation": return renderSystemSettingsSimulation();
+          default: return renderEntry();
+        }
+      }
+
+      function render(moveFocus = false, restoreFocus = null) {
+        appMain.innerHTML = screenMarkup();
+        backButton.disabled = state.history.length === 0 || state.screen === "entry";
+        writeCount.innerHTML = `本次写入<br>${state.savedEntries.length} 条`;
+        document.getElementById("header-variant").textContent = `方案 ${state.variant} · 未做决定`;
+        document.getElementById("variant-summary").textContent = variantCopy[state.variant];
+        document.getElementById("phone-preview").setAttribute("aria-labelledby", `variant-${state.variant.toLowerCase()}`);
+        document.querySelectorAll("[data-variant]").forEach((button) => {
+          button.setAttribute("aria-selected", String(button.dataset.variant === state.variant));
+          button.tabIndex = button.dataset.variant === state.variant ? 0 : -1;
+        });
+        bMemoryField.classList.toggle("is-hidden", state.variant !== "B");
+        if (moveFocus) {
+          window.requestAnimationFrame(() => {
+            const restored = restoreFocus?.selector
+              ? [...document.querySelectorAll(restoreFocus.selector)][restoreFocus.index] || null
+              : null;
+            const target = restored || appMain.querySelector("[data-autofocus]") || appMain.querySelector("button, input, select, textarea");
+            target?.focus({ preventScroll: true });
+            if (!restored) appMain.scrollTop = 0;
+          });
+        }
+      }
+
+      function beginEdit(food, trigger = document.activeElement) {
+        state.draft = cloneFood(food);
+        pushScreen("editor", trigger);
+      }
+
+      function openAi(kind, trigger = document.activeElement) {
+        state.aiKind = kind;
+        if (state.aiConfig === "unconfigured") {
+          pushScreen("ai-unconfigured", trigger);
+          return;
+        }
+        if (["photo", "label"].includes(kind) && state.permission === "camera-denied") {
+          pushScreen("permission-camera", trigger);
+          return;
+        }
+        if (kind === "album" && state.permission === "album-denied") {
+          pushScreen("permission-album", trigger);
+          return;
+        }
+        pushScreen(kind === "text" ? "ai-text-input" : "ai-media-draft", trigger);
+      }
+
+      function openRoute(route, trigger = document.activeElement) {
+        if (route === "search") pushScreen("search", trigger);
+        else if (route === "scan") pushScreen("scan", trigger);
+        else if (route === "create") {
+          const carryBarcode = ["barcode-hit", "barcode-miss"].includes(state.screen) ? state.barcode : "";
+          state.createDraft = { ...createSeed, barcode: carryBarcode };
+          pushScreen("create", trigger);
+        }
+        else if (route === "ai-menu") pushScreen("ai-menu", trigger);
+        else if (route === "ai-photo") openAi("photo", trigger);
+        else if (route === "ai-album") openAi("album", trigger);
+        else if (route === "ai-text") openAi("text", trigger);
+        else if (route === "ai-label") openAi("label", trigger);
+      }
+
+      function formFood(form) {
+        const data = new FormData(form);
+        return {
+          id: "user-created",
+          name: String(data.get("name") || ""),
+          detail: "用户自建",
+          source: "用户自建 · 本地",
+          amount: String(data.get("amount") ?? ""),
+          unit: String(data.get("unit") || "份"),
+          energy: String(data.get("energy") ?? ""),
+          protein: String(data.get("protein") || ""),
+          carbs: String(data.get("carbs") || ""),
+          fat: String(data.get("fat") || ""),
+          fiber: String(data.get("fiber") || ""),
+          sugar: String(data.get("sugar") || ""),
+          sodium: String(data.get("sodium") || ""),
+          barcode: String(data.get("barcode") || "").replace(/\D/g, "")
+        };
+      }
+
+      document.addEventListener("click", (event) => {
+        const variantButton = event.target.closest("[data-variant]");
+        if (variantButton) {
+          state.variant = variantButton.dataset.variant;
+          resetFlow(true);
+          render(false);
+          variantButton.focus();
+          announce(`正在预览方案 ${state.variant}，仍未做决定`);
+          return;
+        }
+
+        if (event.target.closest("#back-button")) {
+          goBack();
+          return;
+        }
+
+        const routeElement = event.target.closest("[data-route]");
+        const route = routeElement?.dataset.route;
+        if (route) {
+          openRoute(route, routeElement);
+          return;
+        }
+
+        const foodId = event.target.closest("[data-food-id]")?.dataset.foodId;
+        if (foodId) {
+          const food = foods.find((item) => item.id === foodId);
+          if (food) beginEdit(food, event.target.closest("[data-food-id]"));
+          return;
+        }
+
+        const barcodeOutcome = event.target.closest("[data-barcode-result]")?.dataset.barcodeResult;
+        if (barcodeOutcome) {
+          state.barcode = barcodeOutcome === "hit" ? "4710000000001" : "4719999999999";
+          pushScreen(barcodeOutcome === "hit" ? "barcode-hit" : "barcode-miss", event.target.closest("[data-barcode-result]"));
+          announce(barcodeOutcome === "hit" ? "本地条码已命中" : "本地条码未命中");
+          return;
+        }
+
+        if (event.target.closest("[data-use-barcode-food]")) {
+          beginEdit({ ...barcodeFood, barcode: state.barcode }, event.target.closest("[data-use-barcode-food]"));
+          return;
+        }
+
+        if (event.target.closest("[data-open-ai-preview]")) {
+          pushScreen("ai-preview");
+          return;
+        }
+
+        const aiOutcome = event.target.closest("[data-ai-outcome]")?.dataset.aiOutcome;
+        if (aiOutcome === "cancel") {
+          pushScreen("ai-cancelled");
+          announce("已取消，网络请求和日记写入均为零");
+          return;
+        }
+        if (aiOutcome === "failure") {
+          pushScreen("ai-failure");
+          announce("模拟请求失败，候选和日记写入均为零");
+          return;
+        }
+        if (aiOutcome === "fixture") {
+          beginEdit(aiFixture);
+          announce("已载入本地测试候选，可逐项编辑");
+          return;
+        }
+
+        if (event.target.closest("[data-return-ai-preview]")) {
+          pushScreen("ai-preview");
+          return;
+        }
+
+        if (event.target.closest("[data-simulate-settings]")) {
+          pushScreen("settings-simulation");
+          return;
+        }
+
+        if (event.target.closest("[data-simulate-system-settings]")) {
+          pushScreen("system-settings-simulation");
+          return;
+        }
+
+        if (event.target.closest("[data-return-entry]")) {
+          resetFlow(false);
+          render(true);
+          return;
+        }
+
+        if (event.target.closest("[data-focus-barcode]")) {
+          document.getElementById("denied-barcode-input")?.focus();
+          return;
+        }
+
+        if (event.target.closest("[data-reset-flow]")) {
+          resetFlow(false);
+          render(true);
+          announce("可以继续添加下一项");
+          return;
+        }
+
+        const discardButton = event.target.closest("[data-discard-draft]");
+        if (discardButton) {
+          state.discardedKind = discardButton.dataset.discardDraft;
+          state.draft = null;
+          state.error = "";
+          state.errorField = "";
+          state.history = [{ screen: "entry", focus: null }];
+          state.screen = "discarded";
+          render(true);
+          announce(state.discardedKind === "ai" ? "AI 候选已删除，本候选没有写入日记" : "本次候选已放弃，没有写入日记");
+          return;
+        }
+
+      });
+
+      document.addEventListener("submit", (event) => {
+        const form = event.target.closest("form");
+        if (!form) return;
+        event.preventDefault();
+        const kind = form.dataset.form;
+        const data = new FormData(form);
+
+        if (kind === "search" || kind === "search-results") {
+          state.query = String(data.get("query") || "").trim();
+          if (kind === "search") pushScreen("search");
+          else render(false);
+          announce(`本地搜索结果已更新`);
+          return;
+        }
+
+        if (kind === "barcode") {
+          state.barcode = String(data.get("barcode") || "").replace(/\D/g, "");
+          const hit = state.barcode === "4710000000001";
+          pushScreen(hit ? "barcode-hit" : "barcode-miss");
+          announce(hit ? "本地条码已命中" : "本地条码未命中");
+          return;
+        }
+
+        if (kind === "create-food") {
+          const food = formFood(form);
+          state.createDraft = cloneFood(food);
+          if (!food.name.trim()) {
+            state.error = "请填写食品名称。";
+            state.errorField = "create-name";
+            render(false);
+            document.getElementById("create-name")?.focus();
+            return;
+          }
+          food.name = food.name.trim();
+          beginEdit(food);
+          return;
+        }
+
+        if (kind === "ai-text") {
+          const description = String(data.get("description") || "");
+          state.aiText = description;
+          if (!description.trim()) {
+            state.error = "请填写本次餐食描述。";
+            state.errorField = "ai-text";
+            render(false);
+            document.getElementById("ai-text-input")?.focus();
+            announce("文字描述为空，未创建网络请求或候选");
+            return;
+          }
+          state.aiText = description.trim();
+          pushScreen("ai-preview");
+          return;
+        }
+
+        if (kind === "editor") {
+          const saved = formFood(form);
+          saved.id = state.draft?.id || "saved-entry";
+          saved.source = state.draft?.source || saved.source;
+          saved.estimated = Boolean(state.draft?.estimated);
+          saved.meal = String(data.get("meal") || "晚餐");
+          if (!saved.name.trim()) {
+            state.draft = cloneFood(saved);
+            state.error = "请填写食品名称后再保存。";
+            state.errorField = "edit-name";
+            render(false);
+            document.getElementById("edit-name")?.focus();
+            return;
+          }
+          saved.name = saved.name.trim();
+          state.draft = cloneFood(saved);
+          state.savedEntries.push(cloneFood(saved));
+          pushScreen("success");
+          announce("已纯本地保存一条晚餐记录");
+        }
+      });
+
+      document.querySelector("[role='tablist']").addEventListener("keydown", (event) => {
+        const tabs = [...document.querySelectorAll("[data-variant]")];
+        const index = tabs.indexOf(document.activeElement);
+        if (index < 0) return;
+        let next = index;
+        if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+        else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        tabs[next].click();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && state.screen !== "entry" && state.history.length > 0) {
+          event.preventDefault();
+          goBack();
+        }
+      });
+
+      bMemorySelect.addEventListener("change", () => {
+        state.bMemory = bMemorySelect.value;
+        resetFlow(true);
+        render(true);
+        const label = state.bMemory === "first" ? "首次使用" : state.bMemory === "local" ? "上次本地搜索" : "上次 AI 图片";
+        announce(`方案 B 已切换为${label}演示状态`);
+      });
+
+      aiConfigSelect.addEventListener("change", () => {
+        state.aiConfig = aiConfigSelect.value;
+        resetFlow(true);
+        render(true);
+        announce(state.aiConfig === "unconfigured" ? "AI 状态：尚未配置" : "AI 状态：示例配置，Provider 准入仍为 UNKNOWN");
+      });
+
+      permissionSelect.addEventListener("change", () => {
+        state.permission = permissionSelect.value;
+        resetFlow(true);
+        render(true);
+        announce("媒体权限模拟状态已更新");
+      });
+
+      window.__NUTTIE_D039__ = Object.freeze({
+        getState: () => ({
+          variant: state.variant,
+          bMemory: state.bMemory,
+          aiConfig: state.aiConfig,
+          permission: state.permission,
+          screen: state.screen,
+          savedCount: state.savedEntries.length,
+          hasDraft: Boolean(state.draft),
+          discardedKind: state.discardedKind
+        })
+      });
+
+      render(false);
+    })();
+  </script>
+</body>
+</html>
