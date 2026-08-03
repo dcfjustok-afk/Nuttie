@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nuttie.local/schemas/decision-register.schema.json",
+  "title": "Nuttie decision register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "authoritativeMarkdown", "decisions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "authoritativeMarkdown": { "type": "string", "minLength": 1 },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "status", "acceptedOn", "choiceKey", "choice", "source"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^D-[0-9]{3}$" },
+          "title": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["ACCEPTED", "SUPERSEDED", "CANDIDATE", "REJECTED"] },
+          "acceptedOn": { "type": ["string", "null"], "format": "date" },
+          "choiceKey": { "type": "string", "minLength": 1 },
+          "choice": { "type": "string", "minLength": 1 },
+          "source": { "type": "string", "minLength": 1 },
+          "supersedes": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

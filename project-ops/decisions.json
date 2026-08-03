@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-31T17:42:28+08:00",
+  "authoritativeMarkdown": "docs/00-governance/decision-register.md",
+  "decisions": [
+    {
+      "id": "D-001",
+      "title": "竞品全部功能的验收口径",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "public-only",
+      "choice": "仅以公开可验证资料为准",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-002",
+      "title": "离线食物与条码数据策略",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "licensed-core",
+      "choice": "台湾食药署 + USDA Foundation/SR + 用户自建",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-003",
+      "title": "AI API 契约与凭据归属",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "per-user-openai",
+      "choice": "每人配置 OpenAI-compatible Base URL、model 和 key",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-004",
+      "title": "Base URL 安全范围",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "https-only",
+      "choice": "仅允许 HTTPS",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-005",
+      "title": "React Native 工程形态",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "expo-dev-build",
+      "choice": "Expo development build + prebuild，并检入 ios/",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-006",
+      "title": "本地数据与备份边界",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "manual-encrypted",
+      "choice": "SQLite + 手动加密导出/导入，默认排除 iCloud",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-007",
+      "title": "HealthKit 与系统健康数据",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "phase-two",
+      "choice": "首版本地记录，第二阶段再决定 HealthKit",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-008",
+      "title": "给朋友的 iOS 分发方式",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "testflight-then-decide",
+      "choice": "开发期 TestFlight，稳定后再选长期渠道",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-009",
+      "title": "项目工作台运行形态",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "local-live-snapshots",
+      "choice": "本地事件流实时工作台 + 静态快照",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-010",
+      "title": "项目推进节奏",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "map-then-increments",
+      "choice": "先完成完整功能地图，再小批确认与实现",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-011",
+      "title": "Nuttie 的 iOS 最低版本",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "ios-17",
+      "choice": "iOS 17+",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-012",
+      "title": "离线食品数据包更新方式",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "release-and-signed-import",
+      "choice": "随 App 发版 + Files 签名包导入",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-013",
+      "title": "首版营养字段范围",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "macro-plus-label",
+      "choice": "能量、蛋白质、碳水、脂肪、纤维、糖、钠",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-014",
+      "title": "营养标签照片发送给 AI",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "per-use-preview",
+      "choice": "首次说明 + 每次预览并确认发送",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-015",
+      "title": "本地数据库加密等级",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "sqlcipher",
+      "choice": "SQLCipher + Keychain 数据库密钥",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-016",
+      "title": "首发语言范围",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "zh-hans",
+      "choice": "仅简体中文",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-017",
+      "title": "功能对标交付方式",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-07-31",
+      "choiceKey": "full-map-phased",
+      "choice": "完整对标范围不删减，分阶段交付",
+      "source": "Owner decision response dated 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-018",
+      "title": "导航实现",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A Expo Router 初始实现；B React Navigation 直接配置初始实现；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-019",
+      "title": "UI 状态管理",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A Zustand；B Redux Toolkit；C React state/context；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-020",
+      "title": "SQLite 访问层",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A Drizzle stable + Nuttie DatabaseSession；B expo-sqlite + repository-owned SQL；C Kysely + 明确 Expo adapter；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-021",
+      "title": "表单与运行时校验",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A React Hook Form + Zod；B Formik + Yup；C 自研 reducer + 手写校验；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-023",
+      "title": "单元与组件测试",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A jest-expo + Jest + RNTL 单 runner；B Vitest Domain + Jest/RNTL RN 双 runner；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-024",
+      "title": "E2E 与原生测试",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A 本地 Maestro + XCTest/XCUITest；B Detox + XCTest/XCUITest；C 仅 XCTest/XCUITest；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-025",
+      "title": "样式与设计 Token",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A StyleSheet + typed tokens；B NativeWind profile；C Unistyles profile；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-032",
+      "title": "Expo/RN/Node/Xcode 版本矩阵",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-spike-baseline",
+      "choice": "A 授权隔离 SDK 57 Spike；B 授权隔离 SDK 56 Spike；C 暂不授权；A/B 仍需第二次 Owner 动作冻结最终矩阵",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-037",
+      "title": "包管理器",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A pnpm 11.18.0 hoisted；B npm 11.19.0；C Yarn 4.18.0 node-modules；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; delta review PASS 2026-07-31",
+      "supersedes": null
+    },
+    {
+      "id": "D-038",
+      "title": "产品导航外壳",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A 四个稳定目的地 + 情境新增；B 三个稳定目的地 + 集中新增；C 单一日记中心 + 更多菜单；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; UXD-01 alias",
+      "supersedes": null
+    },
+    {
+      "id": "D-047",
+      "title": "Apple 分发身份",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A 个人会员；B 合格组织会员；C 暂不加入；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; REL-DEC-B alias",
+      "supersedes": null
+    },
+    {
+      "id": "D-048",
+      "title": "设备与方向 profile",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A iPhone 竖屏；B iPhone 全方向（不含倒置）；C Universal 完整方向；三个 profile 均先关闭 Mac/Vision availability；尚未选择",
+      "source": "docs/02-product/owner-decision-packs.md; REL-DEC-C alias",
+      "supersedes": null
+    },
+    {
+      "id": "D-052",
+      "title": "USDA 数据面向美国境外朋友的再分发口径",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A/B 尚未选择；推荐 A 不等于已接受，当前按 fail-closed 边界阻断境外分发",
+      "source": "docs/05-quality/data-license-review.md; formerly DLR-C01",
+      "supersedes": null
+    },
+    {
+      "id": "D-053",
+      "title": "第三方 AI Provider 数据用途准入",
+      "status": "CANDIDATE",
+      "acceptedOn": null,
+      "choiceKey": "pending-owner-choice",
+      "choice": "A/B/C 尚未选择；当前所有 Provider/载荷组合按 UNKNOWN/BLOCKED 处理，Apple 明确禁项不可由 Owner 豁免",
+      "source": "docs/02-product/owner-decision-packs.md",
+      "supersedes": null
+    }
+  ]
+}
