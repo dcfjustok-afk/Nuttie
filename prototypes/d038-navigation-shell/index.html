@@ -1,0 +1,1753 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="color-scheme" content="light">
+  <title>Nuttie D-038 导航外壳对比原型</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f4f4f1;
+      --surface: #ffffff;
+      --surface-muted: #f5f6f4;
+      --ink: #1c211e;
+      --muted: #5e665f;
+      --line: #c9cec9;
+      --line-strong: #8f9891;
+      --accent: #2f6f4e;
+      --accent-soft: #e3eee7;
+      --focus: #075fd8;
+      --warning: #875a12;
+      --warning-soft: #fff4dc;
+      --phone-width: 390px;
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      letter-spacing: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--page);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 16px 24px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--page);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    button,
+    input,
+    select,
+    [tabindex]:not([tabindex="-1"]) {
+      outline: none;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex]:not([tabindex="-1"]):focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .lab-shell {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .lab-kicker {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .lab-header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      line-height: 1.3;
+    }
+
+    .candidate-badge {
+      flex: none;
+      padding: 5px 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .variant-panel {
+      width: min(100%, var(--phone-width));
+      margin: 0 auto 12px;
+    }
+
+    .variant-label {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #dde1dd;
+    }
+
+    .segment {
+      min-height: 48px;
+      padding: 5px 4px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .segment[aria-selected="true"] {
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(26, 34, 28, 0.18);
+    }
+
+    .segment strong,
+    .segment small {
+      display: block;
+    }
+
+    .segment strong {
+      font-size: 0.9rem;
+    }
+
+    .segment small {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 0.63rem;
+      line-height: 1.15;
+    }
+
+    .variant-summary {
+      min-height: 34px;
+      margin: 6px 2px 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .stage {
+      display: grid;
+      place-items: start center;
+    }
+
+    .phone {
+      position: relative;
+      display: flex;
+      width: min(100%, var(--phone-width));
+      height: min(720px, calc(100dvh - 190px));
+      min-height: 520px;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid #373c38;
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 12px 30px rgba(23, 31, 25, 0.16);
+    }
+
+    .status-bar {
+      display: flex;
+      min-height: 29px;
+      flex: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 18px 3px;
+      background: var(--surface);
+      font-size: 0.67rem;
+      font-weight: 750;
+    }
+
+    .app-root {
+      position: relative;
+      display: flex;
+      min-height: 0;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 0 0 25px 25px;
+      background: var(--surface);
+    }
+
+    .app-header {
+      display: grid;
+      min-height: 61px;
+      flex: none;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      align-items: center;
+      padding: 6px 10px 7px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .app-header.center-only {
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding-left: 16px;
+    }
+
+    .header-copy {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .center-only .header-copy {
+      text-align: left;
+    }
+
+    .app-name {
+      display: block;
+      margin-bottom: 1px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+
+    .screen-title {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.22;
+      overflow-wrap: anywhere;
+    }
+
+    .header-spacer {
+      width: 44px;
+      height: 44px;
+    }
+
+    .icon-button {
+      display: inline-grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .icon-button:hover {
+      background: var(--surface-muted);
+    }
+
+    .screen-scroll {
+      min-height: 0;
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      background: var(--surface);
+    }
+
+    .screen-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .screen-section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-head h3,
+    .screen-section h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .section-note {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .text-button,
+    .primary-button,
+    .secondary-button {
+      min-height: 44px;
+      padding: 9px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .text-button {
+      border: 0;
+      color: var(--accent);
+      background: transparent;
+    }
+
+    .primary-button {
+      border: 1px solid var(--accent);
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .secondary-button {
+      border: 1px solid var(--line-strong);
+      background: var(--surface);
+    }
+
+    .primary-button:disabled,
+    .secondary-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .date-switcher {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .date-switcher strong,
+    .date-switcher span {
+      display: block;
+    }
+
+    .date-switcher strong {
+      font-size: 0.86rem;
+    }
+
+    .date-switcher span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+
+    .summary-band {
+      background: #f1f6f2;
+    }
+
+    .energy-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .energy-value {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .energy-value small {
+      font-size: 0.72rem;
+      font-weight: 650;
+    }
+
+    .energy-meta {
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    progress {
+      width: 100%;
+      height: 8px;
+      margin: 11px 0 8px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 4px;
+      background: #d8ded9;
+    }
+
+    progress::-webkit-progress-bar {
+      background: #d8ded9;
+    }
+
+    progress::-webkit-progress-value {
+      background: var(--accent);
+    }
+
+    progress::-moz-progress-bar {
+      background: var(--accent);
+    }
+
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+    }
+
+    .macro-grid div {
+      padding-top: 7px;
+      border-top: 1px solid #bdc8c0;
+    }
+
+    .macro-grid dt {
+      color: var(--muted);
+      font-size: 0.65rem;
+    }
+
+    .macro-grid dd {
+      margin: 2px 0 0;
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .meal-list,
+    .settings-list,
+    .food-list,
+    .menu-list,
+    .action-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .meal-row,
+    .food-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .meal-row:first-child,
+    .food-row:first-child {
+      border-top: 0;
+    }
+
+    .meal-row strong,
+    .food-row strong {
+      display: block;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .meal-row span,
+    .food-row span,
+    .food-row small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.67rem;
+      line-height: 1.35;
+    }
+
+    .meal-energy {
+      align-self: center;
+      font-size: 0.73rem;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .quick-item {
+      min-height: 62px;
+      padding: 9px 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .quick-item strong,
+    .quick-item span {
+      display: block;
+    }
+
+    .quick-item strong {
+      font-size: 0.72rem;
+    }
+
+    .quick-item span {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.66rem;
+      line-height: 1.3;
+    }
+
+    .mini-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface-muted);
+    }
+
+    .mini-tab {
+      min-height: 38px;
+      padding: 5px;
+      border: 0;
+      border-radius: 4px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .mini-tab[aria-selected="true"] {
+      color: var(--ink);
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(25, 33, 27, 0.14);
+    }
+
+    .chart {
+      display: grid;
+      height: 170px;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+      align-items: end;
+      margin-top: 12px;
+      padding-top: 16px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .chart-bar {
+      display: grid;
+      height: 100%;
+      grid-template-rows: minmax(0, 1fr) 28px;
+      align-items: end;
+      padding: 0 1px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .bar-fill {
+      display: block;
+      width: 100%;
+      height: var(--bar-height);
+      min-height: 8px;
+      border: 1px solid #5c6b60;
+      border-bottom: 0;
+      border-radius: 3px 3px 0 0;
+      background: #a9b9ad;
+    }
+
+    .chart-bar[aria-pressed="true"] .bar-fill {
+      background: var(--accent);
+    }
+
+    .bar-label {
+      align-self: center;
+      color: var(--muted);
+      font-size: 0.61rem;
+      text-align: center;
+    }
+
+    .chart-summary {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+
+    .detail-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 12px 0 0;
+    }
+
+    .detail-strip div {
+      padding-left: 9px;
+      border-left: 3px solid var(--line-strong);
+    }
+
+    .detail-strip span,
+    .detail-strip strong {
+      display: block;
+    }
+
+    .detail-strip span {
+      color: var(--muted);
+      font-size: 0.65rem;
+    }
+
+    .detail-strip strong {
+      margin-top: 3px;
+      font-size: 0.8rem;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.72rem;
+      font-weight: 750;
+    }
+
+    .field-input,
+    .field-select {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: 5px;
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .field-group + .field-group {
+      margin-top: 12px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      overflow-x: auto;
+      padding: 2px 2px 4px;
+      scrollbar-width: thin;
+    }
+
+    .filter-button {
+      min-height: 38px;
+      flex: none;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--muted);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .filter-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .source-tag {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 2px 5px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: var(--muted);
+      font-size: 0.58rem;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      padding: 18px 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .settings-button,
+    .menu-button,
+    .action-button {
+      display: grid;
+      width: 100%;
+      min-height: 52px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 2px;
+      border: 0;
+      border-top: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    li:first-child > .settings-button,
+    li:first-child > .menu-button,
+    li:first-child > .action-button {
+      border-top: 0;
+    }
+
+    .settings-button strong,
+    .settings-button small,
+    .menu-button strong,
+    .menu-button small,
+    .action-button strong,
+    .action-button small {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .settings-button strong,
+    .menu-button strong,
+    .action-button strong {
+      font-size: 0.78rem;
+    }
+
+    .settings-button small,
+    .menu-button small,
+    .action-button small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.65rem;
+      line-height: 1.35;
+    }
+
+    .chevron {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .local-banner,
+    .warning-banner {
+      padding: 10px 11px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      font-size: 0.7rem;
+      line-height: 1.45;
+    }
+
+    .warning-banner {
+      border-left-color: var(--warning);
+      background: var(--warning-soft);
+    }
+
+    .bottom-nav {
+      display: grid;
+      min-height: 66px;
+      flex: none;
+      align-items: stretch;
+      border-top: 1px solid var(--line-strong);
+      background: var(--surface);
+    }
+
+    .bottom-nav.variant-a,
+    .bottom-nav.variant-b {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .nav-button {
+      display: grid;
+      min-height: 64px;
+      place-content: center;
+      gap: 2px;
+      padding: 5px 2px;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .nav-button[aria-current="page"] {
+      color: var(--accent);
+      background: #f1f6f2;
+    }
+
+    .nav-glyph {
+      display: block;
+      height: 22px;
+      font-size: 1rem;
+      line-height: 22px;
+    }
+
+    .add-nav .nav-glyph {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      margin: -8px auto 0;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      background: var(--accent);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .c-action-bar {
+      display: grid;
+      min-height: 62px;
+      flex: none;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: center;
+      padding: 8px 14px;
+      border-top: 1px solid var(--line-strong);
+      background: var(--surface);
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      display: grid;
+      align-items: end;
+      background: rgba(27, 33, 29, 0.42);
+    }
+
+    .overlay[hidden] {
+      display: none;
+    }
+
+    .sheet {
+      max-height: 86%;
+      overflow: hidden;
+      border-top: 2px solid var(--line-strong);
+      border-radius: 12px 12px 0 0;
+      background: var(--surface);
+      box-shadow: 0 -10px 24px rgba(19, 26, 21, 0.16);
+    }
+
+    .sheet-header {
+      display: grid;
+      min-height: 58px;
+      grid-template-columns: minmax(0, 1fr) 44px;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px 6px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sheet-header h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+
+    .sheet-body {
+      max-height: calc(86vh - 58px);
+      overflow-y: auto;
+      padding: 8px 16px max(18px, env(safe-area-inset-bottom));
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .sheet-actions .primary-button:only-child,
+    .sheet-actions .secondary-button:only-child {
+      grid-column: 1 / -1;
+    }
+
+    .toast {
+      position: absolute;
+      z-index: 15;
+      right: 12px;
+      bottom: 76px;
+      left: 12px;
+      padding: 10px 12px;
+      border: 1px solid #384a3d;
+      border-radius: 6px;
+      color: #ffffff;
+      background: #26382c;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      box-shadow: 0 5px 14px rgba(20, 28, 22, 0.22);
+    }
+
+    .toast[hidden] {
+      display: none;
+    }
+
+    .lab-footer {
+      width: min(100%, var(--phone-width));
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 0.66rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    @media (max-width: 430px) {
+      body {
+        padding: 10px 8px 16px;
+      }
+
+      .lab-header {
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .lab-header h1 {
+        font-size: 1.05rem;
+      }
+
+      .lab-kicker {
+        font-size: 0.66rem;
+      }
+
+      .phone {
+        height: min(690px, calc(100dvh - 205px));
+        min-height: 490px;
+        border-radius: 24px;
+      }
+
+      .app-root {
+        border-radius: 0 0 21px 21px;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .segment small {
+        font-size: 0.59rem;
+      }
+
+      .phone {
+        min-height: 480px;
+        border-radius: 20px;
+      }
+
+      .screen-section {
+        padding-right: 13px;
+        padding-left: 13px;
+      }
+
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-item {
+        min-height: 48px;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .segment,
+      .nav-button,
+      .filter-button,
+      .mini-tab,
+      .bar-fill {
+        transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="lab-shell">
+    <header class="lab-header">
+      <div>
+        <p class="lab-kicker">Nuttie · D-038</p>
+        <h1>D-038 导航外壳对比</h1>
+      </div>
+      <span class="candidate-badge">CANDIDATE</span>
+    </header>
+
+    <section class="variant-panel" aria-labelledby="variantLabel">
+      <p class="variant-label" id="variantLabel">选择要预览的候选方案</p>
+      <div class="segmented" role="tablist" aria-label="D-038 候选方案">
+        <button class="segment" id="variantA" type="button" role="tab" aria-selected="true" aria-controls="phone" tabindex="0" data-variant="A">
+          <strong>A</strong>
+          <small>四目的地</small>
+        </button>
+        <button class="segment" id="variantB" type="button" role="tab" aria-selected="false" aria-controls="phone" tabindex="-1" data-variant="B">
+          <strong>B</strong>
+          <small>三目的地</small>
+        </button>
+        <button class="segment" id="variantC" type="button" role="tab" aria-selected="false" aria-controls="phone" tabindex="-1" data-variant="C">
+          <strong>C</strong>
+          <small>日记中心</small>
+        </button>
+      </div>
+      <p class="variant-summary" id="variantSummary" aria-live="polite"></p>
+    </section>
+
+    <section class="stage" aria-label="单一 iPhone 低保真原型画布">
+      <div class="phone" id="phone" role="tabpanel" aria-labelledby="variantA">
+        <div class="status-bar" aria-hidden="true">
+          <span>9:41</span>
+          <span>本机 · 100%</span>
+        </div>
+        <div class="app-root" id="appRoot"></div>
+        <div class="overlay" id="overlay" hidden></div>
+        <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+      </div>
+    </section>
+
+    <footer class="lab-footer">
+      低保真候选原型 · 所有内容仅在当前页面内存中运行
+    </footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const variantCopy = {
+      A: "A · 四个稳定目的地：日记、趋势、食品资料、设置；新增动作随当前任务出现。当前仅预览，未作决定。",
+      B: "B · 三个稳定目的地：日记、趋势、设置；所有新增任务集中在底部新增入口。当前仅预览，未作决定。",
+      C: "C · 单一日记中心；趋势、食品资料和设置从更多菜单进入。当前仅预览，未作决定。"
+    };
+
+    const trendData = {
+      intake: {
+        label: "摄入",
+        unit: "千卡",
+        values: [1630, 1740, 1580, 1810, 1690, 1760, 1680],
+        heights: [58, 70, 50, 82, 64, 74, 63],
+        summary: "近 7 天平均摄入 1,699 千卡；有 7 天记录，无缺失日期。"
+      },
+      weight: {
+        label: "体重",
+        unit: "千克",
+        values: [63.8, 63.7, 63.7, 63.5, 63.6, 63.4, 63.4],
+        heights: [82, 76, 76, 60, 68, 52, 52],
+        summary: "近 7 天体重由 63.8 千克变为 63.4 千克；变化仅作记录，不构成健康判断。"
+      },
+      water: {
+        label: "饮水",
+        unit: "毫升",
+        values: [1500, 1750, 1250, 1900, 1600, 1800, 1500],
+        heights: [60, 76, 42, 88, 67, 80, 60],
+        summary: "近 7 天平均记录饮水 1,614 毫升；数值来自本机手工记录。"
+      }
+    };
+
+    const foodItems = [
+      { name: "燕麦片", detail: "每 100 克 · 389 千卡", source: "pack", sourceLabel: "本地数据包" },
+      { name: "原味无糖酸奶", detail: "每 100 克 · 63 千卡", source: "user", sourceLabel: "用户自建" },
+      { name: "水煮鸡蛋", detail: "每 1 个 · 72 千卡", source: "pack", sourceLabel: "本地数据包" },
+      { name: "番茄鸡胸肉沙拉", detail: "每 1 份 · 328 千卡", source: "user", sourceLabel: "用户自建" }
+    ];
+
+    const dayLabels = ["周一", "周二", "周三", "周四", "周五", "周六", "今天"];
+
+    const state = {
+      variant: "A",
+      view: "diary",
+      returnView: "diary",
+      metric: "intake",
+      selectedBar: 6,
+      foodFilter: "all",
+      foodQuery: "",
+      water: 1250,
+      weight: 63.4,
+      mealAdded: false
+    };
+
+    const appRoot = document.getElementById("appRoot");
+    const phone = document.getElementById("phone");
+    const overlay = document.getElementById("overlay");
+    const toast = document.getElementById("toast");
+    const variantSummary = document.getElementById("variantSummary");
+    const variantTabs = Array.from(document.querySelectorAll("[data-variant]"));
+    let returnFocus = null;
+    let toastTimer = null;
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function routeTitle(view) {
+      return {
+        diary: "今天",
+        trend: "趋势",
+        food: "食品资料",
+        settings: "设置"
+      }[view] || "今天";
+    }
+
+    function iconButton(action, symbol, label) {
+      return `<button class="icon-button" type="button" data-action="${action}" aria-label="${label}" title="${label}"><span aria-hidden="true">${symbol}</span></button>`;
+    }
+
+    function headerMarkup() {
+      const title = routeTitle(state.view);
+      const isTransientB = state.variant === "B" && state.view === "food";
+      const showBack = state.variant === "C" && state.view !== "diary" || isTransientB;
+
+      if (state.variant === "C") {
+        return `
+          <header class="app-header">
+            ${showBack ? iconButton("back-diary", "‹", "返回日记") : '<span class="header-spacer" aria-hidden="true"></span>'}
+            <div class="header-copy">
+              <span class="app-name">栗子自律</span>
+              <h2 class="screen-title" id="screenTitle" tabindex="-1">${title}</h2>
+            </div>
+            ${iconButton("open-more", "⋯", "打开更多菜单")}
+          </header>`;
+      }
+
+      return `
+        <header class="app-header center-only">
+          <div class="header-copy">
+            <span class="app-name">栗子自律</span>
+            <h2 class="screen-title" id="screenTitle" tabindex="-1">${title}</h2>
+          </div>
+          ${showBack ? iconButton("back-return", "‹", "返回上一页") : '<span class="header-spacer" aria-hidden="true"></span>'}
+        </header>`;
+    }
+
+    function contextButton(mode, label) {
+      if (state.variant === "B") return "";
+      return `<button class="text-button" type="button" data-action="open-context" data-mode="${mode}">${label}</button>`;
+    }
+
+    function diaryMarkup() {
+      const quickItem = (kind, title, value) => state.variant === "B"
+        ? `<div class="quick-item" aria-label="${title}，${value}"><strong>${title}</strong><span>${value}</span></div>`
+        : `<button class="quick-item" type="button" data-action="open-detail" data-kind="${kind}"><strong>${title}</strong><span>${value}</span></button>`;
+      const addedRow = state.mealAdded ? `
+        <li class="meal-row">
+          <div><strong>香蕉燕麦杯</strong><span>1 份 · 用户确认草稿</span></div>
+          <span class="meal-energy">286 千卡</span>
+        </li>` : "";
+
+      return `
+        <div class="screen-section date-switcher" aria-label="日期切换">
+          ${iconButton("previous-day", "‹", "查看前一天")}
+          <div><strong>2026 年 7 月 31 日</strong><span>今天</span></div>
+          ${iconButton("next-day", "›", "查看后一天")}
+        </div>
+
+        <section class="screen-section summary-band" aria-labelledby="energyHeading">
+          <div class="energy-row">
+            <div>
+              <h3 id="energyHeading">今日剩余</h3>
+              <strong class="energy-value">620 <small>千卡</small></strong>
+            </div>
+            <div class="energy-meta">摄入 1,680<br>目标 2,300</div>
+          </div>
+          <progress max="2300" value="1680" aria-label="今日能量目标进度，已记录 1680 千卡，共 2300 千卡"></progress>
+          <dl class="macro-grid">
+            <div><dt>蛋白质</dt><dd>76 / 110 克</dd></div>
+            <div><dt>碳水</dt><dd>202 / 260 克</dd></div>
+            <div><dt>脂肪</dt><dd>55 / 70 克</dd></div>
+          </dl>
+        </section>
+
+        <section class="screen-section" aria-labelledby="mealHeading">
+          <div class="section-head">
+            <h3 id="mealHeading">餐食</h3>
+            ${contextButton("meal", "＋ 添加餐食")}
+          </div>
+          <ul class="meal-list">
+            <li class="meal-row">
+              <div><strong>早餐</strong><span>燕麦片、原味酸奶、蓝莓</span></div>
+              <span class="meal-energy">438 千卡</span>
+            </li>
+            <li class="meal-row">
+              <div><strong>午餐</strong><span>糙米饭、番茄鸡胸肉沙拉</span></div>
+              <span class="meal-energy">676 千卡</span>
+            </li>
+            ${addedRow}
+            <li class="meal-row">
+              <div><strong>晚餐</strong><span>还没有记录</span></div>
+              <span class="meal-energy">—</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="screen-section" aria-labelledby="quickHeading">
+          <div class="section-head">
+            <h3 id="quickHeading">今日其他记录</h3>
+          </div>
+          <div class="quick-grid">
+            ${quickItem("water", "饮水", `${state.water} 毫升`)}
+            ${quickItem("exercise", "运动", "快走 35 分钟")}
+            ${quickItem("weight", "体重", `${state.weight.toFixed(1)} 千克`)}
+          </div>
+        </section>`;
+    }
+
+    function trendMarkup() {
+      const metric = trendData[state.metric];
+      const bars = metric.values.map((value, index) => `
+        <button class="chart-bar" type="button" data-action="select-bar" data-index="${index}" aria-pressed="${state.selectedBar === index}" aria-label="${dayLabels[index]}，${metric.label} ${value} ${metric.unit}">
+          <span class="bar-fill" style="--bar-height:${metric.heights[index]}%" aria-hidden="true"></span>
+          <span class="bar-label" aria-hidden="true">${dayLabels[index]}</span>
+        </button>`).join("");
+      const selectedValue = metric.values[state.selectedBar];
+
+      return `
+        <section class="screen-section" aria-labelledby="trendHeading">
+          <div class="section-head">
+            <div><h3 id="trendHeading">近 7 天</h3><p class="section-note">2026 年 7 月 25 日至 7 月 31 日</p></div>
+            ${contextButton("weight", "＋ 记录体重")}
+          </div>
+          <div class="mini-tabs" role="tablist" aria-label="趋势指标">
+            <button class="mini-tab" type="button" role="tab" aria-selected="${state.metric === "intake"}" tabindex="${state.metric === "intake" ? "0" : "-1"}" data-metric="intake">摄入</button>
+            <button class="mini-tab" type="button" role="tab" aria-selected="${state.metric === "weight"}" tabindex="${state.metric === "weight" ? "0" : "-1"}" data-metric="weight">体重</button>
+            <button class="mini-tab" type="button" role="tab" aria-selected="${state.metric === "water"}" tabindex="${state.metric === "water" ? "0" : "-1"}" data-metric="water">饮水</button>
+          </div>
+          <div class="chart" role="group" aria-label="${metric.label}近 7 天数据图；可逐日选择">${bars}</div>
+          <p class="chart-summary">${metric.summary}</p>
+          <div class="detail-strip" aria-live="polite">
+            <div><span>${dayLabels[state.selectedBar]}</span><strong>${selectedValue} ${metric.unit}</strong></div>
+            <div><span>数据来源</span><strong>本机记录</strong></div>
+          </div>
+        </section>
+
+        <section class="screen-section" aria-labelledby="nutritionTrendHeading">
+          <h3 id="nutritionTrendHeading">营养摘要</h3>
+          <p class="section-note">蛋白质目标平均完成 72%；有 1 天糖字段未提供，未按 0 计算。</p>
+        </section>`;
+    }
+
+    function foodMarkup() {
+      const query = state.foodQuery.trim().toLocaleLowerCase("zh-CN");
+      const visibleItems = foodItems.filter((item) => {
+        const filterMatches = state.foodFilter === "all" || item.source === state.foodFilter;
+        const queryMatches = !query || item.name.toLocaleLowerCase("zh-CN").includes(query);
+        return filterMatches && queryMatches;
+      });
+      const list = visibleItems.length ? visibleItems.map((item) => `
+        <li class="food-row">
+          <div>
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${escapeHtml(item.detail)}</span>
+            <small class="source-tag">${escapeHtml(item.sourceLabel)}</small>
+          </div>
+          <button class="text-button" type="button" data-action="food-detail" data-food="${escapeHtml(item.name)}">查看</button>
+        </li>`).join("") : '<li class="empty-state">本地食品资料中没有匹配结果。</li>';
+
+      return `
+        <section class="screen-section" aria-labelledby="foodSearchHeading">
+          <div class="section-head">
+            <h3 id="foodSearchHeading">本地食品</h3>
+            ${contextButton("food", "＋ 新建食品")}
+          </div>
+          <label class="field-label" for="foodSearch">搜索此设备上的食品</label>
+          <input class="field-input" id="foodSearch" type="search" inputmode="search" autocomplete="off" value="${escapeHtml(state.foodQuery)}" placeholder="输入食品名称">
+          <div class="filter-row" aria-label="食品来源筛选">
+            <button class="filter-button" type="button" aria-pressed="${state.foodFilter === "all"}" data-food-filter="all">全部</button>
+            <button class="filter-button" type="button" aria-pressed="${state.foodFilter === "pack"}" data-food-filter="pack">数据包</button>
+            <button class="filter-button" type="button" aria-pressed="${state.foodFilter === "user"}" data-food-filter="user">用户自建</button>
+          </div>
+        </section>
+        <section class="screen-section" aria-live="polite">
+          <ul class="food-list">${list}</ul>
+        </section>
+        <section class="screen-section" aria-labelledby="packHeading">
+          <div class="section-head"><div><h3 id="packHeading">食品数据包</h3><p class="section-note">已安装 2 个来源 · 最近校验通过</p></div></div>
+          <button class="secondary-button" type="button" data-action="pack-detail">查看来源与版本</button>
+        </section>`;
+    }
+
+    function settingsMarkup() {
+      return `
+        <section class="screen-section">
+          <div class="section-head">
+            <div><h3>本地设置</h3><p class="section-note">当前数据存在此设备上的 Nuttie 中</p></div>
+            ${contextButton("reminder", "＋ 新建提醒")}
+          </div>
+          <div class="local-banner">业务记录不需要账号。加密备份仅在你主动导出时生成。</div>
+        </section>
+        <section class="screen-section">
+          <ul class="settings-list">
+            <li><button class="settings-button" type="button" data-action="setting-detail" data-setting="profile"><span><strong>本地档案与目标</strong><small>目标 2,300 千卡 · 公制单位</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            <li><button class="settings-button" type="button" data-action="setting-detail" data-setting="reminders"><span><strong>提醒</strong><small>2 条本地提醒</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            <li><button class="settings-button" type="button" data-action="setting-detail" data-setting="ai"><span><strong>AI 配置</strong><small>尚未配置；本地功能不受影响</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            <li><button class="settings-button" type="button" data-action="setting-detail" data-setting="data"><span><strong>数据管理</strong><small>加密备份、恢复和本地存储</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            ${state.variant !== "A" ? '<li><button class="settings-button" type="button" data-action="navigate-food"><span><strong>食品资料</strong><small>数据包、用户食品和来源</small></span><span class="chevron" aria-hidden="true">›</span></button></li>' : ""}
+            <li><button class="settings-button" type="button" data-action="setting-detail" data-setting="privacy"><span><strong>隐私与数据发送</strong><small>本地边界和 AI 说明</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+          </ul>
+        </section>`;
+    }
+
+    function screenMarkup() {
+      if (state.view === "trend") return trendMarkup();
+      if (state.view === "food") return foodMarkup();
+      if (state.view === "settings") return settingsMarkup();
+      return diaryMarkup();
+    }
+
+    function navButton(view, glyph, label) {
+      const current = state.view === view;
+      return `<button class="nav-button" type="button" data-view="${view}" ${current ? 'aria-current="page"' : ""}><span class="nav-glyph" aria-hidden="true">${glyph}</span><span>${label}</span></button>`;
+    }
+
+    function navigationMarkup() {
+      if (state.variant === "A") {
+        return `<nav class="bottom-nav variant-a" aria-label="主要导航">
+          ${navButton("diary", "▤", "日记")}
+          ${navButton("trend", "⌁", "趋势")}
+          ${navButton("food", "◎", "食品")}
+          ${navButton("settings", "⚙", "设置")}
+        </nav>`;
+      }
+
+      if (state.variant === "B") {
+        return `<nav class="bottom-nav variant-b" aria-label="主要导航与集中新增">
+          ${navButton("diary", "▤", "日记")}
+          ${navButton("trend", "⌁", "趋势")}
+          <button class="nav-button add-nav" type="button" data-action="open-add"><span class="nav-glyph" aria-hidden="true">＋</span><span>新增</span></button>
+          ${navButton("settings", "⚙", "设置")}
+        </nav>`;
+      }
+
+      const mode = state.view === "trend" ? "weight" : state.view === "food" ? "food" : state.view === "settings" ? "reminder" : "all";
+      const label = state.view === "trend" ? "记录体重" : state.view === "food" ? "新建食品" : state.view === "settings" ? "新建提醒" : "添加记录";
+      return `<div class="c-action-bar"><button class="primary-button" type="button" data-action="open-context" data-mode="${mode}">＋ ${label}</button></div>`;
+    }
+
+    function render(options = {}) {
+      appRoot.innerHTML = `${headerMarkup()}<div class="screen-scroll" id="screenContent" role="main" aria-label="${routeTitle(state.view)}">${screenMarkup()}</div>${navigationMarkup()}`;
+      variantSummary.textContent = variantCopy[state.variant];
+      phone.setAttribute("aria-labelledby", `variant${state.variant}`);
+      variantTabs.forEach((tab) => {
+        const selected = tab.dataset.variant === state.variant;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      if (options.focusTitle) {
+        requestAnimationFrame(() => document.getElementById("screenTitle")?.focus());
+      }
+    }
+
+    function setVariant(variant, focusTab = false) {
+      state.variant = variant;
+      state.view = "diary";
+      state.returnView = "diary";
+      closeOverlay(false);
+      render();
+      if (focusTab) document.querySelector(`[data-variant="${variant}"]`)?.focus();
+    }
+
+    function navigate(view, options = {}) {
+      state.returnView = options.returnView || state.view;
+      state.view = view;
+      closeOverlay(false);
+      render({ focusTitle: true });
+    }
+
+    function showToast(message) {
+      window.clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.hidden = false;
+      toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+        toast.textContent = "";
+      }, 2400);
+    }
+
+    function openOverlay(title, bodyMarkup) {
+      if (overlay.hidden) returnFocus = document.activeElement;
+      appRoot.inert = true;
+      overlay.hidden = false;
+      overlay.innerHTML = `
+        <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+          <header class="sheet-header">
+            <h3 id="sheetTitle">${escapeHtml(title)}</h3>
+            ${iconButton("close-overlay", "×", "关闭")}
+          </header>
+          <div class="sheet-body">${bodyMarkup}</div>
+        </section>`;
+      overlay.querySelector("button, input, select, [tabindex]")?.focus();
+    }
+
+    function closeOverlay(restore = true) {
+      if (overlay.hidden) return;
+      overlay.hidden = true;
+      overlay.innerHTML = "";
+      appRoot.inert = false;
+      if (restore && returnFocus instanceof HTMLElement && document.contains(returnFocus)) {
+        returnFocus.focus();
+      }
+      returnFocus = null;
+    }
+
+    function actionListMarkup() {
+      return `<ul class="action-list">
+        <li><button class="action-button" type="button" data-action-kind="meal"><span><strong>添加餐食</strong><small>本地搜索、条码、手工或可选 AI 草稿</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="action-button" type="button" data-action-kind="water"><span><strong>记录饮水</strong><small>纯本地记录</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="action-button" type="button" data-action-kind="exercise"><span><strong>记录运动</strong><small>首版手工记录</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="action-button" type="button" data-action-kind="weight"><span><strong>记录体重</strong><small>不读取 HealthKit</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="action-button" type="button" data-action-kind="food"><span><strong>创建用户食品</strong><small>保存到本机食品资料</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        ${state.variant === "B" ? '<li><button class="action-button" type="button" data-action="navigate-food"><span><strong>打开食品资料</strong><small>数据包、用户食品和来源</small></span><span class="chevron" aria-hidden="true">›</span></button></li>' : ""}
+      </ul>`;
+    }
+
+    function openContext(mode) {
+      if (mode === "all") {
+        openOverlay("新增记录", actionListMarkup());
+        return;
+      }
+      if (mode === "meal") {
+        openActionDetail("meal");
+        return;
+      }
+      openActionDetail(mode);
+    }
+
+    function openActionDetail(kind) {
+      const details = {
+        meal: {
+          title: "添加餐食",
+          body: `<div class="local-banner">本地方式始终可用。AI 是可选入口，不会自动发送。</div>
+            <ul class="action-list">
+              <li><button class="action-button" type="button" data-task="meal-search"><span><strong>搜索本地食物</strong><small>数据包和用户食品</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+              <li><button class="action-button" type="button" data-task="barcode"><span><strong>扫描条码</strong><small>仅查询本地 GTIN</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+              <li><button class="action-button" type="button" data-task="manual"><span><strong>手工创建餐食</strong><small>统一检查后保存</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+              <li><button class="action-button" type="button" data-task="ai"><span><strong>AI 文字草稿</strong><small>尚未配置；可改用手工</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+            </ul>`
+        },
+        water: {
+          title: "记录饮水",
+          body: `<form data-entry-form="water">
+            <div class="field-group"><label class="field-label" for="waterAmount">饮水量（毫升）</label><input class="field-input" id="waterAmount" name="amount" type="number" min="1" max="5000" value="250" inputmode="numeric" required></div>
+            <div class="sheet-actions"><button class="primary-button" type="submit">保存饮水记录</button></div>
+          </form>`
+        },
+        exercise: {
+          title: "记录运动",
+          body: `<form data-entry-form="exercise">
+            <div class="field-group"><label class="field-label" for="exerciseType">运动类型</label><select class="field-select" id="exerciseType" name="type"><option>快走</option><option>跑步</option><option>骑行</option><option>其他</option></select></div>
+            <div class="field-group"><label class="field-label" for="exerciseMinutes">时长（分钟）</label><input class="field-input" id="exerciseMinutes" name="minutes" type="number" min="1" max="600" value="30" inputmode="numeric" required></div>
+            <div class="sheet-actions"><button class="primary-button" type="submit">保存运动记录</button></div>
+          </form>`
+        },
+        weight: {
+          title: "记录体重",
+          body: `<form data-entry-form="weight">
+            <div class="field-group"><label class="field-label" for="weightValue">体重（千克）</label><input class="field-input" id="weightValue" name="weight" type="number" min="20" max="400" step="0.1" value="${state.weight.toFixed(1)}" inputmode="decimal" required></div>
+            <div class="sheet-actions"><button class="primary-button" type="submit">保存体重记录</button></div>
+          </form>`
+        },
+        food: {
+          title: "创建用户食品",
+          body: `<form data-entry-form="food">
+            <div class="field-group"><label class="field-label" for="newFoodName">食品名称</label><input class="field-input" id="newFoodName" name="name" type="text" autocomplete="off" required></div>
+            <div class="field-group"><label class="field-label" for="newFoodEnergy">每 100 克能量（千卡）</label><input class="field-input" id="newFoodEnergy" name="energy" type="number" min="0" max="2000" inputmode="decimal" required></div>
+            <div class="sheet-actions"><button class="primary-button" type="submit">检查并保存</button></div>
+          </form>`
+        },
+        reminder: {
+          title: "新建提醒",
+          body: `<form data-entry-form="reminder">
+            <div class="field-group"><label class="field-label" for="reminderType">提醒类型</label><select class="field-select" id="reminderType" name="type"><option>记录餐食</option><option>记录饮水</option><option>记录体重</option></select></div>
+            <div class="field-group"><label class="field-label" for="reminderTime">时间</label><input class="field-input" id="reminderTime" name="time" type="time" value="19:00" required></div>
+            <div class="warning-banner">保存规则后才会按任务需要请求系统通知权限。</div>
+            <div class="sheet-actions"><button class="primary-button" type="submit">保存提醒规则</button></div>
+          </form>`
+        }
+      };
+      const detail = details[kind] || details.meal;
+      openOverlay(detail.title, detail.body);
+    }
+
+    function openMoreMenu() {
+      openOverlay("更多", `<ul class="menu-list">
+        <li><button class="menu-button" type="button" data-menu-view="trend"><span><strong>趋势</strong><small>近 7 天本地记录</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="menu-button" type="button" data-menu-view="food"><span><strong>食品资料</strong><small>本地数据包和用户食品</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="menu-button" type="button" data-menu-view="settings"><span><strong>设置</strong><small>档案、提醒、AI 和数据管理</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="menu-button" type="button" data-action-kind="water"><span><strong>记录饮水</strong><small>添加到今天</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="menu-button" type="button" data-action-kind="exercise"><span><strong>记录运动</strong><small>首版手工记录</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+        <li><button class="menu-button" type="button" data-action-kind="weight"><span><strong>记录体重</strong><small>添加本机记录</small></span><span class="chevron" aria-hidden="true">›</span></button></li>
+      </ul>`);
+    }
+
+    function openSettingDetail(setting) {
+      const content = {
+        profile: ["本地档案与目标", "每日能量目标 2,300 千卡。目标修改不会改写历史记录。"],
+        reminders: ["提醒", "当前有 2 条本地提醒。系统可能因 Focus 或系统调度延迟显示。"],
+        ai: ["AI 配置", "尚未配置 Base URL、model 和 key。手工记录、食品查询和趋势仍可使用。"],
+        data: ["数据管理", "可主动导出或恢复加密备份。API key 与数据库密钥不进入备份。"],
+        privacy: ["隐私与数据发送", "只有你主动确认的 AI 请求可以联网；其余业务能力在设备本地运行。"]
+      }[setting] || ["设置", "此项目保存在本机。"];
+      openOverlay(content[0], `<p class="section-note">${content[1]}</p><div class="sheet-actions"><button class="secondary-button" type="button" data-action="close-overlay">关闭</button></div>`);
+    }
+
+    function handleEntrySubmit(form) {
+      const type = form.dataset.entryForm;
+      const data = new FormData(form);
+      if (type === "water") {
+        state.water += Number(data.get("amount"));
+        closeOverlay(false);
+        render({ focusTitle: true });
+        showToast("饮水记录已保存到今天");
+        return;
+      }
+      if (type === "weight") {
+        state.weight = Number(data.get("weight"));
+        closeOverlay(false);
+        render({ focusTitle: true });
+        showToast("体重记录已保存到本机");
+        return;
+      }
+      if (type === "exercise") {
+        closeOverlay(false);
+        render({ focusTitle: true });
+        showToast("运动记录已保存到今天");
+        return;
+      }
+      if (type === "food") {
+        closeOverlay(false);
+        state.view = "food";
+        render({ focusTitle: true });
+        showToast("用户食品草稿已通过本地检查");
+        return;
+      }
+      closeOverlay(false);
+      render({ focusTitle: true });
+      showToast("提醒规则已保存在本机");
+    }
+
+    variantTabs.forEach((tab) => {
+      tab.addEventListener("click", () => setVariant(tab.dataset.variant));
+      tab.addEventListener("keydown", (event) => {
+        const currentIndex = variantTabs.indexOf(tab);
+        let nextIndex = null;
+        if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % variantTabs.length;
+        if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + variantTabs.length) % variantTabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = variantTabs.length - 1;
+        if (nextIndex === null) return;
+        event.preventDefault();
+        setVariant(variantTabs[nextIndex].dataset.variant, true);
+      });
+    });
+
+    appRoot.addEventListener("click", (event) => {
+      const target = event.target.closest("button");
+      if (!target) return;
+
+      if (target.dataset.view) {
+        navigate(target.dataset.view);
+        return;
+      }
+
+      if (target.dataset.metric) {
+        state.metric = target.dataset.metric;
+        state.selectedBar = 6;
+        render();
+        requestAnimationFrame(() => appRoot.querySelector(`[data-metric="${state.metric}"]`)?.focus());
+        return;
+      }
+
+      if (target.dataset.foodFilter) {
+        state.foodFilter = target.dataset.foodFilter;
+        render();
+        requestAnimationFrame(() => appRoot.querySelector(`[data-food-filter="${state.foodFilter}"]`)?.focus());
+        return;
+      }
+
+      switch (target.dataset.action) {
+        case "open-add":
+          openContext("all");
+          break;
+        case "open-context":
+          openContext(target.dataset.mode || "all");
+          break;
+        case "open-detail":
+          openActionDetail(target.dataset.kind);
+          break;
+        case "open-more":
+          openMoreMenu();
+          break;
+        case "back-diary":
+          navigate("diary");
+          break;
+        case "back-return":
+          navigate(state.returnView || "diary");
+          break;
+        case "previous-day":
+          showToast("已切换到 2026 年 7 月 30 日");
+          break;
+        case "next-day":
+          showToast("当前已是今天");
+          break;
+        case "select-bar":
+          state.selectedBar = Number(target.dataset.index);
+          render();
+          requestAnimationFrame(() => appRoot.querySelector(`[data-index="${state.selectedBar}"]`)?.focus());
+          break;
+        case "navigate-food":
+          navigate("food", { returnView: state.view });
+          break;
+        case "food-detail":
+          openOverlay(target.dataset.food, '<p class="section-note">营养值、份量基准和数据来源在保存前保持可见。</p><div class="sheet-actions"><button class="secondary-button" type="button" data-action="close-overlay">关闭</button></div>');
+          break;
+        case "pack-detail":
+          openOverlay("食品数据包", '<ul class="food-list"><li class="food-row"><div><strong>台湾食品成分资料</strong><span>版本与来源已记录</span></div><span class="source-tag">已校验</span></li><li class="food-row"><div><strong>USDA Foundation / SR</strong><span>仅用于当前本地候选数据</span></div><span class="source-tag">本机</span></li></ul>');
+          break;
+        case "setting-detail":
+          openSettingDetail(target.dataset.setting);
+          break;
+        default:
+          break;
+      }
+    });
+
+    appRoot.addEventListener("input", (event) => {
+      if (event.target.id !== "foodSearch") return;
+      state.foodQuery = event.target.value;
+      const selectionStart = event.target.selectionStart;
+      render();
+      const search = document.getElementById("foodSearch");
+      search?.focus();
+      if (search && selectionStart !== null) search.setSelectionRange(selectionStart, selectionStart);
+    });
+
+    appRoot.addEventListener("keydown", (event) => {
+      const tab = event.target.closest(".mini-tab");
+      if (!tab) return;
+      const tabs = Array.from(appRoot.querySelectorAll(".mini-tab"));
+      const index = tabs.indexOf(tab);
+      let next = null;
+      if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+      if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = tabs.length - 1;
+      if (next === null) return;
+      event.preventDefault();
+      tabs[next].click();
+    });
+
+    overlay.addEventListener("click", (event) => {
+      const target = event.target.closest("button");
+      if (!target) {
+        if (event.target === overlay) closeOverlay();
+        return;
+      }
+
+      if (target.dataset.actionKind) {
+        openActionDetail(target.dataset.actionKind);
+        return;
+      }
+      if (target.dataset.menuView) {
+        navigate(target.dataset.menuView, { returnView: "diary" });
+        return;
+      }
+      if (target.dataset.task) {
+        if (target.dataset.task === "ai") {
+          openOverlay("AI 文字草稿", '<div class="warning-banner">尚未配置 AI。可以继续手工创建餐食，当前输入不会发送。</div><div class="sheet-actions"><button class="primary-button" type="button" data-task="manual">手工创建餐食</button><button class="secondary-button" type="button" data-action="close-overlay">取消</button></div>');
+        } else if (target.dataset.task === "barcode") {
+          openOverlay("扫描条码", '<div class="local-banner">条码只在本地食品资料中查询。</div><div class="field-group"><label class="field-label" for="barcodeInput">输入条码</label><input class="field-input" id="barcodeInput" type="text" inputmode="numeric" autocomplete="off"></div><div class="sheet-actions"><button class="primary-button" type="button" data-task="save-meal">检查结果</button></div>');
+        } else if (target.dataset.task === "meal-search") {
+          openOverlay("搜索本地食物", '<div class="field-group"><label class="field-label" for="mealSearch">食品名称</label><input class="field-input" id="mealSearch" type="search" autocomplete="off" value="燕麦"></div><div class="sheet-actions"><button class="primary-button" type="button" data-task="save-meal">选择燕麦片</button></div>');
+        } else if (target.dataset.task === "manual") {
+          openOverlay("手工创建餐食", '<form data-entry-form="meal"><div class="field-group"><label class="field-label" for="mealName">餐食名称</label><input class="field-input" id="mealName" name="name" type="text" value="香蕉燕麦杯" required></div><div class="field-group"><label class="field-label" for="mealEnergy">能量（千卡）</label><input class="field-input" id="mealEnergy" name="energy" type="number" value="286" min="0" max="10000" required></div><div class="sheet-actions"><button class="primary-button" type="submit">检查并保存</button></div></form>');
+        } else if (target.dataset.task === "save-meal") {
+          state.mealAdded = true;
+          closeOverlay(false);
+          state.view = "diary";
+          render({ focusTitle: true });
+          showToast("餐食草稿已加入今天");
+        }
+        return;
+      }
+      if (target.dataset.action === "close-overlay") closeOverlay();
+      if (target.dataset.action === "navigate-food") navigate("food", { returnView: state.view });
+    });
+
+    overlay.addEventListener("submit", (event) => {
+      const form = event.target.closest("form[data-entry-form]");
+      if (!form) return;
+      event.preventDefault();
+      if (form.dataset.entryForm === "meal") {
+        state.mealAdded = true;
+        closeOverlay(false);
+        state.view = "diary";
+        render({ focusTitle: true });
+        showToast("餐食草稿已加入今天");
+        return;
+      }
+      handleEntrySubmit(form);
+    });
+
+    overlay.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeOverlay();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(overlay.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
