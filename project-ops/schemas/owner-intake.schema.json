@@ -37,7 +37,7 @@
         "required": ["questionId", "decisionId", "optionKey", "optionLabel", "state"],
         "properties": {
           "questionId": { "type": "string" },
-          "decisionId": { "pattern": "^D-[0-9]{3}$" },
+          "decisionId": { "type": "string", "pattern": "^D-[0-9]{3}$" },
           "optionKey": { "type": "string" },
           "optionLabel": { "type": "string" },
           "state": { "const": "PENDING_BATCH_READBACK" },
