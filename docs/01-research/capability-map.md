@@ -27,7 +27,7 @@
 | F20 | 会员 IAP | ACC-04、ACC-05 | cross-source | 免费下载且 IAP/订阅存在；门槛/价格未知 | LOCAL_REPLACEMENT + IOS_OR_DISTRIBUTION_LIMIT | 首版移除会员与 IAP |
 | F21 | 媒体权限 | ACC-07 | cross-source | 相机/相册用途明确；具体页面和视频入口未知 | IOS_OR_DISTRIBUTION_LIMIT | 任务触发时最小授权；手工降级 |
 | F22 | 平台/国际化 | SYS-06、SYS-07 | confirmed | 竞品 iOS13+、iPhone/iPad、多语言；当前网页与 Lookup 的年龄/日期展示口径有差异 | IOS_OR_DISTRIBUTION_LIMIT | D-011/D-016：iOS17+、首发简中 |
-| F23 | 广告/分析 | DATA-05 至 DATA-07 | cross-source | SDK 披露；App 隐私标签声明设备 ID 用于第三方广告，协议称可能展示；广告位、频率和实际展示状态未知 | EVIDENCE_GAP | 明确移除，不进入目标实现 |
+| F23 | 广告/分析 | DATA-05 至 DATA-07 | cross-source | DATA-05/06 的 SDK 披露为 `cross-source`；DATA-07 仅能证明广告相关处理披露和通用条款，实际广告展示、广告位与频率保持 `pending` | EVIDENCE_GAP | 明确移除，不进入目标实现 |
 | F24 | 无定位边界 | DATA-09 | cross-source | 政策称当前版本无定位 | IOS_OR_DISTRIBUTION_LIMIT | 不申请定位；作为隐私边界而非卖点 |
 
 ## 完整范围规则
