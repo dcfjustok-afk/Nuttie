@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-31T18:33:21+08:00",
+  "generatedAt": "2026-08-05T20:19:35+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -16,10 +16,10 @@
     "crossSourceItems": 24,
     "evidenceGaps": 5,
     "gapThemeCount": 9,
-    "agentRosterSize": 13,
+    "agentRosterSize": 17,
     "activeAgents": 1,
-    "agentMessages": 74,
-    "projectEvents": 59
+    "agentMessages": 86,
+    "projectEvents": 77
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "Owner 启动决策汇报、回复校验与下一门禁调度",
+      "workPackage": "Owner 待回读批次、D-039 PX-2 通过回执与 PX-3 Owner 评审调度",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -78,7 +78,7 @@
       "id": "dashboard_qa",
       "role": "工作台 UI / 工具化 QA",
       "state": "completed",
-      "workPackage": "静态兜底、Owner 精确 profiles 与 smoke 契约复验完成；未登记浏览器视觉验收",
+      "workPackage": "静态兜底、Owner 精确 profiles、smoke 契约与主 Agent 浏览器验收完成",
       "gate": "Phase 0 Workbench",
       "requiredHandoffs": ["root"]
     },
@@ -137,19 +137,53 @@
       "workPackage": "RN/Expo 独立复核、Owner 包 delta review 与项目运营真相源校正完成",
       "gate": "G4 / Phase 0 Ops",
       "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "evidence_consistency_audit",
+      "role": "证据一致性独立审查",
+      "state": "completed",
+      "workPackage": "发现 DATA-07 口径漂移；修正文案与 37/24/5 行级重算已完成",
+      "gate": "G1 Evidence Review",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "d039_gate_audit",
+      "role": "D-039 原型独立门禁审查",
+      "state": "completed",
+      "workPackage": "D039-QA-001 至 QA-010 已关闭；独立复测与主 Agent 浏览器验收支持 PX-2 PASS",
+      "gate": "G3 PX-2 Review",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "owner_gate_readback_audit",
+      "role": "Owner 回读门禁独立审查",
+      "state": "completed",
+      "workPackage": "Owner 回读边界审查完成，并独立复测 D-039 新冻结 SHA 为 PASS",
+      "gate": "G2-G4 Owner Gate",
+      "requiredHandoffs": ["root", "project_ops_rebuild_audit"]
+    },
+    {
+      "id": "project_ops_rebuild_audit",
+      "role": "ProjectOps 重建契约独立审查",
+      "state": "completed",
+      "workPackage": "确认人工归并边界并交付 77 事件、86 消息、17 角色的重建约束",
+      "gate": "Phase 0 Ops",
+      "requiredHandoffs": ["root"]
     }
   ],
   "currentWork": [
-    "Owner 决策包已 READY_FOR_OWNER_REVIEW；等待 Owner 回复首批 12 项候选及 OI-01 至 OI-03",
-    "D-032 若获 A/B 授权，仅进入隔离 Spike；证据回传后仍需第二次 Owner 动作冻结最终矩阵",
-    "工作台静态快照、smoke、桌面/移动浏览器与 D-038 A/B/C 交互验收均已完成"
+    "Owner intake 保持 IN_PROGRESS_MODE_INTERRUPTED：13 条响应、12 个唯一决定，D-047 最新为 C；下一张原生选择卡是尚未回答的 OI-03",
+    "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
+    "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
+    "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
   ],
   "constraints": [
     "除用户主动发起的 AI 请求外不得产生业务联网",
     "未批准的产品、设计和技术选择不得进入实现基线",
     "D-053 未批准且 Provider 数据用途证据不足时，健康与营养载荷保持 BLOCKED",
-    "D-052 未处理前，USDA 数据仅限本地研发，不进入面向美国境外朋友的 TestFlight 或 IPA",
+    "当前只为 Owner 自用、不加入 Apple Developer Program、不做 TestFlight；这不自动 supersede D-008，也不代表永久取消未来分发",
+    "D-052 未处理前，USDA 数据仅限本地研发；若未来恢复朋友分发，须重新执行许可与渠道门禁",
     "Windows 无法完成最终 iOS 原生构建；G6 需要受支持的 Mac/Xcode 与真实 iPhone"
   ],
-  "sourceEvents": "project-ops/events/2026-07-31.jsonl"
+  "sourceEvents": "project-ops/events/*.jsonl"
 }

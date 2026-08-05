@@ -10,14 +10,14 @@ project-ops/
   schemas/                    # JSON Schema
   events/YYYY-MM-DD.jsonl     # append-only 项目事件
   messages/<role>.jsonl       # Agent 原始协作消息摘要
-  snapshots/current.json      # 事件归并后的当前状态
+  snapshots/current.json      # PM 按源记录人工归并并校验的当前状态
 ```
 
 ## 写入规则
 
 1. 每行 JSONL 是独立、完整、UTF-8 JSON 对象。
 2. 已记录事件不原地改写。事实变化时追加 `FACT_CORRECTION`；决定变化时追加新决定并设置 `supersedes`。
-3. 工作台当前状态由事件 reducer 生成，静态快照只是一份可重建缓存。
+3. 当前仓库尚未实现事件 reducer；`snapshots/current.json` 由 PM 按 `events/*.jsonl`、`messages/*.jsonl`、决定台账和门禁文档人工归并并完成一致性校验。工作台静态快照只打包这份已校验状态，不得宣称自动重建；未来建立 reducer 后再切换为自动生成。
 4. Agent 只能写其任务指定的消息文件；PM 负责合并、校验和门禁事件。
 5. 时间使用 RFC 3339 和明确时区；当前项目默认 Asia/Shanghai。
 6. 项目事件不得包含 API key、Authorization、健康记录、个人照片、完整 prompt、AI 响应或其他业务隐私数据。
