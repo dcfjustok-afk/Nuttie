@@ -366,11 +366,31 @@ async function main() {
     assert.match(await evalValue("document.querySelector('#app-main').innerText"), /470 千卡/);
 
     await load(320, 700);
+    await setSelect("#ai-config", "fixture");
     await setSelect("#permission-state", "camera-denied");
     await click('[data-route="scan"]');
-    assert.match(await evalValue("document.querySelector('#app-main').innerText"), /相机权限已拒绝/);
+    await assertScreen("scan");
     assert.ok(await evalValue("Boolean(document.querySelector('[data-form=barcode]'))"));
     assert.ok(await evalValue("Boolean(document.querySelector('[data-route=search]'))"), "camera denial should offer local search");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=create]'))"), "camera denial should offer manual food creation");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=ai-album]'))"), "camera denial should offer the album fallback");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-simulate-system-settings]'))"), "camera denial should offer system settings");
+    await click('[data-route="ai-album"]');
+    await assertScreen("ai-media-draft");
+
+    await load(320, 700);
+    await setSelect("#ai-config", "fixture");
+    await setSelect("#permission-state", "album-denied");
+    await click('[data-route="ai-menu"]');
+    await click('[data-route="ai-album"]');
+    await assertScreen("permission-album");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=ai-photo]'))"), "album denial should offer the camera fallback");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=ai-text]'))"), "album denial should offer the text fallback");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=search]'))"), "album denial should offer local search");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-route=create]'))"), "album denial should offer manual food creation");
+    assert.ok(await evalValue("Boolean(document.querySelector('[data-simulate-system-settings]'))"), "album denial should offer system settings");
+    await click('[data-route="ai-photo"]');
+    await assertScreen("ai-media-draft");
 
     await load(320, 700);
     await click('[data-route="create"]');
@@ -497,15 +517,43 @@ async function main() {
     await capture("d039-c-six-methods-320");
 
     await load(320, 700);
-    await evalValue(expression(`
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    await cdp.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    const keyboardEvidence = await evalValue(expression(`
       const tab = document.querySelector('[data-variant="A"]');
-      tab.focus();
-      tab.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
-      return true;
+      const focusStyle = getComputedStyle(tab);
+      const focus = {
+        active: document.activeElement === tab,
+        visible: tab.matches(':focus-visible'),
+        outlineWidth: focusStyle.outlineWidth,
+        outlineStyle: focusStyle.outlineStyle,
+        outlineOffset: focusStyle.outlineOffset
+      };
+      const snapshots = [];
+      for (const key of ['ArrowRight', 'ArrowLeft', 'End', 'Home']) {
+        document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+        snapshots.push({
+          key,
+          variant: window.__NUTTIE_D039__.getState().variant,
+          active: document.activeElement?.dataset.variant || '',
+          selected: document.querySelector('[data-variant][aria-selected="true"]')?.dataset.variant || ''
+        });
+      }
+      return { focus, snapshots };
     `));
-    assert.equal((await evalValue("window.__NUTTIE_D039__.getState()"))?.variant, "B", "ArrowRight should select B");
-    await click('[data-route="search"]');
-    await assertScreen("search");
+    assert.deepEqual(keyboardEvidence.snapshots, [
+      { key: "ArrowRight", variant: "B", active: "B", selected: "B" },
+      { key: "ArrowLeft", variant: "A", active: "A", selected: "A" },
+      { key: "End", variant: "C", active: "C", selected: "C" },
+      { key: "Home", variant: "A", active: "A", selected: "A" }
+    ]);
+    assert.equal(keyboardEvidence.focus.active, true, "Tab should focus the active A tab first");
+    assert.equal(keyboardEvidence.focus.visible, true, "keyboard-focused tabs should match :focus-visible");
+    assert.equal(keyboardEvidence.focus.outlineWidth, "3px", "focus ring should be 3px wide");
+    assert.equal(keyboardEvidence.focus.outlineStyle, "solid", "focus ring should be solid");
+    assert.equal(keyboardEvidence.focus.outlineOffset, "2px", "focus ring should be offset from the control");
+    await click('[data-route="scan"]');
+    await assertScreen("scan");
     assert.equal(await evalValue("document.activeElement.matches('[data-autofocus]')"), true, "new screen heading should receive focus");
     await evalValue("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))");
     await assertScreen("entry");
@@ -529,7 +577,8 @@ async function main() {
         "d014-label-preview-cancel-zero-write",
         "ai-failure-zero-write",
         "ai-fixture-edit-save",
-        "camera-denied-fallback",
+        "camera-denied-scan-album-fallback",
+        "album-denied-photo-text-fallback",
         "validation-preserves-create-and-editor-drafts",
         "ai-candidate-explicit-discard",
         "back-and-escape-focus-restoration",

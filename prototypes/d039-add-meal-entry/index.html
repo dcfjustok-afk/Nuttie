@@ -1363,13 +1363,19 @@
       function renderPermissionDenied(kind = "camera", origin = "ai") {
         const isAlbum = kind === "album";
         const label = isAlbum ? "相册" : "相机";
+        const mediaFallbacks = isAlbum
+          ? `
+            <button class="button" type="button" data-route="ai-photo">改用拍照</button>
+            <button class="button" type="button" data-route="ai-text">改用文字描述</button>`
+          : '<button class="button" type="button" data-route="ai-album">改从相册选择</button>';
         return `
           <h2 class="screen-heading" tabindex="-1" data-autofocus>${label}权限已拒绝</h2>
-          <p class="screen-intro">权限拒绝只影响当前方式，不会阻止本地搜索、手工条码或自建食品。</p>
+          <p class="screen-intro">权限拒绝只影响当前方式，不会阻止其他媒体方式、本地搜索、手工条码或自建食品。</p>
           <div class="status-box warning">系统状态（模拟）：${label}不可用。本次没有读取媒体，也没有写入日记。</div>
           <div class="button-stack">
             ${origin === "scan" ? '<button class="button-primary" type="button" data-focus-barcode>输入条码</button>' : '<button class="button-primary" type="button" data-route="search">改用本地搜索</button>'}
             ${origin === "scan" ? '<button class="button" type="button" data-route="search">搜索本地食品</button>' : ""}
+            ${mediaFallbacks}
             <button class="button" type="button" data-route="create">自建食品</button>
             <button class="button" type="button" data-simulate-system-settings>打开系统设置（模拟）</button>
           </div>
