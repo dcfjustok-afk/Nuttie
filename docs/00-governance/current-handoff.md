@@ -67,7 +67,8 @@ D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
 | 产物 | 当前结论 | 接续时不得误读 |
 | --- | --- | --- |
 | [追踪整改最终复验](../05-quality/traceability-review.md) | `PASS_WITH_OWNER_GATE_BLOCKERS` | 66/37/24/5、F/REQ/AT 和 14 项候选可复核；不关闭 G2/G3/G4 |
-| [Phase 0 机器一致性验证](../05-quality/phase0-validation-report.md) | `PASS_WITH_GATE_BLOCKERS` | 报告验证的是首批候选登记前的历史快照；当前运行缓存必须重建后再声称一致 |
+| [Phase 0 机器一致性验证](../05-quality/phase0-validation-report.md) | `PASS_WITH_GATE_BLOCKERS` | 报告只验证首批候选登记前的 7 月 31 日历史快照，不能替代当前计数 |
+| [Phase 0 8 月 5 日验证基线](../05-quality/phase0-validation-report-2026-08-05.md) | `PASS_WITH_GATE_BLOCKERS`；当前权威数据、工作台和 D-039 复验通过 | 固化 31 决定、77 事件、86 消息、17 角色、66 条证据与 D-039 PX-2；不关闭 G2/G3/G4，也不代表 Owner 已选 D-039 |
 | [React Native / Expo 技术栈独立复核](../05-quality/rn-stack-independent-review.md) | `CONDITIONAL PASS`；重写要求已落实到当前决策包 | 没有初始化工程、安装依赖、生成 lockfile、Prebuild 或 Archive |
 | [Owner 启动门禁独立审查](owner-startup-gate-independent-review.md) | 审查完成；发现的两阶段、选项完整性和候选登记问题已由当前决策包/台账收口 | 它是历史审查证据，文中的旧候选计数不能覆盖当前 17/14 权威状态 |
 | [安全终审](../05-quality/security-review.md) | 总体 `BLOCKED`；安全协议文档发现已关闭 | 无实现、构建、真机、跨工具 corpus 或 Release 抓包证据，G4 不可 PASS |
