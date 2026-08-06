@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_05,
+  PHASE0_2026_08_06,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -43,6 +43,18 @@ function findD039Gate(model) {
   );
 }
 
+function findD040InitialFeedback(model) {
+  return model.events.find(
+    (record) => record.value.eventId === "EVT-20260806-002",
+  );
+}
+
+function findD040FinalFeedback(model) {
+  return model.events.find(
+    (record) => record.value.eventId === "EVT-20260806-005",
+  );
+}
+
 function copyValidationFixture() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nuttie-project-ops-"));
   fs.cpSync(path.join(WORKSPACE_ROOT, "project-ops"), path.join(tempRoot, "project-ops"), {
@@ -65,12 +77,12 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_05.id);
+  assert.equal(report.baseline, PHASE0_2026_08_06.id);
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 77);
-  assert.equal(report.counts.messages, 86);
-  assert.equal(report.counts.resolvedResponses, 53);
+  assert.equal(report.counts.events, 82);
+  assert.equal(report.counts.messages, 90);
+  assert.equal(report.counts.resolvedResponses, 56);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
 });
@@ -125,11 +137,11 @@ test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) =
       const record = model.events.find(
         (candidate) => candidate.value.eventId === "EVT-20260731-059",
       );
-      record.fileName = "2026-08-06.jsonl";
-      record.sourceFile = "project-ops/events/2026-08-06.jsonl";
+      record.fileName = "2026-08-07.jsonl";
+      record.sourceFile = "project-ops/events/2026-08-07.jsonl";
       record.lineNumber = 1;
-      record.value.eventId = "EVT-20260806-001";
-      record.value.recordedAt = "2026-08-06T09:00:00+08:00";
+      record.value.eventId = "EVT-20260807-001";
+      record.value.recordedAt = "2026-08-07T09:00:00+08:00";
     });
     assertDiagnostic(report, "OPS_EVENT_DAY_SET_MISMATCH", "project-ops/events");
     assertDiagnostic(
@@ -338,6 +350,105 @@ test("拒绝 D-039 在 PX-3 Owner 选择前越级", async (t) => {
       findD039Gate(model).value.data.findingsClosed.pop();
     });
     assertDiagnostic(report, "OPS_D039_FINDINGS_SET_MISMATCH");
+  });
+});
+
+test("拒绝 D-040 在 PX-0 输入关闭前越级或改写审计事实", async (t) => {
+  await t.test("首轮 reviewer 临时 PX-1 被误记为 PM 接受", () => {
+    const report = validateMutation((model) => {
+      findD040InitialFeedback(model).value.data.provisionalStateAcceptedByPm = true;
+    });
+    assertDiagnostic(report, "OPS_D040_PROVISIONAL_STATE_NOT_NORMALIZED");
+  });
+
+  await t.test("首轮权威状态被误升为 PX-1", () => {
+    const report = validateMutation((model) => {
+      findD040InitialFeedback(model).value.data.authoritativeState = "PX-1_COMPLETE";
+    });
+    assertDiagnostic(report, "OPS_D040_PROVISIONAL_STATE_NOT_NORMALIZED");
+  });
+
+  await t.test("首轮审查回执缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260806-002",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_INITIAL_FEEDBACK_MISSING");
+  });
+
+  await t.test("delta 最终回执缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260806-005",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_FINAL_SENTINEL_MISSING");
+  });
+
+  await t.test("delta 最终回执重复", () => {
+    const report = validateMutation((model) => {
+      const duplicate = structuredClone(findD040FinalFeedback(model));
+      duplicate.value.eventId = "EVT-20260806-006";
+      duplicate.lineNumber = 6;
+      model.events.push(duplicate);
+    });
+    assertDiagnostic(report, "OPS_D040_FINAL_SENTINEL_DUPLICATE");
+  });
+
+  await t.test("状态越级到 PX-1", () => {
+    const report = validateMutation((model) => {
+      findD040FinalFeedback(model).value.data.recommendedState = "PX-1_COMPLETE";
+    });
+    assertDiagnostic(report, "OPS_D040_STATE_ESCALATED");
+  });
+
+  for (const field of [
+    "px1Authorized",
+    "px2Authorized",
+    "ownerReviewAuthorized",
+    "ownerChoiceRecorded",
+    "decisionAcceptedRecorded",
+    "formalImplementationAuthorized",
+  ]) {
+    await t.test(`${field} 被提前设为 true`, () => {
+      const report = validateMutation((model) => {
+        findD040FinalFeedback(model).value.data[field] = true;
+      });
+      assertDiagnostic(
+        report,
+        "OPS_D040_AUTHORIZATION_PREMATURE",
+        `project-ops/events/2026-08-06.jsonl:5.data.${field}`,
+      );
+    });
+  }
+
+  await t.test("D-040 抢占 OI-03 顺序", () => {
+    const report = validateMutation((model) => {
+      findD040FinalFeedback(model).value.data.oi03RemainsNext = false;
+    });
+    assertDiagnostic(report, "OPS_D040_OI03_ORDER_CHANGED");
+  });
+
+  await t.test("首轮问题关闭集合不完整", () => {
+    const report = validateMutation((model) => {
+      findD040FinalFeedback(model).value.data.closedFindings.P2 = 3;
+    });
+    assertDiagnostic(report, "OPS_D040_FINDINGS_MISMATCH");
+  });
+
+  await t.test("提前进入决定台账", () => {
+    const report = validateMutation((model) => {
+      model.decisionRegister.decisions.push({ id: "D-040", status: "CANDIDATE" });
+    });
+    assertDiagnostic(report, "OPS_D040_DECISION_REGISTERED_PREMATURELY");
+  });
+
+  await t.test("提前写入 Owner intake", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.responses.push({ decisionId: "D-040" });
+    });
+    assertDiagnostic(report, "OPS_D040_OWNER_RESPONSE_PREMATURELY_RECORDED");
   });
 });
 

@@ -2,7 +2,7 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-06（Asia/Shanghai）；ProjectOps 人工归并快照仍为 2026-08-05 |
+| 快照日期 | 2026-08-06（Asia/Shanghai）；ProjectOps 人工归并快照已同步至本日 |
 | 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
 | 权威决定 | 17 项 `ACCEPTED`；14 项 `CANDIDATE` |
@@ -16,7 +16,7 @@
 
 `project-ops/decisions.json` 生成于 `2026-07-31T17:42:28+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 17 项 `ACCEPTED` 和 14 项 `CANDIDATE`。
 
-`project-ops/snapshots/current.json` 已于 `2026-08-05T20:19:35+08:00` 完成人工归并和严格复验，当前记录 17 项 accepted、14 项 candidate、77 个事件、86 条 Agent 消息、17 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。事件文件和消息 JSONL 的实际计数与快照一致，2026-08-05 新增事件为连续的 `EVT-20260805-001` 至 `005`。工作台动态状态与静态副本已全量同源复验；D-039 仓库与冻结预览逐字节一致，19/19 自动流程、四视口、十条权限拒绝恢复路径、零外部请求和零运行时问题均通过。
+`project-ops/snapshots/current.json` 已于 `2026-08-06T09:58:39+08:00` 完成人工归并，当前记录 17 项 accepted、14 项 candidate、82 个事件、90 条 Agent 消息、17 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。事件文件和消息 JSONL 的实际计数与快照一致，2026-08-06 新增事件为连续的 `EVT-20260806-001` 至 `005`，均明确标记为 D-040 真实协作的事后归档。D-039 仍保持 PX-2；D-040 的 2 项 P1、4 项 P2 和 1 项 P3 已关闭，但字段、公式、适用范围和特殊人群规则仍阻断 PX-0。
 
 门禁状态以 [阶段门禁](stage-gates.md) 为准：G0/G1 已通过；G2/G3/G4 仍在形成证据；G5~G8 因尚无经批准实现、构建、Beta 或发布证据而保持 `FAIL`。这里的 `FAIL` 表示退出条件尚不存在，不表示项目异常。
 
@@ -107,7 +107,7 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
 
-当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`77` 个事件和 `86` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。56 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
+当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`82` 个事件和 `90` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。56 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 与独立 delta 复测通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
 
 ## 7. 下一步 Owner 互动
 
@@ -158,4 +158,4 @@ node D:\study\Nuttie-D040-Prototype-Lab\qa-smoke.mjs http://127.0.0.1:4177/ D:\s
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 17/14；事件/消息/角色是 77/86/17 且仅 `root` 活跃；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-038 仍是 `CANDIDATE`；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW` 且未记录 Owner 选择；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源或 TestFlight 产物。
+恢复后至少重新确认：决定是 17/14；事件/消息/角色是 82/90/17 且仅 `root` 活跃；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-038 仍是 `CANDIDATE`；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW` 且未记录 Owner 选择；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源或 TestFlight 产物。

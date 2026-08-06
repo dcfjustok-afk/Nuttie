@@ -11,16 +11,16 @@ const DECISION_ID_PATTERN = /^D-[0-9]{3}$/;
 const EVIDENCE_ID_PATTERN = /^(ACC|DAY|LOG|FOOD|BODY|AI|SYS|DATA)-[0-9]{2}$/;
 const GAP_THEME_ID_PATTERN = /^EG-[0-9]{2}$/;
 
-export const PHASE0_2026_08_05 = Object.freeze({
-  id: "PHASE0_2026_08_05",
+export const PHASE0_2026_08_06 = Object.freeze({
+  id: "PHASE0_2026_08_06",
   counts: Object.freeze({
     schemas: 4,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 77,
-    messages: 86,
-    resolvedResponses: 53,
+    events: 82,
+    messages: 90,
+    resolvedResponses: 56,
     agents: 17,
     activeAgents: 1,
     evidenceItems: 66,
@@ -36,6 +36,7 @@ export const PHASE0_2026_08_05 = Object.freeze({
     "2026-07-31": 59,
     "2026-08-03": 13,
     "2026-08-05": 5,
+    "2026-08-06": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -85,6 +86,30 @@ export const PHASE0_2026_08_05 = Object.freeze({
         (_, index) => `D039-QA-${String(index + 1).padStart(3, "0")}`,
       ),
     ),
+  }),
+  d040: Object.freeze({
+    initialFeedbackEventId: "EVT-20260806-002",
+    finalFeedbackEventId: "EVT-20260806-005",
+    initialCorrelationId: "d040-independent-prototype-review",
+    finalCorrelationId: "d040-independent-prototype-delta-retest",
+    reviewerId: "owner_gate_readback_audit",
+    reviewerScopedProvisionalState: "PX-1_COMPLETE",
+    authoritativeState: "PX-0_INPUT_GAP",
+    provisionalStateAcceptedByPm: false,
+    decisionState: "CANDIDATE",
+    recommendedState: "PX-0_INPUT_GAP",
+    next: "FORMULA_REVIEW_REQUIRED",
+    originalFindings: Object.freeze({ P1: 2, P2: 4, P3: 1 }),
+    closedFindings: Object.freeze({ P1: 2, P2: 4, P3: 1 }),
+    newFindings: 0,
+    automatedFlowsPassed: 9,
+    px1Authorized: false,
+    px2Authorized: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    formalImplementationAuthorized: false,
+    oi03RemainsNext: true,
   }),
 });
 
@@ -297,7 +322,7 @@ function duplicateValues(values) {
   return [...duplicates].sort();
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_05) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_06) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -885,6 +910,148 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_0
       "OPS_D039_DECISION_REGISTERED_PREMATURELY",
       "project-ops/decisions.json.decisions",
       "D-039 在 PX-3 Owner 选择前不得进入决定台账",
+    );
+  }
+
+  const d040InitialFeedback = model.events.find(
+    (record) => record.value?.eventId === baseline.d040.initialFeedbackEventId,
+  );
+  if (!d040InitialFeedback) {
+    add(
+      "OPS_D040_INITIAL_FEEDBACK_MISSING",
+      "project-ops/events",
+      "缺少 D-040 首轮独立审查回执",
+    );
+  } else {
+    const data = d040InitialFeedback.value?.data ?? {};
+    const recordPath = `${d040InitialFeedback.sourceFile}:${d040InitialFeedback.lineNumber}`;
+    if (
+      d040InitialFeedback.value?.type !== "REVIEW_FEEDBACK" ||
+      d040InitialFeedback.value?.correlationId !== baseline.d040.initialCorrelationId ||
+      data.reviewerScopedProvisionalState !== baseline.d040.reviewerScopedProvisionalState ||
+      data.authoritativeState !== baseline.d040.authoritativeState ||
+      data.provisionalStateAcceptedByPm !== baseline.d040.provisionalStateAcceptedByPm
+    ) {
+      add(
+        "OPS_D040_PROVISIONAL_STATE_NOT_NORMALIZED",
+        recordPath,
+        "D-040 reviewer 的临时 PX-1 表述必须保留为未被 PM 接受，并规范到 PX-0 输入缺口",
+      );
+    }
+  }
+
+  const d040FinalFeedbackEvents = model.events.filter(
+    (record) =>
+      record.value?.type === "REVIEW_FEEDBACK" &&
+      record.value?.correlationId === baseline.d040.finalCorrelationId &&
+      record.value?.actor?.id === baseline.d040.reviewerId,
+  );
+  if (d040FinalFeedbackEvents.length === 0) {
+    add(
+      "OPS_D040_FINAL_SENTINEL_MISSING",
+      "project-ops/events",
+      "缺少 D-040 delta 独立复测最终回执",
+    );
+  } else if (d040FinalFeedbackEvents.length > 1) {
+    add(
+      "OPS_D040_FINAL_SENTINEL_DUPLICATE",
+      "project-ops/events",
+      "D-040 delta 独立复测最终回执必须唯一",
+      { eventIds: d040FinalFeedbackEvents.map((record) => record.value?.eventId) },
+    );
+  }
+
+  if (d040FinalFeedbackEvents.length > 0) {
+    const record = d040FinalFeedbackEvents[0];
+    const data = record.value?.data ?? {};
+    const recordPath = `${record.sourceFile}:${record.lineNumber}`;
+    if (
+      record.value?.eventId !== baseline.d040.finalFeedbackEventId ||
+      data.decisionState !== baseline.d040.decisionState ||
+      data.recommendedState !== baseline.d040.recommendedState ||
+      data.next !== baseline.d040.next
+    ) {
+      add(
+        "OPS_D040_STATE_ESCALATED",
+        recordPath,
+        "D-040 必须保持 PX-0 输入缺口并等待公式与特殊人群规则评审",
+        {
+          expected: {
+            eventId: baseline.d040.finalFeedbackEventId,
+            decisionState: baseline.d040.decisionState,
+            recommendedState: baseline.d040.recommendedState,
+            next: baseline.d040.next,
+          },
+          actual: {
+            eventId: record.value?.eventId,
+            decisionState: data.decisionState,
+            recommendedState: data.recommendedState,
+            next: data.next,
+          },
+        },
+      );
+    }
+    for (const field of [
+      "px1Authorized",
+      "px2Authorized",
+      "ownerReviewAuthorized",
+      "ownerChoiceRecorded",
+      "decisionAcceptedRecorded",
+      "formalImplementationAuthorized",
+    ]) {
+      if (data[field] !== baseline.d040[field]) {
+        add(
+          "OPS_D040_AUTHORIZATION_PREMATURE",
+          `${recordPath}.data.${field}`,
+          `D-040 ${field} 必须保持 false`,
+        );
+      }
+    }
+    if (data.oi03RemainsNext !== baseline.d040.oi03RemainsNext) {
+      add(
+        "OPS_D040_OI03_ORDER_CHANGED",
+        `${recordPath}.data.oi03RemainsNext`,
+        "D-040 不得抢占 OI-03 的下一题顺序",
+      );
+    }
+    for (const [group, expected] of [
+      ["originalFindings", baseline.d040.originalFindings],
+      ["closedFindings", baseline.d040.closedFindings],
+    ]) {
+      const actual = data[group] ?? {};
+      if (actual.P1 !== expected.P1 || actual.P2 !== expected.P2 || actual.P3 !== expected.P3) {
+        add(
+          "OPS_D040_FINDINGS_MISMATCH",
+          `${recordPath}.data.${group}`,
+          "D-040 首轮 2/4/1 问题必须完整关闭",
+          { expected, actual },
+        );
+      }
+    }
+    if (
+      data.newFindings !== baseline.d040.newFindings ||
+      data.automatedFlowsPassed !== baseline.d040.automatedFlowsPassed
+    ) {
+      add(
+        "OPS_D040_RETEST_EVIDENCE_MISMATCH",
+        `${recordPath}.data`,
+        "D-040 delta 回执必须保持 0 个新问题和 9 组自动流程",
+      );
+    }
+  }
+
+  if (decisions.some((decision) => decision?.id === "D-040")) {
+    add(
+      "OPS_D040_DECISION_REGISTERED_PREMATURELY",
+      "project-ops/decisions.json.decisions",
+      "D-040 在 PX-0 输入关闭和 Owner 选择前不得进入决定台账",
+    );
+  }
+  if (ownerResponses.some((response) => response?.decisionId === "D-040")) {
+    add(
+      "OPS_D040_OWNER_RESPONSE_PREMATURELY_RECORDED",
+      "project-ops/owner-intake.json.responses",
+      "D-040 不得抢占当前 Owner intake 或伪造 Owner 响应",
     );
   }
 

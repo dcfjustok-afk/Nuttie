@@ -15,7 +15,7 @@
 | G0 | 项目立项 | PASS | 章程、本地硬边界、角色模型、D-001~D-017 已接受 |
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
 | G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过，仍待 Owner 处理范围与体验候选 |
-| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-039 已通过 PX-2 并待 PX-3 Owner 评审，导航、首启、评分等关键候选仍待 Owner |
+| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-039 已通过 PX-2 并待 PX-3 Owner 评审，D-040 质量问题已关闭但仍处于 PX-0 输入缺口；导航、首启、评分等关键候选仍待 Owner |
 | G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；当前无开放安全协议文档发现，但 Owner 候选、实现、Mac/真机和 Release 证据仍阻断 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
@@ -72,7 +72,7 @@
 - 产品、架构、安全与 QA 审查完成。
 - 视觉方向和关键交互若存在多种实质方案，已提交 Owner 决定。
 
-当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，并达到 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`，但 PX-2 不代表 Owner 已选择 A/B/C。产品导航、首启资料、健康评分顺序、餐次和趋势等体验选择仍待 Owner，视觉方向尚未形成可供选择的正式方案。
+当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，并达到 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`，但 PX-2 不代表 Owner 已选择 A/B/C。D-040 首启资料与目标原型的首轮 2 项 P1、4 项 P2 和 1 项 P3 已由 delta 复测关闭，但最小字段、目标公式、适用范围和特殊人群停止规则未关闭，因此保持 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`。产品导航、首启资料、健康评分顺序、餐次和趋势等体验选择仍待 Owner，视觉方向尚未形成可供选择的正式方案。
 
 ## G4：Build Ready
 

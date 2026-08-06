@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-05T20:19:35+08:00",
+  "generatedAt": "2026-08-06T09:58:39+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -18,8 +18,8 @@
     "gapThemeCount": 9,
     "agentRosterSize": 17,
     "activeAgents": 1,
-    "agentMessages": 86,
-    "projectEvents": 77
+    "agentMessages": 90,
+    "projectEvents": 82
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "Owner 待回读批次、D-039 PX-2 通过回执与 PX-3 Owner 评审调度",
+      "workPackage": "Owner 待回读批次、D-039 PX-3 调度，以及 D-040 PX-0 输入缺口与 ProjectOps 归并",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -158,7 +158,7 @@
       "id": "owner_gate_readback_audit",
       "role": "Owner 回读门禁独立审查",
       "state": "completed",
-      "workPackage": "Owner 回读边界审查完成，并独立复测 D-039 新冻结 SHA 为 PASS",
+      "workPackage": "Owner 回读边界审查完成；D-040 首轮 2/4/1 问题与 delta 全关闭回执已交接",
       "gate": "G2-G4 Owner Gate",
       "requiredHandoffs": ["root", "project_ops_rebuild_audit"]
     },
@@ -166,7 +166,7 @@
       "id": "project_ops_rebuild_audit",
       "role": "ProjectOps 重建契约独立审查",
       "state": "completed",
-      "workPackage": "确认人工归并边界并交付 77 事件、86 消息、17 角色的重建约束",
+      "workPackage": "确认人工归并边界并交付 82 事件、90 消息、17 角色及 D-040 fail-closed 约束",
       "gate": "Phase 0 Ops",
       "requiredHandoffs": ["root"]
     }
@@ -174,6 +174,7 @@
   "currentWork": [
     "Owner intake 保持 IN_PROGRESS_MODE_INTERRUPTED：13 条响应、12 个唯一决定，D-047 最新为 C；下一张原生选择卡是尚未回答的 OI-03",
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
+    "D-040 首轮 2 项 P1、4 项 P2、1 项 P3 已由独立 delta 复测关闭；原型仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，字段、公式、适用范围和特殊人群规则未获批准，OI-03 仍是下一题",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
   ],
