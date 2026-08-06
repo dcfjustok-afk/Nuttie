@@ -37,6 +37,9 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [React Native / Expo 独立复核](docs/05-quality/rn-stack-independent-review.md)
 - [追踪整改最终复验](docs/05-quality/traceability-review.md)
 - [项目事件流](project-ops/README.md)
+- [框架无关测试夹具](docs/04-engineering/testing/domain-contract-harness.md)
+- [AI 策略阻断夹具](docs/04-engineering/testing/ai-policy-harness.md)
+- [导入安全负向夹具](docs/04-engineering/testing/import-safety-harness.md)
 - [调研工作台](D:/study/Nuttie-Discovery-Workbench/index.html)
 
 ## 仓库状态说明
