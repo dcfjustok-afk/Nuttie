@@ -1,0 +1,1277 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="color-scheme" content="light">
+  <title>Nuttie D-040 首启资料与目标设置对比原型</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f2f3f0;
+      --surface: #ffffff;
+      --surface-muted: #f4f6f3;
+      --ink: #1d231f;
+      --muted: #5c655f;
+      --line: #c9cec9;
+      --line-strong: #8b958d;
+      --accent: #286b4a;
+      --accent-soft: #e4efe8;
+      --info: #205f8a;
+      --info-soft: #e7f1f7;
+      --warning: #805910;
+      --warning-soft: #fff3d8;
+      --danger: #9c302c;
+      --danger-soft: #fae9e7;
+      --focus: #075fd8;
+      --phone-width: 390px;
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      letter-spacing: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--page);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 18px 14px 24px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--page);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex]:not([tabindex="-1"]):focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .lab-shell {
+      width: min(100%, 780px);
+      margin: 0 auto;
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .lab-kicker {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 750;
+    }
+
+    .lab-header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
+
+    .candidate-badge {
+      flex: none;
+      padding: 5px 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--surface);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .variant-panel,
+    .lab-controls {
+      width: min(100%, var(--phone-width));
+      margin: 0 auto 10px;
+    }
+
+    .variant-label,
+    .lab-control-label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 750;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #dde1dd;
+    }
+
+    .segment {
+      min-height: 48px;
+      padding: 5px 3px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .segment[aria-selected="true"] {
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(26, 34, 28, 0.18);
+    }
+
+    .segment strong,
+    .segment small {
+      display: block;
+    }
+
+    .segment strong {
+      font-size: 0.88rem;
+    }
+
+    .segment small {
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 0.6rem;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .variant-summary {
+      min-height: 35px;
+      margin: 6px 2px 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .lab-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .lab-controls select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: 7px 9px;
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .stage {
+      display: grid;
+      place-items: start center;
+    }
+
+    .phone {
+      position: relative;
+      display: flex;
+      width: min(100%, var(--phone-width));
+      height: min(720px, calc(100dvh - 248px));
+      min-height: 500px;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid #373c38;
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 12px 28px rgba(23, 31, 25, 0.14);
+    }
+
+    .status-bar {
+      display: flex;
+      min-height: 29px;
+      flex: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 18px 3px;
+      font-size: 0.67rem;
+      font-weight: 750;
+    }
+
+    .app-root {
+      display: flex;
+      min-height: 0;
+      flex: 1;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 0 0 25px 25px;
+      background: var(--surface);
+    }
+
+    .app-header {
+      display: grid;
+      min-height: 62px;
+      flex: none;
+      grid-template-columns: 48px minmax(0, 1fr) 48px;
+      align-items: center;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .app-header.center-only {
+      grid-template-columns: 1fr;
+      padding-inline: 16px;
+    }
+
+    .header-copy {
+      text-align: center;
+    }
+
+    .center-only .header-copy {
+      text-align: left;
+    }
+
+    .app-name {
+      display: block;
+      margin-bottom: 1px;
+      color: var(--muted);
+      font-size: 0.61rem;
+      font-weight: 750;
+    }
+
+    .screen-title {
+      margin: 0;
+      font-size: 1.03rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .header-button {
+      min-height: 44px;
+      padding: 6px;
+      border: 0;
+      border-radius: 6px;
+      color: var(--accent);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .screen {
+      min-height: 0;
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 16px;
+      scrollbar-gutter: stable;
+    }
+
+    .screen > :first-child {
+      margin-top: 0;
+    }
+
+    .brand-lockup {
+      padding: 16px 0 12px;
+    }
+
+    .brand-lockup strong {
+      display: block;
+      font-size: 1.72rem;
+      line-height: 1.12;
+    }
+
+    .brand-lockup span {
+      display: block;
+      margin-top: 4px;
+      color: var(--accent);
+      font-size: 0.84rem;
+      font-weight: 750;
+    }
+
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 0.93rem;
+      line-height: 1.35;
+    }
+
+    p {
+      margin: 0 0 10px;
+      line-height: 1.5;
+    }
+
+    .body-copy,
+    .fine-print,
+    .helper {
+      color: var(--muted);
+    }
+
+    .body-copy {
+      font-size: 0.84rem;
+    }
+
+    .fine-print,
+    .helper {
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    .notice,
+    .status-box,
+    .summary-block,
+    .error-summary {
+      margin: 10px 0;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-muted);
+      font-size: 0.77rem;
+      line-height: 1.45;
+    }
+
+    .notice.info {
+      border-color: #9bbbd0;
+      background: var(--info-soft);
+    }
+
+    .notice.warning {
+      border-color: #d2b36a;
+      background: var(--warning-soft);
+    }
+
+    .error-summary {
+      border-color: #d79590;
+      color: #74221f;
+      background: var(--danger-soft);
+    }
+
+    .error-summary:empty {
+      display: none;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 11px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label,
+    .field legend {
+      color: var(--ink);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--ink);
+      background: var(--surface);
+    }
+
+    .field input[aria-invalid="true"],
+    .field select[aria-invalid="true"] {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 1px var(--danger);
+    }
+
+    .field-error {
+      min-height: 1em;
+      margin: 0;
+      color: var(--danger);
+      font-size: 0.69rem;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: var(--surface);
+      cursor: pointer;
+      text-align: center;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .button.secondary {
+      color: var(--accent);
+      background: var(--surface);
+    }
+
+    .button.danger {
+      border-color: #ba6e69;
+      color: #7c2824;
+      background: var(--danger-soft);
+    }
+
+    .button[disabled] {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .summary-row,
+    .metric-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+
+    .summary-row:last-child,
+    .metric-row:last-child {
+      border-bottom: 0;
+    }
+
+    .summary-row span,
+    .metric-row span {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .summary-row strong,
+    .metric-row strong {
+      text-align: right;
+      font-size: 0.8rem;
+      overflow-wrap: anywhere;
+    }
+
+    .goal-empty {
+      padding: 14px 0;
+      border-block: 1px solid var(--line);
+    }
+
+    .goal-empty strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .audit-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      margin-top: 12px;
+    }
+
+    .audit-item {
+      padding: 7px 4px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .audit-item strong,
+    .audit-item span {
+      display: block;
+    }
+
+    .audit-item strong {
+      font-size: 0.85rem;
+    }
+
+    .audit-item span {
+      color: var(--muted);
+      font-size: 0.58rem;
+      line-height: 1.25;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding-inline: 8px;
+      }
+
+      .lab-header {
+        padding-inline: 4px;
+      }
+
+      .lab-header h1 {
+        font-size: 1.05rem;
+      }
+
+      .candidate-badge {
+        max-width: 112px;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .phone {
+        height: min(704px, calc(100dvh - 250px));
+        min-height: 470px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .field-grid,
+      .lab-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .phone {
+        height: min(680px, calc(100dvh - 300px));
+        min-height: 440px;
+      }
+
+      .screen {
+        padding-inline: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="lab-shell">
+    <header class="lab-header">
+      <div>
+        <p class="lab-kicker">Nuttie · D-040 低保真比较</p>
+        <h1>首启资料与目标设置</h1>
+      </div>
+      <span class="candidate-badge">CANDIDATE · 未作决定</span>
+    </header>
+
+    <section class="variant-panel" aria-labelledby="variant-label">
+      <p class="variant-label" id="variant-label">候选流程（切换只改变本页预览，不代表 Owner 选择）</p>
+      <div class="segmented" role="tablist" aria-label="D-040 候选方案">
+        <button class="segment" type="button" role="tab" data-variant="A" data-testid="variant-a" aria-selected="true" tabindex="0">
+          <strong>A</strong><small>最小资料 + 候选公式</small>
+        </button>
+        <button class="segment" type="button" role="tab" data-variant="B" data-testid="variant-b" aria-selected="false" tabindex="-1">
+          <strong>B</strong><small>仅手工目标</small>
+        </button>
+        <button class="segment" type="button" role="tab" data-variant="C" data-testid="variant-c" aria-selected="false" tabindex="-1">
+          <strong>C</strong><small>完整候选问卷</small>
+        </button>
+      </div>
+      <p class="variant-summary" id="variant-summary" aria-live="polite"></p>
+    </section>
+
+    <section class="lab-controls" aria-label="原型本机状态控制">
+      <label>
+        <span class="lab-control-label">本机启动状态</span>
+        <select id="device-state" data-testid="device-state">
+          <option value="new">首次启动 · 无本地数据</option>
+          <option value="existing">已有本地档案</option>
+          <option value="db-error">数据库无法解锁</option>
+        </select>
+      </label>
+      <label>
+        <span class="lab-control-label">确认保存结果</span>
+        <select id="save-outcome" data-testid="save-outcome">
+          <option value="success">本地保存成功</option>
+          <option value="db-error">数据库暂时不可写</option>
+          <option value="storage-low">设备空间不足</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="stage">
+      <div class="phone" data-testid="phone-frame">
+        <div class="status-bar" aria-hidden="true"><span>9:41</span><span>本机 · 离线</span></div>
+        <div class="app-root" id="app-main"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const VARIANTS = {
+        A: "收集流程演示所需的最小资料，展示未批准的公式候选说明；可以修改、确认或稍后设置。",
+        B: "不收集画像来推导目标，只由用户手工输入；可以确认或暂不设置。",
+        C: "完整候选问卷是新建档案进入日记前的门槛；备份恢复和异常恢复仍可用。"
+      };
+
+      const initialDrafts = () => ({
+        profile: { age: "32", height: "168", weight: "64", activity: "moderate" },
+        manual: { energy: "2000", protein: "100", carbohydrate: "250", fat: "67" },
+        questionnaire: {
+          age: "32",
+          height: "168",
+          weight: "64",
+          activity: "moderate",
+          mealPattern: "regular",
+          foodPreference: "balanced",
+          schedule: "daytime"
+        }
+      });
+
+      const state = {
+        variant: "A",
+        screen: "welcome",
+        history: [],
+        drafts: initialDrafts(),
+        targetPreview: null,
+        restoreState: "idle",
+        existingDataState: "none",
+        errors: {},
+        profileWrites: 0,
+        goalWrites: 0,
+        hasGoal: false,
+        saveOutcome: "success",
+        returnFocus: null
+      };
+
+      const app = document.querySelector("#app-main");
+      const variantButtons = [...document.querySelectorAll("[data-variant]")];
+      const variantSummary = document.querySelector("#variant-summary");
+      const deviceState = document.querySelector("#device-state");
+      const saveOutcome = document.querySelector("#save-outcome");
+
+      function publicState() {
+        return JSON.parse(JSON.stringify({
+          variant: state.variant,
+          screen: state.screen,
+          historyDepth: state.history.length,
+          drafts: state.drafts,
+          targetPreview: state.targetPreview,
+          restoreState: state.restoreState,
+          existingDataState: state.existingDataState,
+          errors: state.errors,
+          profileWrites: state.profileWrites,
+          goalWrites: state.goalWrites,
+          hasGoal: state.hasGoal,
+          saveOutcome: state.saveOutcome
+        }));
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function header(title, canBack = true) {
+        return `
+          <header class="app-header ${canBack ? "" : "center-only"}">
+            ${canBack ? '<button class="header-button" id="back-button" type="button" data-testid="back-button">返回</button>' : ""}
+            <div class="header-copy">
+              <span class="app-name">栗子自律 · Nuttie</span>
+              <h2 class="screen-title" tabindex="-1" data-autofocus>${escapeHtml(title)}</h2>
+            </div>
+            ${canBack ? '<span aria-hidden="true"></span>' : ""}
+          </header>`;
+      }
+
+      function auditStrip() {
+        return `
+          <div class="audit-strip" aria-label="本页原型写入计数">
+            <div class="audit-item"><strong>${state.profileWrites}</strong><span>档案写入</span></div>
+            <div class="audit-item"><strong>${state.goalWrites}</strong><span>目标写入</span></div>
+            <div class="audit-item"><strong>0</strong><span>网络请求</span></div>
+          </div>`;
+      }
+
+      function errorSummary() {
+        const messages = Object.values(state.errors);
+        return `<div class="error-summary" id="error-summary" role="alert" tabindex="-1">${messages.map(escapeHtml).join("；")}</div>`;
+      }
+
+      function renderWelcome() {
+        app.innerHTML = `
+          ${header("开始", false)}
+          <section class="screen" data-screen="welcome">
+            <div class="brand-lockup"><strong>栗子自律</strong><span>积“栗”前行，“立”见更好的自己。</span></div>
+            <p class="body-copy">你的档案、目标与日记保存在这台设备上的 Nuttie 中。开始时无需注册或联网。</p>
+            <div class="notice warning">营养目标只用于一般记录与参考，不能替代医生或注册营养专业人员的个体化建议。</div>
+            <div class="actions">
+              <button class="button primary" type="button" data-route="start" data-testid="start-setup">开始设置</button>
+              <button class="button secondary" type="button" data-route="restore" data-testid="restore-backup">从加密备份恢复</button>
+            </div>
+            <p class="fine-print">这里不会请求相机、相册、通知或 HealthKit 权限，也不会配置 AI。</p>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      function numberField({ id, label, value, min, max, step, unit, error }) {
+        return `
+          <div class="field">
+            <label for="${id}">${escapeHtml(label)}（流程演示）</label>
+            <input id="${id}" name="${id}" type="number" value="${escapeHtml(value)}" min="${min}" max="${max}" step="${step}" inputmode="decimal" aria-describedby="${id}-help ${id}-error" aria-invalid="${error ? "true" : "false"}">
+            <span class="helper" id="${id}-help">单位：${escapeHtml(unit)}；该字段尚未获批为正式资料项。</span>
+            <span class="field-error" id="${id}-error">${escapeHtml(error || "")}</span>
+          </div>`;
+      }
+
+      function renderAProfile() {
+        const d = state.drafts.profile;
+        app.innerHTML = `
+          ${header("最小资料 · 流程演示")}
+          <section class="screen" data-screen="a-profile">
+            <p class="body-copy">这些只是用于比较流程的测试字段。D-040 尚未批准正式最小字段，也没有批准具体目标公式。</p>
+            <div class="notice info">下一步只展示固定测试夹具与候选公式说明，不会把输入计算成健康建议。</div>
+            ${errorSummary()}
+            <form data-form="a-profile" novalidate>
+              <div class="field-grid">
+                ${numberField({ id: "a-age", label: "年龄", value: d.age, min: 18, max: 120, step: 1, unit: "岁", error: state.errors.age })}
+                ${numberField({ id: "a-height", label: "身高", value: d.height, min: 120, max: 230, step: 0.1, unit: "厘米", error: state.errors.height })}
+                ${numberField({ id: "a-weight", label: "当前体重", value: d.weight, min: 30, max: 300, step: 0.1, unit: "千克", error: state.errors.weight })}
+                <div class="field">
+                  <label for="a-activity">日常活动（流程演示）</label>
+                  <select id="a-activity" name="a-activity" aria-describedby="a-activity-help a-activity-error" aria-invalid="${state.errors.activity ? "true" : "false"}">
+                    <option value="" ${d.activity === "" ? "selected" : ""}>请选择</option>
+                    <option value="light" ${d.activity === "light" ? "selected" : ""}>较少活动</option>
+                    <option value="moderate" ${d.activity === "moderate" ? "selected" : ""}>一般活动</option>
+                    <option value="active" ${d.activity === "active" ? "selected" : ""}>较多活动</option>
+                  </select>
+                  <span class="helper" id="a-activity-help">候选字段；分级与系数尚未批准。</span>
+                  <span class="field-error" id="a-activity-error">${escapeHtml(state.errors.activity || "")}</span>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="button primary" type="submit">查看目标候选</button>
+                <button class="button secondary" type="button" data-route="skip">稍后设置目标</button>
+                <button class="button secondary" type="button" data-route="manual">改为手工设置</button>
+              </div>
+            </form>
+          </section>`;
+      }
+
+      function targetFields(prefix, draft) {
+        return `
+          <div class="field-grid">
+            ${numberField({ id: `${prefix}-energy`, label: "每日能量目标", value: draft.energy, min: 1, max: 10000, step: 1, unit: "千卡/日", error: state.errors.energy })}
+            ${numberField({ id: `${prefix}-protein`, label: "蛋白质目标", value: draft.protein, min: 1, max: 1000, step: 1, unit: "克/日", error: state.errors.protein })}
+            ${numberField({ id: `${prefix}-carbohydrate`, label: "碳水化合物目标", value: draft.carbohydrate, min: 1, max: 1500, step: 1, unit: "克/日", error: state.errors.carbohydrate })}
+            ${numberField({ id: `${prefix}-fat`, label: "脂肪目标", value: draft.fat, min: 1, max: 500, step: 1, unit: "克/日", error: state.errors.fat })}
+          </div>`;
+      }
+
+      function renderBManual() {
+        app.innerHTML = `
+          ${header("手工设置目标")}
+          <section class="screen" data-screen="b-manual">
+            <p class="body-copy">本方案不根据画像推导目标。数值由你手工输入，具体范围和舍入仍需领域评审。</p>
+            ${errorSummary()}
+            <form data-form="b-manual" novalidate>
+              ${targetFields("b", state.drafts.manual)}
+              <div class="actions">
+                <button class="button primary" type="submit">检查手工目标</button>
+                <button class="button secondary" type="button" data-route="skip">暂不设置目标</button>
+              </div>
+            </form>
+          </section>`;
+      }
+
+      function questionnaireSelect(id, label, value, options, error) {
+        return `
+          <div class="field full">
+            <label for="${id}">${escapeHtml(label)}（候选问卷字段）</label>
+            <select id="${id}" name="${id}" aria-describedby="${id}-help ${id}-error" aria-invalid="${error ? "true" : "false"}">
+              <option value="">请选择</option>
+              ${options.map(([key, text]) => `<option value="${key}" ${value === key ? "selected" : ""}>${escapeHtml(text)}</option>`).join("")}
+            </select>
+            <span class="helper" id="${id}-help">仅用于展示完整问卷的长度与阻力，不代表正式收集范围。</span>
+            <span class="field-error" id="${id}-error">${escapeHtml(error || "")}</span>
+          </div>`;
+      }
+
+      function renderCQuestionnaire() {
+        const d = state.drafts.questionnaire;
+        app.innerHTML = `
+          ${header("完整候选问卷 · 1/1")}
+          <section class="screen" data-screen="c-questionnaire">
+            <div class="notice warning">这是方案 C 的真实门槛：新建档案必须完成全部候选问题后才能进入日记。备份恢复不受此门槛影响。</div>
+            <p class="body-copy">字段、选项和算法都尚未批准。本页不收集姓名、账号、诊断、孕产或慢病信息。</p>
+            ${errorSummary()}
+            <form data-form="c-questionnaire" novalidate>
+              <div class="field-grid">
+                ${numberField({ id: "c-age", label: "年龄", value: d.age, min: 18, max: 120, step: 1, unit: "岁", error: state.errors.age })}
+                ${numberField({ id: "c-height", label: "身高", value: d.height, min: 120, max: 230, step: 0.1, unit: "厘米", error: state.errors.height })}
+                ${numberField({ id: "c-weight", label: "当前体重", value: d.weight, min: 30, max: 300, step: 0.1, unit: "千克", error: state.errors.weight })}
+                ${questionnaireSelect("c-activity", "日常活动", d.activity, [["light", "较少活动"], ["moderate", "一般活动"], ["active", "较多活动"]], state.errors.activity)}
+                ${questionnaireSelect("c-meal-pattern", "日常餐次节奏", d.mealPattern, [["regular", "大致规律"], ["variable", "经常变化"]], state.errors.mealPattern)}
+                ${questionnaireSelect("c-food-preference", "饮食偏好", d.foodPreference, [["balanced", "没有特定偏好"], ["plant", "偏植物性"], ["other", "其他或稍后说明"]], state.errors.foodPreference)}
+                ${questionnaireSelect("c-schedule", "日常作息", d.schedule, [["daytime", "通常白天活动"], ["shift", "轮班或不固定"]], state.errors.schedule)}
+              </div>
+              <div class="actions">
+                <button class="button primary" type="submit">完成问卷并检查候选</button>
+                <button class="button secondary" type="button" data-route="restore">从加密备份恢复</button>
+                <button class="button secondary" type="button" data-route="restart-questionnaire">重新开始问卷</button>
+              </div>
+            </form>
+          </section>`;
+      }
+
+      function renderPreview() {
+        const preview = state.targetPreview;
+        app.innerHTML = `
+          ${header("检查目标")}
+          <section class="screen" data-screen="target-preview">
+            <p class="body-copy">确认前不会创建有效目标。你可以修改下面的流程演示值。</p>
+            <div class="notice ${preview.source === "manual" ? "info" : "warning"}">
+              <strong>来源：${preview.source === "manual" ? "用户手工输入" : "未批准公式候选的固定测试夹具"}</strong><br>
+              ${preview.source === "manual"
+                ? "没有运行画像推导公式。"
+                : "候选标识 D040-FORMULA-PENDING；只演示可解释结构，不执行 BMR/TDEE、活动系数或医疗规则。"}
+            </div>
+            ${preview.source === "fixture" ? `
+              <div class="summary-block" data-testid="formula-explanation">
+                <div class="summary-row"><span>参与流程的测试因素</span><strong>${escapeHtml(preview.factors)}</strong></div>
+                <div class="summary-row"><span>计算依据</span><strong>待 Owner 与健康评审</strong></div>
+                <div class="summary-row"><span>数值性质</span><strong>固定夹具，可修改</strong></div>
+              </div>` : ""}
+            ${errorSummary()}
+            <form data-form="target-preview" novalidate>
+              ${targetFields("preview", preview.values)}
+              <div class="summary-block">
+                <div class="summary-row"><span>生效日期</span><strong>2026-08-06 · 流程演示</strong></div>
+                <div class="summary-row"><span>目标版本</span><strong>${preview.source === "manual" ? "MANUAL-DEMO-v0" : "FORMULA-PENDING-v0"}</strong></div>
+                <div class="summary-row"><span>历史记录</span><strong>不会回算或改写</strong></div>
+              </div>
+              <div class="actions">
+                <button class="button primary" type="submit">确认并保存到本机</button>
+                <button class="button secondary" type="button" data-route="edit-source">返回修改</button>
+              </div>
+            </form>
+            <p class="fine-print">估算或手工目标只供一般记录参考，不构成诊断、治疗或营养处方。</p>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      function renderDiary() {
+        app.innerHTML = `
+          ${header("今天", false)}
+          <section class="screen" data-screen="diary">
+            <p class="body-copy">2026 年 8 月 6 日 · 本地日记</p>
+            ${state.hasGoal ? `
+              <div class="summary-block" data-testid="saved-goal">
+                <div class="metric-row"><span>每日能量目标</span><strong>${escapeHtml(state.targetPreview.values.energy)} 千卡</strong></div>
+                <div class="metric-row"><span>蛋白质</span><strong>${escapeHtml(state.targetPreview.values.protein)} 克</strong></div>
+                <div class="metric-row"><span>碳水化合物</span><strong>${escapeHtml(state.targetPreview.values.carbohydrate)} 克</strong></div>
+                <div class="metric-row"><span>脂肪</span><strong>${escapeHtml(state.targetPreview.values.fat)} 克</strong></div>
+              </div>
+              <p class="fine-print">来源：${goalSourceLabel(state.targetPreview.source)}。历史记录不会被新目标回算。</p>` : `
+              <div class="goal-empty" data-testid="empty-goal">
+                <strong>尚未设置每日目标</strong>
+                <p class="body-copy">日记和本地记录仍可使用。这里不会显示 0、默认推荐值或虚构的剩余量。</p>
+                <button class="button secondary" type="button" data-route="start">设置目标</button>
+              </div>`}
+            <h3>餐食记录</h3>
+            <div class="status-box">今天还没有餐食记录。</div>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      function renderRestore() {
+        app.innerHTML = `
+          ${header("从加密备份恢复")}
+          <section class="screen" data-screen="restore">
+            <p class="body-copy">系统 Files 选择器会由用户主动打开。本原型不读取任何真实文件。</p>
+            <div class="summary-block">
+              <div class="summary-row"><span>测试备份</span><strong>Nuttie-demo.backup</strong></div>
+              <div class="summary-row"><span>内容</span><strong>本地档案、目标、日记</strong></div>
+              <div class="summary-row"><span>AI / 数据库密钥</span><strong>不包含</strong></div>
+            </div>
+            ${state.restoreState === "failed" ? '<div class="error-summary" role="alert">备份未通过完整性检查。现有本地数据没有变化。</div>' : ""}
+            <div class="actions">
+              <button class="button primary" type="button" data-route="restore-success">模拟验证并恢复</button>
+              <button class="button secondary" type="button" data-route="restore-fail">模拟恢复失败</button>
+              <button class="button secondary" type="button" data-route="cancel-restore">取消恢复</button>
+            </div>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      function renderRecovery() {
+        app.innerHTML = `
+          ${header("无法打开本地加密数据", false)}
+          <section class="screen" data-screen="db-recovery">
+            <div class="error-summary" role="alert">数据库密钥暂时不可用。Nuttie 没有创建空数据库，也没有覆盖现有文件。</div>
+            <p class="body-copy">当前只提供恢复动作，业务写入保持关闭。</p>
+            <div class="actions">
+              <button class="button primary" type="button" data-route="retry-db">重试打开</button>
+              <button class="button secondary" type="button" data-route="restore">从加密备份恢复</button>
+            </div>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      function renderSaveError() {
+        const storage = state.saveOutcome === "storage-low";
+        app.innerHTML = `
+          ${header("没有保存")}
+          <section class="screen" data-screen="save-error">
+            <div class="error-summary" role="alert">${storage ? "设备空间不足，未创建档案或目标。" : "数据库暂时不可写，未创建档案或目标。"}</div>
+            <p class="body-copy">你的资料和目标草稿仍在本页流程内。现有本地数据没有变化。</p>
+            <div class="actions">
+              <button class="button primary" type="button" data-route="retry-save">重试保存</button>
+              <button class="button secondary" type="button" data-route="back-preview">返回检查</button>
+              <button class="button secondary" type="button" data-route="cancel-save">取消并回到开始</button>
+            </div>
+            ${auditStrip()}
+          </section>`;
+      }
+
+      const renderers = {
+        welcome: renderWelcome,
+        "a-profile": renderAProfile,
+        "b-manual": renderBManual,
+        "c-questionnaire": renderCQuestionnaire,
+        "target-preview": renderPreview,
+        diary: renderDiary,
+        restore: renderRestore,
+        "db-recovery": renderRecovery,
+        "save-error": renderSaveError
+      };
+
+      function goalSourceLabel(source) {
+        return {
+          manual: "手工演示",
+          fixture: "公式候选流程演示",
+          restored: "加密备份恢复演示",
+          existing: "既有本地档案演示"
+        }[source] || "本地演示";
+      }
+
+      function bindDraftInputs() {
+        const map = {
+          "a-age": ["profile", "age"],
+          "a-height": ["profile", "height"],
+          "a-weight": ["profile", "weight"],
+          "a-activity": ["profile", "activity"],
+          "b-energy": ["manual", "energy"],
+          "b-protein": ["manual", "protein"],
+          "b-carbohydrate": ["manual", "carbohydrate"],
+          "b-fat": ["manual", "fat"],
+          "c-age": ["questionnaire", "age"],
+          "c-height": ["questionnaire", "height"],
+          "c-weight": ["questionnaire", "weight"],
+          "c-activity": ["questionnaire", "activity"],
+          "c-meal-pattern": ["questionnaire", "mealPattern"],
+          "c-food-preference": ["questionnaire", "foodPreference"],
+          "c-schedule": ["questionnaire", "schedule"]
+        };
+
+        Object.entries(map).forEach(([id, [group, key]]) => {
+          const input = document.querySelector(`#${id}`);
+          input?.addEventListener("input", () => { state.drafts[group][key] = input.value; });
+          input?.addEventListener("change", () => { state.drafts[group][key] = input.value; });
+        });
+
+        ["energy", "protein", "carbohydrate", "fat"].forEach((key) => {
+          const input = document.querySelector(`#preview-${key}`);
+          input?.addEventListener("input", () => { state.targetPreview.values[key] = input.value; });
+        });
+      }
+
+      function render({ focus = false } = {}) {
+        variantSummary.textContent = VARIANTS[state.variant];
+        variantButtons.forEach((button) => {
+          const active = button.dataset.variant === state.variant;
+          button.setAttribute("aria-selected", String(active));
+          button.tabIndex = active ? 0 : -1;
+        });
+        (renderers[state.screen] || renderWelcome)();
+        bindDraftInputs();
+
+        document.querySelector("#back-button")?.addEventListener("click", goBack);
+        document.querySelectorAll("[data-route]").forEach((button) => {
+          button.addEventListener("click", () => route(button.dataset.route, button));
+        });
+        document.querySelectorAll("form").forEach((form) => {
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            submitForm(form.dataset.form);
+          });
+        });
+
+        if (focus) requestAnimationFrame(() => document.querySelector("[data-autofocus]")?.focus());
+      }
+
+      function pushScreen(screen, trigger) {
+        state.history.push({ screen: state.screen, focus: trigger ? describeFocus(trigger) : null });
+        state.returnFocus = null;
+        state.screen = screen;
+        state.errors = {};
+        render({ focus: true });
+      }
+
+      function describeFocus(element) {
+        if (!element) return null;
+        if (element.id) return `#${element.id}`;
+        if (element.dataset.route) return `[data-route="${element.dataset.route}"]`;
+        return null;
+      }
+
+      function goBack() {
+        const previous = state.history.pop();
+        if (!previous) {
+          state.screen = "welcome";
+          render({ focus: true });
+          return;
+        }
+        state.screen = previous.screen;
+        state.errors = {};
+        render();
+        requestAnimationFrame(() => {
+          const target = previous.focus ? document.querySelector(previous.focus) : null;
+          (target || document.querySelector("[data-autofocus]"))?.focus();
+        });
+      }
+
+      function startScreen() {
+        if (state.variant === "A") return "a-profile";
+        if (state.variant === "B") return "b-manual";
+        return "c-questionnaire";
+      }
+
+      function route(name, trigger) {
+        if (name === "start") pushScreen(startScreen(), trigger);
+        else if (name === "restore") pushScreen("restore", trigger);
+        else if (name === "manual") pushScreen("b-manual", trigger);
+        else if (name === "skip") enterDiaryWithoutGoal();
+        else if (name === "restore-fail") { state.restoreState = "failed"; render({ focus: true }); }
+        else if (name === "restore-success") {
+          state.restoreState = "completed";
+          state.profileWrites = 1;
+          state.goalWrites = 1;
+          state.hasGoal = true;
+          state.targetPreview = { source: "restored", factors: "加密备份", values: { energy: "1980", protein: "96", carbohydrate: "246", fat: "65" } };
+          state.history = [];
+          state.screen = "diary";
+          render({ focus: true });
+        } else if (name === "cancel-restore" || name === "cancel-save") resetFlow();
+        else if (name === "retry-db") { deviceState.value = "new"; resetFlow(); }
+        else if (name === "retry-save") attemptSave();
+        else if (name === "back-preview") { state.screen = "target-preview"; render({ focus: true }); }
+        else if (name === "edit-source") goBack();
+        else if (name === "restart-questionnaire") {
+          state.drafts.questionnaire = { age: "", height: "", weight: "", activity: "", mealPattern: "", foodPreference: "", schedule: "" };
+          state.errors = {};
+          render({ focus: true });
+        }
+      }
+
+      function validateNumbers(values, schema) {
+        const errors = {};
+        Object.entries(schema).forEach(([key, [min, max, label]]) => {
+          const raw = values[key];
+          const numeric = Number(raw);
+          if (String(raw).trim() === "") errors[key] = `请填写${label}`;
+          else if (!Number.isFinite(numeric) || numeric < min || numeric > max) errors[key] = `${label}应在 ${min} 到 ${max} 之间`;
+        });
+        return errors;
+      }
+
+      function focusFirstError() {
+        requestAnimationFrame(() => {
+          const first = document.querySelector('[aria-invalid="true"]');
+          (first || document.querySelector("#error-summary"))?.focus();
+        });
+      }
+
+      function previewFixture(factors) {
+        state.targetPreview = {
+          source: "fixture",
+          factors,
+          values: { energy: "2000", protein: "100", carbohydrate: "250", fat: "67" }
+        };
+      }
+
+      function submitForm(form) {
+        if (form === "a-profile") {
+          const d = state.drafts.profile;
+          state.errors = validateNumbers(d, { age: [18, 120, "年龄"], height: [120, 230, "身高"], weight: [30, 300, "当前体重"] });
+          if (!d.activity) state.errors.activity = "请选择日常活动";
+          if (Object.keys(state.errors).length) { render(); focusFirstError(); return; }
+          previewFixture("年龄、身高、当前体重、日常活动（均为未批准的流程演示字段）");
+          pushScreen("target-preview", document.querySelector('[data-form="a-profile"] button[type="submit"]'));
+        } else if (form === "b-manual") {
+          state.errors = validateTarget(state.drafts.manual);
+          if (Object.keys(state.errors).length) { render(); focusFirstError(); return; }
+          state.targetPreview = { source: "manual", factors: "无画像推导", values: { ...state.drafts.manual } };
+          pushScreen("target-preview", document.querySelector('[data-form="b-manual"] button[type="submit"]'));
+        } else if (form === "c-questionnaire") {
+          const d = state.drafts.questionnaire;
+          state.errors = validateNumbers(d, { age: [18, 120, "年龄"], height: [120, 230, "身高"], weight: [30, 300, "当前体重"] });
+          for (const [key, label] of [["activity", "日常活动"], ["mealPattern", "日常餐次节奏"], ["foodPreference", "饮食偏好"], ["schedule", "日常作息"]]) {
+            if (!d[key]) state.errors[key] = `请选择${label}`;
+          }
+          if (Object.keys(state.errors).length) { render(); focusFirstError(); return; }
+          previewFixture("年龄、身高、当前体重、日常活动、餐次节奏、饮食偏好、日常作息（均未批准）");
+          pushScreen("target-preview", document.querySelector('[data-form="c-questionnaire"] button[type="submit"]'));
+        } else if (form === "target-preview") {
+          state.errors = validateTarget(state.targetPreview.values);
+          if (Object.keys(state.errors).length) { render(); focusFirstError(); return; }
+          attemptSave();
+        }
+      }
+
+      function validateTarget(values) {
+        return validateNumbers(values, {
+          energy: [1, 10000, "每日能量目标"],
+          protein: [1, 1000, "蛋白质目标"],
+          carbohydrate: [1, 1500, "碳水化合物目标"],
+          fat: [1, 500, "脂肪目标"]
+        });
+      }
+
+      function attemptSave() {
+        if (state.saveOutcome !== "success") {
+          state.profileWrites = 0;
+          state.goalWrites = 0;
+          state.hasGoal = false;
+          state.screen = "save-error";
+          render({ focus: true });
+          return;
+        }
+        state.profileWrites = 1;
+        state.goalWrites = 1;
+        state.hasGoal = true;
+        state.history = [];
+        state.screen = "diary";
+        render({ focus: true });
+      }
+
+      function enterDiaryWithoutGoal() {
+        state.profileWrites = 0;
+        state.goalWrites = 0;
+        state.hasGoal = false;
+        state.targetPreview = null;
+        state.history = [];
+        state.screen = "diary";
+        render({ focus: true });
+      }
+
+      function resetFlow() {
+        state.screen = "welcome";
+        state.history = [];
+        state.drafts = initialDrafts();
+        state.targetPreview = null;
+        state.restoreState = "idle";
+        state.existingDataState = "none";
+        state.errors = {};
+        state.profileWrites = 0;
+        state.goalWrites = 0;
+        state.hasGoal = false;
+        render({ focus: true });
+      }
+
+      function setVariant(variant, focus = false) {
+        state.variant = variant;
+        state.saveOutcome = saveOutcome.value;
+        resetFlow();
+        if (focus) document.querySelector(`[data-variant="${variant}"]`)?.focus();
+      }
+
+      variantButtons.forEach((button) => {
+        button.addEventListener("click", () => setVariant(button.dataset.variant));
+        button.addEventListener("keydown", (event) => {
+          const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+          if (!keys.includes(event.key)) return;
+          event.preventDefault();
+          const index = variantButtons.indexOf(button);
+          const next = event.key === "Home" ? 0
+            : event.key === "End" ? variantButtons.length - 1
+              : event.key === "ArrowRight" ? (index + 1) % variantButtons.length
+                : (index - 1 + variantButtons.length) % variantButtons.length;
+          setVariant(variantButtons[next].dataset.variant, true);
+        });
+      });
+
+      deviceState.addEventListener("change", () => {
+        resetFlow();
+        if (deviceState.value === "existing") {
+          state.existingDataState = "existing";
+          state.profileWrites = 0;
+          state.goalWrites = 0;
+          state.hasGoal = true;
+          state.targetPreview = { source: "existing", factors: "既有本地档案", values: { energy: "2050", protein: "102", carbohydrate: "256", fat: "68" } };
+          state.screen = "diary";
+          render({ focus: true });
+        } else if (deviceState.value === "db-error") {
+          state.existingDataState = "locked";
+          state.screen = "db-recovery";
+          render({ focus: true });
+        }
+      });
+
+      saveOutcome.addEventListener("change", () => { state.saveOutcome = saveOutcome.value; });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (["welcome", "diary", "db-recovery"].includes(state.screen)) return;
+        event.preventDefault();
+        goBack();
+      });
+
+      window.__NUTTIE_D040__ = Object.freeze({
+        getState: publicState,
+        reset: resetFlow,
+        simulateDevice(value) {
+          if (!["new", "existing", "db-error"].includes(value)) return false;
+          deviceState.value = value;
+          deviceState.dispatchEvent(new Event("change", { bubbles: true }));
+          return true;
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -20,6 +20,8 @@
 | [open-decisions.md](open-decisions.md) | 尚待 Owner 明确确认的体验选项；当前均未接受 |
 | [prototype-and-owner-review-workflow.md](prototype-and-owner-review-workflow.md) | “先原型、跨角色评审、Owner 明确选择、再实现”的 PX-0~PX-5 门禁 |
 | [prototype-manifest.md](prototype-manifest.md) | D-038 A/B/C 交互原型的同源路径、范围、哈希、自测证据和已知限制 |
+| [d039-prototype-manifest.md](d039-prototype-manifest.md) | D-039 添加餐食首层 A/B/C 原型、PX-2 证据与 Owner 防越级边界 |
+| [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 
 ## 2. 本轮结论
 

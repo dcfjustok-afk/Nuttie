@@ -2,7 +2,7 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-05（Asia/Shanghai） |
+| 快照日期 | 2026-08-06（Asia/Shanghai）；ProjectOps 人工归并快照仍为 2026-08-05 |
 | 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
 | 权威决定 | 17 项 `ACCEPTED`；14 项 `CANDIDATE` |
@@ -76,9 +76,10 @@ D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
 | [iOS Release 独立审查](../05-quality/ios-release-readiness-review.md) | `BLOCKED` | 开发准备、G6 和 G7 都没有退出证据，不得宣称 Beta/Release Ready |
 | [D-038 原型 Manifest](../03-design/prototype-manifest.md) | `CANDIDATE / OWNER_DECISION_PENDING`；DesignOps 与主 Agent 浏览器验收通过 | A/B/C 同等完整；初始 A 仅按字母顺序；只剩 Owner 明确选择 |
 | [D-039 原型 Manifest](../03-design/d039-prototype-manifest.md) | `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`；D039-QA-001 至 QA-010 全部关闭 | PX-2 只证明原型可提交评审；Owner 尚未选择 A/B/C，也未授权正式 React Native 实现 |
+| [D-040 原型 Manifest](../03-design/d040-prototype-manifest.md) | `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；三方案流程与作者 QA 已形成 | 具体画像字段、公式、适用范围和特殊人群规则尚未关闭；不能进入 PX-1/PX-2 或 Owner 方案选择 |
 | [原型与 Owner 评审流程](../03-design/prototype-and-owner-review-workflow.md) | 流程草案已形成 | 设计必须先原型、跨角色审查、Owner 明确选择，再进入正式规格与实现 |
 
-D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/index.html)。它只比较产品导航外壳，不决定 D-018 导航库、React Native 版本、正式视觉或任何 Apple/发布事项。D-039 仓库同源为 [添加餐食原型](../../prototypes/d039-add-meal-entry/index.html)，只比较添加餐食首层方式；Manifest 中的 `CANDIDATE` 是原型门禁状态，不得误读为 Owner 已接受决定。
+D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/index.html)。它只比较产品导航外壳，不决定 D-018 导航库、React Native 版本、正式视觉或任何 Apple/发布事项。D-039 仓库同源为 [添加餐食原型](../../prototypes/d039-add-meal-entry/index.html)，只比较添加餐食首层方式。D-040 仓库同源为 [首启资料与目标原型](../../prototypes/d040-onboarding-goals/index.html)，只比较 A/B/C 流程，并明确不执行健康公式。三个 Manifest 中的 `CANDIDATE` 都是原型门禁状态，不得误读为 Owner 已接受决定。
 
 ## 5. 五条 pending evidence
 
@@ -101,11 +102,12 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 1. **Owner 第 1 批已开始但尚未完成回读。** 12 项候选已通过原生选择卡取得待回读输入；D-047 最新输入已回正为 C“当前不付费、只自用”，OI-01 为尚未加入，OI-02/OI-03 仍未关闭。全部内容见 [Owner 待回读输入](owner-intake-pending.md) 与 `project-ops/owner-intake.json`。整批最终确认前不能授权正式实现；D-032=A 即使最终回读确认，也只进入隔离 Spike 授权。
 2. **D-038 尚未通过最终 Owner Gate。** DesignOps 与主 Agent 的桌面/移动视觉、console 和关键交互验收已完成；仍须由 Owner 明确选择 A/B/C，未选择前正式 IA/路由外壳保持阻断。
 3. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得创建正式餐食录入页面、路由或据此改变决定台账。
-4. **G4 只有文档合同，没有执行证据。** 版本、库、密码学、AI policy 和相关产品候选仍未关闭；没有 SQLCipher/Keychain/备份/数据包的跨实现 Spike、构建、迁移、kill/restart、真机或 Release 网络证据。
-5. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
-6. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
+4. **D-040 尚未关闭 PX-0 输入。** A/B/C 流程、恢复、无目标和失败零写入已形成可操作原型，但最小字段、目标公式、适用范围和特殊人群停止规则未获 Owner 与领域评审确认；不得把固定测试夹具当作产品目标或进入正式实现。
+5. **G4 只有文档合同，没有执行证据。** 版本、库、密码学、AI policy 和相关产品候选仍未关闭；没有 SQLCipher/Keychain/备份/数据包的跨实现 Spike、构建、迁移、kill/restart、真机或 Release 网络证据。
+6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
+7. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
 
-当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`77` 个事件和 `86` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。55 份受跟踪 Markdown 的 116 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程、320/375/430/desktop 四视口、零外部请求和零运行时问题。
+当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`77` 个事件和 `86` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。56 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
 
 ## 7. 下一步 Owner 互动
 
@@ -147,4 +149,13 @@ node D:\github\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0
 
 打开 `http://127.0.0.1:4176/`。页面只用于评审，不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 17/14；事件/消息/角色是 77/86/17 且仅 `root` 活跃；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-038 仍是 `CANDIDATE`；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW` 且未记录 Owner 选择；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源或 TestFlight 产物。
+D-040 冻结预览和自动 QA：
+
+```powershell
+node D:\study\Nuttie-D040-Prototype-Lab\server.mjs 4177
+node D:\study\Nuttie-D040-Prototype-Lab\qa-smoke.mjs http://127.0.0.1:4177/ D:\study\Nuttie-D040-Prototype-Lab\qa-screenshots
+```
+
+打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
+
+恢复后至少重新确认：决定是 17/14；事件/消息/角色是 77/86/17 且仅 `root` 活跃；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-038 仍是 `CANDIDATE`；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW` 且未记录 Owner 选择；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源或 TestFlight 产物。

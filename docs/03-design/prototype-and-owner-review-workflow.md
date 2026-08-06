@@ -5,7 +5,7 @@
 | 状态 | `CANDIDATE / PROCESS_DRAFT_FOR_OWNER_REVIEW` |
 | 基线日期 | 2026-07-31 |
 | 负责人 | Product Designer / DesignOps Lead |
-| 当前试点 | D-038 产品导航外壳 |
+| 当前试点 | D-038/D-039 已完成各自内部门禁；D-040 首启资料与目标处于 PX-0 输入缺口 |
 | 原则 | 先形成可操作原型，再由 Owner 选择，最后进入实现 |
 
 ## 1. 目的与强制边界
@@ -61,6 +61,8 @@
 4. 原型范围、保真度、设备范围和不可执行系统能力已声明。
 
 D-038 的固定输入是：日记、趋势、食品资料、设置、情境新增、本地优先和 AI 可选边界。变化轴仅是入口组织。
+
+D-040 的 A/B/C 流程原型已建立，但画像最小字段、本地目标公式、适用范围和特殊人群停止规则尚未由 Owner 与健康文案/领域评审关闭。原型使用固定测试夹具而不执行健康公式，因此只能保持 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；作者 QA 或浏览器验收不能替代 PX-0 输入。
 
 ### PX-1：同等完整候选
 
@@ -162,6 +164,7 @@ Owner 应在同一原型中按 A、B、C 分别执行：
 ## 7. 追踪与禁止事项
 
 - 当前原型 ID、范围、工具与哈希见 [prototype-manifest.md](prototype-manifest.md)。
+- D-039 和 D-040 的独立 Manifest 分别见 [d039-prototype-manifest.md](d039-prototype-manifest.md) 与 [d040-prototype-manifest.md](d040-prototype-manifest.md)。
 - 逻辑 IA 见 [information-architecture.md](information-architecture.md)，关键旅程见 [key-user-journeys.md](key-user-journeys.md)，状态和无障碍见 [states-content-accessibility.md](states-content-accessibility.md)。
 - D-038 权威候选文案位于 [Owner 分批决策包](../02-product/owner-decision-packs.md)。
 - 原型不得写入真实健康数据、API key、Apple 账号信息或设备标识。
