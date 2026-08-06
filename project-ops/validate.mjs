@@ -18,10 +18,10 @@ export const PHASE0_2026_08_06 = Object.freeze({
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 82,
-    messages: 90,
-    resolvedResponses: 56,
-    agents: 17,
+    events: 101,
+    messages: 106,
+    resolvedResponses: 67,
+    agents: 21,
     activeAgents: 1,
     evidenceItems: 66,
     confirmedEvidence: 37,
@@ -36,7 +36,7 @@ export const PHASE0_2026_08_06 = Object.freeze({
     "2026-07-31": 59,
     "2026-08-03": 13,
     "2026-08-05": 5,
-    "2026-08-06": 5,
+    "2026-08-06": 24,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -110,6 +110,84 @@ export const PHASE0_2026_08_06 = Object.freeze({
     decisionAcceptedRecorded: false,
     formalImplementationAuthorized: false,
     oi03RemainsNext: true,
+  }),
+  d040Research: Object.freeze({
+    formula: Object.freeze({
+      reviewerId: "d040_formula_evidence_audit",
+      reviewerRole: "IndependentFormulaEvidenceReviewer",
+      subjectId: "project-manager",
+      subjectRole: "PM",
+      initial: Object.freeze({
+        eventId: "EVT-20260806-015",
+        correlationId: "d040-px0-formula-evidence-audit",
+        state: "changes_required",
+        findings: Object.freeze({ P1: 0, P2: 2, P3: 1 }),
+        formulaErrors: 0,
+        conceptMixups: 0,
+        decisionState: "CANDIDATE",
+        authoritativeState: "PX-0_INPUT_GAP",
+      }),
+      final: Object.freeze({
+        eventId: "EVT-20260806-019",
+        correlationId: "d040-px0-formula-evidence-delta",
+        state: "completed",
+        closedFindings: Object.freeze({ P1: 0, P2: 2, P3: 1 }),
+        remainingFindings: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+        formulaErrors: 0,
+        conceptMixups: 0,
+      }),
+    }),
+    governance: Object.freeze({
+      reviewerId: "d040_governance_safety_audit",
+      reviewerRole: "IndependentGovernanceSafetyReviewer",
+      subjectId: "project-manager",
+      subjectRole: "PM",
+      initial: Object.freeze({
+        eventId: "EVT-20260806-017",
+        correlationId: "d040-px0-governance-safety-audit",
+        state: "changes_required",
+        findings: Object.freeze({ P1: 0, P2: 4, P3: 1 }),
+      }),
+      interim: Object.freeze({
+        eventId: "EVT-20260806-021",
+        correlationId: "d040-px0-governance-safety-delta-1",
+        state: "changes_required",
+        remainingFindings: Object.freeze({ P1: 0, P2: 4, P3: 0 }),
+      }),
+      final: Object.freeze({
+        eventId: "EVT-20260806-023",
+        correlationId: "d040-px0-governance-safety-delta-2",
+        state: "completed",
+        closedFindings: Object.freeze({ P1: 0, P2: 4, P3: 0 }),
+        remainingFindings: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+      }),
+    }),
+    artifact: Object.freeze({
+      eventId: "EVT-20260806-024",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-RESEARCH-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-px0-input-research",
+      state: "completed",
+      commit: "952bd1e",
+      sha256: "4DAADE1E22CA76B41C22624D4832FD38F986FEF14DC3C3CB8C3E950AA97F7BA9",
+      lineCount: 391,
+      formulaAuditRemaining: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+      governanceAuditRemaining: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      next: "FORMULA_REVIEW_REQUIRED",
+      draftQuestionCount: 17,
+      draftQuestionIdsAllocated: false,
+      oi03RemainsNext: true,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -1036,6 +1114,222 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_0
         "OPS_D040_RETEST_EVIDENCE_MISMATCH",
         `${recordPath}.data`,
         "D-040 delta 回执必须保持 0 个新问题和 9 组自动流程",
+      );
+    }
+  }
+
+  const validateD040ResearchReview = (spec, envelope, diagnosticPrefix) => {
+    const records = model.events.filter(
+      (record) =>
+        record.value?.type === "REVIEW_FEEDBACK" &&
+        record.value?.correlationId === spec.correlationId,
+    );
+    if (records.length === 0) {
+      add(
+        `${diagnosticPrefix}_MISSING`,
+        "project-ops/events",
+        `缺少 D-040 研究独立审查回执 ${spec.eventId}`,
+      );
+      return null;
+    }
+    if (records.length > 1) {
+      add(
+        `${diagnosticPrefix}_DUPLICATE`,
+        "project-ops/events",
+        `D-040 研究独立审查回执 ${spec.eventId} 必须唯一`,
+        { eventIds: records.map((record) => record.value?.eventId) },
+      );
+    }
+
+    const record = records[0];
+    const data = record.value?.data ?? {};
+    const expectedData = Object.fromEntries(
+      Object.entries(spec).filter(([field]) => !["eventId", "correlationId"].includes(field)),
+    );
+    const changedFields = Object.entries(expectedData)
+      .filter(([field, expected]) => JSON.stringify(data[field]) !== JSON.stringify(expected))
+      .map(([field]) => field);
+    const envelopeChanged =
+      record.value?.actor?.id !== envelope.actorId ||
+      record.value?.actor?.role !== envelope.actorRole ||
+      record.value?.subject?.id !== envelope.subjectId ||
+      record.value?.subject?.role !== envelope.subjectRole;
+    if (record.value?.eventId !== spec.eventId || envelopeChanged || changedFields.length > 0) {
+      add(
+        `${diagnosticPrefix}_MISMATCH`,
+        `${record.sourceFile}:${record.lineNumber}`,
+        `D-040 研究独立审查回执 ${spec.eventId} 与版本化事实不一致`,
+        {
+          expectedEventId: spec.eventId,
+          actualEventId: record.value?.eventId,
+          envelopeChanged,
+          changedFields,
+        },
+      );
+    }
+    return record;
+  };
+
+  const formulaResearch = baseline.d040Research.formula;
+  validateD040ResearchReview(
+    formulaResearch.initial,
+    {
+      actorId: formulaResearch.reviewerId,
+      actorRole: formulaResearch.reviewerRole,
+      subjectId: formulaResearch.subjectId,
+      subjectRole: formulaResearch.subjectRole,
+    },
+    "OPS_D040_RESEARCH_FORMULA_AUDIT",
+  );
+  validateD040ResearchReview(
+    formulaResearch.final,
+    {
+      actorId: formulaResearch.reviewerId,
+      actorRole: formulaResearch.reviewerRole,
+      subjectId: formulaResearch.subjectId,
+      subjectRole: formulaResearch.subjectRole,
+    },
+    "OPS_D040_RESEARCH_FORMULA_AUDIT",
+  );
+
+  const governanceResearch = baseline.d040Research.governance;
+  const governanceReviewRecords = [
+    governanceResearch.initial,
+    governanceResearch.interim,
+    governanceResearch.final,
+  ].map((spec) =>
+    validateD040ResearchReview(
+      spec,
+      {
+        actorId: governanceResearch.reviewerId,
+        actorRole: governanceResearch.reviewerRole,
+        subjectId: governanceResearch.subjectId,
+        subjectRole: governanceResearch.subjectRole,
+      },
+      "OPS_D040_RESEARCH_GOVERNANCE_AUDIT",
+    ),
+  );
+  for (const record of governanceReviewRecords.filter(Boolean)) {
+    const data = record.value?.data ?? {};
+    const recordPath = `${record.sourceFile}:${record.lineNumber}`;
+    for (const field of [
+      "ownerChoiceRecorded",
+      "decisionAcceptedRecorded",
+      "formalImplementationAuthorized",
+    ]) {
+      if (data[field] !== false) {
+        add(
+          "OPS_D040_RESEARCH_AUTHORIZATION_PREMATURE",
+          `${recordPath}.data.${field}`,
+          `D-040 治理审查中的 ${field} 必须保持 false`,
+        );
+      }
+    }
+    if (data.oi03RemainsNext !== true) {
+      add(
+        "OPS_D040_RESEARCH_OI03_ORDER_CHANGED",
+        `${recordPath}.data.oi03RemainsNext`,
+        "D-040 治理审查不得抢占 OI-03",
+      );
+    }
+  }
+
+  const artifactSpec = baseline.d040Research.artifact;
+  const artifactEvents = model.events.filter(
+    (record) =>
+      record.value?.type === "ARTIFACT_CREATED" &&
+      record.value?.correlationId === artifactSpec.correlationId,
+  );
+  if (artifactEvents.length === 0) {
+    add(
+      "OPS_D040_RESEARCH_ARTIFACT_MISSING",
+      "project-ops/events",
+      "缺少 D-040 PX-0 输入研究工件事件",
+    );
+  } else if (artifactEvents.length > 1) {
+    add(
+      "OPS_D040_RESEARCH_ARTIFACT_DUPLICATE",
+      "project-ops/events",
+      "D-040 PX-0 输入研究工件事件必须唯一",
+      { eventIds: artifactEvents.map((record) => record.value?.eventId) },
+    );
+  }
+
+  if (artifactEvents.length > 0) {
+    const record = artifactEvents[0];
+    const data = record.value?.data ?? {};
+    const recordPath = `${record.sourceFile}:${record.lineNumber}`;
+    if (
+      record.value?.eventId !== artifactSpec.eventId ||
+      record.value?.actor?.id !== artifactSpec.actorId ||
+      record.value?.actor?.role !== artifactSpec.actorRole ||
+      record.value?.subject?.id !== artifactSpec.subjectId ||
+      record.value?.subject?.role !== artifactSpec.subjectRole
+    ) {
+      add(
+        "OPS_D040_RESEARCH_ARTIFACT_ENVELOPE_MISMATCH",
+        recordPath,
+        "D-040 研究工件事件的 ID、创建者或工件归属发生漂移",
+      );
+    }
+    if (
+      data.state !== artifactSpec.state ||
+      data.decisionState !== artifactSpec.decisionState ||
+      data.authoritativeState !== artifactSpec.authoritativeState ||
+      data.next !== artifactSpec.next
+    ) {
+      add(
+        "OPS_D040_RESEARCH_STATE_ESCALATED",
+        recordPath,
+        "D-040 研究工件必须保持候选、PX-0 输入缺口和公式评审待办状态",
+      );
+    }
+    if (
+      data.commit !== artifactSpec.commit ||
+      data.sha256 !== artifactSpec.sha256 ||
+      data.lineCount !== artifactSpec.lineCount ||
+      JSON.stringify(data.formulaAuditRemaining) !==
+        JSON.stringify(artifactSpec.formulaAuditRemaining) ||
+      JSON.stringify(data.governanceAuditRemaining) !==
+        JSON.stringify(artifactSpec.governanceAuditRemaining)
+    ) {
+      add(
+        "OPS_D040_RESEARCH_ARTIFACT_EVIDENCE_MISMATCH",
+        `${recordPath}.data`,
+        "D-040 研究工件提交、摘要、行数或独立复审归零证据发生漂移",
+      );
+    }
+    if (
+      data.draftQuestionCount !== artifactSpec.draftQuestionCount ||
+      data.draftQuestionIdsAllocated !== artifactSpec.draftQuestionIdsAllocated
+    ) {
+      add(
+        "OPS_D040_RESEARCH_DRAFT_QUESTIONS_CHANGED",
+        `${recordPath}.data`,
+        "17 个未来选择卡草案必须保持未分配权威 D-### 的状态",
+      );
+    }
+    for (const field of [
+      "px1Authorized",
+      "px2Authorized",
+      "ownerReviewAuthorized",
+      "ownerChoiceRecorded",
+      "decisionAcceptedRecorded",
+      "formalImplementationAuthorized",
+    ]) {
+      if (data[field] !== artifactSpec[field]) {
+        add(
+          "OPS_D040_RESEARCH_AUTHORIZATION_PREMATURE",
+          `${recordPath}.data.${field}`,
+          `D-040 研究工件中的 ${field} 必须保持 false`,
+        );
+      }
+    }
+    if (data.oi03RemainsNext !== artifactSpec.oi03RemainsNext) {
+      add(
+        "OPS_D040_RESEARCH_OI03_ORDER_CHANGED",
+        `${recordPath}.data.oi03RemainsNext`,
+        "D-040 研究工件不得抢占 OI-03 的下一题顺序",
       );
     }
   }

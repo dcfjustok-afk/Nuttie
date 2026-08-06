@@ -55,6 +55,10 @@ function findD040FinalFeedback(model) {
   );
 }
 
+function findEvent(model, eventId) {
+  return model.events.find((record) => record.value.eventId === eventId);
+}
+
 function copyValidationFixture() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nuttie-project-ops-"));
   fs.cpSync(path.join(WORKSPACE_ROOT, "project-ops"), path.join(tempRoot, "project-ops"), {
@@ -80,9 +84,9 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(report.baseline, PHASE0_2026_08_06.id);
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 82);
-  assert.equal(report.counts.messages, 90);
-  assert.equal(report.counts.resolvedResponses, 56);
+  assert.equal(report.counts.events, 101);
+  assert.equal(report.counts.messages, 106);
+  assert.equal(report.counts.resolvedResponses, 67);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
 });
@@ -449,6 +453,111 @@ test("拒绝 D-040 在 PX-0 输入关闭前越级或改写审计事实", async (
       model.ownerIntake.responses.push({ decisionId: "D-040" });
     });
     assertDiagnostic(report, "OPS_D040_OWNER_RESPONSE_PREMATURELY_RECORDED");
+  });
+});
+
+test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", async (t) => {
+  await t.test("公式首轮 0/2/1 findings 漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-015").value.data.findings.P2 = 1;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_FORMULA_AUDIT_MISMATCH");
+  });
+
+  await t.test("公式审查回执接收方被改写", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-015").value.subject.id = "owner";
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_FORMULA_AUDIT_MISMATCH");
+  });
+
+  await t.test("公式最终 remaining 不再为 0/0/0", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-019").value.data.remainingFindings.P3 = 1;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_FORMULA_AUDIT_MISMATCH");
+  });
+
+  await t.test("治理首轮 0/4/1 findings 漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-017").value.data.findings.P3 = 0;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_GOVERNANCE_AUDIT_MISMATCH");
+  });
+
+  await t.test("治理中间轮 remaining 不再为 0/4/0", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-021").value.data.remainingFindings.P2 = 3;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_GOVERNANCE_AUDIT_MISMATCH");
+  });
+
+  await t.test("治理最终 remaining 不再为 0/0/0", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-023").value.data.remainingFindings.P2 = 1;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_GOVERNANCE_AUDIT_MISMATCH");
+  });
+
+  await t.test("17 个草案问题被提前分配权威 ID", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.data.draftQuestionIdsAllocated = true;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_DRAFT_QUESTIONS_CHANGED");
+  });
+
+  await t.test("研究工件状态越级", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.data.authoritativeState = "PX-1_COMPLETE";
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_STATE_ESCALATED");
+  });
+
+  await t.test("研究工件创建者被改写", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.actor.id = "ops_verifier";
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_ARTIFACT_ENVELOPE_MISMATCH");
+  });
+
+  await t.test("研究工件提前授权 Owner 评审", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.data.ownerReviewAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_AUTHORIZATION_PREMATURE");
+  });
+
+  await t.test("研究工件抢占 OI-03", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.data.oi03RemainsNext = false;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_OI03_ORDER_CHANGED");
+  });
+
+  await t.test("研究工件提交证据漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260806-024").value.data.lineCount = 390;
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_ARTIFACT_EVIDENCE_MISMATCH");
+  });
+
+  await t.test("研究工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260806-024",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_ARTIFACT_MISSING");
+  });
+
+  await t.test("研究工件事件重复", () => {
+    const report = validateMutation((model) => {
+      const duplicate = structuredClone(findEvent(model, "EVT-20260806-024"));
+      duplicate.value.eventId = "EVT-20260806-025";
+      duplicate.lineNumber = 25;
+      model.events.push(duplicate);
+    });
+    assertDiagnostic(report, "OPS_D040_RESEARCH_ARTIFACT_DUPLICATE");
   });
 });
 

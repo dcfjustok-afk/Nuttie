@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-06T09:58:39+08:00",
+  "generatedAt": "2026-08-06T11:39:05+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -16,10 +16,10 @@
     "crossSourceItems": 24,
     "evidenceGaps": 5,
     "gapThemeCount": 9,
-    "agentRosterSize": 17,
+    "agentRosterSize": 21,
     "activeAgents": 1,
-    "agentMessages": 90,
-    "projectEvents": 82
+    "agentMessages": 106,
+    "projectEvents": 101
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "Owner 待回读批次、D-039 PX-3 调度，以及 D-040 PX-0 输入缺口与 ProjectOps 归并",
+      "workPackage": "D-040 PX-0 输入研究、独立复审与 ProjectOps 归并；维持 OI-03 下一题及 D-039/D-040 未授权门禁",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -158,7 +158,7 @@
       "id": "owner_gate_readback_audit",
       "role": "Owner 回读门禁独立审查",
       "state": "completed",
-      "workPackage": "Owner 回读边界审查完成；D-040 首轮 2/4/1 问题与 delta 全关闭回执已交接",
+      "workPackage": "Owner 回读边界审查完成；D-040 原型复测及特殊人群停止推导、条件复核证据已交接",
       "gate": "G2-G4 Owner Gate",
       "requiredHandoffs": ["root", "project_ops_rebuild_audit"]
     },
@@ -166,15 +166,47 @@
       "id": "project_ops_rebuild_audit",
       "role": "ProjectOps 重建契约独立审查",
       "state": "completed",
-      "workPackage": "确认人工归并边界并交付 82 事件、90 消息、17 角色及 D-040 fail-closed 约束",
+      "workPackage": "人工归并边界审查已交接；当前快照由 PM 同步为 101 事件、106 消息、21 角色并保持 D-040 fail-closed",
       "gate": "Phase 0 Ops",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "d040_profile_fields",
+      "role": "ProductDataMinimizationResearcher",
+      "state": "completed",
+      "workPackage": "D-040 瞬时输入、CurrentProfile、GoalVersion、独立历史及 R1/R2/R3、D1/D2/D3 候选研究已交接；未批准字段、公式或删除语义",
+      "gate": "G2-G4 D-040 PX-0",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "d040_prototype_designer",
+      "role": "NutritionFormulaResearcher",
+      "state": "completed",
+      "workPackage": "Mifflin REE、NASEM 2023 EER、NIDDK 动态模型与版本合同候选已交接；未批准公式",
+      "gate": "G2-G4 D-040 PX-0",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "d040_formula_evidence_audit",
+      "role": "IndependentFormulaEvidenceReviewer",
+      "state": "completed",
+      "workPackage": "公式证据首轮 0/2/1 findings 已关闭，最终 remaining 为 0/0/0",
+      "gate": "G2-G4 D-040 PX-0",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "d040_governance_safety_audit",
+      "role": "IndependentGovernanceSafetyReviewer",
+      "state": "completed",
+      "workPackage": "治理安全首轮 0/4/1 与中间 0/4/0 findings 已关闭，最终 remaining 为 0/0/0；OI-03 与授权边界未改变",
+      "gate": "G2-G4 D-040 PX-0",
       "requiredHandoffs": ["root"]
     }
   ],
   "currentWork": [
     "Owner intake 保持 IN_PROGRESS_MODE_INTERRUPTED：13 条响应、12 个唯一决定，D-047 最新为 C；下一张原生选择卡是尚未回答的 OI-03",
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
-    "D-040 首轮 2 项 P1、4 项 P2、1 项 P3 已由独立 delta 复测关闭；原型仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，字段、公式、适用范围和特殊人群规则未获批准，OI-03 仍是下一题",
+    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权，OI-03 仍是下一题",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
   ],

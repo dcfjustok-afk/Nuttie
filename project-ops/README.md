@@ -45,12 +45,12 @@ node --test project-ops/validate.test.mjs
 `validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_06` 基线并检查：
 
 - JSON/JSONL 解析、决定/事件/消息/证据 ID 唯一性。
-- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/5` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
+- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/24` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
 - Agent 消息 `responseTo`、证据状态与五条 pending 集合。
 - 决定、事件、消息、角色、证据和 gap theme 的源计数、快照计数与版本化基线。
 - Agent ID 唯一性与唯一 active 角色 `root`；Owner intake 精确 12 项候选、未完成状态、D-047 A→C 审计链和 OI-03 原生选择卡入口。
 - D-039 保持 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`，且没有 Owner 选择或正式实现授权。
-- D-040 保持 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；首轮 reviewer 的临时 PX-1 表述未被 PM 接受，delta 回执不得授权 PX-1、PX-2、Owner 评审、决定接受或正式实现，也不得抢占 OI-03。
+- D-040 保持 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；首轮 reviewer 的临时 PX-1 表述未被 PM 接受，字段/公式/特殊人群研究与两类独立复审均不得授权 PX-1、PX-2、Owner 评审、决定接受或正式实现，也不得抢占 OI-03。17 个研究草案问题尚未分配权威 `D-###`，不得写入 Owner intake。
 
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。Owner 真正回答 OI-03、完成 D-039 PX-3、关闭 D-040 PX-0 输入，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
