@@ -22,6 +22,7 @@
 | [prototype-manifest.md](prototype-manifest.md) | D-038 A/B/C 交互原型的同源路径、范围、哈希、自测证据和已知限制 |
 | [d039-prototype-manifest.md](d039-prototype-manifest.md) | D-039 添加餐食首层 A/B/C 原型、PX-2 证据与 Owner 防越级边界 |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
+| [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 
 ## 2. 本轮结论
 

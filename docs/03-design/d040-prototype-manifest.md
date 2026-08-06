@@ -98,6 +98,7 @@ D-040 不决定：
 | [状态、内容与无障碍基线](states-content-accessibility.md) | 应用状态、空目标、错误、非医疗文案和 44pt |
 | [体验原则与 Jobs](experience-principles-and-jobs.md) | 本地优先、AI 可选、非评判与特殊人群边界 |
 | [验收与双向追踪基线](../02-product/acceptance-traceability.md) | AT-F12/F17/F18/F19 与 NFR-A11Y/I18N |
+| [PX-0 输入研究包](d040-px0-input-research.md) | 字段、能量模型、持久化、删除、特殊人群边界与 Owner 子选择卡草案；当前仍未批准 |
 
 ## 7. 技术、重建与启动
 
