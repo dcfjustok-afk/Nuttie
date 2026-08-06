@@ -78,7 +78,7 @@
 - BYOK、HTTPS、唯一 AITransport、用户主动触发和失败零业务写入通过测试。
 - D-014 的标签照片逐次预览成立；其他载荷等待 UXD-13/D-033 决策。
 - 所有第三方 AI 载荷都能在发送前看到实际 Provider、数据类别与用途并给予显式许可；不能仅以“用户主动点击”代替 Apple 审核所需披露。
-- D-053 已由 Owner 处理，目标 Provider/载荷使用本地、版本化 policy 证据判定为 `ALLOW`；`DENY`、`UNKNOWN`、`EXPIRED`、host/model/profile 变化和证据不足都在读取 key 或组装请求体前 fail closed。D-053 未处理时 W3 不得发布。
+- D-053 当前仍为 `CANDIDATE`；在 Owner 接受且目标 Provider/载荷具备本地、版本化 policy 证据判定为 `ALLOW` 前，所有组合保持 `UNKNOWN/BLOCKED`，W3 不得发布。接受后，`DENY`、`UNKNOWN`、`EXPIRED`、host/model/profile 变化和证据不足都必须在读取 key 或组装请求体前 fail closed。
 - 任何输出可编辑、可放弃、标来源和时间；不自动改本地事实。
 
 ### W4：第二阶段系统集成与机会验证
