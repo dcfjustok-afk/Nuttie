@@ -18,11 +18,15 @@ function cloneState(state) {
 }
 
 function normalizeEntryPath(value) {
-  if (typeof value !== "string" || value.length === 0) reject("entry path is required", "INVALID_ENTRY_PATH");
-  if (value.includes("\\") || value.startsWith("/") || /^[A-Za-z]:/.test(value) || value.includes("\0")) {
+  if (typeof value !== "string") reject("entry path is required", "INVALID_ENTRY_PATH");
+  const normalized = value.normalize("NFC");
+  if (normalized.length === 0 || /[\u0000-\u001f\u007f]/.test(normalized)) {
+    reject("entry path must not be empty or contain control characters", "UNSAFE_ENTRY_PATH");
+  }
+  if (normalized.includes("\\") || normalized.startsWith("/") || /^[A-Za-z]:/.test(normalized)) {
     reject("entry path must be a relative POSIX path", "UNSAFE_ENTRY_PATH");
   }
-  const segments = value.split("/");
+  const segments = normalized.split("/");
   if (segments.some((segment) => segment.length === 0 || segment === "." || segment === "..")) {
     reject("entry path contains unsafe segments", "UNSAFE_ENTRY_PATH");
   }
@@ -38,8 +42,15 @@ function validateManifest(manifest, allowedKeys = ["schemaVersion", "packVersion
     reject("manifest schemaVersion is invalid", "INVALID_MANIFEST_VERSION");
   }
   if (typeof manifest.packVersion !== "string" || manifest.packVersion.length === 0) reject("manifest packVersion is required", "MISSING_PACK_VERSION");
-  if (!Array.isArray(manifest.files)) reject("manifest files must be an array", "INVALID_MANIFEST_FILES");
-  return true;
+  if (!Array.isArray(manifest.files) || manifest.files.length === 0) reject("manifest files must be a non-empty array", "INVALID_MANIFEST_FILES");
+  const seen = new Set();
+  const files = manifest.files.map((file) => {
+    const path = normalizeEntryPath(file);
+    if (seen.has(path)) reject("duplicate normalized manifest file", "DUPLICATE_MANIFEST_FILE", { path });
+    seen.add(path);
+    return path;
+  });
+  return Object.freeze({ ...manifest, files: Object.freeze(files) });
 }
 
 function validateEntries(entries, limits = DEFAULT_LIMITS) {
@@ -62,11 +73,25 @@ function validateEntries(entries, limits = DEFAULT_LIMITS) {
   return Object.freeze({ entries: Object.freeze(validated), totalBytes });
 }
 
+function assertManifestEntriesMatch(manifest, validated) {
+  const manifestFiles = validateManifest(manifest).files;
+  const entryPaths = validated.entries.map((entry) => entry.path);
+  if (manifestFiles.length !== entryPaths.length || manifestFiles.some((path, index) => path !== entryPaths[index])) {
+    const expected = [...manifestFiles].sort();
+    const actual = [...entryPaths].sort();
+    if (expected.length !== actual.length || expected.some((path, index) => path !== actual[index])) {
+      reject("manifest files must exactly match entry paths", "MANIFEST_ENTRIES_MISMATCH");
+    }
+  }
+  return true;
+}
+
 function prepareImport({ currentState, manifest, entries, signatureVerified = false, integrityVerified = false, limits }) {
   const before = cloneState(currentState);
   try {
     validateManifest(manifest);
     const validated = validateEntries(entries, limits);
+    assertManifestEntriesMatch(manifest, validated);
     if (!signatureVerified) reject("signature verification is required", "SIGNATURE_REQUIRED");
     if (!integrityVerified) reject("integrity verification is required", "INTEGRITY_REQUIRED");
     return Object.freeze({ status: "READY_FOR_ACTIVATION", committed: false, state: before, validated, error: null });
@@ -83,4 +108,4 @@ function activateImport(prepared, currentState) {
   return Object.freeze({ committed: false, state: before, error: { code: "ACTIVATION_STRATEGY_PENDING", message: "activation strategy is pending approved data-pack/backup decisions" } });
 }
 
-export { DEFAULT_LIMITS, activateImport, normalizeEntryPath, prepareImport, validateEntries, validateManifest };
+export { DEFAULT_LIMITS, activateImport, assertManifestEntriesMatch, normalizeEntryPath, prepareImport, validateEntries, validateManifest };

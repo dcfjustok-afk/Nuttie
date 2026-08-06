@@ -25,6 +25,8 @@ test("derives a local date from explicit timezone context", () => {
     () => dateContext({ instant: "2026-03-08T07:30:00Z", timeZone: "America/Los_Angeles", localDate: "2026-03-08" }),
     { code: "DATE_CONTEXT_MISMATCH" },
   );
+  assert.throws(() => dateContext({ instant: "2026-03-08", timeZone: "America/Los_Angeles" }), { code: "INVALID_INSTANT" });
+  assert.throws(() => dateContext({ instant: "2026-02-30T07:30:00Z", timeZone: "America/Los_Angeles" }), { code: "INVALID_INSTANT" });
 });
 
 test("retains missing nutrition fields as missing, never as zero", () => {
@@ -37,6 +39,8 @@ test("retains missing nutrition fields as missing, never as zero", () => {
   assert.equal(snapshot.values.fatG, null);
   assert.deepEqual(snapshot.missingFields, ["carbohydrateG", "fatG", "fiberG", "sugarG", "sodiumMg"]);
   assert.throws(() => nutritionSnapshot({ sourceId: "user-food", nutrients: {} }), { code: "MISSING_SOURCE_VERSION" });
+  const polluted = JSON.parse('{"__proto__":{"polluted":true}}');
+  assert.throws(() => nutritionSnapshot({ sourceId: "user-food", sourceVersion: "local-1", nutrients: polluted }), { code: "UNSAFE_OBJECT_KEY" });
 });
 
 test("ledger requires an explicit target and keeps unspecified formulas unresolved", () => {
@@ -61,6 +65,14 @@ test("ledger requires an explicit target and keeps unspecified formulas unresolv
     macroPolicy: "PENDING",
     targetKcal: null,
     ratio: null,
+  });
+  assert.deepEqual(dailyLedger({ eatenKcal: 750, burnedKcal: 100 }), {
+    status: "UNSPECIFIED",
+    targetKcal: null,
+    eatenKcal: 750,
+    burnedKcal: 100,
+    leftKcal: null,
+    leftPolicy: "PENDING",
   });
 });
 

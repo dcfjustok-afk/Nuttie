@@ -22,6 +22,37 @@ test("accepts HTTPS and rejects non-HTTPS base URLs", () => {
   assert.throws(() => normalizeHttpsBaseUrl("not a URL"), { code: "INVALID_BASE_URL" });
 });
 
+test("ALLOW policy and request scope require complete HTTPS-safe strings", () => {
+  for (const field of ["model", "payloadClass", "profileVersion"]) {
+    const input = {
+      baseURL: "https://ai.example.test",
+      model: "local-model",
+      payloadClass: "nutrition-label-photo",
+      profileVersion: "profile-1",
+      policy,
+      userInitiated: true,
+    };
+    input[field] = "   ";
+    const result = requestCandidate(input);
+    assert.equal(result.status, "BLOCKED");
+    assert.equal(result.error.code, "INVALID_POLICY_SCOPE");
+  }
+  assert.throws(() => policyCheck({
+    baseURL: "https://ai.example.test",
+    model: "local-model",
+    payloadClass: "nutrition-label-photo",
+    profileVersion: "profile-1",
+    policy: { ...policy, origin: "http://ai.example.test" },
+  }), { code: "HTTPS_REQUIRED" });
+  assert.throws(() => policyCheck({
+    baseURL: "https://ai.example.test",
+    model: "local-model",
+    payloadClass: "nutrition-label-photo",
+    profileVersion: "profile-1",
+    policy: { ...policy, origin: "https://ai.example.test/path" },
+  }), { code: "INVALID_HTTPS_ORIGIN" });
+});
+
 test("policy eligibility is local and scope-bound", () => {
   const eligible = policyCheck({
     baseURL: "https://ai.example.test",

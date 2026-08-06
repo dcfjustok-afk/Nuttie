@@ -33,12 +33,46 @@ function assertPolicyState(state) {
   return state;
 }
 
+function nonEmptyString(value, field) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    reject(`${field} must be a non-empty string`, "INVALID_POLICY_SCOPE", { field });
+  }
+  return value;
+}
+
+function normalizeHttpsOrigin(value, field = "origin") {
+  nonEmptyString(value, field);
+  let url;
+  try {
+    url = new URL(value);
+  } catch (error) {
+    reject(`${field} is not a valid URL`, "INVALID_HTTPS_ORIGIN", { field, cause: error });
+  }
+  if (url.protocol !== "https:") {
+    reject(`${field} must use HTTPS`, "HTTPS_REQUIRED", { field });
+  }
+  if (!url.hostname || url.username || url.password || url.pathname !== "/" || url.search || url.hash) {
+    reject(`${field} must be an HTTPS origin`, "INVALID_HTTPS_ORIGIN", { field });
+  }
+  return url.origin;
+}
+
 function matchesPolicy(policy, request) {
   if (!policy || typeof policy !== "object") return false;
   if (assertPolicyState(policy.state) !== "ALLOW") return false;
-  if (policy.origin !== request.origin || policy.model !== request.model) return false;
-  if (!Array.isArray(policy.payloadClasses) || !policy.payloadClasses.includes(request.payloadClass)) return false;
-  return policy.profileVersion === request.profileVersion;
+  const policyOrigin = normalizeHttpsOrigin(policy.origin, "policy.origin");
+  const policyModel = nonEmptyString(policy.model, "policy.model");
+  const policyProfileVersion = nonEmptyString(policy.profileVersion, "policy.profileVersion");
+  if (!Array.isArray(policy.payloadClasses) || policy.payloadClasses.length === 0) {
+    reject("policy.payloadClasses must be a non-empty array", "INVALID_POLICY_SCOPE", { field: "policy.payloadClasses" });
+  }
+  if (policy.payloadClasses.some((payloadClass) => typeof payloadClass !== "string" || payloadClass.trim().length === 0)) {
+    reject("policy.payloadClasses must contain non-empty strings", "INVALID_POLICY_SCOPE", { field: "policy.payloadClasses" });
+  }
+  return policyOrigin === request.origin
+    && policyModel === request.model
+    && policy.payloadClasses.includes(request.payloadClass)
+    && policyProfileVersion === request.profileVersion;
 }
 
 function emptyBusinessState() {
@@ -54,7 +88,12 @@ function cloneBusinessState(state) {
 
 function policyCheck({ baseURL, model, payloadClass, profileVersion, policy }) {
   const origin = new URL(normalizeHttpsBaseUrl(baseURL)).origin;
-  const request = Object.freeze({ origin, model, payloadClass, profileVersion });
+  const request = Object.freeze({
+    origin: normalizeHttpsOrigin(origin, "request.origin"),
+    model: nonEmptyString(model, "request.model"),
+    payloadClass: nonEmptyString(payloadClass, "request.payloadClass"),
+    profileVersion: nonEmptyString(profileVersion, "request.profileVersion"),
+  });
   if (assertPolicyState(policy?.state ?? "UNKNOWN") !== "ALLOW") {
     return Object.freeze({ eligible: false, reason: policy?.state ?? "UNKNOWN", request });
   }

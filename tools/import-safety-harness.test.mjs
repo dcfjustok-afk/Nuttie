@@ -7,9 +7,10 @@ const state = { activeEntries: [{ path: "old/catalog.json", size: 10, type: "fil
 
 test("normalizes safe relative paths and rejects traversal or absolute paths", () => {
   assert.equal(normalizeEntryPath("catalog/data.json"), "catalog/data.json");
-  for (const path of ["../secret", "/absolute", "C:/secret", "catalog\\data", "catalog/../secret"]) {
+  for (const path of ["../secret", "/absolute", "C:/secret", "catalog\\data", "catalog/../secret", "catalog/\u0000data", "catalog/\u0001data"]) {
     assert.throws(() => normalizeEntryPath(path), { code: "UNSAFE_ENTRY_PATH" });
   }
+  assert.throws(() => normalizeEntryPath(""), { code: "UNSAFE_ENTRY_PATH" });
 });
 
 test("rejects duplicate paths, special entries, and resource limits", () => {
@@ -24,6 +25,31 @@ test("rejects duplicate paths, special entries, and resource limits", () => {
 
 test("rejects unknown critical manifest keys before activation", () => {
   assert.throws(() => validateManifest({ ...manifest, "!algorithm": "none" }), { code: "UNKNOWN_CRITICAL_KEY" });
+});
+
+test("manifest files are non-empty, normalized, unique, and exactly match entries", () => {
+  assert.throws(() => validateManifest({ ...manifest, files: [] }), { code: "INVALID_MANIFEST_FILES" });
+  assert.throws(() => validateManifest({ ...manifest, files: ["caf\u00e9.json", "cafe\u0301.json"] }), { code: "DUPLICATE_MANIFEST_FILE" });
+  const mismatch = prepareImport({
+    currentState: state,
+    manifest: { ...manifest, files: ["other.json"] },
+    entries: [{ path: "catalog.json", size: 10, type: "file" }],
+    signatureVerified: true,
+    integrityVerified: true,
+  });
+  assert.equal(mismatch.status, "REJECTED");
+  assert.equal(mismatch.error.code, "MANIFEST_ENTRIES_MISMATCH");
+  const extra = prepareImport({
+    currentState: state,
+    manifest,
+    entries: [
+      { path: "catalog.json", size: 10, type: "file" },
+      { path: "extra.json", size: 1, type: "file" },
+    ],
+    signatureVerified: true,
+    integrityVerified: true,
+  });
+  assert.equal(extra.error.code, "MANIFEST_ENTRIES_MISMATCH");
 });
 
 test("authentication and integrity remain explicit gates", () => {

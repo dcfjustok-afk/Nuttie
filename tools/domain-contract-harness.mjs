@@ -48,6 +48,15 @@ function positiveNumber(value, field) {
   return number;
 }
 
+function assertSafeObject(value, field) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return;
+  for (const key of Object.keys(value)) {
+    if (key === "__proto__" || key === "constructor" || key === "prototype") {
+      fail(`${field} contains an unsafe key`, { code: "UNSAFE_OBJECT_KEY", field, key });
+    }
+  }
+}
+
 function normalizeMass(value, unit) {
   const factor = MASS_TO_GRAMS[unit];
   if (!factor) {
@@ -78,6 +87,14 @@ function assertDateKey(dateKey) {
 function dateContext({ instant, timeZone, localDate }) {
   if (typeof timeZone !== "string" || timeZone.length === 0) {
     fail("timeZone is required", { code: "MISSING_TIME_ZONE" });
+  }
+  if (typeof instant !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/.test(instant)) {
+    fail("instant must be a strict ISO timestamp", { code: "INVALID_INSTANT" });
+  }
+  const [, year, month, day] = instant.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+  const calendarDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  if (calendarDate.getUTCFullYear() !== Number(year) || calendarDate.getUTCMonth() !== Number(month) - 1 || calendarDate.getUTCDate() !== Number(day)) {
+    fail("instant is not a calendar timestamp", { code: "INVALID_INSTANT" });
   }
   const instantDate = new Date(instant);
   if (Number.isNaN(instantDate.valueOf())) {
@@ -112,6 +129,7 @@ function nutritionSnapshot({ sourceId, sourceVersion, nutrients = {} }) {
   if (!nutrients || typeof nutrients !== "object" || Array.isArray(nutrients)) {
     fail("nutrients must be an object", { code: "INVALID_NUTRIENTS" });
   }
+  assertSafeObject(nutrients, "nutrients");
   const values = {};
   const missingFields = [];
   for (const field of NUTRIENT_FIELDS) {
@@ -131,19 +149,19 @@ function nutritionSnapshot({ sourceId, sourceVersion, nutrients = {} }) {
 }
 
 function dailyLedger({ targetKcal, eatenKcal = 0, burnedKcal = 0 }) {
+  const eaten = nonNegativeNumber(eatenKcal, "eatenKcal");
+  const burned = nonNegativeNumber(burnedKcal, "burnedKcal");
   if (targetKcal === undefined || targetKcal === null) {
     return Object.freeze({
       status: "UNSPECIFIED",
       targetKcal: null,
-      eatenKcal: 0,
-      burnedKcal: 0,
+      eatenKcal: eaten,
+      burnedKcal: burned,
       leftKcal: null,
       leftPolicy: "PENDING",
     });
   }
   const target = nonNegativeNumber(targetKcal, "targetKcal");
-  const eaten = nonNegativeNumber(eatenKcal, "eatenKcal");
-  const burned = nonNegativeNumber(burnedKcal, "burnedKcal");
   return Object.freeze({
     status: "EXPLICIT_TARGET",
     targetKcal: target,
@@ -158,13 +176,18 @@ function cloneState(state) {
   if (!state || typeof state !== "object" || !Array.isArray(state.meals)) {
     fail("state must contain a meals array", { code: "INVALID_STATE" });
   }
-  return { meals: state.meals.map((meal) => ({ ...meal })) };
+  assertSafeObject(state, "state");
+  return { meals: state.meals.map((meal) => {
+    assertSafeObject(meal, "meal");
+    return { ...meal };
+  }) };
 }
 
 function validateMeal(meal) {
   if (!meal || typeof meal !== "object" || typeof meal.id !== "string" || meal.id.length === 0) {
     fail("meal.id is required", { code: "INVALID_MEAL" });
   }
+  assertSafeObject(meal, "meal");
   assertDateKey(meal.localDate);
   nonNegativeNumber(meal.energyKcal, "meal.energyKcal");
   return meal;
