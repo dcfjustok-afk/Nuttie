@@ -107,7 +107,7 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
 
-当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`106` 个事件和 `110` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。56 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 与独立 delta 复测通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
+当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`106` 个事件和 `110` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。59 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 与独立 delta 复测通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
 
 ## 7. 下一步 Owner 互动
 
