@@ -92,6 +92,8 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 | `DATA-07` | 协议“可能包含广告”是否证明当前广告位或频率 | 不进入 Nuttie 目标实现 |
 | `DATA-08` | 竞品是否存在导入、导出、备份、iCloud 或恢复流程 | D-006/D-012 的加密 Files 备份属于 `Nuttie-required`，不是竞品事实 |
 
+2026-08-05 已为 S01/S10 新增向前快照元数据和最小原文摘录，路径为 `docs/01-research/snapshots/2026-08-05/`。它没有追溯重建 2026-07-31 页面，也不提供上述五条缺失的 iOS UI/流程证据，因此 37/24/5 与 pending ID 集合保持不变。
+
 权威逐行记录见 [竞品证据矩阵](../01-research/competitor-evidence-matrix.md)。EG-01~EG-09 是九组跨行 gap themes，不是另外九条 evidence，也不能与 66 相加。这五条 pending 不阻断 G1，但持续约束产品文案和“竞品全部功能”的宣称。
 
 ## 6. 当前阻塞
@@ -103,7 +105,7 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 5. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 6. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
 
-当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`77` 个事件和 `86` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。54 份 Markdown 的 114 个本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程、320/375/430/desktop 四视口、零外部请求和零运行时问题。
+当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`77` 个事件和 `86` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。55 份受跟踪 Markdown 的 116 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程、320/375/430/desktop 四视口、零外部请求和零运行时问题。
 
 ## 7. 下一步 Owner 互动
 

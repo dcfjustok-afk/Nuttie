@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "PUBLIC-SOURCES-2026-08-05-S01-S10",
+  "capturedAt": "2026-08-05T21:04:03+08:00",
+  "timezone": "Asia/Shanghai",
+  "status": "NEW_CAPTURE_NO_RETROACTIVE_CLAIM",
+  "sources": [
+    {
+      "sourceId": "S01",
+      "name": "中国区 App Store 产品页",
+      "requestedUrl": "https://apps.apple.com/cn/app/id6502774426",
+      "finalUrl": "https://apps.apple.com/cn/app/%E8%87%AA%E5%BE%8B%E8%8C%84%E5%AD%90-ai%E8%AF%86%E5%88%AB%E9%A3%9F%E7%89%A9%E5%8D%A1%E8%B7%AF%E9%87%8C-%E5%87%8F%E8%82%A5%E5%81%A5%E8%BA%AB%E4%BD%93%E9%87%8D%E7%AE%A1%E7%90%86/id6502774426",
+      "retrieval": {
+        "renderedPage": "Codex in-app browser",
+        "privacyDialogExpanded": true,
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "responseByteLength": 469774,
+        "responseBodySha256": "7a54a61dfa3252811eb1f40993bed85a99c7c0afdb82a095e0f90b9627325036",
+        "responseHashScope": "HttpClient response entity bytes after automatic gzip/deflate decompression",
+        "requestUserAgent": "Mozilla/5.0 NuttieEvidenceCapture/1.0"
+      },
+      "excerpt": {
+        "path": "docs/01-research/snapshots/2026-08-05/s01-app-store-visible-excerpt.txt",
+        "language": "zh-Hans",
+        "normalization": "Rendered visible text selected from the product page and expanded App Privacy dialog; UTF-8 with LF line endings",
+        "byteLength": 1657,
+        "sha256": "2005b06cd7f2c58e74312d7fb75dbca216cd8df382d36822f8f89416e1e7d086"
+      },
+      "limitations": [
+        "The App Store page is mutable and the response body can contain request-specific content.",
+        "The privacy label is developer-declared and not verified by Apple.",
+        "Third-party advertising data-use disclosure does not prove a visible ad placement or display frequency."
+      ]
+    },
+    {
+      "sourceId": "S10",
+      "name": "官方用户协议",
+      "requestedUrl": "http://assets.zestcalorie.com/about/terms-and-conditions-as.html",
+      "finalUrl": "http://assets.zestcalorie.com/about/terms-and-conditions-as.html",
+      "retrieval": {
+        "renderedPage": "Unavailable in the in-app browser",
+        "inAppBrowserHttpResult": "BLOCKED_BY_CLIENT",
+        "httpsProbeResult": "TLS_VERSION_OR_CIPHER_MISMATCH",
+        "httpClient": "PowerShell Invoke-WebRequest and .NET HttpClient",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "responseByteLength": 30694,
+        "responseBodySha256": "abc1803e0fd9c690bb0219f22fecde47c6655cfc889ff26f3365412deeabbb49",
+        "responseHashScope": "Response entity bytes returned by HttpClient"
+      },
+      "excerpt": {
+        "path": "docs/01-research/snapshots/2026-08-05/s10-terms-en-excerpt.txt",
+        "language": "en",
+        "normalization": "Exact English substrings selected from the UTF-8 response; blocks separated by one blank line; UTF-8 with LF line endings",
+        "byteLength": 1361,
+        "sha256": "9cdd889b21e0e4632c241c24b53c90c5486c1525bb52b63d81ebe89f0ed06d4f"
+      },
+      "limitations": [
+        "The official endpoint is HTTP-only in this capture and provides no transport confidentiality or origin authentication.",
+        "The endpoint was intermittently available and returned 502 on later verification attempts.",
+        "The English body names the service CalScan while the Chinese body names it 自律茄子; their relationship is inferred only from the same official URL, the S01 link, and shared developer identity.",
+        "General advertising and knowledge-content clauses do not prove that corresponding visible modules exist in the current iOS app."
+      ]
+    }
+  ],
+  "evidenceImpact": {
+    "lineStatusChanges": [],
+    "pendingEvidenceIdsRemain": [
+      "LOG-08",
+      "LOG-09",
+      "AI-06",
+      "DATA-07",
+      "DATA-08"
+    ],
+    "notes": "This capture improves prospective reproducibility only. It does not recreate the complete 2026-07-31 source state and does not upgrade any pending evidence."
+  }
+}

@@ -1,0 +1,11 @@
+Users may choose to register a "CalScan" account, and some features can be used without registration. A "CalScan" account should be registered by binding a mobile phone number.
+
+The Service may include advertisements. Users agree to display advertisements from MimiPig and third-party providers/partners during use.
+
+Users understand and agree that AI health analysis, recipes, and AI diet analysis provided by the CalScan app are reference content based on data models and algorithms and do not constitute medical diagnosis, treatment plans, or nutrition prescriptions.
+
+Any AI analysis results, recommended recipes, or diet plans provided in the app should not replace individualized guidance from professional doctors or dietitians.
+
+We assume no legal responsibility under any circumstances for any content or information obtained by you from the CalScan app and related services in any manner (including but not limited to inclusion, access, connection, or download), including but not limited to advertisements, blood sugar management knowledge, healthy weight loss knowledge, food nutrition knowledge, and success stories. You should bear the risks of using information content on the CalScan app yourself.
+
+Purchases of subscription value-added services within the software are non-refundable; if you have special needs please contact customer service.
