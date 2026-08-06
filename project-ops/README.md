@@ -13,6 +13,8 @@ project-ops/
   snapshots/current.json      # PM 按源记录人工归并并校验的当前状态
   validate.mjs                # 无第三方依赖的运营一致性校验器
   validate.test.mjs           # 当前基线与单点突变负向测试
+  reconcile.mjs               # 只读跨源对账与快照新鲜度诊断器
+  reconcile.test.mjs          # 对账器与门禁漂移负向测试
 ```
 
 ## 写入规则
@@ -40,6 +42,8 @@ project-ops/
 ```powershell
 node project-ops/validate.mjs
 node --test project-ops/validate.test.mjs
+node project-ops/reconcile.mjs
+node --test project-ops/reconcile.test.mjs
 ```
 
 `validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_06` 基线并检查：
@@ -55,3 +59,5 @@ node --test project-ops/validate.test.mjs
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。Owner 真正回答 OI-03、完成 D-039 PX-3、关闭 D-040 PX-0 输入，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
 该脚本只负责 Project Ops 解析和跨源运营一致性，不实现完整 Draft 2020-12 JSON Schema。`schemas/*.schema.json` 的严格合规仍须使用 AJV 8 + `ajv-formats` 或后续经批准的等价 validator；不得把本脚本的 PASS 描述为 schema PASS。
+
+`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、Owner 原生 `OI-03` 选择卡门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`。当前快照生成时间早于 2026-08-06 16:17:28 的最新 D-040 事件，因此诊断结果会保留 `OPS_RECONCILE_SNAPSHOT_STALE` warning；这不是自动重建或失败授权。

@@ -103,11 +103,11 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 2. **D-038 尚未通过最终 Owner Gate。** DesignOps 与主 Agent 的桌面/移动视觉、console 和关键交互验收已完成；仍须由 Owner 明确选择 A/B/C，未选择前正式 IA/路由外壳保持阻断。
 3. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得创建正式餐食录入页面、路由或据此改变决定台账。
 4. **D-040 尚未关闭 PX-0 输入。** A/B/C 流程、恢复、无目标和失败零写入已形成可操作原型，但最小字段、目标公式、适用范围和特殊人群停止规则未获 Owner 与领域评审确认；不得把固定测试夹具当作产品目标或进入正式实现。
-5. **G4 仍未通过，但已有框架无关的本地负向契约夹具。** `tools/domain-contract-harness.*`、`tools/ai-policy-harness.*` 与 `tools/import-safety-harness.*` 已分别覆盖纯规则、Provider fail-closed 和导入恶意输入拒绝；它们均为 `SPIKE / NON_PRODUCTION`，不依赖 RN/SQLite/网络/真实密钥，也不冻结未决公式、D-026/D-027/D-033/D-036/D-053。仍没有 SQLCipher/Keychain/备份/数据包的跨实现 Spike、构建、迁移、kill/restart、真机或 Release 网络证据。
+5. **G4 仍未通过，但已有框架无关的本地负向契约夹具。** `tools/domain-contract-harness.*`、`tools/ai-policy-harness.*` 与 `tools/import-safety-harness.*` 已分别覆盖纯规则、Provider fail-closed 和导入恶意输入拒绝；本轮增加了严格 ISO 时间、原型污染键、完整 AI scope、HTTPS origin、manifest/entries 集合一致性和控制字符拒绝。它们均为 `SPIKE / NON_PRODUCTION`，不依赖 RN/SQLite/网络/真实密钥，也不冻结未决公式、D-026/D-027/D-033/D-036/D-053。仍没有 SQLCipher/Keychain/备份/数据包的跨实现 Spike、构建、迁移、kill/restart、真机或 Release 网络证据。
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 与设备事实缺失。** 尚无已核验的 Mac、macOS、Xcode、CocoaPods、真实 iPhone、Apple Developer Program 身份、Bundle ID、签名链、App Store Connect record 或 TestFlight build。
 
-当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`106` 个事件和 `110` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。59 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。D-039 再次通过 19/19 流程；D-040 作者 QA 与独立 delta 复测通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
+当前机器验收已完成：4 个 Draft 2020-12 schema 严格编译并验证 `31` 条决定、1 份 Owner intake、`106` 个事件和 `110` 条消息；事件/消息 ID 唯一且所有 `responseTo` 可解析。59 份 Markdown 的 130 个仓库相对本地链接无断链，证据矩阵保持 `66 = 37 confirmed + 24 cross-source + 5 pending`，工作台动态/静态状态全量一致。新增只读 `project-ops/reconcile.mjs` 对账通过：源计数一致，Owner OI-03 原生选择卡、D-039 PX-2 和 D-040 PX-0 六项授权位均保持门禁；它只报告快照早于最新事件的 `STALE` warning，不覆盖人工快照。三套夹具合计 18/18，通过但仍不构成 G4、真实数据库/Keychain、真机或 Release 证据。D-039 再次通过 19/19 流程；D-040 作者 QA 与独立 delta 复测通过 9 组流程、三类页面的 320/375/430/desktop 布局、零外部请求、零运行时问题和零持久化记录，但因字段/公式输入缺口保持 PX-0。
 
 ## 7. 下一步 Owner 互动
 
