@@ -84,11 +84,12 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(report.baseline, PHASE0_2026_08_06.id);
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 101);
-  assert.equal(report.counts.messages, 106);
-  assert.equal(report.counts.resolvedResponses, 67);
+  assert.equal(report.counts.events, 106);
+  assert.equal(report.counts.messages, 110);
+  assert.equal(report.counts.resolvedResponses, 69);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
+  assert.equal(report.counts.agents, 23);
 });
 
 test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) => {

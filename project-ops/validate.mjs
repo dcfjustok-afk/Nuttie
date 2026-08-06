@@ -18,10 +18,10 @@ export const PHASE0_2026_08_06 = Object.freeze({
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 101,
-    messages: 106,
-    resolvedResponses: 67,
-    agents: 21,
+    events: 106,
+    messages: 110,
+    resolvedResponses: 69,
+    agents: 23,
     activeAgents: 1,
     evidenceItems: 66,
     confirmedEvidence: 37,
@@ -36,7 +36,7 @@ export const PHASE0_2026_08_06 = Object.freeze({
     "2026-07-31": 59,
     "2026-08-03": 13,
     "2026-08-05": 5,
-    "2026-08-06": 24,
+    "2026-08-06": 29,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -187,6 +187,53 @@ export const PHASE0_2026_08_06 = Object.freeze({
       ownerChoiceRecorded: false,
       decisionAcceptedRecorded: false,
       formalImplementationAuthorized: false,
+    }),
+    macro: Object.freeze({
+      formula: Object.freeze({
+        reviewerId: "macro_formula_audit",
+        reviewerRole: "IndependentFormulaEvidenceReviewer",
+        requestMessageId: "MSG-20260806-107",
+        feedbackMessageId: "MSG-20260806-108",
+        requestEventId: "EVT-20260806-025",
+        feedbackEventId: "EVT-20260806-026",
+        correlationId: "d040-macronutrient-formula-audit",
+        remainingFindings: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+      }),
+      governance: Object.freeze({
+        reviewerId: "macro_governance_audit",
+        reviewerRole: "IndependentGovernanceSafetyReviewer",
+        requestMessageId: "MSG-20260806-109",
+        feedbackMessageId: "MSG-20260806-110",
+        requestEventId: "EVT-20260806-027",
+        feedbackEventId: "EVT-20260806-028",
+        correlationId: "d040-macronutrient-governance-audit",
+        remainingFindings: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+      }),
+      artifact: Object.freeze({
+        eventId: "EVT-20260806-029",
+        actorId: "project-manager",
+        actorRole: "PM",
+        subjectId: "D040-RESEARCH-002",
+        subjectRole: "CandidateResearchArtifact",
+        correlationId: "d040-macronutrient-evidence",
+        state: "completed",
+        commit: "13efbc8",
+        sha256: "9EAD8F5E85F0D22AFD509B4DE93BDE26DF78AC8EB43E8E104FF20932601C57E5",
+        lineCount: 171,
+        formulaAuditRemaining: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+        governanceAuditRemaining: Object.freeze({ P1: 0, P2: 0, P3: 0 }),
+        decisionState: "CANDIDATE",
+        authoritativeState: "PX-0_INPUT_GAP",
+        next: "FORMULA_REVIEW_REQUIRED",
+        draftQuestionIdsAllocated: false,
+        oi03RemainsNext: true,
+        px1Authorized: false,
+        px2Authorized: false,
+        ownerReviewAuthorized: false,
+        ownerChoiceRecorded: false,
+        decisionAcceptedRecorded: false,
+        formalImplementationAuthorized: false,
+      }),
     }),
   }),
 });
@@ -1331,6 +1378,103 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_0
         `${recordPath}.data.oi03RemainsNext`,
         "D-040 研究工件不得抢占 OI-03 的下一题顺序",
       );
+    }
+  }
+
+  const macroResearch = baseline.d040Research.macro;
+  for (const review of [macroResearch.formula, macroResearch.governance]) {
+    const requestEvent = model.events.find((record) => record.value?.eventId === review.requestEventId);
+    const feedbackEvent = model.events.find((record) => record.value?.eventId === review.feedbackEventId);
+    if (!requestEvent || !feedbackEvent) {
+      add(
+        "OPS_D040_MACRO_REVIEW_MISSING",
+        "project-ops/events",
+        `缺少 D-040 宏量审查事件: ${review.correlationId}`,
+      );
+      continue;
+    }
+    if (
+      requestEvent.value?.actor?.id !== "project-manager" ||
+      requestEvent.value?.subject?.id !== review.reviewerId ||
+      requestEvent.value?.correlationId !== review.correlationId ||
+      feedbackEvent.value?.actor?.id !== review.reviewerId ||
+      feedbackEvent.value?.subject?.id !== "project-manager" ||
+      feedbackEvent.value?.correlationId !== review.correlationId ||
+      feedbackEvent.value?.data?.state !== "completed" ||
+      JSON.stringify(feedbackEvent.value?.data?.remainingFindings) !== JSON.stringify(review.remainingFindings)
+    ) {
+      add(
+        "OPS_D040_MACRO_REVIEW_MISMATCH",
+        `project-ops/events/${review.correlationId}`,
+        `D-040 宏量审查回执发生漂移: ${review.correlationId}`,
+      );
+    }
+    for (const field of [
+      "px1Authorized",
+      "px2Authorized",
+      "ownerReviewAuthorized",
+      "ownerChoiceRecorded",
+      "decisionAcceptedRecorded",
+      "formalImplementationAuthorized",
+    ]) {
+      if (feedbackEvent.value?.data?.[field] !== false || feedbackEvent.value?.data?.oi03RemainsNext !== true) {
+        add(
+          "OPS_D040_MACRO_AUTHORIZATION_PREMATURE",
+          `project-ops/events/${review.feedbackEventId}.data`,
+          `D-040 宏量审查 ${field} 或 OI-03 顺序发生越级`,
+        );
+        break;
+      }
+    }
+  }
+
+  const macroArtifactSpec = macroResearch.artifact;
+  const macroArtifactEvents = model.events.filter(
+    (record) => record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === macroArtifactSpec.correlationId,
+  );
+  if (macroArtifactEvents.length !== 1) {
+    add(
+      macroArtifactEvents.length === 0 ? "OPS_D040_MACRO_ARTIFACT_MISSING" : "OPS_D040_MACRO_ARTIFACT_DUPLICATE",
+      "project-ops/events",
+      "D-040 宏量证据工件事件必须唯一",
+      { count: macroArtifactEvents.length },
+    );
+  } else {
+    const record = macroArtifactEvents[0];
+    const data = record.value?.data ?? {};
+    if (
+      record.value?.eventId !== macroArtifactSpec.eventId ||
+      record.value?.actor?.id !== macroArtifactSpec.actorId ||
+      record.value?.subject?.id !== macroArtifactSpec.subjectId ||
+      data.state !== macroArtifactSpec.state ||
+      data.commit !== macroArtifactSpec.commit ||
+      data.sha256 !== macroArtifactSpec.sha256 ||
+      data.lineCount !== macroArtifactSpec.lineCount ||
+      JSON.stringify(data.formulaAuditRemaining) !== JSON.stringify(macroArtifactSpec.formulaAuditRemaining) ||
+      JSON.stringify(data.governanceAuditRemaining) !== JSON.stringify(macroArtifactSpec.governanceAuditRemaining) ||
+      data.decisionState !== macroArtifactSpec.decisionState ||
+      data.authoritativeState !== macroArtifactSpec.authoritativeState ||
+      data.next !== macroArtifactSpec.next ||
+      data.draftQuestionIdsAllocated !== false ||
+      data.oi03RemainsNext !== true
+    ) {
+      add(
+        "OPS_D040_MACRO_ARTIFACT_MISMATCH",
+        "project-ops/events/2026-08-06.jsonl",
+        "D-040 宏量证据工件提交或候选状态发生漂移",
+      );
+    }
+    for (const field of [
+      "px1Authorized",
+      "px2Authorized",
+      "ownerReviewAuthorized",
+      "ownerChoiceRecorded",
+      "decisionAcceptedRecorded",
+      "formalImplementationAuthorized",
+    ]) {
+      if (data[field] !== false) {
+        add("OPS_D040_MACRO_AUTHORIZATION_PREMATURE", "project-ops/events/2026-08-06.jsonl", `宏量证据工件 ${field} 必须保持 false`);
+      }
     }
   }
 

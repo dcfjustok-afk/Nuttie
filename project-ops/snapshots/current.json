@@ -16,10 +16,10 @@
     "crossSourceItems": 24,
     "evidenceGaps": 5,
     "gapThemeCount": 9,
-    "agentRosterSize": 21,
+    "agentRosterSize": 23,
     "activeAgents": 1,
-    "agentMessages": 106,
-    "projectEvents": 101
+    "agentMessages": 110,
+    "projectEvents": 106
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -201,6 +201,22 @@
       "workPackage": "治理安全首轮 0/4/1 与中间 0/4/0 findings 已关闭，最终 remaining 为 0/0/0；OI-03 与授权边界未改变",
       "gate": "G2-G4 D-040 PX-0",
       "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "macro_formula_audit",
+      "role": "IndependentFormulaEvidenceReviewer",
+      "state": "completed",
+      "workPackage": "D-040 P/C/F 宏量证据、4/4/9 换算和引用精度 delta 审查归零；未批准默认比例或实现",
+      "gate": "G2-G4 D-040 PX-0",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "macro_governance_audit",
+      "role": "IndependentGovernanceSafetyReviewer",
+      "state": "completed",
+      "workPackage": "D-040 宏量模式互斥、AMDR reference-only、特殊人群 UI 门控和六授权位 delta 审查归零",
+      "gate": "G2-G4 D-040 PX-0",
+      "requiredHandoffs": ["root"]
     }
   ],
   "currentWork": [
@@ -208,6 +224,7 @@
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
     "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权，OI-03 仍是下一题",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
+    "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；新研究工件仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，未进入决定台账或 Owner intake",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
   ],
   "constraints": [
