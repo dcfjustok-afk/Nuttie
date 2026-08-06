@@ -28,7 +28,7 @@ The integration was checked against the current Nuttie workspace and passed:
 ProjectOps validation: 69/69 PASS
 ProjectOps reconcile tests: 5/5 PASS
 Contract harnesses: 18/18 PASS
-Workbench smoke: 106 events, 110 messages, 23 agents, 59 documents
+Workbench smoke: 106 events, 110 messages, 23 agents, 60 documents
 Responsive check: 375px viewport has no horizontal overflow
 ```
 
