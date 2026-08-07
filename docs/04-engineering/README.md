@@ -54,6 +54,7 @@
 - [加密备份与恢复](data/encrypted-backup-and-restore.md)：手动导出、加密封装、恢复和默认排除 iCloud。
 - [iOS 原生能力边界](ios/native-capability-boundaries.md)：iOS 17、Expo/Prebuild、权限、后台、扩展、Mac 和分发限制。
 - [测试策略](testing/test-strategy.md)：测试金字塔、真机矩阵、安全测试和发布门禁。
+- [视觉资产契约检查](testing/visual-kit-check.md)：Figma-ready 栗子视觉资产的本地结构与安全边界。
 - [ADR](adr/)：已批准架构决策的上下文与后果。
 - [技术决策候选](decisions/decision-candidates.md)：D-018 起的 Options / Trade-offs / Recommended，全部仍待 Owner 确认。
 - [技术栈调研总览](technology-stack-research.md)：按已批准边界、候选库、原生能力和 Spike 证据解释 React Native 技术栈。

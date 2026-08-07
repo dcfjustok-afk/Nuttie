@@ -47,6 +47,8 @@ Nuttie 的视觉主角是“会陪用户一起积累的小栗子”。栗子不�
 
 原型包含餐次切换和快捷记录反馈，用于验证角色与状态的关系；点击不会写入 ProjectOps、Owner intake 或任何线上服务。
 
+视觉资产契约由 `tools/visual-kit-check.mjs` 固定，并由 `tools/visual-kit-check.test.mjs` 验证：三张核心画面、四个角色变体、三个可访问角色实例、无远程 HTML 资源，以及仅绑定 `127.0.0.1` 的预览服务器。
+
 ## Figma 导入顺序
 
 真实 Figma MCP 连接可用后，按以下顺序创建文件和页面：
