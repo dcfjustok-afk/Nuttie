@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "status": "SYNTHETIC_FIXTURE_ONLY",
+  "nutrition": {
+    "complete": {
+      "sourceId": "taiwan-food",
+      "sourceVersion": "fixture-2026-08",
+      "nutrients": {
+        "energyKcal": 420,
+        "proteinG": 18,
+        "carbohydrateG": 52,
+        "fatG": 16,
+        "fiberG": 7,
+        "sugarG": 9,
+        "sodiumMg": 510
+      }
+    },
+    "missing": {
+      "sourceId": "user-food",
+      "sourceVersion": "local-1",
+      "nutrients": {
+        "energyKcal": 180,
+        "proteinG": 5,
+        "fatG": null,
+        "fiberG": null,
+        "sugarG": null,
+        "sodiumMg": null
+      }
+    }
+  },
+  "dateContexts": [
+    {
+      "instant": "2026-03-08T09:30:00Z",
+      "timeZone": "America/Los_Angeles",
+      "localDate": "2026-03-08",
+      "label": "spring-forward after midnight"
+    },
+    {
+      "instant": "2026-11-01T08:30:00Z",
+      "timeZone": "America/Los_Angeles",
+      "localDate": "2026-11-01",
+      "label": "fall-back before midnight"
+    }
+  ],
+  "crud": {
+    "initialState": {
+      "meals": [
+        { "id": "meal-1", "localDate": "2026-08-07", "energyKcal": 420 }
+      ]
+    },
+    "update": {
+      "type": "update",
+      "meal": { "id": "meal-1", "localDate": "2026-08-07", "energyKcal": 450 }
+    },
+    "add": {
+      "type": "add",
+      "meal": { "id": "meal-2", "localDate": "2026-08-07", "energyKcal": 180 }
+    },
+    "deleteId": "meal-2"
+  }
+}

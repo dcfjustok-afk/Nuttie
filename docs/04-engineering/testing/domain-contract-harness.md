@@ -26,4 +26,8 @@
 node --test tools/domain-contract-harness.test.mjs
 ```
 
+外置的 synthetic corpus 位于 `tools/fixtures/domain-contract-v1/contract-fixtures.json`，加载测试位于
+`tools/domain-fixture-corpus.test.mjs`。它固定七项营养字段、来源版本、缺失值、DST 日期上下文和可重放
+的 CRUD 输入，便于后续迁移到正式 domain 测试；该 corpus 不代表生产数据库格式，也不批准 D-040 公式。
+
 测试只使用 Node 内置 `node:test` 与 `node:assert/strict`，后续可在 Owner 完成首批回读和正式工程门禁后迁移为批准测试层的实现。
