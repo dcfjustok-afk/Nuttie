@@ -29,12 +29,14 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   const mascotPath = path.join(rootDir, "mascot-sheet.svg");
   const spotPath = path.join(rootDir, "spot-illustrations.svg");
   const tokenPath = path.join(rootDir, "design-tokens.json");
+  const componentPath = path.join(rootDir, "components.html");
   const serverPath = path.join(rootDir, "server.mjs");
-  const [html, svg, spots, tokensText, server] = await Promise.all([
+  const [html, svg, spots, tokensText, components, server] = await Promise.all([
     readFile(indexPath, "utf8"),
     readFile(mascotPath, "utf8"),
     readFile(spotPath, "utf8"),
     readFile(tokenPath, "utf8"),
+    readFile(componentPath, "utf8"),
     readFile(serverPath, "utf8")
   ]);
   let tokens;
@@ -47,6 +49,10 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(/<html\s+lang="zh-CN">/i.test(html), "HTML_LANGUAGE_MISSING", "visual kit must declare zh-CN");
   assertCheck(/<meta\s+charset="utf-8">/i.test(html), "HTML_CHARSET_MISSING", "visual kit must declare UTF-8");
   assertCheck(/<title>Nuttie visual concept<\/title>/i.test(html), "HTML_TITLE_MISSING", "visual kit title is missing");
+  assertCheck(/<html lang="zh-CN">/.test(components), "COMPONENT_CATALOG_LANGUAGE_MISSING", "component catalog must declare zh-CN");
+  assertCheck(/class="button primary"/.test(components), "COMPONENT_BUTTON_MISSING", "component catalog must include primary button");
+  assertCheck(/class="alert info"/.test(components) && /class="alert warning"/.test(components) && /class="alert success"/.test(components), "COMPONENT_ALERT_STATES_MISSING", "component catalog must include alert states");
+  assertCheck(/class="roles"/.test(components) && countMatches(components, /mascot-sheet\.svg#/g) >= 4, "COMPONENT_MASCOT_ROLES_MISSING", "component catalog must include four mascot roles");
   assertCheck(/--chestnut:#A85D3F|--chestnut:#a85d3f/.test(html), "TOKEN_CHESTNUT_MISSING", "brand chestnut token is missing");
   assertCheck(/--sprout:#3F7C59|--sprout:#3f7c59/.test(html), "TOKEN_SPROUT_MISSING", "sprout semantic token is missing");
   assertCheck(/--amber:#E2A34A|--amber:#e2a34a/.test(html), "TOKEN_AMBER_MISSING", "amber semantic token is missing");
@@ -98,6 +104,7 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     minimumTouchTarget: 44,
     tokenVersion: tokens.meta.version,
     tokenCategories: ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"],
+    componentCatalog: true,
     loopbackServer: true
   };
 }
