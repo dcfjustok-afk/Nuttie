@@ -2,115 +2,44 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Nuttie visual concept</title>
   <style>
-    :root { --ink:#262721; --muted:#5c655b; --paper:#f5f1e9; --surface:#fffdf8; --line:#d7cec0; --chestnut:#a85d3f; --green:#3e7a58; --amber:#e1a54d; --sky:#4d87a5; --radius:10px; }
-    * { box-sizing:border-box; }
-    html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
-    body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    main { width:min(1440px,100%); margin:0 auto; padding:32px; }
-    .masthead { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; padding:16px 0 28px; border-bottom:1px solid var(--line); }
-    .eyebrow { color:var(--green); font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
-    h1 { margin:8px 0 0; font-size:clamp(28px,4vw,52px); line-height:1.05; }
-    .masthead p { max-width:440px; margin:0; color:var(--muted); line-height:1.55; }
-    .concept { border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); padding:14px 16px; color:var(--muted); font-size:12px; white-space:nowrap; }
-    .frames { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; padding-top:28px; }
-    .frame { min-width:0; border:1px solid var(--line); border-radius:18px; background:#efe8dc; padding:14px; }
-    .frame-label { display:flex; justify-content:space-between; color:var(--muted); font-size:12px; margin:0 4px 10px; }
-    .phone { aspect-ratio:390/844; overflow:hidden; border:8px solid #1f2521; border-radius:34px; background:var(--surface); box-shadow:0 10px 22px #4b3d2d1f; }
-    .phone-inner { height:100%; min-height:0; display:flex; flex-direction:column; padding:calc(18px + env(safe-area-inset-top, 0px)) 16px calc(14px + env(safe-area-inset-bottom, 0px)); }
-    .topline { display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:12px; }
-    .brand { display:flex; align-items:center; gap:8px; margin-top:24px; }
-    .brand-mark { width:34px; height:34px; border-radius:50%; background:var(--chestnut); display:grid; place-items:center; color:#fffdf8; font-weight:900; }
-    .brand strong { font-size:18px; }
-    .hero { display:flex; align-items:center; gap:10px; margin:24px 0 18px; }
-    .hero h2 { margin:0; font-size:25px; line-height:1.16; }
-    .hero small { display:block; margin-top:6px; color:var(--muted); }
-    .mascot { width:112px; height:112px; flex:none; }
-    .spot { width:28px; height:28px; flex:none; }
-    .panel { border:1px solid var(--line); border-radius:12px; background:#fffdf8; padding:14px; }
-    .panel + .panel { margin-top:10px; }
-    .panel-head { display:flex; justify-content:space-between; gap:12px; align-items:center; }
-    .panel-head strong { font-size:14px; }
-    .panel-head span { color:var(--muted); font-size:12px; }
-    .meter { height:10px; border-radius:99px; background:#e9dfd1; margin:14px 0 8px; overflow:hidden; }
-    .meter i { display:block; width:68%; height:100%; background:var(--green); border-radius:inherit; }
-    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
-    .stat { padding:10px 8px; border-radius:9px; background:#f4efe6; }
-    .stat b { display:block; font-size:18px; }
-    .stat span { color:var(--muted); font-size:11px; }
-    .quick { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:12px; }
-    button { min-width:44px; min-height:44px; border:1px solid var(--line); border-radius:9px; padding:10px 8px; background:#fffdf8; color:var(--ink); font:inherit; font-size:12px; cursor:pointer; }
-    button:hover, button:focus-visible, button[aria-pressed="true"], button[aria-selected="true"] { border-color:var(--green); background:#e9f1e9; }
-    button:focus-visible { outline:3px solid var(--sky); outline-offset:2px; }
-    .bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:auto; padding-top:12px; border-top:1px solid var(--line); }
-    .bottom-nav button { border:0; background:transparent; color:var(--muted); padding:8px 2px; }
-    .bottom-nav button[aria-pressed="true"] { color:var(--green); font-weight:800; }
-    .segmented { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin:18px 0 12px; padding:4px; background:#f1ebe2; border-radius:10px; }
-    .segmented button { border:0; background:transparent; padding:8px 3px; font-size:11px; }
-    .field { display:flex; justify-content:space-between; align-items:center; width:100%; text-align:left; border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; background:#fffdf8; }
-    .field span { color:var(--muted); font-size:12px; }
-    .accent-box { margin-top:12px; padding:12px; border-left:4px solid var(--amber); background:#fff4dc; border-radius:0 10px 10px 0; color:#664615; font-size:12px; line-height:1.45; }
-    .bars { display:flex; align-items:flex-end; gap:8px; height:180px; margin-top:20px; padding:12px 6px 0; border-bottom:1px solid var(--line); }
-    .bar { flex:1; background:#c5d8c8; border-radius:6px 6px 0 0; min-height:22px; position:relative; }
-    .bar.hot { background:var(--chestnut); }
-    .bar em { position:absolute; bottom:-22px; width:100%; text-align:center; color:var(--muted); font-size:10px; font-style:normal; }
-    .quote { margin-top:34px; padding:12px; background:#e7f0f4; border-radius:10px; color:#28546b; font-size:12px; line-height:1.45; }
-    .chart-summary { margin:10px 0 0; color:var(--muted); font-size:12px; line-height:1.45; }
-    .action-label { display:inline-flex; align-items:center; gap:6px; }
-    .decorative { pointer-events:none; }
-    .footer { display:flex; justify-content:space-between; gap:20px; padding:22px 4px 0; color:var(--muted); font-size:12px; }
-    @media (max-width:980px) { main { padding:20px; } .frames { grid-template-columns:1fr; max-width:460px; margin:0 auto; } .masthead { display:block; } .concept { display:inline-block; margin-top:16px; white-space:normal; } }
-    @media (max-width:420px) { .hero { gap:8px; } .mascot { width:72px; height:96px; } }
-    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }
+    :root {
+      --ink:#252a26; --muted:#6f776e; --paper:#f4f0e8; --surface:#fffdf8; --line:#e3dbce;
+      --chestnut:#a85d3f; --chestnut-dark:#783f30; --sprout:#3f7c59; --sprout-soft:#e5f0e7;
+      --amber:#e2a34a; --amber-soft:#fff2d8; --sky:#4e88a5; --sky-soft:#e6f1f5;
+      --danger:#b9574c; --radius-sm:10px; --radius-md:16px; --radius-lg:24px;
+      --shadow:0 18px 44px rgba(64,48,33,.12); --shadow-sm:0 3px 10px rgba(64,48,33,.08); --focus-ring:0 0 0 3px rgba(78,136,165,.28); --font:ui-rounded,-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box} html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);letter-spacing:0}
+    main{width:min(1440px,100%);margin:auto;padding:32px clamp(18px,4vw,56px) 28px}
+    .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;padding:14px 0 30px;border-bottom:1px solid var(--line)}
+    .eyebrow{color:var(--sprout);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    h1{margin:10px 0 0;font-size:clamp(30px,4vw,54px);line-height:1.08;letter-spacing:0}
+    .masthead p{max-width:480px;margin:0;color:var(--muted);line-height:1.65;font-size:14px}.concept{display:inline-flex;margin-top:14px;padding:8px 10px;border-radius:999px;background:var(--sprout-soft);color:var(--sprout);font-size:11px;font-weight:800}
+    .frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;padding-top:30px}.frame{min-width:0;padding:14px;border:1px solid var(--line);border-radius:var(--radius-md);background:#ece4d8}.frame-label{display:flex;justify-content:space-between;margin:0 4px 10px;color:var(--muted);font-size:12px}
+    .phone{aspect-ratio:390/844;overflow:hidden;border:8px solid #202722;border-radius:34px;background:var(--surface);box-shadow:var(--shadow)}.phone-inner{height:100%;display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(12px + env(safe-area-inset-bottom,0px))}.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px}.brand{display:flex;align-items:center;gap:9px;margin-top:23px}.brand-mark{width:35px;height:35px;display:grid;place-items:center;border-radius:12px;background:var(--chestnut);color:#fff;font-weight:900;box-shadow:0 4px 0 var(--chestnut-dark)}.brand strong{font-size:18px}.hero{display:flex;align-items:center;gap:12px;margin:25px 0 18px}.hero h2{margin:0;font-size:23px;line-height:1.18}.hero small{display:block;margin-top:7px;color:var(--muted);font-size:11px;line-height:1.4}.mascot{width:106px;height:106px;flex:none}.spot{width:30px;height:30px;flex:none}
+    .panel{padding:15px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--surface);box-shadow:0 5px 12px rgba(64,48,33,.04)}.panel+.panel{margin-top:10px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.panel-head strong{font-size:14px}.panel-head span{color:var(--muted);font-size:12px}.meter{height:10px;margin:14px 0 9px;overflow:hidden;border-radius:99px;background:#eee5d8}.meter i{display:block;width:68%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sprout),#75aa7a)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{padding:10px 8px;border-radius:var(--radius-sm);background:#f5efe6}.stat b{display:block;font-size:18px}.stat span{color:var(--muted);font-size:10px}
+    .quick{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}.quick button{position:relative;display:flex;align-items:center;justify-content:flex-start;text-align:left}.quick button[data-active="true"]{border-color:var(--sprout);background:var(--sprout-soft)}.quick button[data-active="true"]::after{content:"✓";position:absolute;top:5px;right:7px;color:var(--sprout);font-size:13px;font-weight:900}button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 8px;background:var(--surface);color:var(--ink);font:inherit;font-size:12px;cursor:pointer;transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease}button:hover{border-color:var(--sprout);box-shadow:var(--shadow-sm)}button[aria-pressed="true"],button[aria-selected="true"]{border-color:var(--sprout);background:var(--sprout-soft)}button:active{transform:translateY(1px)}button:focus-visible{outline:0;box-shadow:var(--focus-ring)}button:disabled{cursor:not-allowed;opacity:.52;box-shadow:none}.action-label{display:inline-flex;align-items:center;gap:6px}
+    .bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:auto;padding-top:11px;border-top:1px solid var(--line)}.bottom-nav button{border:0;background:transparent;color:var(--muted);padding:8px 2px;font-size:11px}.bottom-nav button[aria-pressed="true"]{color:var(--sprout);font-weight:800}
+    .segmented{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:18px 0 12px;padding:4px;border-radius:var(--radius-sm);background:#f1ebe2}.segmented button{border:0;background:transparent;padding:8px 3px;font-size:11px}.field{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:10px;padding:12px;text-align:left}.field span{color:var(--muted);font-size:12px}.accent-box{margin-top:12px;padding:12px;border-left:4px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;background:var(--amber-soft);color:#664615;font-size:12px;line-height:1.5}.bars{display:flex;align-items:flex-end;gap:8px;height:180px;margin-top:20px;padding:12px 6px 0;border-bottom:1px solid var(--line)}.bar{position:relative;flex:1;min-height:22px;border-radius:6px 6px 0 0;background:#c5d8c8}.bar.hot{background:var(--chestnut)}.bar em{position:absolute;bottom:-22px;width:100%;text-align:center;color:var(--muted);font-size:10px;font-style:normal}.chart-summary{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.quote{display:flex;align-items:center;gap:8px;margin-top:34px;padding:12px;border-radius:var(--radius-sm);background:var(--sky-soft);color:#28546b;font-size:12px;line-height:1.45}.decorative{pointer-events:none}.footer{display:flex;justify-content:space-between;gap:20px;padding:24px 4px 0;color:var(--muted);font-size:12px}
+    .token-strip{display:flex;flex-wrap:wrap;gap:8px;padding-top:22px}.token{display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:11px;color:var(--muted)}.swatch{width:12px;height:12px;border-radius:50%}.swatch.chestnut{background:var(--chestnut)}.swatch.sprout{background:var(--sprout)}.swatch.amber{background:var(--amber)}.swatch.sky{background:var(--sky)}
+    @media (max-width:980px){main{padding:20px}.frames{grid-template-columns:1fr;max-width:460px;margin:0 auto}.masthead{display:block}.concept{margin-top:16px}.footer{display:block}.footer span{display:block;margin-top:6px}}@media (max-width:420px){.hero{gap:8px}.hero h2{font-size:22px}.mascot{width:76px;height:96px}.panel{padding:12px}.stat b{font-size:16px}}@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
   </style>
 </head>
 <body>
   <main>
-    <header class="masthead">
-      <div><div class="eyebrow">Nuttie / visual concept / v0.1</div><h1>积“栗”前行，<br>“立”见更好的自己。</h1></div>
-      <div><p>一个安静、可靠、带一点角色温度的本地自律工具。栗子不是吉祥物贴纸，而是把进度、记录和成长状态变成可读的情绪反馈。</p><div class="concept">FIGMA-READY · OWNER REVIEW PENDING</div></div>
-    </header>
+    <header class="masthead"><div><div class="eyebrow">Nuttie / visual system / v0.2</div><h1>积“栗”前行，<br>“立”见更好的自己。</h1></div><div><p>一款安静、可靠、带一点温度的本地自律工具。栗子不是装饰，而是把进度、记录和成长状态变成可读的情绪反馈。</p><div class="concept">LOCAL-FIRST · ORIGINAL MASCOT · OWNER REVIEW</div></div></header>
+    <div class="token-strip" aria-label="Nuttie design tokens"><span class="token"><i class="swatch chestnut"></i>Chestnut / 品牌主色</span><span class="token"><i class="swatch sprout"></i>Sprout / 行动成功</span><span class="token"><i class="swatch amber"></i>Amber / 提醒重点</span><span class="token"><i class="swatch sky"></i>Sky / AI 与洞察</span><span class="token">圆角 10 / 16 / 24</span><span class="token">触控目标 ≥ 44px</span></div>
     <section class="frames" aria-label="Nuttie visual concept frames">
-      <article class="frame"><div class="frame-label"><span>01 / 今日总览</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner">
-        <div class="topline"><span>8月6日 · 星期四</span><span>本地模式</span></div>
-        <div class="brand"><div class="brand-mark">栗</div><strong>Nuttie</strong></div>
-        <div class="hero"><svg class="mascot" viewBox="60 100 340 570" role="img" aria-label="拿着记录本问候的卡通栗子"><use href="./mascot-sheet.svg#mascot-home"/></svg><div><h2>早上好，<br>今天也稳稳来。</h2><small>Small steps, solid growth.</small></div></div>
-        <div class="panel"><div class="panel-head"><strong>今日进度</strong><span>68%</span></div><div class="meter" role="progressbar" aria-label="今日进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68"><i></i></div><div class="stats"><div class="stat"><b>1,240</b><span>摄入 kcal</span></div><div class="stat"><b>82g</b><span>蛋白质</span></div><div class="stat"><b>6</b><span>连续天</span></div></div></div>
-        <div class="quick"><button type="button" data-quick="meal"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="40 40 240 240"><use href="./spot-illustrations.svg#spot-meal"/></svg>记录一餐</span></button><button type="button" data-quick="water"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="280 40 240 240"><use href="./spot-illustrations.svg#spot-water"/></svg>喝水</span></button><button type="button" data-quick="weight"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="520 40 240 240"><use href="./spot-illustrations.svg#spot-weight"/></svg>记体重</span></button><button type="button" data-quick="exercise"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="760 40 240 240"><use href="./spot-illustrations.svg#spot-movement"/></svg>记运动</span></button></div>
-        <nav class="bottom-nav" aria-label="主要导航"><button type="button" aria-current="page" aria-pressed="true">今天</button><button type="button" aria-pressed="false">趋势</button><button type="button" aria-pressed="false">食物</button><button type="button" aria-pressed="false">设置</button></nav>
-      </div></div></article>
-      <article class="frame"><div class="frame-label"><span>02 / 记录一餐</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner">
-        <div class="topline"><button type="button" aria-label="返回上一页">‹ 返回</button><span>草稿未保存</span></div>
-        <div class="brand"><div class="brand-mark">栗</div><strong>记录这一餐</strong></div>
-        <div class="segmented" role="tablist" aria-label="餐次"><button type="button" role="tab" aria-selected="true" aria-pressed="true">早餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">午餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">晚餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">零食</button></div>
-        <button type="button" class="field" aria-label="搜索本地食物"><span>搜索本地食物</span><svg class="spot decorative" aria-hidden="true" viewBox="160 310 240 240"><use href="./spot-illustrations.svg#spot-ai-lens"/></svg></button>
-        <button type="button" class="field" aria-label="扫描本地条码"><span>扫描条码</span><svg class="spot decorative" aria-hidden="true" viewBox="1000 40 240 240"><use href="./spot-illustrations.svg#spot-barcode"/></svg></button>
-        <div class="accent-box">先选来源，再确认份量。找不到时可以创建自己的食物，不会自动联网。</div>
-        <div class="hero" style="margin-top:20px"><svg class="mascot" viewBox="340 100 340 570" role="img" aria-label="端着餐碗陪伴记录的卡通栗子"><use href="./mascot-sheet.svg#mascot-meal"/></svg><div><h2 style="font-size:20px">这一餐，<br>慢慢记就好。</h2><small>AI 识别只在你主动确认后发送。</small></div></div>
-        <button type="button" aria-label="检查并保存这条餐食记录" style="margin-top:auto;background:var(--green);color:#fffdf8;border-color:var(--green)">检查并保存</button>
-        <nav class="bottom-nav" aria-label="主要导航"><button type="button" aria-pressed="false">今天</button><button type="button" aria-pressed="false">趋势</button><button type="button" aria-current="page" aria-pressed="true">食物</button><button type="button" aria-pressed="false">设置</button></nav>
-      </div></div></article>
-      <article class="frame"><div class="frame-label"><span>03 / 趋势成长</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner">
-        <div class="topline"><span>近 7 天</span><span>本地统计</span></div>
-        <div class="brand"><div class="brand-mark">栗</div><strong>趋势成长</strong></div>
-        <div class="hero"><svg class="mascot" viewBox="620 100 340 570" role="img" aria-label="给幼苗浇水的卡通栗子"><use href="./mascot-sheet.svg#mascot-growth"/></svg><div><h2>看见一点点<br>变好的自己。</h2><small>不追求完美，只看连续的行动。</small></div></div>
-        <div class="panel"><div class="panel-head"><strong>摄入与目标</strong><span>kcal / 日</span></div><div class="bars" role="img" aria-label="近 7 天摄入相对目标的柱状图：周一55%，周二72%，周三48%，周四64%，周五78%，周六60%，周日84%"><div class="bar" style="height:55%"><em>一</em></div><div class="bar hot" style="height:72%"><em>二</em></div><div class="bar" style="height:48%"><em>三</em></div><div class="bar" style="height:64%"><em>四</em></div><div class="bar" style="height:78%"><em>五</em></div><div class="bar" style="height:60%"><em>六</em></div><div class="bar" style="height:84%"><em>日</em></div></div><p class="chart-summary">周日最高，为目标的 84%；近 7 天有 7 天本地记录。</p></div>
-        <div class="quote"><svg class="spot decorative" aria-hidden="true" viewBox="400 310 240 240"><use href="./spot-illustrations.svg#spot-trend-sprout"/></svg>“今天比昨天多走了一小步。”<br><span>连续记录 6 天 · 目标完成 4 天</span></div>
-        <nav class="bottom-nav" style="margin-top:auto" aria-label="主要导航"><button type="button" aria-pressed="false">今天</button><button type="button" aria-current="page" aria-pressed="true">趋势</button><button type="button" aria-pressed="false">食物</button><button type="button" aria-pressed="false">设置</button></nav>
-      </div></div></article>
+      <article class="frame"><div class="frame-label"><span>01 / 今日总览</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner"><div class="topline"><span>8月7日 · 星期五</span><span>本地模式</span></div><div class="brand"><div class="brand-mark">栗</div><strong>Nuttie</strong></div><div class="hero"><svg class="mascot" viewBox="60 100 340 570" role="img" aria-label="拿着记录本的卡通栗子"><use href="./mascot-sheet.svg#mascot-home"/></svg><div><h2>早上好，<br>今天也稳稳来。</h2><small>Small steps, solid growth.</small></div></div><div class="panel"><div class="panel-head"><strong>今日进度</strong><span>68%</span></div><div class="meter" role="progressbar" aria-label="今日进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68"><i></i></div><div class="stats"><div class="stat"><b>1,240</b><span>摄入 kcal</span></div><div class="stat"><b>82g</b><span>蛋白质</span></div><div class="stat"><b>6</b><span>连续天</span></div></div></div><div class="quick"><button type="button" data-quick="meal"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="40 40 240 240"><use href="./spot-illustrations.svg#spot-meal"/></svg>记录一餐</span></button><button type="button" data-quick="water"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="280 40 240 240"><use href="./spot-illustrations.svg#spot-water"/></svg>喝水</span></button><button type="button" data-quick="weight"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="520 40 240 240"><use href="./spot-illustrations.svg#spot-weight"/></svg>记体重</span></button><button type="button" data-quick="exercise"><span class="action-label"><svg class="spot decorative" aria-hidden="true" viewBox="760 40 240 240"><use href="./spot-illustrations.svg#spot-movement"/></svg>记运动</span></button></div><nav class="bottom-nav" aria-label="主要导航"><button type="button" aria-current="page" aria-pressed="true">今天</button><button type="button" aria-pressed="false">趋势</button><button type="button" aria-pressed="false">食物</button><button type="button" aria-pressed="false">设置</button></nav></div></div></article>
+      <article class="frame"><div class="frame-label"><span>02 / 记录一餐</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner"><div class="topline"><button type="button" aria-label="返回上一页">← 返回</button><span>草稿未保存</span></div><div class="brand"><div class="brand-mark">栗</div><strong>记录这一餐</strong></div><div class="segmented" role="tablist" aria-label="餐次"><button type="button" role="tab" aria-selected="true" aria-pressed="true">早餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">午餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">晚餐</button><button type="button" role="tab" aria-selected="false" aria-pressed="false">零食</button></div><button type="button" class="field" aria-label="搜索本地食物"><span>搜索本地食物</span><svg class="spot decorative" aria-hidden="true" viewBox="160 310 240 240"><use href="./spot-illustrations.svg#spot-ai-lens"/></svg></button><button type="button" class="field" aria-label="扫描本地条码"><span>扫描条码</span><svg class="spot decorative" aria-hidden="true" viewBox="1000 40 240 240"><use href="./spot-illustrations.svg#spot-barcode"/></svg></button><div class="accent-box">先选来源，再确认份量。找不到时可以创建自己的食物，不会自动联网。</div><div class="hero" style="margin-top:20px"><svg class="mascot" viewBox="340 100 340 570" role="img" aria-label="端着餐碗陪伴记录的卡通栗子"><use href="./mascot-sheet.svg#mascot-meal"/></svg><div><h2 style="font-size:20px">这一餐，<br>慢慢记就好。</h2><small>AI 识别只在你主动确认后发送。</small></div></div><button type="button" aria-label="检查并保存这条餐食记录" style="margin-top:auto;background:var(--sprout);color:#fff;border-color:var(--sprout)">检查并保存</button><nav class="bottom-nav" aria-label="主要导航"><button type="button" aria-pressed="false">今天</button><button type="button" aria-pressed="false">趋势</button><button type="button" aria-current="page" aria-pressed="true">食物</button><button type="button" aria-pressed="false">设置</button></nav></div></div></article>
+      <article class="frame"><div class="frame-label"><span>03 / 趋势成长</span><span>390 × 844</span></div><div class="phone"><div class="phone-inner"><div class="topline"><span>近 7 天</span><span>本地统计</span></div><div class="brand"><div class="brand-mark">栗</div><strong>趋势成长</strong></div><div class="hero"><svg class="mascot" viewBox="620 100 340 570" role="img" aria-label="给幼苗浇水的卡通栗子"><use href="./mascot-sheet.svg#mascot-growth"/></svg><div><h2>看见一点点<br>变好的自己。</h2><small>不追求完美，只看连续的行动。</small></div></div><div class="panel"><div class="panel-head"><strong>摄入与目标</strong><span>kcal / 日</span></div><div class="bars" role="img" aria-label="近7天摄入相对目标的柱状图：周一55%，周二72%，周三48%，周四64%，周五78%，周六60%，周日84%"><div class="bar" style="height:55%"><em>一</em></div><div class="bar hot" style="height:72%"><em>二</em></div><div class="bar" style="height:48%"><em>三</em></div><div class="bar" style="height:64%"><em>四</em></div><div class="bar" style="height:78%"><em>五</em></div><div class="bar" style="height:60%"><em>六</em></div><div class="bar" style="height:84%"><em>日</em></div></div><p class="chart-summary">周日最高，为目标的 84%；近 7 天有 7 天本地记录。</p></div><div class="quote"><svg class="spot decorative" aria-hidden="true" viewBox="400 310 240 240"><use href="./spot-illustrations.svg#spot-trend-sprout"/></svg><span>“今天比昨天多走了一小步。”<br><small>连续记录 6 天 · 目标完成 4 天</small></span></div><nav class="bottom-nav" style="margin-top:auto" aria-label="主要导航"><button type="button" aria-pressed="false">今天</button><button type="button" aria-current="page" aria-pressed="true">趋势</button><button type="button" aria-pressed="false">食物</button><button type="button" aria-pressed="false">设置</button></nav></div></div></article>
     </section>
-    <footer class="footer"><span>Palette: chestnut / sprout / amber / sky</span><span>SVG assets: mascots + spot illustrations · Figma MCP pending connection</span></footer>
+    <footer class="footer"><span>Palette: chestnut / sprout / amber / sky</span><span>SVG assets: mascots + spot illustrations · Figma optional</span></footer>
   </main>
-  <script>
-    document.querySelectorAll(".segmented button").forEach((button) => button.addEventListener("click", () => {
-      button.parentElement.querySelectorAll("button").forEach((item) => { const selected = item === button; item.setAttribute("aria-pressed", String(selected)); item.setAttribute("aria-selected", String(selected)); });
-    }));
-    document.querySelectorAll("[data-quick]").forEach((button) => button.addEventListener("click", () => {
-      button.dataset.active = "true";
-      button.textContent = "✓ 已打开";
-    }));
-  </script>
+  <script>document.querySelectorAll('.segmented button').forEach((button)=>button.addEventListener('click',()=>{button.parentElement.querySelectorAll('button').forEach((item)=>{const selected=item===button;item.setAttribute('aria-pressed',String(selected));item.setAttribute('aria-selected',String(selected));})}));document.querySelectorAll('[data-quick]').forEach((button)=>button.addEventListener('click',()=>{button.dataset.active='true';button.textContent='✓ 已打开';}));</script>
 </body>
 </html>
