@@ -57,6 +57,7 @@
 - [视觉资产契约检查](testing/visual-kit-check.md)：Figma-ready 栗子视觉资产的本地结构与安全边界。
 - [食品数据包契约检查](testing/data-pack-contract-harness.md)：D-002/D-012/D-013 的 synthetic pre-auth corpus 与负向验证。
 - [备份恢复对账检查](testing/backup-reconcile-harness.md)：generation、intent、active/previous ref 的框架无关 crash-consistency 模型。
+- [AI 响应合同检查](testing/ai-response-contract-harness.md)：不可信响应的版本、schema、预算和零写入解析夹具。
 - [ADR](adr/)：已批准架构决策的上下文与后果。
 - [技术决策候选](decisions/decision-candidates.md)：D-018 起的 Options / Trade-offs / Recommended，全部仍待 Owner 确认。
 - [技术栈调研总览](technology-stack-research.md)：按已批准边界、候选库、原生能力和 Spike 证据解释 React Native 技术栈。
