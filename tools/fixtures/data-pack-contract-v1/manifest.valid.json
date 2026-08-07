@@ -1,0 +1,28 @@
+{
+  "formatVersion": 1,
+  "packId": "synthetic.tw.food",
+  "packVersion": "2026.08.0",
+  "createdAt": "2026-08-07T00:00:00Z",
+  "minimumAppVersion": "0.1.0",
+  "schemaVersion": 1,
+  "source": {
+    "datasetId": "synthetic.tw",
+    "name": "Synthetic Taiwan food fixture",
+    "version": "fixture-1",
+    "url": "https://official.example.test/food",
+    "retrievedAt": "2026-08-07T00:00:00Z",
+    "rawArtifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "licenseId": "synthetic-license",
+    "attribution": "Synthetic fixture only"
+  },
+  "transformVersion": "fixture-transform-1",
+  "recordProvenanceVersion": 1,
+  "nutrients": ["energy", "protein", "carbohydrate", "fat", "fiber", "sugar", "sodium"],
+  "files": [
+    { "path": "payload/catalog.sqlite", "size": 100, "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+    { "path": "metadata/provenance.ndjson", "size": 200, "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+    { "path": "metadata/transforms.json", "size": 300, "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+    { "path": "license/NOTICE.txt", "size": 400, "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" }
+  ],
+  "signature": { "algorithm": "pending-D-026", "keyId": "fixture-key-1" }
+}

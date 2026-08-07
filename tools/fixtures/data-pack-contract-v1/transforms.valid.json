@@ -1,0 +1,4 @@
+{
+  "transformVersion": "fixture-transform-1",
+  "steps": [{ "id": "noop", "operation": "no-op", "toolVersion": "fixture-tool-1" }]
+}
