@@ -34,6 +34,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [D-038 导航原型清单](docs/03-design/prototype-manifest.md)
 - [D-039 添加餐食原型清单](docs/03-design/d039-prototype-manifest.md)
 - [D-040 首启资料与目标原型清单](docs/03-design/d040-prototype-manifest.md)
+- [Nuttie 视觉方向与 Figma 导入合同](docs/03-design/nuttie-visual-direction.md)
 - [React Native / Expo 独立复核](docs/05-quality/rn-stack-independent-review.md)
 - [追踪整改最终复验](docs/05-quality/traceability-review.md)
 - [项目事件流](project-ops/README.md)
