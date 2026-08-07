@@ -16,12 +16,14 @@ test("visual kit exposes three screens and four mascot variants", async () => {
   assert.equal(report.accessibleMascots, 3);
   assert.equal(report.accessibleNavigations, 3);
   assert.equal(report.minimumTouchTarget, 44);
+  assert.equal(report.tokenVersion, "0.2.0");
+  assert.deepEqual(report.tokenCategories, ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"]);
 });
 
 test("visual kit rejects a remote HTML resource", async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "nuttie-visual-kit-"));
   try {
-    for (const fileName of ["index.html", "mascot-sheet.svg", "spot-illustrations.svg", "server.mjs"]) {
+    for (const fileName of ["index.html", "mascot-sheet.svg", "spot-illustrations.svg", "design-tokens.json", "server.mjs"]) {
       await writeFile(path.join(tempDir, fileName), await readFile(path.join(visualKitDir, fileName)));
     }
     const indexPath = path.join(tempDir, "index.html");

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "Nuttie Design System",
+    "version": "0.2.0",
+    "platform": "iOS 17+",
+    "status": "concept"
+  },
+  "color": {
+    "brand": {
+      "chestnut": "#A85D3F",
+      "chestnutDark": "#783F30"
+    },
+    "semantic": {
+      "success": "#3F7C59",
+      "successSoft": "#E5F0E7",
+      "warning": "#E2A34A",
+      "warningSoft": "#FFF2D8",
+      "insight": "#4E88A5",
+      "insightSoft": "#E6F1F5",
+      "danger": "#B9574C"
+    },
+    "surface": {
+      "canvas": "#F4F0E8",
+      "primary": "#FFFDF8",
+      "subtle": "#F5EFE6",
+      "border": "#E3DBCE"
+    },
+    "content": {
+      "primary": "#252A26",
+      "secondary": "#6F776E",
+      "inverse": "#FFFFFF"
+    }
+  },
+  "space": {
+    "0": 0,
+    "1": 4,
+    "2": 8,
+    "3": 12,
+    "4": 16,
+    "5": 20,
+    "6": 24,
+    "8": 32,
+    "10": 40
+  },
+  "radius": {
+    "small": 10,
+    "medium": 16,
+    "large": 24,
+    "round": 999
+  },
+  "size": {
+    "controlMinimum": 44,
+    "controlDefault": 48,
+    "iconSmall": 16,
+    "iconDefault": 20,
+    "iconLarge": 28,
+    "phoneReferenceWidth": 390,
+    "phoneReferenceHeight": 844
+  },
+  "type": {
+    "family": "SF Pro Rounded, SF Pro Text, system-ui",
+    "display": { "size": 32, "lineHeight": 38, "weight": 700 },
+    "title": { "size": 24, "lineHeight": 29, "weight": 700 },
+    "heading": { "size": 18, "lineHeight": 23, "weight": 700 },
+    "body": { "size": 15, "lineHeight": 22, "weight": 400 },
+    "label": { "size": 13, "lineHeight": 18, "weight": 600 },
+    "caption": { "size": 11, "lineHeight": 15, "weight": 500 }
+  },
+  "shadow": {
+    "small": "0 3px 10px rgba(64,48,33,0.08)",
+    "large": "0 18px 44px rgba(64,48,33,0.12)",
+    "focus": "0 0 0 3px rgba(78,136,165,0.28)"
+  },
+  "motion": {
+    "fastMs": 160,
+    "standardMs": 240,
+    "reducedMotionFallback": "none"
+  },
+  "component": {
+    "button": { "height": 48, "radius": 10, "horizontalPadding": 16 },
+    "card": { "radius": 16, "padding": 16 },
+    "bottomNavigation": { "height": 64, "itemMinimumWidth": 44 },
+    "segmentedControl": { "height": 44, "radius": 10 },
+    "progress": { "height": 10, "radius": 999 }
+  },
+  "mascot": {
+    "home": "daily-overview",
+    "meal": "meal-entry",
+    "growth": "trend-reflection",
+    "streak": "milestone-celebration"
+  }
+}

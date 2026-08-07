@@ -28,17 +28,36 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   const indexPath = path.join(rootDir, "index.html");
   const mascotPath = path.join(rootDir, "mascot-sheet.svg");
   const spotPath = path.join(rootDir, "spot-illustrations.svg");
+  const tokenPath = path.join(rootDir, "design-tokens.json");
   const serverPath = path.join(rootDir, "server.mjs");
-  const [html, svg, spots, server] = await Promise.all([
+  const [html, svg, spots, tokensText, server] = await Promise.all([
     readFile(indexPath, "utf8"),
     readFile(mascotPath, "utf8"),
     readFile(spotPath, "utf8"),
+    readFile(tokenPath, "utf8"),
     readFile(serverPath, "utf8")
   ]);
+  let tokens;
+  try {
+    tokens = JSON.parse(tokensText);
+  } catch (error) {
+    assertCheck(false, "TOKEN_JSON_INVALID", `design token JSON is invalid: ${error.message}`);
+  }
 
   assertCheck(/<html\s+lang="zh-CN">/i.test(html), "HTML_LANGUAGE_MISSING", "visual kit must declare zh-CN");
   assertCheck(/<meta\s+charset="utf-8">/i.test(html), "HTML_CHARSET_MISSING", "visual kit must declare UTF-8");
   assertCheck(/<title>Nuttie visual concept<\/title>/i.test(html), "HTML_TITLE_MISSING", "visual kit title is missing");
+  assertCheck(/--chestnut:#A85D3F|--chestnut:#a85d3f/.test(html), "TOKEN_CHESTNUT_MISSING", "brand chestnut token is missing");
+  assertCheck(/--sprout:#3F7C59|--sprout:#3f7c59/.test(html), "TOKEN_SPROUT_MISSING", "sprout semantic token is missing");
+  assertCheck(/--amber:#E2A34A|--amber:#e2a34a/.test(html), "TOKEN_AMBER_MISSING", "amber semantic token is missing");
+  assertCheck(/--sky:#4E88A5|--sky:#4e88a5/.test(html), "TOKEN_SKY_MISSING", "sky semantic token is missing");
+  assertCheck(/--radius-sm:10px/.test(html) && /--radius-md:16px/.test(html) && /--radius-lg:24px/.test(html), "RADIUS_SCALE_MISSING", "design system radius scale is missing");
+  assertCheck(/button:disabled/.test(html) && /button:focus-visible/.test(html), "CONTROL_STATE_CONTRACT_MISSING", "interactive control states are missing");
+  assertCheck(/data-active=\"true\"/.test(html) && /aria-pressed','true'/.test(html), "QUICK_ACTION_STATE_MISSING", "quick action completion state is missing");
+  assertCheck(tokens.meta?.name === "Nuttie Design System", "TOKEN_META_MISSING", "design token metadata is missing");
+  assertCheck(tokens.size?.controlMinimum >= 44, "CONTROL_SIZE_TOKEN_INVALID", "minimum control size must be at least 44px");
+  assertCheck(tokens.component?.button?.height >= tokens.size.controlMinimum, "BUTTON_SIZE_TOKEN_INVALID", "button height must honor minimum control size");
+  assertCheck(tokens.mascot?.home && tokens.mascot?.meal && tokens.mascot?.growth && tokens.mascot?.streak, "MASCOT_TOKEN_MAPPING_MISSING", "mascot semantic mapping is incomplete");
   assertCheck(countMatches(html, /class="frame"/g) === 3, "FRAME_COUNT_INVALID", "visual kit must contain three core screens");
   assertCheck(countMatches(html, /390 × 844/g) === 3, "PHONE_SIZE_LABEL_INVALID", "each core screen must declare 390 × 844");
   assertCheck(countMatches(html, /<svg\s+class="mascot"/g) === 3, "MASCOT_INSTANCE_COUNT_INVALID", "three core screens must render a mascot");
@@ -77,6 +96,8 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     accessibleMascots: 3,
     accessibleNavigations: 3,
     minimumTouchTarget: 44,
+    tokenVersion: tokens.meta.version,
+    tokenCategories: ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"],
     loopbackServer: true
   };
 }
