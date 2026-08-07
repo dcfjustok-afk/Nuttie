@@ -44,18 +44,19 @@ Nuttie 的视觉主角是“会陪用户一起积累的小栗子”。栗子不�
 
 - [Nuttie visual concept](../../prototypes/nuttie-visual-kit/index.html)：三张 Figma-ready 手机画面，含“今日总览”“记录一餐”“趋势成长”。
 - [Mascot sheet](../../prototypes/nuttie-visual-kit/mascot-sheet.svg)：四个可独立导入的 SVG 角色变体。
+- [Spot illustration sheet](../../prototypes/nuttie-visual-kit/spot-illustrations.svg)：九个可复用的辅助插画，覆盖餐食、饮水、体重、运动、条码、AI 镜头、成长、备份与提醒。
 
-原型包含餐次切换和快捷记录反馈，用于验证角色与状态的关系；点击不会写入 ProjectOps、Owner intake 或任何线上服务。
+原型包含餐次切换和快捷记录反馈，用于验证角色与状态的关系；点击不会写入 ProjectOps、Owner intake 或任何线上服务。辅助插画统一使用候选色板、扁平色块和深色描边，作为任务和状态识别，不替代文字标签。
 
-视觉资产契约由 `tools/visual-kit-check.mjs` 固定，并由 `tools/visual-kit-check.test.mjs` 验证：三张核心画面、四个角色变体、三个可访问角色实例、无远程 HTML 资源，以及仅绑定 `127.0.0.1` 的预览服务器。
+视觉资产契约由 `tools/visual-kit-check.mjs` 固定，并由 `tools/visual-kit-check.test.mjs` 验证：三张核心画面、四个角色变体、九个辅助插画、三个可访问角色实例、三个具名底部导航、44px 最小触控高度、进度与趋势的文本语义、无远程 HTML 资源，以及仅绑定 `127.0.0.1` 的预览服务器。
 
 ## Figma 导入顺序
 
 真实 Figma MCP 连接可用后，按以下顺序创建文件和页面：
 
 1. `00 Visual Tokens`：颜色、圆角、间距和文字层级候选。
-2. `01 Mascot Components`：导入 SVG，建立四个状态变体并标注状态映射。
-3. `02 Core Screens`：导入三张手机画面，保持 390 × 844 画板和角色状态。
+2. `01 Mascot Components`：导入两个 SVG 资产板，建立四个角色状态变体和九个辅助插画组件，并标注状态映射与装饰/语义边界。
+3. `02 Core Screens`：导入三张手机画面，保持 390 × 844 画板、角色状态、辅助插画、44pt 触控目标和图表文字摘要。
 4. `03 Prototype Notes`：记录本地优先、AI 主动确认发送和待 Owner 决策边界。
 
 导入后必须检查：字体加载、中文不截断、角色 SVG 不为空、窄屏不横向溢出、状态组件有可访问文本，并为每个页面保留截图证据。MCP 未连接前不得写入“已创建 Figma 文件”或伪造 Figma 链接。

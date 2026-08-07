@@ -10,14 +10,18 @@ test("visual kit exposes three screens and four mascot variants", async () => {
   assert.equal(report.ok, true);
   assert.equal(report.screens, 3);
   assert.deepEqual(report.mascotVariants, ["mascot-home", "mascot-meal", "mascot-growth", "mascot-streak"]);
+  assert.equal(report.spotIllustrations.length, 9);
+  assert.equal(report.referencedSpots.length, 7);
   assert.equal(report.remoteHtmlReferences, 0);
   assert.equal(report.accessibleMascots, 3);
+  assert.equal(report.accessibleNavigations, 3);
+  assert.equal(report.minimumTouchTarget, 44);
 });
 
 test("visual kit rejects a remote HTML resource", async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "nuttie-visual-kit-"));
   try {
-    for (const fileName of ["index.html", "mascot-sheet.svg", "server.mjs"]) {
+    for (const fileName of ["index.html", "mascot-sheet.svg", "spot-illustrations.svg", "server.mjs"]) {
       await writeFile(path.join(tempDir, fileName), await readFile(path.join(visualKitDir, fileName)));
     }
     const indexPath = path.join(tempDir, "index.html");

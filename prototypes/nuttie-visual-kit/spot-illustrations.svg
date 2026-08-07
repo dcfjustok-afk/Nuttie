@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Nuttie spot illustrations</title>
+  <desc id="desc">A reusable set of flat line illustrations for meal, water, weight, movement, barcode, AI, growth, backup and reminder states.</desc>
+  <defs>
+    <style>
+      .ink{fill:#262721}.paper{fill:#fffdf8}.cream{fill:#f5f1e9}.shell{fill:#a85d3f}.leaf{fill:#3e7a58}.amber{fill:#e1a54d}.sky{fill:#4d87a5}.line{stroke:#262721;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#262721;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="1200" height="720" rx="36" fill="#f5f1e9"/>
+  <g id="spot-meal" transform="translate(40 40)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M55 106h130c-5 54-33 82-65 82s-60-28-65-82Z" class="amber line"/><path d="M71 106c11-33 29-49 49-49s38 16 49 49" class="leaf line" fill="none"/><path d="M94 78c10-13 21-20 31-20M146 78c-10-13-21-20-31-20" class="thin" fill="none"/><path d="M42 78h-18v80M198 78h18v80" class="line" fill="none"/></g>
+  <g id="spot-water" transform="translate(280 40)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M120 47c-35 44-52 64-52 91a52 52 0 0 0 104 0c0-27-17-47-52-91Z" class="sky line"/><path d="M97 142c7 15 18 23 34 25" class="thin" fill="none"/></g>
+  <g id="spot-weight" transform="translate(520 40)"><circle cx="120" cy="120" r="90" class="paper line"/><rect x="61" y="68" width="118" height="104" rx="18" class="cream line"/><path d="M90 124c17-27 43-36 60-24" class="leaf line" fill="none"/><circle cx="120" cy="102" r="8" class="amber"/><path d="M88 146h64" class="thin" fill="none"/></g>
+  <g id="spot-movement" transform="translate(760 40)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M76 133c18-43 37-60 56-60 22 0 34 26 51 54" class="shell line" fill="none"/><path d="m86 107 18-29 20 19M160 153l28-24 8 31" class="leaf line" fill="none"/><path d="M64 166h112" class="thin" fill="none"/></g>
+  <g id="spot-barcode" transform="translate(1000 40)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M73 77v86M88 77v86M101 77v86M125 77v86M140 77v86M160 77v86" class="line"/><path d="M61 178h118" class="thin" fill="none"/></g>
+  <g id="spot-ai-lens" transform="translate(160 310)"><circle cx="120" cy="120" r="90" class="paper line"/><circle cx="120" cy="120" r="42" class="sky line"/><circle cx="120" cy="120" r="14" class="paper line"/><path d="M120 55v-19M120 204v-19M55 120H36M204 120h-19" class="amber line" fill="none"/><path d="m171 70 14-14M69 170l14-14" class="leaf line" fill="none"/></g>
+  <g id="spot-trend-sprout" transform="translate(400 310)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M120 166V94" class="line" fill="none"/><path d="M120 113c-35-10-50-31-45-53 27 3 44 20 45 53ZM121 138c35-10 50-31 45-53-27 3-44 20-45 53Z" class="leaf line"/><path d="M73 170h94" class="amber line" fill="none"/></g>
+  <g id="spot-backup-lock" transform="translate(640 310)"><circle cx="120" cy="120" r="90" class="paper line"/><rect x="70" y="99" width="100" height="78" rx="14" class="sky line"/><path d="M91 99V78c0-38 58-38 58 0v21" class="line" fill="none"/><circle cx="120" cy="134" r="9" class="amber"/><path d="M120 143v17" class="thin" fill="none"/></g>
+  <g id="spot-reminder" transform="translate(880 310)"><circle cx="120" cy="120" r="90" class="paper line"/><path d="M78 145h84l-11-17V99c0-42-62-42-62 0v29Z" class="amber line"/><path d="M107 161c6 15 20 15 26 0" class="leaf line" fill="none"/><circle cx="170" cy="75" r="14" class="sky line"/><path d="M170 67v10l7 5" class="thin" fill="none"/></g>
+</svg>

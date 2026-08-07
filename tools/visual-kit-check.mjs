@@ -8,6 +8,8 @@ export const visualKitDir = path.join(workspaceDir, "prototypes", "nuttie-visual
 
 const requiredMascots = ["mascot-home", "mascot-meal", "mascot-growth", "mascot-streak"];
 const referencedMascots = ["mascot-home", "mascot-meal", "mascot-growth"];
+const requiredSpots = ["spot-meal", "spot-water", "spot-weight", "spot-movement", "spot-barcode", "spot-ai-lens", "spot-trend-sprout", "spot-backup-lock", "spot-reminder"];
+const referencedSpots = ["spot-meal", "spot-water", "spot-weight", "spot-movement", "spot-barcode", "spot-ai-lens", "spot-trend-sprout"];
 
 function countMatches(text, pattern) {
   return [...text.matchAll(pattern)].length;
@@ -25,10 +27,12 @@ function assertCheck(condition, code, message, details = undefined) {
 export async function checkVisualKit(rootDir = visualKitDir) {
   const indexPath = path.join(rootDir, "index.html");
   const mascotPath = path.join(rootDir, "mascot-sheet.svg");
+  const spotPath = path.join(rootDir, "spot-illustrations.svg");
   const serverPath = path.join(rootDir, "server.mjs");
-  const [html, svg, server] = await Promise.all([
+  const [html, svg, spots, server] = await Promise.all([
     readFile(indexPath, "utf8"),
     readFile(mascotPath, "utf8"),
+    readFile(spotPath, "utf8"),
     readFile(serverPath, "utf8")
   ]);
 
@@ -39,6 +43,10 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(countMatches(html, /390 × 844/g) === 3, "PHONE_SIZE_LABEL_INVALID", "each core screen must declare 390 × 844");
   assertCheck(countMatches(html, /<svg\s+class="mascot"/g) === 3, "MASCOT_INSTANCE_COUNT_INVALID", "three core screens must render a mascot");
   assertCheck(countMatches(html, /aria-label="[^"]+卡通栗子"/g) === 3, "MASCOT_A11Y_LABEL_INVALID", "each mascot must have a Chinese accessible label");
+  assertCheck(/min-height:44px/.test(html), "TOUCH_TARGET_CONTRACT_MISSING", "interactive controls must declare a 44px minimum height");
+  assertCheck(countMatches(html, /<nav\s+class="bottom-nav"[^>]+aria-label="主要导航"/g) === 3, "NAV_A11Y_LABEL_INVALID", "each bottom navigation must have an accessible label");
+  assertCheck(/role="progressbar"[^>]+aria-valuenow="68"/.test(html), "PROGRESS_A11Y_MISSING", "progress meter must expose its value");
+  assertCheck(/class="bars"\s+role="img"\s+aria-label="[^"]+周一55%/.test(html), "CHART_A11Y_MISSING", "trend chart must expose a text summary");
   assertCheck(!/https?:\/\//i.test(html), "REMOTE_HTML_REFERENCE", "visual kit HTML must not load remote resources");
 
   for (const mascotId of requiredMascots) {
@@ -46,6 +54,12 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   }
   for (const mascotId of referencedMascots) {
     assertCheck(new RegExp(`mascot-sheet\\.svg#${mascotId}`).test(html), "MASCOT_REFERENCE_MISSING", `HTML is missing ${mascotId} reference`);
+  }
+  for (const spotId of requiredSpots) {
+    assertCheck(new RegExp(`id="${spotId}"`).test(spots), "SPOT_VARIANT_MISSING", `spot illustration sheet is missing ${spotId}`);
+  }
+  for (const spotId of referencedSpots) {
+    assertCheck(new RegExp(`spot-illustrations\\.svg#${spotId}`).test(html), "SPOT_REFERENCE_MISSING", `HTML is missing ${spotId} reference`);
   }
   assertCheck(/role="img"/g.test(html), "MASCOT_ROLE_MISSING", "mascot SVG instances must expose an image role");
   assertCheck(/\.listen\(port,\s*["']127\.0\.0\.1["']/.test(server), "SERVER_NOT_LOOPBACK", "visual server must bind to loopback only");
@@ -57,8 +71,12 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     screens: 3,
     mascotVariants: requiredMascots,
     referencedMascots,
+    spotIllustrations: requiredSpots,
+    referencedSpots,
     remoteHtmlReferences: 0,
     accessibleMascots: 3,
+    accessibleNavigations: 3,
+    minimumTouchTarget: 44,
     loopbackServer: true
   };
 }

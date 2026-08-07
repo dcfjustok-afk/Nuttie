@@ -114,3 +114,12 @@ When Figma MCP write transport is healthy, continue in this order:
 - `get_screenshot` was not run for the blocked pages because no valid node IDs exist for them; requesting a screenshot with a guessed ID would violate the Figma skills' node-ID and evidence rules.
 - `git diff --check` passed for the repository worktree at the time of writing.
 - No Git commit or push was performed.
+
+## 8. 2026-08-07 visual asset expansion
+
+The repository-side Figma inputs now include a second import-ready SVG source:
+
+- `D:\github\Nuttie\prototypes\nuttie-visual-kit\spot-illustrations.svg`
+- Nine named groups: `spot-meal`, `spot-water`, `spot-weight`, `spot-movement`, `spot-barcode`, `spot-ai-lens`, `spot-trend-sprout`, `spot-backup-lock`, and `spot-reminder`.
+
+The local visual concept uses seven of these groups across the three core screens. It also declares a 44px prototype touch-target minimum, named bottom navigation landmarks, progressbar semantics, and a textual 7-day trend summary. These are repository-side inputs only. They do not change the confirmed Figma canvas state described above, and no node IDs are claimed for them while the Starter-plan MCP limit remains active.

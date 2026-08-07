@@ -8,6 +8,8 @@ const port = Number(process.env.NUTTIE_VISUAL_PORT || 4191);
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
+  ".png": "image/png",
+  ".webp": "image/webp",
   ".svg": "image/svg+xml; charset=utf-8"
 };
 

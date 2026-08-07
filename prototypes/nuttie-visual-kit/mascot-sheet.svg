@@ -21,7 +21,6 @@
     <rect x="39" y="386" width="67" height="65" rx="12" class="paper line"/>
     <path d="M55 413h36M55 429h25" class="thin" fill="none"/>
     <path d="M83 398v-12M61 398v-12" class="thin" fill="none"/>
-    <text x="170" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#262721">home</text>
   </g>
   <g id="mascot-meal" transform="translate(340 100)">
     <ellipse cx="170" cy="500" rx="130" ry="24" fill="#d8cdbb"/>
@@ -36,7 +35,6 @@
     <path d="M9 318h82c0 53-18 75-41 75S9 371 9 318Z" class="paper line"/>
     <path d="M25 341h50M31 357h38" class="thin" fill="none"/>
     <path d="M321 319v64M308 333h26M308 350h26" class="thin" fill="none"/>
-    <text x="170" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#262721">meal</text>
   </g>
   <g id="mascot-growth" transform="translate(620 100)">
     <ellipse cx="170" cy="500" rx="130" ry="24" fill="#d8cdbb"/>
@@ -52,7 +50,6 @@
     <path d="M43 438c18-21 31-38 46-67" class="thin" fill="none"/>
     <path d="M315 394c-28 8-40 32-34 57 24-5 41-25 34-57Z" class="sky line"/>
     <path d="M297 398c-3 26 0 39 14 52" class="thin" fill="none"/>
-    <text x="170" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#262721">growth</text>
   </g>
   <g id="mascot-streak" transform="translate(900 100)">
     <ellipse cx="170" cy="500" rx="130" ry="24" fill="#d8cdbb"/>
@@ -67,6 +64,5 @@
     <path d="M30 311V211h86l-43 29h43" class="amber line"/>
     <path d="m54 172 10 21 23 3-17 16 4 23-20-11-21 11 4-23-17-16 23-3Z" class="amber line"/>
     <path d="m299 186 7 15 17 2-12 12 3 17-15-8-15 8 3-17-12-12 17-2Z" class="sky line"/>
-    <text x="170" y="570" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#262721">streak</text>
   </g>
 </svg>
