@@ -148,6 +148,110 @@ function nutritionSnapshot({ sourceId, sourceVersion, nutrients = {} }) {
   });
 }
 
+function assertNutritionSnapshot(snapshot, field = "nutritionSnapshot") {
+  if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)) {
+    fail(`${field} must be an object`, { code: "INVALID_NUTRITION_SNAPSHOT", field });
+  }
+  assertSafeObject(snapshot, field);
+  if (typeof snapshot.sourceId !== "string" || snapshot.sourceId.length === 0) {
+    fail(`${field}.sourceId is required`, { code: "MISSING_SOURCE_ID", field });
+  }
+  if (typeof snapshot.sourceVersion !== "string" || snapshot.sourceVersion.length === 0) {
+    fail(`${field}.sourceVersion is required`, { code: "MISSING_SOURCE_VERSION", field });
+  }
+  if (!snapshot.values || typeof snapshot.values !== "object" || Array.isArray(snapshot.values)) {
+    fail(`${field}.values must be an object`, { code: "INVALID_NUTRIENTS", field });
+  }
+  assertSafeObject(snapshot.values, `${field}.values`);
+  for (const nutrientField of NUTRIENT_FIELDS) {
+    const value = snapshot.values[nutrientField];
+    if (value !== null) nonNegativeNumber(value, `${field}.values.${nutrientField}`);
+  }
+  return snapshot;
+}
+
+function scaleNutritionSnapshot(snapshot, {
+  servingMass,
+  servingUnit = "g",
+  basisMass = 100,
+  basisUnit = "g",
+}) {
+  assertNutritionSnapshot(snapshot);
+  const servingGrams = normalizeMass(servingMass, servingUnit);
+  const basisGrams = normalizeMass(basisMass, basisUnit);
+  const factor = servingGrams / basisGrams;
+  const values = Object.fromEntries(NUTRIENT_FIELDS.map((field) => [
+    field,
+    snapshot.values[field] === null ? null : snapshot.values[field] * factor,
+  ]));
+  return Object.freeze({
+    sourceId: snapshot.sourceId,
+    sourceVersion: snapshot.sourceVersion,
+    values: Object.freeze(values),
+    missingFields: Object.freeze(NUTRIENT_FIELDS.filter((field) => values[field] === null)),
+    servingGrams,
+    basisGrams,
+    factor,
+  });
+}
+
+function aggregateNutritionSnapshots(snapshots) {
+  if (!Array.isArray(snapshots)) {
+    fail("snapshots must be an array", { code: "INVALID_NUTRITION_SNAPSHOTS" });
+  }
+  snapshots.forEach((snapshot, index) => assertNutritionSnapshot(snapshot, `snapshots[${index}]`));
+  const values = {};
+  const completeness = {};
+  for (const field of NUTRIENT_FIELDS) {
+    const knownValues = snapshots
+      .map((snapshot) => snapshot.values[field])
+      .filter((value) => value !== null);
+    values[field] = knownValues.length === 0
+      ? null
+      : knownValues.reduce((total, value) => total + value, 0);
+    completeness[field] = knownValues.length === 0
+      ? "MISSING"
+      : knownValues.length === snapshots.length
+        ? "COMPLETE"
+        : "PARTIAL";
+  }
+  return Object.freeze({
+    snapshotCount: snapshots.length,
+    values: Object.freeze(values),
+    completeness: Object.freeze(completeness),
+  });
+}
+
+function dailyNutritionSummary({ meals, localDate }) {
+  if (!Array.isArray(meals)) {
+    fail("meals must be an array", { code: "INVALID_MEALS" });
+  }
+  const date = assertDateKey(localDate);
+  const selectedMeals = meals.filter((meal, index) => {
+    if (!meal || typeof meal !== "object" || Array.isArray(meal)) {
+      fail(`meals[${index}] must be an object`, { code: "INVALID_MEAL" });
+    }
+    assertSafeObject(meal, `meals[${index}]`);
+    assertDateKey(meal.localDate);
+    if (meal.localDate !== date) return false;
+    assertNutritionSnapshot(meal.nutrition, `meals[${index}].nutrition`);
+    return true;
+  });
+  const aggregate = aggregateNutritionSnapshots(selectedMeals.map((meal) => meal.nutrition));
+  const sourceKeys = new Set(selectedMeals.map(({ nutrition }) => `${nutrition.sourceId}\u0000${nutrition.sourceVersion}`));
+  const sources = [...sourceKeys].map((key) => {
+    const [sourceId, sourceVersion] = key.split("\u0000");
+    return Object.freeze({ sourceId, sourceVersion });
+  });
+  return Object.freeze({
+    localDate: date,
+    mealCount: selectedMeals.length,
+    values: aggregate.values,
+    completeness: aggregate.completeness,
+    sources: Object.freeze(sources),
+  });
+}
+
 function dailyLedger({ targetKcal, eatenKcal = 0, burnedKcal = 0 }) {
   const eaten = nonNegativeNumber(eatenKcal, "eatenKcal");
   const burned = nonNegativeNumber(burnedKcal, "burnedKcal");
@@ -240,10 +344,13 @@ export {
   MASS_TO_GRAMS,
   NUTRIENT_FIELDS,
   dateContext,
+  dailyNutritionSummary,
   dailyLedger,
+  aggregateNutritionSnapshots,
   normalizeEnergy,
   normalizeMass,
   nutritionSnapshot,
+  scaleNutritionSnapshot,
   transactionalMealMutation,
   unspecifiedTargetFixture,
 };

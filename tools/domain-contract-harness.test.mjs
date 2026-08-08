@@ -1,14 +1,88 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  aggregateNutritionSnapshots,
   dateContext,
+  dailyNutritionSummary,
   dailyLedger,
   normalizeEnergy,
   normalizeMass,
   nutritionSnapshot,
+  scaleNutritionSnapshot,
   transactionalMealMutation,
   unspecifiedTargetFixture,
 } from "./domain-contract-harness.mjs";
+
+test("scales all known nutrients to the confirmed serving and preserves missing fields", () => {
+  const source = nutritionSnapshot({
+    sourceId: "taiwan-food",
+    sourceVersion: "2026-08",
+    nutrients: { energyKcal: 200, proteinG: 10, carbohydrateG: 30 },
+  });
+  const scaled = scaleNutritionSnapshot(source, { servingMass: 150 });
+  assert.equal(scaled.servingGrams, 150);
+  assert.equal(scaled.factor, 1.5);
+  assert.equal(scaled.values.energyKcal, 300);
+  assert.equal(scaled.values.proteinG, 15);
+  assert.equal(scaled.values.carbohydrateG, 45);
+  assert.equal(scaled.values.fatG, null);
+  assert.ok(scaled.missingFields.includes("fatG"));
+  assert.throws(() => scaleNutritionSnapshot(source, { servingMass: 0 }), { code: "NON_POSITIVE_NUMBER" });
+});
+
+test("aggregates known nutrients without converting missing values to zero", () => {
+  const complete = nutritionSnapshot({
+    sourceId: "taiwan-food",
+    sourceVersion: "2026-08",
+    nutrients: { energyKcal: 200, proteinG: 10, sodiumMg: 0 },
+  });
+  const partial = nutritionSnapshot({
+    sourceId: "user-food",
+    sourceVersion: "local-1",
+    nutrients: { energyKcal: 80 },
+  });
+  const aggregate = aggregateNutritionSnapshots([complete, partial]);
+  assert.equal(aggregate.values.energyKcal, 280);
+  assert.equal(aggregate.completeness.energyKcal, "COMPLETE");
+  assert.equal(aggregate.values.proteinG, 10);
+  assert.equal(aggregate.completeness.proteinG, "PARTIAL");
+  assert.equal(aggregate.values.fatG, null);
+  assert.equal(aggregate.completeness.fatG, "MISSING");
+  assert.equal(aggregate.values.sodiumMg, 0);
+  assert.equal(aggregate.completeness.sodiumMg, "PARTIAL");
+});
+
+test("summarizes only the selected local date and retains source versions", () => {
+  const breakfast = scaleNutritionSnapshot(nutritionSnapshot({
+    sourceId: "taiwan-food",
+    sourceVersion: "2026-08",
+    nutrients: { energyKcal: 200, proteinG: 10 },
+  }), { servingMass: 150 });
+  const snack = nutritionSnapshot({
+    sourceId: "user-food",
+    sourceVersion: "local-1",
+    nutrients: { energyKcal: 80, proteinG: 3 },
+  });
+  const summary = dailyNutritionSummary({
+    localDate: "2026-08-08",
+    meals: [
+      { id: "m1", localDate: "2026-08-08", nutrition: breakfast },
+      { id: "m2", localDate: "2026-08-08", nutrition: snack },
+      { id: "m3", localDate: "2026-08-07", nutrition: snack },
+    ],
+  });
+  assert.equal(summary.mealCount, 2);
+  assert.equal(summary.values.energyKcal, 380);
+  assert.equal(summary.values.proteinG, 18);
+  assert.deepEqual(summary.sources, [
+    { sourceId: "taiwan-food", sourceVersion: "2026-08" },
+    { sourceId: "user-food", sourceVersion: "local-1" },
+  ]);
+  const empty = dailyNutritionSummary({ localDate: "2026-08-06", meals: [] });
+  assert.equal(empty.mealCount, 0);
+  assert.equal(empty.values.energyKcal, null);
+  assert.equal(empty.completeness.energyKcal, "MISSING");
+});
 
 test("normalizes only explicit supported units", () => {
   assert.equal(normalizeMass(1.5, "kg"), 1500);
