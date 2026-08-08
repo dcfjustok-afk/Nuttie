@@ -18,7 +18,16 @@ const TOOL_NAMES = Object.freeze(["node", "pnpm", "expo", "xcodebuild", "pod"]);
 const FORBIDDEN_ARTIFACTS = Object.freeze([
   "package.json",
   "pnpm-lock.yaml",
+  "package-lock.json",
+  "yarn.lock",
+  "app.json",
+  "app.config.js",
+  "app.config.mjs",
+  "app.config.cjs",
+  "app.config.ts",
   "ios",
+  "android",
+  "Podfile.lock",
 ]);
 
 function pathEntries() {
@@ -69,13 +78,16 @@ function ownerGateStatus(report) {
   const gate = report.ownerGate ?? {};
   const nextQuestion = gate.nextQuestion ?? {};
   const nativeGate = gate.nativeSelectionGate ?? {};
-  const passed = gate.channel === REQUIRED_OWNER_GATE.channel
+  const selectionMechanismConfigured = gate.channel === REQUIRED_OWNER_GATE.channel
     && nextQuestion.id === REQUIRED_OWNER_GATE.questionId
     && nextQuestion.requiresMode === REQUIRED_OWNER_GATE.mode
     && nextQuestion.tool === REQUIRED_OWNER_GATE.tool
     && nativeGate.passed === true;
+  const batchConfirmed = gate.status === "CONFIRMED";
   return {
-    passed,
+    passed: batchConfirmed,
+    selectionMechanismConfigured,
+    batchConfirmed,
     acceptanceStateChanged: gate.acceptanceStateChanged,
     status: gate.status,
     nextQuestionId: nextQuestion.id ?? null,
@@ -95,12 +107,14 @@ export function runPreflight(workspaceRoot = DEFAULT_WORKSPACE_ROOT) {
   const diagnostics = [];
 
   if (!reconcile.ok) diagnostics.push({ code: "PROJECT_OPS_RECONCILE_FAILED", details: reconcile.diagnostics });
-  if (!owner.passed) diagnostics.push({ code: "OWNER_NATIVE_SELECTION_GATE_NOT_READY", details: owner });
+  if (!owner.batchConfirmed && !owner.selectionMechanismConfigured) diagnostics.push({ code: "OWNER_NATIVE_SELECTION_GATE_NOT_READY", details: owner });
+  if (!owner.batchConfirmed) diagnostics.push({ code: "OWNER_BATCH_NOT_CONFIRMED", details: owner });
   if (owner.acceptanceStateChanged !== false) diagnostics.push({ code: "OWNER_BATCH_ALREADY_CHANGED", details: owner });
   if (presentArtifacts.length > 0) diagnostics.push({ code: "FORMAL_RN_ARTIFACT_PRESENT", details: { presentArtifacts } });
   if (!toolchain.node.available) diagnostics.push({ code: "NODE_NOT_AVAILABLE" });
   if (!toolchain.pnpm.available) diagnostics.push({ code: "PNPM_NOT_AVAILABLE" });
   if (!toolchain.xcodebuild.available) diagnostics.push({ code: "XCODEBUILD_NOT_AVAILABLE" });
+  if (!toolchain.pod.available) diagnostics.push({ code: "COCOAPODS_NOT_AVAILABLE" });
 
   return {
     ok: diagnostics.length === 0,
@@ -135,4 +149,3 @@ if (invokedPath && path.resolve(SCRIPT_PATH) === invokedPath) {
     process.exitCode = 2;
   }
 }
-
