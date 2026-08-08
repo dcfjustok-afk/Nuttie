@@ -30,13 +30,15 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   const spotPath = path.join(rootDir, "spot-illustrations.svg");
   const tokenPath = path.join(rootDir, "design-tokens.json");
   const componentPath = path.join(rootDir, "components.html");
+  const patternPath = path.join(rootDir, "patterns.html");
   const serverPath = path.join(rootDir, "server.mjs");
-  const [html, svg, spots, tokensText, components, server] = await Promise.all([
+  const [html, svg, spots, tokensText, components, patterns, server] = await Promise.all([
     readFile(indexPath, "utf8"),
     readFile(mascotPath, "utf8"),
     readFile(spotPath, "utf8"),
     readFile(tokenPath, "utf8"),
     readFile(componentPath, "utf8"),
+    readFile(patternPath, "utf8"),
     readFile(serverPath, "utf8")
   ]);
   let tokens;
@@ -53,6 +55,11 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(/class="button primary"/.test(components), "COMPONENT_BUTTON_MISSING", "component catalog must include primary button");
   assertCheck(/class="alert info"/.test(components) && /class="alert warning"/.test(components) && /class="alert success"/.test(components), "COMPONENT_ALERT_STATES_MISSING", "component catalog must include alert states");
   assertCheck(/class="roles"/.test(components) && countMatches(components, /mascot-sheet\.svg#/g) >= 4, "COMPONENT_MASCOT_ROLES_MISSING", "component catalog must include four mascot roles");
+  assertCheck(/<html lang="zh-CN">/.test(patterns), "PATTERN_CATALOG_LANGUAGE_MISSING", "system pattern catalog must declare zh-CN");
+  assertCheck(countMatches(patterns, /class="pattern"/g) === 9, "SYSTEM_PATTERN_COUNT_INVALID", "system pattern catalog must include nine states");
+  assertCheck(/CONSENT/.test(patterns) && /DESTRUCTIVE/.test(patterns), "TRUST_PATTERN_MISSING", "system pattern catalog must include AI and destructive confirmation states");
+  assertCheck(/role="dialog"/.test(patterns) && /role="alertdialog"/.test(patterns), "DIALOG_SEMANTICS_MISSING", "system dialogs must expose accessible roles");
+  assertCheck(!/https?:\/\//i.test(patterns), "REMOTE_PATTERN_REFERENCE", "system patterns must not load remote resources");
   assertCheck(/--chestnut:#A85D3F|--chestnut:#a85d3f/.test(html), "TOKEN_CHESTNUT_MISSING", "brand chestnut token is missing");
   assertCheck(/--sprout:#3F7C59|--sprout:#3f7c59/.test(html), "TOKEN_SPROUT_MISSING", "sprout semantic token is missing");
   assertCheck(/--amber:#E2A34A|--amber:#e2a34a/.test(html), "TOKEN_AMBER_MISSING", "amber semantic token is missing");
@@ -105,6 +112,7 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     tokenVersion: tokens.meta.version,
     tokenCategories: ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"],
     componentCatalog: true,
+    systemPatterns: 9,
     loopbackServer: true
   };
 }
