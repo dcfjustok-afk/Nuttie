@@ -31,14 +31,16 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   const tokenPath = path.join(rootDir, "design-tokens.json");
   const componentPath = path.join(rootDir, "components.html");
   const patternPath = path.join(rootDir, "patterns.html");
+  const featurePath = path.join(rootDir, "feature-flows.html");
   const serverPath = path.join(rootDir, "server.mjs");
-  const [html, svg, spots, tokensText, components, patterns, server] = await Promise.all([
+  const [html, svg, spots, tokensText, components, patterns, features, server] = await Promise.all([
     readFile(indexPath, "utf8"),
     readFile(mascotPath, "utf8"),
     readFile(spotPath, "utf8"),
     readFile(tokenPath, "utf8"),
     readFile(componentPath, "utf8"),
     readFile(patternPath, "utf8"),
+    readFile(featurePath, "utf8"),
     readFile(serverPath, "utf8")
   ]);
   let tokens;
@@ -60,6 +62,19 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(/CONSENT/.test(patterns) && /DESTRUCTIVE/.test(patterns), "TRUST_PATTERN_MISSING", "system pattern catalog must include AI and destructive confirmation states");
   assertCheck(/role="dialog"/.test(patterns) && /role="alertdialog"/.test(patterns), "DIALOG_SEMANTICS_MISSING", "system dialogs must expose accessible roles");
   assertCheck(!/https?:\/\//i.test(patterns), "REMOTE_PATTERN_REFERENCE", "system patterns must not load remote resources");
+  assertCheck(/<html lang="zh-CN">/.test(features), "FEATURE_CATALOG_LANGUAGE_MISSING", "feature flow catalog must declare zh-CN");
+  assertCheck(countMatches(features, /class="flow"/g) === 5, "FEATURE_FLOW_COUNT_INVALID", "feature catalog must include five flows");
+  assertCheck(/FOOD SEARCH/.test(features) && /NUTRITION/.test(features) && /LOCAL DATA/.test(features) && /BACKUP/.test(features) && /BYOK/.test(features), "FEATURE_FLOW_COVERAGE_MISSING", "feature flow coverage is incomplete");
+  assertCheck(/未提供/.test(features) && /sourceVersion|2026\.07/.test(features), "FEATURE_PROVENANCE_MISSING", "food flows must expose missing values and source version");
+  assertCheck(countMatches(features, /<article class="flow" aria-labelledby=/g) === 5, "FEATURE_HEADING_SEMANTICS_MISSING", "each feature flow must reference its accessible heading");
+  assertCheck(/type="search"/.test(features) && /type="url"/.test(features) && countMatches(features, /type="password"/g) === 3, "FEATURE_FORM_SEMANTICS_MISSING", "feature flows must expose native search, URL, and secure input controls");
+  assertCheck(/<dl class="nutrition">/.test(features) && /<dt>能量<\/dt><dd>71 千卡<\/dd>/.test(features), "FEATURE_NUTRITION_SEMANTICS_MISSING", "nutrition facts must expose term-before-definition semantics");
+  assertCheck(countMatches(features, /<button class="chip/g) === 4 && countMatches(features, /<button type="button" class="row"/g) === 3 && countMatches(features, /class="setting action"/g) === 3, "FEATURE_ACTION_SEMANTICS_MISSING", "feature choices, results, and management actions must use native buttons");
+  assertCheck(/Provider policy：未准入/.test(features) && /<button type="button" class="button" disabled[^>]*>测试连接<\/button>/.test(features), "FEATURE_AI_POLICY_NOT_FAIL_CLOSED", "AI connection testing must remain disabled while provider policy is not approved");
+  assertCheck(!/至少\s*12\s*个字符/.test(features), "FEATURE_UNAPPROVED_PASSWORD_RULE", "feature flows must not freeze an unapproved backup password threshold");
+  assertCheck(/\.screen\{[^}]*overflow-y:auto/.test(features) && /\.chips\{[^}]*overflow-x:auto/.test(features), "FEATURE_SCROLL_CONTRACT_MISSING", "narrow feature flows must preserve access to vertically and horizontally overflowing content");
+  assertCheck(/\.nav button\{[^}]*min-height:44px/.test(features) && /\.links a\{[^}]*min-width:44px;min-height:44px/.test(features) && /\.search input\{[^}]*min-height:44px/.test(features), "FEATURE_TOUCH_TARGET_MISSING", "feature flow navigation and form controls must preserve a 44px minimum touch target");
+  assertCheck(!/(?:src|href)=["']https?:\/\//i.test(features), "REMOTE_FEATURE_REFERENCE", "feature flows must not load remote resources");
   assertCheck(/--chestnut:#A85D3F|--chestnut:#a85d3f/.test(html), "TOKEN_CHESTNUT_MISSING", "brand chestnut token is missing");
   assertCheck(/--sprout:#3F7C59|--sprout:#3f7c59/.test(html), "TOKEN_SPROUT_MISSING", "sprout semantic token is missing");
   assertCheck(/--amber:#E2A34A|--amber:#e2a34a/.test(html), "TOKEN_AMBER_MISSING", "amber semantic token is missing");
@@ -113,6 +128,8 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     tokenCategories: ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"],
     componentCatalog: true,
     systemPatterns: 9,
+    featureFlows: 5,
+    accessibleFeatureControls: true,
     loopbackServer: true
   };
 }
