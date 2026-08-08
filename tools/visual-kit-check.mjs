@@ -54,9 +54,16 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(/<meta\s+charset="utf-8">/i.test(html), "HTML_CHARSET_MISSING", "visual kit must declare UTF-8");
   assertCheck(/<title>Nuttie visual concept<\/title>/i.test(html), "HTML_TITLE_MISSING", "visual kit title is missing");
   assertCheck(/<html lang="zh-CN">/.test(components), "COMPONENT_CATALOG_LANGUAGE_MISSING", "component catalog must declare zh-CN");
-  assertCheck(/class="button primary"/.test(components), "COMPONENT_BUTTON_MISSING", "component catalog must include primary button");
+  assertCheck(/<button type="button" class="button primary">/.test(components), "COMPONENT_BUTTON_SEMANTICS_MISSING", "component catalog must include a native non-submitting primary button");
   assertCheck(/class="alert info"/.test(components) && /class="alert warning"/.test(components) && /class="alert success"/.test(components), "COMPONENT_ALERT_STATES_MISSING", "component catalog must include alert states");
   assertCheck(/class="roles"/.test(components) && countMatches(components, /mascot-sheet\.svg#/g) >= 4, "COMPONENT_MASCOT_ROLES_MISSING", "component catalog must include four mascot roles");
+  assertCheck(/<input[^>]+name="foodName"[^>]*\stype="text"/.test(components) && /<input[^>]+name="servingAmount"[^>]*\stype="number"/.test(components) && !/class="field"[^>]+tabindex=/.test(components), "COMPONENT_NATIVE_INPUT_MISSING", "component fields must use named native inputs instead of focusable wrappers");
+  assertCheck(/aria-invalid="true" aria-describedby="component-serving-error"/.test(components) && /id="component-serving-error"/.test(components), "COMPONENT_ERROR_ASSOCIATION_MISSING", "component field errors must be visibly and programmatically associated");
+  assertCheck(countMatches(components, /<button type="button" aria-pressed=/g) === 3 && countMatches(components, /<button type="button" class="chip" aria-pressed=/g) === 3, "COMPONENT_SELECTION_SEMANTICS_MISSING", "segmented choices and chips must use stateful native buttons");
+  assertCheck(/\.segment button\{min-height:44px/.test(components) && /\.chip\{min-height:44px/.test(components), "COMPONENT_TOUCH_TARGET_INVALID", "component selection controls must honor the 44px touch target");
+  assertCheck(/data-component="progress" data-example-status="synthetic"/.test(components) && /食品数据包导入/.test(components) && !/今日进度/.test(components), "COMPONENT_PROGRESS_CONTRACT_INVALID", "component progress must be marked synthetic and must not imply an unapproved nutrition target");
+  assertCheck(/CANDIDATE \/ CONCEPT/.test(components) && /不代表默认餐次、营养目标、公式结果、健康评分或健康建议/.test(components), "COMPONENT_CANDIDATE_NOTICE_MISSING", "component catalog must expose its candidate and synthetic-data boundary");
+  assertCheck(/data-segment/.test(components) && /button\.chip/.test(components) && /setAttribute\("aria-pressed"/.test(components), "COMPONENT_INTERACTION_STATE_MISSING", "component selection examples must update their local pressed state");
   assertCheck(/<html lang="zh-CN">/.test(patterns), "PATTERN_CATALOG_LANGUAGE_MISSING", "system pattern catalog must declare zh-CN");
   assertCheck(countMatches(patterns, /class="pattern"/g) === 9, "SYSTEM_PATTERN_COUNT_INVALID", "system pattern catalog must include nine states");
   assertCheck(/CONSENT/.test(patterns) && /DESTRUCTIVE/.test(patterns), "TRUST_PATTERN_MISSING", "system pattern catalog must include AI and destructive confirmation states");
@@ -127,6 +134,7 @@ export async function checkVisualKit(rootDir = visualKitDir) {
     tokenVersion: tokens.meta.version,
     tokenCategories: ["color", "space", "radius", "size", "type", "shadow", "motion", "component", "mascot"],
     componentCatalog: true,
+    accessibleComponentControls: true,
     systemPatterns: 9,
     featureFlows: 5,
     accessibleFeatureControls: true,
