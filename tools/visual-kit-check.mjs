@@ -10,9 +10,64 @@ const requiredMascots = ["mascot-home", "mascot-meal", "mascot-growth", "mascot-
 const referencedMascots = ["mascot-home", "mascot-meal", "mascot-growth"];
 const requiredSpots = ["spot-meal", "spot-water", "spot-weight", "spot-movement", "spot-barcode", "spot-ai-lens", "spot-trend-sprout", "spot-backup-lock", "spot-reminder"];
 const referencedSpots = ["spot-meal", "spot-water", "spot-weight", "spot-movement", "spot-barcode", "spot-ai-lens", "spot-trend-sprout"];
+const expectedPatternIdentities = ["empty", "loading", "offline", "recovery", "consent", "destructive", "feedback", "permission", "celebration"];
 
 function countMatches(text, pattern) {
   return [...text.matchAll(pattern)].length;
+}
+
+function classTokens(value = "") {
+  return new Set(value.trim().split(/\s+/).filter(Boolean));
+}
+
+function parseAttributes(source) {
+  const attributes = new Map();
+  const pattern = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>\x60]+)))?/g;
+  for (const match of source.matchAll(pattern)) {
+    attributes.set(match[1].toLowerCase(), match[2] ?? match[3] ?? match[4] ?? "");
+  }
+  return attributes;
+}
+
+function extractStartTags(html) {
+  return [...html.matchAll(/<([a-z][\w-]*)\b([^>]*)>/gi)].map((match) => ({
+    name: match[1].toLowerCase(),
+    attributes: parseAttributes(match[2]),
+    source: match[0],
+    index: match.index
+  }));
+}
+
+function extractPatternArticles(html) {
+  return [...html.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article>/gi)]
+    .map((match) => ({
+      attributes: parseAttributes(match[1]),
+      body: match[2],
+      source: match[0]
+    }))
+    .filter((article) => classTokens(article.attributes.get("class")).has("pattern"));
+}
+
+function cssDeclarations(html, selector) {
+  const escapedSelector = selector.replace(/[.*+?^()|[\]\\]/g, "\\$&");
+  const match = html.match(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`, "i"));
+  if (!match) {
+    return null;
+  }
+  const declarations = new Map();
+  for (const item of match[1].split(";").map((value) => value.trim()).filter(Boolean)) {
+    const separator = item.indexOf(":");
+    if (separator > 0) {
+      declarations.set(item.slice(0, separator).trim().toLowerCase(), item.slice(separator + 1).trim().toLowerCase());
+    }
+  }
+  return declarations;
+}
+
+function referencesResolveWithin(article, value) {
+  const references = value?.trim().split(/\s+/).filter(Boolean) ?? [];
+  const tags = extractStartTags(article.body);
+  return references.length > 0 && references.every((reference) => tags.filter((tag) => tag.attributes.get("id") === reference).length === 1);
 }
 
 function assertCheck(condition, code, message, details = undefined) {
@@ -65,9 +120,139 @@ export async function checkVisualKit(rootDir = visualKitDir) {
   assertCheck(/CANDIDATE \/ CONCEPT/.test(components) && /不代表默认餐次、营养目标、公式结果、健康评分或健康建议/.test(components), "COMPONENT_CANDIDATE_NOTICE_MISSING", "component catalog must expose its candidate and synthetic-data boundary");
   assertCheck(/data-segment/.test(components) && /button\.chip/.test(components) && /setAttribute\("aria-pressed"/.test(components), "COMPONENT_INTERACTION_STATE_MISSING", "component selection examples must update their local pressed state");
   assertCheck(/<html lang="zh-CN">/.test(patterns), "PATTERN_CATALOG_LANGUAGE_MISSING", "system pattern catalog must declare zh-CN");
-  assertCheck(countMatches(patterns, /class="pattern"/g) === 9, "SYSTEM_PATTERN_COUNT_INVALID", "system pattern catalog must include nine states");
-  assertCheck(/CONSENT/.test(patterns) && /DESTRUCTIVE/.test(patterns), "TRUST_PATTERN_MISSING", "system pattern catalog must include AI and destructive confirmation states");
-  assertCheck(/role="dialog"/.test(patterns) && /role="alertdialog"/.test(patterns), "DIALOG_SEMANTICS_MISSING", "system dialogs must expose accessible roles");
+  const patternArticles = extractPatternArticles(patterns);
+  const patternIdentities = patternArticles.map((article) => article.attributes.get("data-pattern"));
+  assertCheck(
+    patternArticles.length === expectedPatternIdentities.length
+      && expectedPatternIdentities.every((identity) => patternIdentities.filter((value) => value === identity).length === 1)
+      && patternIdentities.every((identity) => expectedPatternIdentities.includes(identity)),
+    "PATTERN_IDENTITY_SET_INVALID",
+    "system pattern catalog must expose each stable pattern identity exactly once",
+    patternIdentities
+  );
+  const patternByIdentity = new Map(patternArticles.map((article) => [article.attributes.get("data-pattern"), article]));
+  for (const article of patternArticles) {
+    const headingId = article.attributes.get("aria-labelledby");
+    const heading = extractStartTags(article.body).find((tag) => tag.attributes.get("id") === headingId);
+    assertCheck(
+      referencesResolveWithin(article, headingId) && /^h[1-6]$/.test(heading?.name ?? ""),
+      "PATTERN_HEADING_SEMANTICS_MISSING",
+      `pattern ${article.attributes.get("data-pattern")} must reference its own heading`
+    );
+  }
+
+  const screenDeclarations = cssDeclarations(patterns, ".screen");
+  const scrimDeclarations = cssDeclarations(patterns, ".scrim");
+  const sheetDeclarations = cssDeclarations(patterns, ".sheet");
+  const sheetMaxHeight = sheetDeclarations?.get("max-height");
+  assertCheck(
+    screenDeclarations?.get("min-height") === "0"
+      && screenDeclarations?.get("overflow-y") === "auto"
+      && scrimDeclarations?.get("overflow-y") === "auto"
+      && sheetDeclarations?.get("overflow-y") === "auto"
+      && Boolean(sheetMaxHeight)
+      && sheetMaxHeight !== "none",
+    "PATTERN_SCROLL_CONTRACT_MISSING",
+    "pattern screens and sheets must preserve internal vertical scrolling"
+  );
+
+  const patternTags = extractStartTags(patterns);
+  const patternIds = patternTags.map((tag) => tag.attributes.get("id")).filter(Boolean);
+  assertCheck(new Set(patternIds).size === patternIds.length, "DIALOG_ASSOCIATION_INVALID", "pattern element IDs must be globally unique");
+  const dialogContracts = [
+    { identity: "consent", role: "dialog" },
+    { identity: "destructive", role: "alertdialog" }
+  ];
+  for (const contract of dialogContracts) {
+    const article = patternByIdentity.get(contract.identity);
+    const articleTags = extractStartTags(article.body);
+    const dialogs = articleTags.filter((tag) => tag.attributes.get("role") === contract.role);
+    assertCheck(dialogs.length === 1, "DIALOG_SEMANTICS_MISSING", `${contract.identity} must expose one ${contract.role}`);
+    const dialog = dialogs[0];
+    assertCheck(!dialog.attributes.has("aria-modal"), "STATIC_MODAL_SEMANTICS_INVALID", "always-visible catalog sheets must not claim modal behavior");
+    assertCheck(
+      referencesResolveWithin(article, dialog.attributes.get("aria-labelledby"))
+        && referencesResolveWithin(article, dialog.attributes.get("aria-describedby")),
+      "DIALOG_ASSOCIATION_INVALID",
+      `${contract.identity} dialog must reference labels and descriptions inside its own pattern`
+    );
+    const labelId = dialog.attributes.get("aria-labelledby").trim().split(/\s+/)[0];
+    const labelTarget = articleTags.find((tag) => tag.attributes.get("id") === labelId);
+    assertCheck(/^h[1-6]$/.test(labelTarget?.name ?? ""), "DIALOG_ASSOCIATION_INVALID", `${contract.identity} dialog label must be a heading`);
+
+    const initialFocusId = dialog.attributes.get("data-initial-focus");
+    const initialFocusTarget = articleTags.find((tag) => tag.attributes.get("id") === initialFocusId);
+    assertCheck(
+      initialFocusTarget?.name === "button"
+        && initialFocusTarget.attributes.get("type") === "button"
+        && initialFocusTarget.attributes.has("data-safe-default")
+        && !initialFocusTarget.attributes.has("disabled"),
+      contract.identity === "destructive" ? "DESTRUCTIVE_DEFAULT_FOCUS_UNSAFE" : "DIALOG_ASSOCIATION_INVALID",
+      `${contract.identity} initial focus must reference an enabled safe button`
+    );
+    if (contract.identity === "destructive") {
+      const initialClasses = classTokens(initialFocusTarget.attributes.get("class"));
+      assertCheck(
+        !initialClasses.has("danger") && initialFocusTarget.attributes.get("data-action") !== "confirm-destructive",
+        "DESTRUCTIVE_DEFAULT_FOCUS_UNSAFE",
+        "destructive confirmation must not receive initial focus"
+      );
+      const dangerousButtons = articleTags.filter((tag) => tag.name === "button" && classTokens(tag.attributes.get("class")).has("danger"));
+      assertCheck(
+        dangerousButtons.every((tag) => !tag.attributes.has("autofocus") && !tag.attributes.has("data-safe-default") && tag.attributes.get("id") !== initialFocusId),
+        "DESTRUCTIVE_DEFAULT_FOCUS_UNSAFE",
+        "dangerous buttons must never be marked as the safe default"
+      );
+    }
+  }
+
+  const buttonClassElements = patternTags.filter((tag) => classTokens(tag.attributes.get("class")).has("button"));
+  const nativeButtons = patternTags.filter((tag) => tag.name === "button");
+  assertCheck(
+    buttonClassElements.every((tag) => tag.name === "button" && tag.attributes.get("type") === "button")
+      && nativeButtons.every((tag) => tag.attributes.get("type") === "button")
+      && patternTags.every((tag) => tag.attributes.get("role") !== "button"),
+    "PATTERN_BUTTON_SEMANTICS_INVALID",
+    "pattern actions must use native non-submitting buttons"
+  );
+
+  const undoLabel = "撤销";
+  const interactiveUndo = [...patterns.matchAll(/<(button|a)\b([^>]*)>([\s\S]*?)<\/\1>/gi)].some((match) => {
+    const attributes = parseAttributes(match[2]);
+    const label = match[3].replace(/<[^>]*>/g, "").trim();
+    return label === undoLabel || attributes.get("data-action") === "undo" || classTokens(attributes.get("class")).has("undo");
+  });
+  const feedbackPattern = patternByIdentity.get("feedback");
+  const fakeUndo = new RegExp(`<(?:strong|span)\\b[^>]*>\\s*${undoLabel}\\s*<\\/(?:strong|span)>`, "i").test(feedbackPattern.body);
+  assertCheck(!interactiveUndo && !fakeUndo, "PATTERN_UNAPPROVED_UNDO", "patterns must not promise an unapproved undo action");
+
+  const consentPattern = patternByIdentity.get("consent");
+  const consentSendButtons = extractStartTags(consentPattern.body)
+    .filter((tag) => tag.name === "button" && classTokens(tag.attributes.get("class")).has("primary"));
+  assertCheck(
+    consentSendButtons.length === 1
+      && consentSendButtons[0].attributes.has("disabled")
+      && /UNKNOWN \/ BLOCKED/.test(consentPattern.body)
+      && /Provider policy/.test(consentPattern.body),
+    "PATTERN_AI_POLICY_NOT_FAIL_CLOSED",
+    "AI send must remain disabled while provider policy is not approved"
+  );
+
+  const prohibitedPatternPhrases = ["写下一句日记", "记录第一步", "连续记录 7 天", "本周完成", "当前没有网络"];
+  const offlinePattern = patternByIdentity.get("offline");
+  assertCheck(
+    prohibitedPatternPhrases.every((phrase) => !patterns.includes(phrase))
+      && !/步骤\s*2\s*\/\s*3/.test(patterns)
+      && offlinePattern.body.includes("营养标签识别")
+      && !offlinePattern.body.includes("最近记录"),
+    "PATTERN_UNAPPROVED_CONTENT",
+    "patterns must stay within accepted product and AI-task boundaries"
+  );
+  assertCheck(
+    /CANDIDATE \/ NON_PRODUCTION/.test(patterns) && /静态 sheet 只验证结构/.test(patterns),
+    "PATTERN_CANDIDATE_NOTICE_MISSING",
+    "pattern catalog must expose its candidate and static-interaction boundary"
+  );
   assertCheck(!/https?:\/\//i.test(patterns), "REMOTE_PATTERN_REFERENCE", "system patterns must not load remote resources");
   assertCheck(/<html lang="zh-CN">/.test(features), "FEATURE_CATALOG_LANGUAGE_MISSING", "feature flow catalog must declare zh-CN");
   assertCheck(countMatches(features, /class="flow"/g) === 5, "FEATURE_FLOW_COUNT_INVALID", "feature catalog must include five flows");

@@ -18,6 +18,21 @@ async function withVisualKitFixture(run) {
     await rm(tempDir, { recursive: true, force: true });
   }
 }
+function replaceOnce(source, search, replacement) {
+  const firstIndex = source.indexOf(search);
+  assert.notEqual(firstIndex, -1, `fixture must contain ${search}`);
+  assert.equal(source.indexOf(search, firstIndex + search.length), -1, `fixture anchor must be unique: ${search}`);
+  return source.slice(0, firstIndex) + replacement + source.slice(firstIndex + search.length);
+}
+
+async function mutatePatterns(tempDir, mutate) {
+  const patternPath = path.join(tempDir, "patterns.html");
+  const patterns = await readFile(patternPath, "utf8");
+  const mutated = mutate(patterns);
+  assert.notEqual(mutated, patterns, "pattern mutation must change the fixture");
+  await writeFile(patternPath, mutated);
+}
+
 
 test("visual kit exposes three screens and four mascot variants", async () => {
   const report = await checkVisualKit();
@@ -81,5 +96,103 @@ test("visual kit rejects an unapproved nutrition progress claim", async () => {
     const components = await readFile(componentPath, "utf8");
     await writeFile(componentPath, components.replace("食品数据包导入", "今日进度"));
     await assert.rejects(() => checkVisualKit(tempDir), { code: "COMPONENT_PROGRESS_CONTRACT_INVALID" });
+  });
+});
+
+test("visual kit rejects a duplicated pattern identity", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(patterns, 'data-pattern="celebration"', 'data-pattern="feedback"'));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_IDENTITY_SET_INVALID" });
+  });
+});
+
+test("visual kit rejects a pattern screen without internal scrolling", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      ".screen{min-height:0;height:100%;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:auto",
+      ".screen{min-height:0;height:100%;display:flex;flex-direction:column;overflow-x:hidden;overflow-y:hidden"
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_SCROLL_CONTRACT_MISSING" });
+  });
+});
+
+test("visual kit rejects a dialog description outside its pattern", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      'aria-describedby="ai-consent-description"',
+      'aria-describedby="missing-consent-description"'
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "DIALOG_ASSOCIATION_INVALID" });
+  });
+});
+
+test("visual kit rejects modal semantics on an always-visible catalog sheet", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      'role="dialog" aria-labelledby="ai-consent-title"',
+      'role="dialog" aria-modal="true" aria-labelledby="ai-consent-title"'
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "STATIC_MODAL_SEMANTICS_INVALID" });
+  });
+});
+
+test("visual kit rejects a dangerous default focus target", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => {
+      const withDangerId = replaceOnce(
+        patterns,
+        '<button type="button" class="button danger">继续检查删除范围',
+        '<button id="delete-confirm" type="button" class="button danger">继续检查删除范围'
+      );
+      return replaceOnce(withDangerId, 'data-initial-focus="delete-cancel"', 'data-initial-focus="delete-confirm"');
+    });
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "DESTRUCTIVE_DEFAULT_FOCUS_UNSAFE" });
+  });
+});
+
+test("visual kit rejects a pattern button without a non-submitting type", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      '<button type="button" class="button primary">添加餐食</button>',
+      '<button class="button primary">添加餐食</button>'
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_BUTTON_SEMANTICS_INVALID" });
+  });
+});
+
+test("visual kit rejects an unapproved undo action", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      '<button type="button">查看记录</button>',
+      '<button type="button" data-action="undo">撤销</button>'
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_UNAPPROVED_UNDO" });
+  });
+});
+
+test("visual kit rejects an enabled AI send before provider approval", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      'class="button primary" disabled aria-describedby="ai-policy-reason"',
+      'class="button primary" aria-describedby="ai-policy-reason"'
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_AI_POLICY_NOT_FAIL_CLOSED" });
+  });
+});
+
+test("visual kit rejects content outside accepted pattern boundaries", async () => {
+  await withVisualKitFixture(async (tempDir) => {
+    await mutatePatterns(tempDir, (patterns) => replaceOnce(
+      patterns,
+      "CANDIDATE / NON_PRODUCTION",
+      "CANDIDATE / NON_PRODUCTION · 连续记录 7 天"
+    ));
+    await assert.rejects(() => checkVisualKit(tempDir), { code: "PATTERN_UNAPPROVED_CONTENT" });
   });
 });
