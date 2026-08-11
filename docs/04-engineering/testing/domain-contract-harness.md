@@ -16,6 +16,8 @@
 - 日账本：保存显式 `target/eaten/burned` 状态；`Left` 的派生策略保持 `PENDING`，没有目标时返回 `UNSPECIFIED`，不推导 F04/F05 或 D-040 的健康公式。
 - 本地 CRUD 原子性：添加、更新、删除使用纯状态事务；重复 ID、缺失 ID 和非法输入失败时返回旧状态，证明零写入语义。
 
+这里的 `transactionalMealMutation` 只证明基础内存 CRUD 的确定性和失败时旧状态不变。fixture 中重复执行同一个 `update` 不代表新增记录支持 `commandId` 幂等，也不代表真实 Repository、SQLite 事务或 commit 后响应丢失已经得到验证。手工餐食的状态、port 和重放语义见 [manual-meal-entry-harness.md](manual-meal-entry-harness.md)。
+
 ## 明确不授权
 
 本工件不是正式 Domain 源码、RN scaffold、SQLite schema、营养目标实现或 Owner 决策。它不冻结 D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-032/D-037，不改变 D-039/D-040 状态，也不记录 Owner intake。宏量比例、BMR/TDEE、特殊人群目标和健康评分仍为 `UNSPECIFIED/PENDING`，必须等待对应研究、Owner 选择和门禁。
