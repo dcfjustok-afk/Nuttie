@@ -25,6 +25,8 @@
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |
 | [nuttie-visual-direction.md](nuttie-visual-direction.md) | Nuttie 原创卡通栗子视觉方向、状态映射与 Figma 导入合同 |
+| [nuttie-design-system.md](nuttie-design-system.md) | Nuttie 视觉令牌、组件、五个本地优先功能画面、九种状态模式、候选边界与自动验证合同 |
+| [../04-engineering/testing/visual-kit-check.md](../04-engineering/testing/visual-kit-check.md) | 本地视觉原型的源码合同、负向变异测试与浏览器验收边界 |
 
 ## 2. 本轮结论
 
@@ -35,6 +37,8 @@
 - 品牌视觉、配色、字体、插画、动效与组件样式；
 - 公开资料未验证的竞品交互细节；
 - 尚未由 Owner 接受的版本切片和默认入口排序。
+
+以上“不决定”只限定本篇 2026-07-31 的 G3 逻辑基线；后续候选视觉、组件和状态合同记录在 [nuttie-design-system.md](nuttie-design-system.md)，仍不代表 Owner 已批准正式 React Native 页面。
 
 所有业务能力默认在设备本地完成。联网只发生在用户主动发起并确认、且 D-053 本地 Provider policy 对该载荷为 `ALLOW` 的 AI 请求中；AI 不可用或 policy 未准入时，手工记录、日记、目标、统计、提醒、食品查询、备份和数据管理仍须可用。
 
