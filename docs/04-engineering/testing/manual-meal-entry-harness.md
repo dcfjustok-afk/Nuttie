@@ -8,7 +8,7 @@
 
 这个 harness 把“检查并保存一条手工餐食”的 Application 合同变成可执行证据。它复用现有 `dailyNutritionSummary`，但不创建正式 React Native 页面、状态管理模块、SQLite schema、ORM adapter 或生产 Repository。
 
-合同只接收调用方显式提供的 `entryId`、`commandId`、`localDate` 与七项营养快照。它不读取当前时钟、不生成标识，也不推导默认餐次、营养目标、`Left`、宏量比例、健康评分或建议。
+合同只接收调用方显式提供的 `entryId`、`commandId`、`localDate` 与七项营养快照。它兼容基础数字快照与 `NUTRITION_FACT_SNAPSHOT_V2`；V2 的 fact 状态、原值/原单位、basis 和 provenance 会完整进入草稿、命令与 Repository 回读，幂等 fingerprint 也覆盖完整快照。它不读取当前时钟、不生成标识，也不推导默认餐次、营养目标、`Left`、宏量比例、健康评分或建议。
 
 ## 状态合同
 
@@ -27,7 +27,7 @@
 | `SAVE_FAILED / UNKNOWN` | 编辑 | 拒绝 | 必须先用原命令重试或对账，防止重复记录 |
 | `SAVED` | 编辑、保存或迟到回调 | 拒绝 | `SAVED` 是当前状态机的终态 |
 
-状态只保存由 primitive、array 和 plain record 组成的可序列化值，不保存 `Map`、`Set`、`Date`、raw `Error`、stack、Repository 对象或 UI 实例。草稿、命令、结果和 Repository 返回值会先经过字段 allowlist，再被复制并冻结，调用方后续修改不能重写已建立的状态。
+状态只保存由 primitive、array 和 plain record 组成的可序列化值，不保存 `Map`、`Set`、`Date`、raw `Error`、stack、Repository 对象或 UI 实例。草稿、命令、结果和 Repository 返回值会先经过字段 allowlist，再被复制并冻结，调用方后续修改不能重写已建立的状态。V2 的派生 `values`、状态集合和 provenance 会在每次进入合同边界时重新核对，不能只改写派生字段。
 
 每个保存 effect 同时携带 `commandId`、canonical payload fingerprint 和单调递增的 attempt。结算必须三者都匹配当前 pending 状态；retry 开始后，旧 attempt 的迟到结果不能覆盖新状态。
 

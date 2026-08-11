@@ -1,4 +1,5 @@
 import { dailyNutritionSummary } from "./domain-contract-harness.mjs";
+import { normalizeNutritionFactSnapshot } from "./nutrition-fact-snapshot-harness.mjs";
 
 const STATUSES = Object.freeze({
   EDITING: "EDITING",
@@ -89,24 +90,29 @@ function assertNonEmptyString(value, field, code) {
 function normalizeMeal(meal, field = "meal") {
   assertRecord(meal, field);
   assertNonEmptyString(meal.id, `${field}.id`, "MISSING_MEAL_ID");
+  const nutrition = meal.nutrition?.schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2"
+    ? normalizeNutritionFactSnapshot(meal.nutrition)
+    : (() => {
+      const values = Object.fromEntries(NUTRIENT_FIELDS.map((nutrient) => [
+        nutrient,
+        meal.nutrition.values[nutrient],
+      ]));
+      return immutable({
+        sourceId: meal.nutrition.sourceId,
+        sourceVersion: meal.nutrition.sourceVersion,
+        values,
+        missingFields: NUTRIENT_FIELDS.filter((nutrient) => values[nutrient] === null),
+      });
+    })();
   const summary = dailyNutritionSummary({
     localDate: meal.localDate,
-    meals: [{ id: meal.id, localDate: meal.localDate, nutrition: meal.nutrition }],
+    meals: [{ id: meal.id, localDate: meal.localDate, nutrition }],
   });
   if (summary.mealCount !== 1) fail("meal date is invalid", "INVALID_MEAL_DATE");
-  const values = Object.fromEntries(NUTRIENT_FIELDS.map((nutrient) => [
-    nutrient,
-    meal.nutrition.values[nutrient],
-  ]));
   return immutable({
     id: meal.id,
     localDate: meal.localDate,
-    nutrition: {
-      sourceId: meal.nutrition.sourceId,
-      sourceVersion: meal.nutrition.sourceVersion,
-      values,
-      missingFields: NUTRIENT_FIELDS.filter((nutrient) => values[nutrient] === null),
-    },
+    nutrition,
   });
 }
 
@@ -472,11 +478,7 @@ function mealFingerprint(meal) {
   return JSON.stringify({
     id: meal.id,
     localDate: meal.localDate,
-    nutrition: {
-      sourceId: meal.nutrition.sourceId,
-      sourceVersion: meal.nutrition.sourceVersion,
-      values: meal.nutrition.values,
-    },
+    nutrition: meal.nutrition,
   });
 }
 
