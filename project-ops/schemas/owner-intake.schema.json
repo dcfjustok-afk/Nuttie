@@ -18,7 +18,7 @@
   "properties": {
     "schemaVersion": { "const": 1 },
     "batchId": { "type": "string", "minLength": 1 },
-    "channel": { "const": "CODEX_REQUEST_USER_INPUT" },
+    "channel": { "const": "CODEX_CHOICE_UI" },
     "status": {
       "enum": [
         "IN_PROGRESS",
@@ -48,7 +48,16 @@
     },
     "facts": { "type": "array", "items": { "type": "object" } },
     "conflicts": { "type": "array", "items": { "type": "object" } },
-    "nextQuestion": { "type": "object" }
+    "nextQuestion": {
+      "type": "object",
+      "required": ["id", "title", "tool"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "tool": { "const": "mcp__choice_ui__ask_choice" }
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false
 }

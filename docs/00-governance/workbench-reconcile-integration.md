@@ -25,21 +25,23 @@ decision responses, or authorize implementation.
 The integration was checked against the current Nuttie workspace and passed:
 
 ```text
-ProjectOps validation: 69/69 PASS
+ProjectOps validation: 71/71 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Contract harnesses: 18/18 PASS
-Workbench smoke: 106 events, 110 messages, 23 agents, 63 documents
-Responsive check: 375px viewport has no horizontal overflow
+Tool contract harnesses: 85/85 PASS
+Workbench smoke: 111 events, 114 messages, 25 agents, 70 documents
+Responsive check: desktop and 375px mobile viewports have no horizontal overflow
 ```
 
-The report currently contains a deliberate `STALE` snapshot warning because
-the manually generated snapshot predates the newest source event. This warning
-is surfaced but does not trigger automatic snapshot replacement.
+The manually generated repository snapshot matches the latest source time. The
+external static workbench copy was rebuilt from it and live/static parity passed
+with `CURRENT` freshness, the exact OI-03 device fact, and OI-02 as the next
+native input.
 
 ## Continuation boundary
 
-The next Owner input remains `OI-03` and must be collected with the native
-`request_user_input` selection card in Plan mode. Until the Owner batch is
+`OI-03` is recorded as `iPhone 16 Pro Max / iOS 26.5 / no available Mac`. The
+next Owner input is `OI-02` and must be collected with the native `choice-ui`
+control. Until the Owner batch is
 normalized and confirmed, D-039 remains `CANDIDATE / PX-2_PASS /
 READY_FOR_OWNER_REVIEW`, D-040 remains `CANDIDATE / PX-0_INPUT_GAP /
 FORMULA_REVIEW_REQUIRED`, and no formal React Native scaffold or implementation

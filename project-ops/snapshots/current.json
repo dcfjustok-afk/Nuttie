@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-06T11:39:05+08:00",
+  "generatedAt": "2026-08-11T17:41:03+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -16,10 +16,10 @@
     "crossSourceItems": 24,
     "evidenceGaps": 5,
     "gapThemeCount": 9,
-    "agentRosterSize": 23,
+    "agentRosterSize": 25,
     "activeAgents": 1,
-    "agentMessages": 110,
-    "projectEvents": 106
+    "agentMessages": 114,
+    "projectEvents": 111
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-040 PX-0 输入研究、独立复审与 ProjectOps 归并；维持 OI-03 下一题及 D-039/D-040 未授权门禁",
+      "workPackage": "OI-03 设备事实归并与 OI-02 原生选择卡；维持 D-039/D-040 未授权门禁",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -217,12 +217,28 @@
       "workPackage": "D-040 宏量模式互斥、AMDR reference-only、特殊人群 UI 门控和六授权位 delta 审查归零",
       "gate": "G2-G4 D-040 PX-0",
       "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "oi03_governance_review",
+      "role": "IndependentOwnerGateReviewer",
+      "state": "completed",
+      "workPackage": "OI-03 事实/决定边界、原生 choice-ui 迁移和 iOS 原生未授权边界审查完成",
+      "gate": "G2-G4 Owner Gate",
+      "requiredHandoffs": ["root"]
+    },
+    {
+      "id": "oi03_validator_review",
+      "role": "IndependentProjectOpsValidator",
+      "state": "completed",
+      "workPackage": "OI-03 对 ProjectOps、工作台和 RN 初始化预检的版本化迁移审查完成",
+      "gate": "Phase 0 Ops",
+      "requiredHandoffs": ["root"]
     }
   ],
   "currentWork": [
-    "Owner intake 保持 IN_PROGRESS_MODE_INTERRUPTED：13 条响应、12 个唯一决定，D-047 最新为 C；下一张原生选择卡是尚未回答的 OI-03",
+    "Owner intake 已恢复为 IN_PROGRESS：13 条响应、12 个唯一决定保持待回读；OI-03 已记录为只有 iPhone 16 Pro Max（iOS 26.5）、当前无可用 Mac，下一张原生 choice-ui 是 OI-02",
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
-    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权，OI-03 仍是下一题",
+    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；新研究工件仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，未进入决定台账或 Owner intake",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
@@ -232,6 +248,7 @@
     "未批准的产品、设计和技术选择不得进入实现基线",
     "D-053 未批准且 Provider 数据用途证据不足时，健康与营养载荷保持 BLOCKED",
     "当前只为 Owner 自用、不加入 Apple Developer Program、不做 TestFlight；这不自动 supersede D-008，也不代表永久取消未来分发",
+    "Owner 当前只有 iPhone 16 Pro Max（iOS 26.5）而无可用 Mac；iOS 原生 Spike、Prebuild、签名、Archive 和真机安装证据继续阻断",
     "D-052 未处理前，USDA 数据仅限本地研发；若未来恢复朋友分发，须重新执行许可与渠道门禁",
     "Windows 无法完成最终 iOS 原生构建；G6 需要受支持的 Mac/Xcode 与真实 iPhone"
   ],

@@ -7,11 +7,10 @@ import { reconcileWorkspace } from "../project-ops/reconcile.mjs";
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const DEFAULT_WORKSPACE_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 
-const REQUIRED_OWNER_GATE = Object.freeze({
-  questionId: "oi03_device_availability",
-  channel: "CODEX_REQUEST_USER_INPUT",
-  mode: "PLAN",
-  tool: "request_user_input",
+const REQUIRED_NEXT_OWNER_GATE = Object.freeze({
+  questionId: "oi02_identifier_status",
+  channel: "CODEX_CHOICE_UI",
+  tool: "mcp__choice_ui__ask_choice",
 });
 
 const TOOL_NAMES = Object.freeze(["node", "pnpm", "expo", "xcodebuild", "pod"]);
@@ -78,20 +77,26 @@ function ownerGateStatus(report) {
   const gate = report.ownerGate ?? {};
   const nextQuestion = gate.nextQuestion ?? {};
   const nativeGate = gate.nativeSelectionGate ?? {};
-  const selectionMechanismConfigured = gate.channel === REQUIRED_OWNER_GATE.channel
-    && nextQuestion.id === REQUIRED_OWNER_GATE.questionId
-    && nextQuestion.requiresMode === REQUIRED_OWNER_GATE.mode
-    && nextQuestion.tool === REQUIRED_OWNER_GATE.tool
+  const deviceAvailability = gate.deviceAvailability ?? {};
+  const selectionMechanismConfigured = gate.channel === REQUIRED_NEXT_OWNER_GATE.channel
+    && nextQuestion.id === REQUIRED_NEXT_OWNER_GATE.questionId
+    && nextQuestion.tool === REQUIRED_NEXT_OWNER_GATE.tool
     && nativeGate.passed === true;
   const batchConfirmed = gate.status === "CONFIRMED";
+  const deviceFactRecorded = deviceAvailability.normalizedValue === "IPHONE_ONLY"
+    && deviceAvailability.iphoneAvailability === "AVAILABLE";
+  const macAvailable = deviceAvailability.macAvailability === "AVAILABLE";
   return {
     passed: batchConfirmed,
     selectionMechanismConfigured,
     batchConfirmed,
+    deviceFactRecorded,
+    macAvailable,
+    deviceAvailability,
     acceptanceStateChanged: gate.acceptanceStateChanged,
     status: gate.status,
     nextQuestionId: nextQuestion.id ?? null,
-    expected: REQUIRED_OWNER_GATE,
+    expected: REQUIRED_NEXT_OWNER_GATE,
   };
 }
 
@@ -108,17 +113,33 @@ export function runPreflight(workspaceRoot = DEFAULT_WORKSPACE_ROOT) {
 
   if (!reconcile.ok) diagnostics.push({ code: "PROJECT_OPS_RECONCILE_FAILED", details: reconcile.diagnostics });
   if (!owner.batchConfirmed && !owner.selectionMechanismConfigured) diagnostics.push({ code: "OWNER_NATIVE_SELECTION_GATE_NOT_READY", details: owner });
+  if (!owner.deviceFactRecorded) diagnostics.push({ code: "OWNER_DEVICE_FACT_NOT_RECORDED", details: owner });
   if (!owner.batchConfirmed) diagnostics.push({ code: "OWNER_BATCH_NOT_CONFIRMED", details: owner });
   if (owner.acceptanceStateChanged !== false) diagnostics.push({ code: "OWNER_BATCH_ALREADY_CHANGED", details: owner });
   if (presentArtifacts.length > 0) diagnostics.push({ code: "FORMAL_RN_ARTIFACT_PRESENT", details: { presentArtifacts } });
   if (!toolchain.node.available) diagnostics.push({ code: "NODE_NOT_AVAILABLE" });
   if (!toolchain.pnpm.available) diagnostics.push({ code: "PNPM_NOT_AVAILABLE" });
+  if (!owner.macAvailable) diagnostics.push({ code: "MAC_NOT_AVAILABLE", details: owner.deviceAvailability });
   if (!toolchain.xcodebuild.available) diagnostics.push({ code: "XCODEBUILD_NOT_AVAILABLE" });
   if (!toolchain.pod.available) diagnostics.push({ code: "COCOAPODS_NOT_AVAILABLE" });
 
+  const readyForJsSpike = reconcile.ok
+    && owner.batchConfirmed
+    && owner.deviceFactRecorded
+    && owner.acceptanceStateChanged === false
+    && presentArtifacts.length === 0
+    && toolchain.node.available
+    && toolchain.pnpm.available;
+  const readyForNativeIosSpike = readyForJsSpike
+    && owner.macAvailable
+    && toolchain.xcodebuild.available
+    && toolchain.pod.available;
+
   return {
-    ok: diagnostics.length === 0,
-    readyForInitialization: diagnostics.length === 0,
+    ok: readyForNativeIosSpike,
+    readyForInitialization: readyForNativeIosSpike,
+    readyForJsSpike,
+    readyForNativeIosSpike,
     workspaceRoot: resolvedRoot,
     reconcile: {
       ok: reconcile.ok,

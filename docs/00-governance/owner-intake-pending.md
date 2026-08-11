@@ -1,10 +1,10 @@
 # Nuttie Owner 第 1 批待回读输入
 
-> 状态：`IN_PROGRESS_MODE_INTERRUPTED / NOT_ACCEPTED`
+> 状态：`IN_PROGRESS / NOT_ACCEPTED`
 >
-> 更新时间：2026-07-31T19:07:46+08:00
+> 更新时间：2026-08-11T17:41:03+08:00
 >
-> 交互通道：Codex 原生 `request_user_input` 选择卡
+> 交互通道：Codex 原生 `choice-ui` 选择卡
 
 本文件只保存 Owner 已点击但尚未完成整批规范化回读的输入。它不是决定台账，不产生 `DECISION_ACCEPTED`，也不授权正式 Nuttie 根工程、Apple 注册、付费、TestFlight 或发布。机器可读副本见 `project-ops/owner-intake.json`。
 
@@ -32,9 +32,8 @@
 - 分发意图澄清：Owner 明确当前只开发和安装给自己使用，不付 Apple Developer Program 年费、不做 TestFlight、暂不考虑朋友分发。
 - D-047 回正：最新待回读输入为 C“当前暂不加入”；首次 A 仅作为审计历史保留。
 - D-008 边界：当前不执行既有 TestFlight 方向；“暂不考虑朋友”不等于永久取消，未来恢复或正式 supersede 仍需 Owner 决定。
+- OI-03：Owner 通过原生选择卡确认当前只有 `iPhone 16 Pro Max / iOS 26.5`，暂无可用 Mac；该事实不授权 iOS 原生 Spike、Prebuild、签名、Archive 或真机安装。
 
-## 3. 恢复后的下一张卡
+## 3. 下一张卡
 
-当当前任务处于 Plan 模式时，PM 使用 `request_user_input` 弹出 `oi03_device_availability`，确认 Owner 当前是否同时拥有可用 Mac 和 iPhone、只有 iPhone，或暂无可用设备。若有 Mac/iPhone，再用原生选择卡分步收集非敏感的型号和版本 profile；不得要求 Owner 用网页表单作答。
-
-OI-02 当前保持未解决：Bundle ID 尚未选择，SKU 因当前不使用 App Store Connect 可记为 `N/A`。Bundle ID 最迟在首次自用真机签名配置前，以具体候选选择卡确认。
+OI-03 已完成事实采集。PM 下一步使用 `mcp__choice_ui__ask_choice` 弹出 `oi02_identifier_status`：Bundle ID 尚未规范化，SKU 因当前不使用 App Store Connect 可记为 `N/A`。Bundle ID 最迟在首次自用真机签名配置前，以具体候选选择卡确认；不得要求 Owner 用网页表单或文字模板作答。

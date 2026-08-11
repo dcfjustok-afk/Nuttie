@@ -15,16 +15,16 @@ function validModel() {
   return loadProjectOps(WORKSPACE_ROOT);
 }
 
-test("当前 ProjectOps 源与快照计数一致，陈旧快照只产生 warning", () => {
+test("当前 ProjectOps 源、快照与 OI-03/OI-02 门禁一致", () => {
   const report = reconcileProjectOps(validModel());
   assert.equal(report.ok, true);
   assert.deepEqual(report.counts, {
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 106,
-    messages: 110,
-    agents: 23,
+    events: 111,
+    messages: 114,
+    agents: 25,
     activeAgents: 1,
     evidenceItems: 66,
     confirmedEvidence: 37,
@@ -34,9 +34,12 @@ test("当前 ProjectOps 源与快照计数一致，陈旧快照只产生 warning
     ownerResponses: 13,
     ownerDecisionIds: 12,
   });
-  assert.equal(report.snapshot.freshness, "STALE");
-  assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_SNAPSHOT_STALE" && diagnostic.severity === "warning"));
+  assert.equal(report.snapshot.freshness, "CURRENT");
   assert.equal(report.ownerGate.nativeSelectionGate.passed, true);
+  assert.equal(report.ownerGate.deviceAvailability.selectedOptionId, "iphone_only");
+  assert.equal(report.ownerGate.deviceAvailability.iphoneModel, "iPhone 16 Pro Max");
+  assert.equal(report.ownerGate.deviceAvailability.iosVersion, "26.5");
+  assert.equal(report.ownerGate.deviceAvailability.nativeIosWorkAuthorized, false);
   assert.equal(report.d039.state, "PX-2_PASS");
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
 });
@@ -51,7 +54,7 @@ test("快照计数漂移是错误，且不写回任何文件", () => {
   assert.equal(JSON.stringify(model.snapshot), JSON.stringify({ ...JSON.parse(before), metrics: { ...JSON.parse(before).metrics, projectEvents: JSON.parse(before).metrics.projectEvents - 1 } }));
 });
 
-test("Owner 下一题偏离原生 OI-03 选择卡时失败关闭", () => {
+test("Owner 下一题偏离原生 OI-02 choice-ui 时失败关闭", () => {
   const model = validModel();
   model.ownerIntake.nextQuestion.tool = "static-workbench";
   const report = reconcileProjectOps(model);

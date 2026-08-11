@@ -65,6 +65,8 @@ export function reconcileProjectOps(model) {
   const agents = Array.isArray(model.snapshot?.agents) ? model.snapshot.agents : [];
   const ownerIntake = model.ownerIntake ?? {};
   const ownerResponses = Array.isArray(ownerIntake.responses) ? ownerIntake.responses : [];
+  const ownerFacts = Array.isArray(ownerIntake.facts) ? ownerIntake.facts : [];
+  const oi03Fact = ownerFacts.find((fact) => fact?.inputId === "OI-03") ?? null;
   const latestEvent = maxTimestamp(model.events, "recordedAt");
   const latestMessage = maxTimestamp(model.messages, "sentAt");
   const latestSource = [latestEvent, latestMessage]
@@ -159,19 +161,27 @@ export function reconcileProjectOps(model) {
     responseCount: ownerResponses.length,
     uniqueDecisionCount: new Set(ownerResponses.map((response) => response?.decisionId).filter(Boolean)).size,
     nextQuestion: ownerIntake.nextQuestion ?? null,
+    deviceAvailability: {
+      state: oi03Fact?.state ?? "MISSING",
+      selectedOptionId: oi03Fact?.selectedOptionId ?? null,
+      normalizedValue: oi03Fact?.normalizedValue ?? null,
+      macAvailability: oi03Fact?.macAvailability ?? null,
+      iphoneAvailability: oi03Fact?.iphoneAvailability ?? null,
+      iphoneModel: oi03Fact?.iphoneModel ?? null,
+      iosVersion: oi03Fact?.iosVersion ?? null,
+      nativeIosWorkAuthorized: oi03Fact?.nativeIosWorkAuthorized ?? null,
+    },
     nativeSelectionGate: {
-      expectedMode: "PLAN",
-      expectedTool: "request_user_input",
-      expectedQuestionId: "oi03_device_availability",
+      expectedTool: "mcp__choice_ui__ask_choice",
+      expectedQuestionId: "oi02_identifier_status",
       passed:
-        ownerIntake.channel === "CODEX_REQUEST_USER_INPUT" &&
-        ownerIntake.nextQuestion?.id === "oi03_device_availability" &&
-        ownerIntake.nextQuestion?.requiresMode === "PLAN" &&
-        ownerIntake.nextQuestion?.tool === "request_user_input",
+        ownerIntake.channel === "CODEX_CHOICE_UI" &&
+        ownerIntake.nextQuestion?.id === "oi02_identifier_status" &&
+        ownerIntake.nextQuestion?.tool === "mcp__choice_ui__ask_choice",
     },
   };
   if (!ownerGate.nativeSelectionGate.passed) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持聊天内原生 OI-03 选择卡门禁", ownerGate.nativeSelectionGate);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持聊天内原生 OI-02 choice-ui 门禁", ownerGate.nativeSelectionGate);
   }
 
   const d039Gate = latestD039Gate(model);
@@ -193,7 +203,7 @@ export function reconcileProjectOps(model) {
     decisionState: d040Record?.data?.decisionState ?? null,
     authoritativeState: d040Record?.data?.authoritativeState ?? null,
     next: d040Record?.data?.next ?? null,
-    oi03RemainsNext: d040Record?.data?.oi03RemainsNext ?? null,
+    oi03WasNextAtRecord: d040Record?.data?.oi03RemainsNext ?? null,
     authorization: {
       px1Authorized: d040Record?.data?.px1Authorized ?? null,
       px2Authorized: d040Record?.data?.px2Authorized ?? null,
@@ -204,8 +214,8 @@ export function reconcileProjectOps(model) {
     },
   };
   const d040AuthorizationClosed = Object.values(d040.authorization).every((value) => value === false);
-  if (!(d040.decisionState === "CANDIDATE" && d040.authoritativeState === "PX-0_INPUT_GAP" && d040.next === "FORMULA_REVIEW_REQUIRED" && d040.oi03RemainsNext === true && d040AuthorizationClosed)) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 PX-0 输入缺口、OI-03 顺序和六项授权位关闭状态", d040);
+  if (!(d040.decisionState === "CANDIDATE" && d040.authoritativeState === "PX-0_INPUT_GAP" && d040.next === "FORMULA_REVIEW_REQUIRED" && d040AuthorizationClosed)) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

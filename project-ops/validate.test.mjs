@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_06,
+  PHASE0_2026_08_11_OI03,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_06.id);
+  assert.equal(report.baseline, PHASE0_2026_08_11_OI03.id);
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 106);
-  assert.equal(report.counts.messages, 110);
-  assert.equal(report.counts.resolvedResponses, 69);
+  assert.equal(report.counts.events, 111);
+  assert.equal(report.counts.messages, 114);
+  assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
-  assert.equal(report.counts.agents, 23);
+  assert.equal(report.counts.agents, 25);
 });
 
 test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) => {
@@ -238,14 +238,14 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
     assertDiagnostic(report, "OPS_OWNER_RESPONSE_FINALIZED");
   });
 
-  await t.test("下一题不再是 OI-03", () => {
+  await t.test("OI-03 完成后下一题偏离 OI-02", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.id = "oi04_other";
     });
     assertDiagnostic(report, "OPS_OWNER_NEXT_QUESTION_CHANGED");
   });
 
-  await t.test("OI-03 不再使用原生选择卡", () => {
+  await t.test("OI-02 不再使用原生 choice-ui", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.tool = "static_web_form";
     });
@@ -259,22 +259,43 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
     assertDiagnostic(report, "OPS_OWNER_CHANNEL_CHANGED");
   });
 
-  await t.test("OI-03 被提前记录", () => {
+  await t.test("OI-03 事实缺失", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.facts.push({ inputId: "OI-03", value: "unknown" });
+      model.ownerIntake.facts = model.ownerIntake.facts.filter(
+        (fact) => fact.inputId !== "OI-03",
+      );
     });
-    assertDiagnostic(report, "OPS_OWNER_OI03_PREMATURELY_RECORDED");
+    assertDiagnostic(report, "OPS_OWNER_OI03_FACT_MISSING");
   });
 
-  await t.test("OI-03 以 fact questionId 被提前记录", () => {
+  await t.test("OI-03 事实重复", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.facts.push({
-        inputId: "OTHER",
+      const fact = model.ownerIntake.facts.find((candidate) => candidate.inputId === "OI-03");
+      model.ownerIntake.facts.push(structuredClone(fact));
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI03_FACT_DUPLICATE");
+  });
+
+  await t.test("OI-03 事实伪造 Mac 可用", () => {
+    const report = validateMutation((model) => {
+      const fact = model.ownerIntake.facts.find((candidate) => candidate.inputId === "OI-03");
+      fact.macAvailability = "AVAILABLE";
+      fact.nativeIosWorkAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI03_FACT_MISMATCH");
+  });
+
+  await t.test("OI-03 被错误写入决定 responses", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.responses.push({
         questionId: "oi03_device_availability",
-        value: "unknown",
+        decisionId: "D-048",
+        optionKey: "iphone_only",
+        optionLabel: "只有 iPhone",
+        state: "PENDING_BATCH_READBACK",
       });
     });
-    assertDiagnostic(report, "OPS_OWNER_OI03_PREMATURELY_RECORDED");
+    assertDiagnostic(report, "OPS_OWNER_OI03_RECORDED_AS_DECISION");
   });
 
   await t.test("12 项候选中的 D-038 被 D-999 替换", () => {

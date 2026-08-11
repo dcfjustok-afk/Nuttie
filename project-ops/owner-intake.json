@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "batchId": "phase0-owner-batch-1",
-  "channel": "CODEX_REQUEST_USER_INPUT",
-  "status": "IN_PROGRESS_MODE_INTERRUPTED",
-  "updatedAt": "2026-07-31T19:07:46+08:00",
+  "channel": "CODEX_CHOICE_UI",
+  "status": "IN_PROGRESS",
+  "updatedAt": "2026-08-11T17:41:03+08:00",
   "acceptanceStateChanged": false,
   "responses": [
     {
@@ -126,6 +126,23 @@
       "value": "当前只开发和安装给 Owner 自己使用；不付 Apple Developer Program 年费，不做 TestFlight，暂不考虑朋友分发",
       "state": "PENDING_BATCH_READBACK",
       "d008Treatment": "D-008 既有 TestFlight 方向不在当前阶段执行；是否未来恢复或正式 supersede 留待后续 Owner 决定"
+    },
+    {
+      "inputId": "OI-03",
+      "questionId": "oi03_device_availability",
+      "captureChannel": "CODEX_CHOICE_UI",
+      "captureTool": "mcp__choice_ui__ask_choice",
+      "rawOwnerAnswer": "只有 iPhone",
+      "selectedOptionId": "iphone_only",
+      "normalizedValue": "IPHONE_ONLY",
+      "macAvailability": "NONE_CURRENTLY_AVAILABLE",
+      "iphoneAvailability": "AVAILABLE",
+      "iphoneModel": "iPhone 16 Pro Max",
+      "iosVersion": "26.5",
+      "canConnectToMac": "N/A_NO_MAC",
+      "profileCompleteness": "COMPLETE_FOR_CURRENT_AVAILABILITY",
+      "nativeIosWorkAuthorized": false,
+      "state": "PENDING_BATCH_READBACK"
     }
   ],
   "conflicts": [
@@ -138,9 +155,8 @@
     }
   ],
   "nextQuestion": {
-    "id": "oi03_device_availability",
-    "title": "确认可用于 iOS 原生开发和自用安装的 Mac/iPhone 设备条件",
-    "requiresMode": "PLAN",
-    "tool": "request_user_input"
+    "id": "oi02_identifier_status",
+    "title": "确认 Nuttie 自用安装的 Bundle ID 状态",
+    "tool": "mcp__choice_ui__ask_choice"
   }
 }

@@ -11,17 +11,17 @@ const DECISION_ID_PATTERN = /^D-[0-9]{3}$/;
 const EVIDENCE_ID_PATTERN = /^(ACC|DAY|LOG|FOOD|BODY|AI|SYS|DATA)-[0-9]{2}$/;
 const GAP_THEME_ID_PATTERN = /^EG-[0-9]{2}$/;
 
-export const PHASE0_2026_08_06 = Object.freeze({
-  id: "PHASE0_2026_08_06",
+export const PHASE0_2026_08_11_OI03 = Object.freeze({
+  id: "PHASE0_2026_08_11_OI03",
   counts: Object.freeze({
     schemas: 4,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 106,
-    messages: 110,
-    resolvedResponses: 69,
-    agents: 23,
+    events: 111,
+    messages: 114,
+    resolvedResponses: 71,
+    agents: 25,
     activeAgents: 1,
     evidenceItems: 66,
     confirmedEvidence: 37,
@@ -37,6 +37,7 @@ export const PHASE0_2026_08_06 = Object.freeze({
     "2026-08-03": 13,
     "2026-08-05": 5,
     "2026-08-06": 29,
+    "2026-08-11": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -46,13 +47,29 @@ export const PHASE0_2026_08_06 = Object.freeze({
     "DATA-08",
   ]),
   ownerIntake: Object.freeze({
-    channel: "CODEX_REQUEST_USER_INPUT",
-    status: "IN_PROGRESS_MODE_INTERRUPTED",
+    channel: "CODEX_CHOICE_UI",
+    status: "IN_PROGRESS",
     acceptanceStateChanged: false,
     responseState: "PENDING_BATCH_READBACK",
-    nextQuestionId: "oi03_device_availability",
-    nextQuestionMode: "PLAN",
-    nextQuestionTool: "request_user_input",
+    nextQuestionId: "oi02_identifier_status",
+    nextQuestionTool: "mcp__choice_ui__ask_choice",
+    oi03EventId: "EVT-20260811-001",
+    oi03Fact: Object.freeze({
+      inputId: "OI-03",
+      questionId: "oi03_device_availability",
+      captureChannel: "CODEX_CHOICE_UI",
+      captureTool: "mcp__choice_ui__ask_choice",
+      selectedOptionId: "iphone_only",
+      normalizedValue: "IPHONE_ONLY",
+      macAvailability: "NONE_CURRENTLY_AVAILABLE",
+      iphoneAvailability: "AVAILABLE",
+      iphoneModel: "iPhone 16 Pro Max",
+      iosVersion: "26.5",
+      canConnectToMac: "N/A_NO_MAC",
+      profileCompleteness: "COMPLETE_FOR_CURRENT_AVAILABILITY",
+      nativeIosWorkAuthorized: false,
+      state: "PENDING_BATCH_READBACK",
+    }),
     d047InitialOption: "A",
     d047LatestQuestionId: "d047_scope_clarification",
     d047LatestOption: "C",
@@ -447,7 +464,7 @@ function duplicateValues(values) {
   return [...duplicates].sort();
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_06) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_11_OI03) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -876,7 +893,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_0
     add(
       "OPS_OWNER_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.channel",
-      "Owner 决策渠道必须保持聊天内原生 request_user_input",
+      "Owner 决策渠道必须保持聊天内原生 choice-ui",
       { expected: baseline.ownerIntake.channel, actual: ownerIntake.channel },
     );
   }
@@ -922,39 +939,76 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_0
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANGED",
       "project-ops/owner-intake.json.nextQuestion.id",
-      "下一题必须保持 OI-03",
+      "OI-03 完成后下一题必须保持 OI-02",
       { expected: baseline.ownerIntake.nextQuestionId, actual: ownerIntake.nextQuestion?.id },
     );
   }
-  if (
-    ownerIntake.nextQuestion?.requiresMode !== baseline.ownerIntake.nextQuestionMode ||
-    ownerIntake.nextQuestion?.tool !== baseline.ownerIntake.nextQuestionTool
-  ) {
+  if (ownerIntake.nextQuestion?.tool !== baseline.ownerIntake.nextQuestionTool) {
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.nextQuestion",
-      "OI-03 必须通过 Plan 模式原生 request_user_input 选择卡",
+      "OI-02 必须通过聊天内原生 choice-ui 选择卡",
       {
-        expectedMode: baseline.ownerIntake.nextQuestionMode,
         expectedTool: baseline.ownerIntake.nextQuestionTool,
-        actualMode: ownerIntake.nextQuestion?.requiresMode,
         actualTool: ownerIntake.nextQuestion?.tool,
       },
     );
   }
   const ownerFacts = Array.isArray(ownerIntake.facts) ? ownerIntake.facts : [];
-  const oi03Recorded =
-    ownerFacts.some(
-      (fact) =>
-        fact?.inputId === "OI-03" ||
-        fact?.questionId === baseline.ownerIntake.nextQuestionId,
-    ) ||
-    ownerResponses.some((response) => response?.questionId === baseline.ownerIntake.nextQuestionId);
-  if (oi03Recorded) {
+  const oi03Facts = ownerFacts.filter(
+    (fact) => fact?.inputId === "OI-03" || fact?.questionId === "oi03_device_availability",
+  );
+  if (oi03Facts.length === 0) {
     add(
-      "OPS_OWNER_OI03_PREMATURELY_RECORDED",
+      "OPS_OWNER_OI03_FACT_MISSING",
       "project-ops/owner-intake.json.facts",
-      "OI-03 尚未通过 Owner 原生选择卡回答",
+      "必须保留 Owner 通过原生 choice-ui 回答的唯一 OI-03 事实",
+    );
+  } else if (oi03Facts.length > 1) {
+    add(
+      "OPS_OWNER_OI03_FACT_DUPLICATE",
+      "project-ops/owner-intake.json.facts",
+      "OI-03 事实只能存在一条",
+      { count: oi03Facts.length },
+    );
+  }
+  const oi03Fact = oi03Facts[0];
+  const oi03Mismatch = Object.entries(baseline.ownerIntake.oi03Fact)
+    .filter(([key, expected]) => oi03Fact?.[key] !== expected)
+    .map(([key, expected]) => ({ key, expected, actual: oi03Fact?.[key] }));
+  if (oi03Fact && oi03Mismatch.length > 0) {
+    add(
+      "OPS_OWNER_OI03_FACT_MISMATCH",
+      "project-ops/owner-intake.json.facts",
+      "OI-03 必须精确保持只有 iPhone、无 Mac 且不授权原生 iOS 工作的事实",
+      { mismatches: oi03Mismatch },
+    );
+  }
+  if (ownerResponses.some((response) => response?.questionId === "oi03_device_availability")) {
+    add(
+      "OPS_OWNER_OI03_RECORDED_AS_DECISION",
+      "project-ops/owner-intake.json.responses",
+      "OI-03 是事实输入，不能进入决定 response 集合",
+    );
+  }
+  const oi03Events = model.events.filter(
+    (record) => record.value?.eventId === baseline.ownerIntake.oi03EventId,
+  );
+  const oi03Event = oi03Events[0]?.value;
+  if (
+    oi03Events.length !== 1 ||
+    oi03Event?.type !== "GATE_CHANGED" ||
+    oi03Event?.actor?.id !== "owner" ||
+    oi03Event?.data?.inputId !== "OI-03" ||
+    oi03Event?.data?.selectedOptionId !== baseline.ownerIntake.oi03Fact.selectedOptionId ||
+    oi03Event?.data?.iphoneModel !== baseline.ownerIntake.oi03Fact.iphoneModel ||
+    oi03Event?.data?.iosVersion !== baseline.ownerIntake.oi03Fact.iosVersion ||
+    oi03Event?.data?.nativeIosWorkAuthorized !== false
+  ) {
+    add(
+      "OPS_OWNER_OI03_EVENT_MISMATCH",
+      "project-ops/events/2026-08-11.jsonl",
+      "OI-03 权威事件必须与 Owner 事实一致且保持原生 iOS 未授权",
     );
   }
 

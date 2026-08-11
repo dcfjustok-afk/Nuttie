@@ -17,12 +17,11 @@ Audit type: read-only environment fact check
 
 ## Interpretation boundary
 
-This is an environment observation only. It does not answer Owner input
-`OI-03`, does not prove that an iPhone or Mac is available, and does not
-authorize a React Native scaffold, dependency installation, `ios/` generation,
-Apple signing, or any distribution action.
+This is an environment observation only. Owner input `OI-03` was subsequently
+recorded on 2026-08-11 as `iPhone 16 Pro Max / iOS 26.5 / no available Mac`.
+Neither that fact nor this Windows audit authorizes a React Native scaffold,
+dependency installation, `ios/` generation, Apple signing, or distribution.
 
-After the Owner selects OI-03 through the native chat selection card in Plan
-mode, the PM should re-run this audit on the actual development machine before
-starting the isolated technical Spike allowed by the accepted decisions.
-
+The PM must re-run this audit on an actual Mac before any native iOS Spike.
+Until then, `xcodebuild`, CocoaPods, Prebuild, signing, Archive, and native
+device evidence remain unavailable; pure JavaScript work is tracked separately.

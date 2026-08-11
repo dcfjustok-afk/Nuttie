@@ -6,8 +6,8 @@ Phase 0 planning into an isolated React Native/iOS Spike.
 ## What it checks
 
 - ProjectOps reconcile status and current source counts.
-- The required Owner native-selection gate for `OI-03`:
-  `CODEX_REQUEST_USER_INPUT` + Plan mode + `request_user_input`.
+- The recorded `OI-03` device fact and the next native Owner gate for `OI-02`:
+  `CODEX_CHOICE_UI` + `mcp__choice_ui__ask_choice`.
 - Presence of formal artifacts that must not exist before authorization:
   `package.json`, `pnpm-lock.yaml`, and `ios/`.
 - Visibility of `node`, `pnpm`, `expo`, `xcodebuild`, and CocoaPods on `PATH`.
@@ -23,8 +23,8 @@ node tools/rn-init-preflight.mjs
 node tools/rn-init-preflight.mjs --workspace D:\github\Nuttie
 ```
 
-The current Windows audit reports ProjectOps as healthy and the formal RN
-artifacts as absent, while `xcodebuild` is unavailable. That result is an
-environment fact only; it does not answer `OI-03` or replace Mac/iPhone
-confirmation through the native Owner selection card.
-
+The current Owner fact is `iPhone 16 Pro Max / iOS 26.5 / no available Mac`.
+The report distinguishes `readyForJsSpike` from `readyForNativeIosSpike`.
+Both remain false until the Owner batch is confirmed; the native path also
+remains blocked by the missing Mac, `xcodebuild`, and CocoaPods. Recording an
+iPhone never implies signing, Archive, Prebuild, or native iOS authorization.
