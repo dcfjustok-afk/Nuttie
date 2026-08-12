@@ -2,7 +2,7 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-11（Asia/Shanghai）；ProjectOps 人工归并快照已同步至本日 |
+| 快照日期 | 2026-08-12（Asia/Shanghai）；ProjectOps 人工归并快照已同步至本日 |
 | 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
 | 权威决定 | 17 项 `ACCEPTED`；14 项 `CANDIDATE` |
@@ -16,7 +16,7 @@
 
 `project-ops/decisions.json` 生成于 `2026-07-31T17:42:28+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 17 项 `ACCEPTED` 和 14 项 `CANDIDATE`。
 
-`project-ops/snapshots/current.json` 已于 `2026-08-11T17:41:03+08:00` 完成人工归并，当前记录 17 项 accepted、14 项 candidate、111 个事件、114 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。OI-03 已通过原生 choice-ui 记录为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac；两路独立审查确认这不授权 iOS 原生工作。D-039 仍保持 PX-2，D-040 仍阻断于 PX-0。
+`project-ops/snapshots/current.json` 已于 `2026-08-12T23:48:24+08:00` 完成人工归并，当前记录 17 项 accepted、14 项 candidate、126 个事件、114 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。本轮在 AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同和 F20/F23/F24 禁止能力审计之后，继续登记 F22 平台/语言 Release 审计合同；十五项都没有改变 Owner intake 或 Gate。两项 Release 聚合审计当前都明确为 `BLOCKED`：没有正式签名 Release Archive，F20/F23/F24 缺 27 面生产报告；F22 还缺设备族、方向、Mac、Vision availability 四项权威决定和 25 面发布报告。OI-03 已通过原生 choice-ui 记录为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac；两路独立审查确认这不授权 iOS 原生工作。D-039 仍保持 PX-2，D-040 仍阻断于 PX-0。
 
 门禁状态以 [阶段门禁](stage-gates.md) 为准：G0/G1 已通过；G2/G3/G4 仍在形成证据；G5~G8 因尚无经批准实现、构建、Beta 或发布证据而保持 `FAIL`。这里的 `FAIL` 表示退出条件尚不存在，不表示项目异常。
 
@@ -103,11 +103,11 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 2. **D-038 尚未通过最终 Owner Gate。** DesignOps 与主 Agent 的桌面/移动视觉、console 和关键交互验收已完成；仍须由 Owner 明确选择 A/B/C，未选择前正式 IA/路由外壳保持阻断。
 3. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得创建正式餐食录入页面、路由或据此改变决定台账。
 4. **D-040 尚未关闭 PX-0 输入。** A/B/C 流程、恢复、无目标和失败零写入已形成可操作原型，但最小字段、目标公式、适用范围和特殊人群停止规则未获 Owner 与领域评审确认；不得把固定测试夹具当作产品目标或进入正式实现。
-5. **G4 仍未通过，但已有框架无关的本地负向契约夹具。** `tools/domain-contract-harness.*`、`tools/ai-policy-harness.*` 与 `tools/import-safety-harness.*` 已分别覆盖纯规则、Provider fail-closed 和导入恶意输入拒绝；本轮增加了严格 ISO 时间、原型污染键、完整 AI scope、HTTPS origin、manifest/entries 集合一致性和控制字符拒绝。它们均为 `SPIKE / NON_PRODUCTION`，不依赖 RN/SQLite/网络/真实密钥，也不冻结未决公式、D-026/D-027/D-033/D-036/D-053。仍没有 SQLCipher/Keychain/备份/数据包的跨实现 Spike、构建、迁移、kill/restart、真机或 Release 网络证据。
+5. **G4 仍未通过，但框架无关的本地契约证据持续增加。** 除既有 Domain、AI policy、导入安全、数据包、备份、餐食、营养和 wipe 夹具外，本轮新增合同已覆盖 F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 的框架无关事实、事务、读模型和应用编排；`tools/prohibited-capability-audit-harness.*` 锁定 F20/F23/F24 签名 Release Archive 与 27 个禁止能力必查面，`tools/platform-language-release-audit-harness.*` 固定 F22 的 D-011 iOS 17.0、D-016 首发简中，并将设备族、方向、Mac、Vision availability 和 25 个发布证据面分开门控。8 月 12 日框架无关契约与治理检查全套 565 项测试通过；两项 Release 聚合审计都保持 `BLOCKED`，因为没有正式目标、四项平台形态决定、生产扫描、模拟器/真机/Store/布局/无障碍或 Release 网络/权限捕获。D-039/D-040 自动 smoke、导航候选浏览器交互和视觉资产合同也复验通过。所有这些仍为 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`：不依赖 RN/SQLite/真实 Keychain/HealthKit/网络/UserNotifications/相机/照片，不冻结资料字段、当前/多档案策略、档案级联删除、显示精度、异常阈值、BMI、目标体重、同日聚合、内建默认餐次、默认/自定义餐次规则、移动/复制、运动字段、消耗公式、Left 公式/缺失默认值/负值/舍入、目标生成、百分比换算、实际/目标比较、目标舍入、目标/净值、平均/更长周期、未来日/补记/跨时区重基/默认今天、饮水目标/快捷量/单位/撤销/趋势、提醒类型/重复规则/通知内容/滚动窗口/DST 默认策略、权限文案、媒体保留、明文导出、备份恢复、秘密值访问、真实容器完成、设备族/方向/Mac/Vision availability，或 D-026/D-027/D-030/D-031/D-033/D-034/D-035/D-036/D-053，也不构成正式实现、构建、迁移、签名 Archive、真机或 Release 网络证据。
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 原生链路仍阻断。** 已记录 iPhone 16 Pro Max / iOS 26.5，但当前无可用 Mac、macOS、Xcode、CocoaPods、Bundle ID、签名链、App Store Connect record 或 TestFlight build；只有 iPhone 不构成原生构建能力。
 
-当前机器验收基线包含 4 个 schema、`31` 条决定、1 份 Owner intake、`111` 个事件、`114` 条消息和 25 个角色；事件/消息 ID 唯一且所有 `responseTo` 可解析。`project-ops/reconcile.mjs` 对账 OI-03 精确事实、OI-02 choice-ui 下一题、D-039 PX-2 和 D-040 PX-0 六项授权位。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`。只读环境审计记录于 [本机 iOS 工具链审计](../04-engineering/local-ios-toolchain-audit-2026-08-06.md)：当前 Windows 主机不可见 Expo CLI、`xcodebuild` 和 CocoaPods；与 Owner 当前无可用 Mac 的事实一致，但不替代未来 Mac 实机审计。
+当前机器验收基线包含 4 个 schema、`31` 条决定、1 份 Owner intake、`126` 个事件、`114` 条消息和 25 个角色；事件/消息 ID 唯一且所有 `responseTo` 可解析。验证器锁定 AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21、F20/F23/F24 禁止能力与 F22 平台/语言十五项非生产合同，拒绝把它们冒充 Owner、产品规则、平台形态决定、真实原生调用、正式 Release 目标、生产报告或正式实现授权。`project-ops/reconcile.mjs` 对账 OI-03 精确事实、OI-02 choice-ui 下一题、D-039 PX-2 和 D-040 PX-0 六项授权位。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`。只读环境审计记录于 [本机 iOS 工具链审计](../04-engineering/local-ios-toolchain-audit-2026-08-06.md)：当前 Windows 主机不可见 Expo CLI、`xcodebuild` 和 CocoaPods；与 Owner 当前无可用 Mac 的事实一致，但不替代未来 Mac 实机审计。
 
 ## 7. 下一步 Owner 互动
 
@@ -119,23 +119,23 @@ PM 下一步从 `owner-intake.json` 指定的 OI-02 Bundle ID 状态卡继续，
 
 ## 8. 恢复与验证命令
 
-先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。Windows PowerShell 中启动本地工作台：
+先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。当前实际仓库根目录是 `D:\aaaProject\Nuttie`。外部 `D:\study\Nuttie-Discovery-Workbench` 不存在，因此本轮没有伪造工作台 smoke；如恢复该工具，再用实际仓库路径启动：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\github\Nuttie
+node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\aaaProject\Nuttie
 ```
 
 打开 `http://127.0.0.1:4173/`。基于已更新的 `project-ops/snapshots/current.json` 重建工作台静态副本并执行 smoke：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\github\Nuttie
+node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\aaaProject\Nuttie
 node D:\study\Nuttie-Discovery-Workbench\qa\smoke-test.mjs http://127.0.0.1:4173
 ```
 
 若浏览器拒绝直接打开 D-038 本地文件，在仓库同源目录启动只绑定 loopback 的预览：
 
 ```powershell
-node D:\github\Nuttie\prototypes\d038-navigation-shell\server.mjs 4175
+node D:\aaaProject\Nuttie\prototypes\d038-navigation-shell\server.mjs 4175
 ```
 
 打开 `http://127.0.0.1:4175/`。端口冲突时可以换其他本地端口；不得把工作台或原型部署到公网。
@@ -143,8 +143,8 @@ node D:\github\Nuttie\prototypes\d038-navigation-shell\server.mjs 4175
 D-039 冻结预览使用独立 loopback 服务，并执行原型 smoke：
 
 ```powershell
-node D:\github\Nuttie\prototypes\d039-add-meal-entry\server.mjs 4176
-node D:\github\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0.1:4176/ D:\study\Nuttie-D039-Prototype-Lab\qa-screenshots
+node D:\aaaProject\Nuttie\prototypes\d039-add-meal-entry\server.mjs 4176
+node D:\aaaProject\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0.1:4176/ $env:TEMP\Nuttie-D039-QA
 ```
 
 打开 `http://127.0.0.1:4176/`。页面只用于评审，不保存 Owner 选择。
@@ -152,10 +152,10 @@ node D:\github\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0
 D-040 冻结预览和自动 QA：
 
 ```powershell
-node D:\study\Nuttie-D040-Prototype-Lab\server.mjs 4177
-node D:\study\Nuttie-D040-Prototype-Lab\qa-smoke.mjs http://127.0.0.1:4177/ D:\study\Nuttie-D040-Prototype-Lab\qa-screenshots
+node D:\aaaProject\Nuttie\prototypes\d040-onboarding-goals\server.mjs 4177
+node D:\aaaProject\Nuttie\prototypes\d040-onboarding-goals\qa-smoke.mjs http://127.0.0.1:4177/ $env:TEMP\Nuttie-D040-QA
 ```
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 17/14；事件/消息/角色是 111/114/25 且仅 `root` 活跃；OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac，下一题是 OI-02；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源或 TestFlight 产物。
+恢复后至少重新确认：决定是 17/14；事件/消息/角色是 126/114/25 且仅 `root` 活跃；最新事件登记 F22 平台/语言 Release 审计合同且不改变 Gate/Owner intake，必须保持 `BLOCKED + FORMAL_TARGET_ABSENT + PLATFORM_SHAPE_DECISION_REQUIRED + REQUIRED_SURFACE_MISSING`，只固定 D-011 iOS 17.0 与 D-016 首发简中，不得从 D-038/当前 iPhone/工具默认值推导设备族、方向、Mac 或 Vision availability，不得声称已执行 25 面证据、验证决定/报告真实性或关闭发布门禁；F20/F23/F24 仍保持 `BLOCKED + FORMAL_TARGET_ABSENT + REQUIRED_SURFACE_MISSING`，不得声称已运行生产工件扫描、Release 网络或定位权限捕获；F21 仍不得授权权限文案、D-031 保留、视频、定位、持久化、真实原生 API、网络或正式实现；F18 仍不得授权 D-035 明文导出、D-027/D-030 备份恢复、秘密值、真实容器完成、写入或正式实现；F04 Left 必须是 `POLICY_NOT_AUTHORIZED`，其余非生产合同也不得扩大产品规则；OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac，下一题是 OI-02；G0/G1、G2~G4、G5~G8 状态未被缓存改写；D-032 两阶段语义仍在；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源、签名 Archive 或 TestFlight 产物。

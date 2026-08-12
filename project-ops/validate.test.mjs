@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_11_OI03,
+  PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,112 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_11_OI03.id);
+  assert.equal(report.baseline, PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT.id);
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 111);
+  assert.equal(report.counts.events, 126);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
   assert.equal(report.counts.agents, 25);
+  const aiCredentialEvent = findEvent(VALID_MODEL, "EVT-20260812-001");
+  assert.equal(aiCredentialEvent.value.subject.id, "ai-credential-lifecycle-contract");
+  assert.equal(aiCredentialEvent.value.data.formalImplementationAuthorized, false);
+  assert.equal(aiCredentialEvent.value.data.ownerIntakeChanged, false);
+  const bodyWeightEvent = findEvent(VALID_MODEL, "EVT-20260812-002");
+  assert.equal(bodyWeightEvent.value.subject.id, "body-weight-record-contract");
+  assert.equal(bodyWeightEvent.value.data.sameDayRecordsPreserved, true);
+  assert.equal(bodyWeightEvent.value.data.formalImplementationAuthorized, false);
+  const sevenDayEnergyEvent = findEvent(VALID_MODEL, "EVT-20260812-003");
+  assert.equal(sevenDayEnergyEvent.value.subject.id, "seven-day-energy-trend-contract");
+  assert.equal(sevenDayEnergyEvent.value.data.missingDistinctFromZero, true);
+  assert.equal(sevenDayEnergyEvent.value.data.burnFormulaAuthorized, false);
+  const manualBurnEvent = findEvent(VALID_MODEL, "EVT-20260812-004");
+  assert.equal(manualBurnEvent.value.subject.id, "manual-burn-record-contract");
+  assert.equal(manualBurnEvent.value.data.projectedQuality, "USER_ENTERED");
+  assert.equal(manualBurnEvent.value.data.burnFormulaAuthorized, false);
+  const waterRecordEvent = findEvent(VALID_MODEL, "EVT-20260812-005");
+  assert.equal(waterRecordEvent.value.subject.id, "water-record-contract");
+  assert.equal(waterRecordEvent.value.data.exactDailyAggregation, true);
+  assert.equal(waterRecordEvent.value.data.goalAuthorized, false);
+  assert.equal(waterRecordEvent.value.data.defaultOrDisplayUnitAuthorized, false);
+  const localReminderEvent = findEvent(VALID_MODEL, "EVT-20260812-006");
+  assert.equal(localReminderEvent.value.subject.id, "local-reminder-reconcile-contract");
+  assert.equal(localReminderEvent.value.data.desiredStateGenerationProtected, true);
+  assert.equal(localReminderEvent.value.data.systemPresentationGuaranteed, false);
+  assert.equal(localReminderEvent.value.data.realNotificationApiCalls, 0);
+  const dateNavigationEvent = findEvent(VALID_MODEL, "EVT-20260812-007");
+  assert.equal(dateNavigationEvent.value.subject.id, "date-navigation-contract");
+  assert.equal(dateNavigationEvent.value.data.externalPolicyEvidenceRequired, true);
+  assert.equal(dateNavigationEvent.value.data.futureDateRuleAuthorized, false);
+  assert.equal(dateNavigationEvent.value.data.systemClockRead, false);
+  const mealSlotGroupingEvent = findEvent(VALID_MODEL, "EVT-20260812-008");
+  assert.equal(mealSlotGroupingEvent.value.subject.id, "meal-slot-grouping-contract");
+  assert.equal(mealSlotGroupingEvent.value.data.unassignedDistinctFromUnresolved, true);
+  assert.equal(mealSlotGroupingEvent.value.data.builtInDefaultSlots, false);
+  assert.equal(mealSlotGroupingEvent.value.data.moveOrCopyAuthorized, false);
+  const macroTargetHistoryEvent = findEvent(VALID_MODEL, "EVT-20260812-009");
+  assert.equal(macroTargetHistoryEvent.value.subject.id, "macro-target-history-contract");
+  assert.equal(macroTargetHistoryEvent.value.data.historicalEffectiveDatePreserved, true);
+  assert.equal(macroTargetHistoryEvent.value.data.actualTargetCompatibilityInferred, false);
+  assert.equal(macroTargetHistoryEvent.value.data.targetAlgorithmAuthorized, false);
+  assert.equal(macroTargetHistoryEvent.value.data.mutationAuthorized, false);
+  const dailyEnergyLedgerEvent = findEvent(VALID_MODEL, "EVT-20260812-010");
+  assert.equal(dailyEnergyLedgerEvent.value.subject.id, "daily-energy-ledger-contract");
+  assert.equal(dailyEnergyLedgerEvent.value.data.exactIntakeAndBurnAggregation, true);
+  assert.equal(dailyEnergyLedgerEvent.value.data.leftStatus, "POLICY_NOT_AUTHORIZED");
+  assert.equal(dailyEnergyLedgerEvent.value.data.leftFormulaAuthorized, false);
+  assert.equal(dailyEnergyLedgerEvent.value.data.missingBurnDefaultAuthorized, false);
+  const localProfileRecordEvent = findEvent(VALID_MODEL, "EVT-20260812-011");
+  assert.equal(localProfileRecordEvent.value.subject.id, "local-profile-record-contract");
+  assert.deepEqual(localProfileRecordEvent.value.data.featureIds, ["F12", "F17"]);
+  assert.equal(localProfileRecordEvent.value.data.explicitVersionedOpaqueSchema, true);
+  assert.equal(localProfileRecordEvent.value.data.relatedDataMutation, "NOT_AUTHORIZED");
+  assert.equal(localProfileRecordEvent.value.data.approvedProfileFields, false);
+  assert.equal(localProfileRecordEvent.value.data.cascadeDeleteAuthorized, false);
+  const localDataAccessEvent = findEvent(VALID_MODEL, "EVT-20260812-012");
+  assert.equal(localDataAccessEvent.value.subject.id, "local-data-access-manifest-contract");
+  assert.equal(localDataAccessEvent.value.data.deliveryMode, "IN_APP_READ_ONLY");
+  assert.equal(localDataAccessEvent.value.data.emptyDomainsPreserved, true);
+  assert.equal(localDataAccessEvent.value.data.completeReadVerification, true);
+  assert.equal(localDataAccessEvent.value.data.keychainSecretValues, "EXCLUDED_NEVER_RETURNED");
+  assert.equal(localDataAccessEvent.value.data.externalFilesCopies, "OUT_OF_SCOPE_USER_CONTROLLED");
+  assert.equal(localDataAccessEvent.value.data.plaintextExportAuthorized, false);
+  assert.equal(localDataAccessEvent.value.data.mutation, "NOT_AUTHORIZED");
+  const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
+  assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
+  assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
+  assert.equal(mediaPermissionEvent.value.data.manualFallbackRequiredForCamera, true);
+  assert.equal(mediaPermissionEvent.value.data.photoLibraryPermission, "NOT_REQUESTED_USE_SYSTEM_USER_SELECTION");
+  assert.equal(mediaPermissionEvent.value.data.mediaRetention, "D031_NOT_AUTHORIZED");
+  assert.equal(mediaPermissionEvent.value.data.videoCapture, "NOT_AUTHORIZED");
+  assert.equal(mediaPermissionEvent.value.data.locationPermission, "NOT_AUTHORIZED");
+  assert.equal(mediaPermissionEvent.value.data.nativeApiCalls, 0);
+  const prohibitedCapabilityAuditEvent = findEvent(VALID_MODEL, "EVT-20260812-014");
+  assert.equal(prohibitedCapabilityAuditEvent.value.subject.id, "prohibited-capability-audit-contract");
+  assert.deepEqual(prohibitedCapabilityAuditEvent.value.data.featureIds, ["F20", "F23", "F24"]);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.requiredEvidenceSurfaces, 27);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.formalSignedReleaseTargetPresent, false);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.currentAuditDisposition, "BLOCKED");
+  assert.deepEqual(prohibitedCapabilityAuditEvent.value.data.currentBlockers, ["FORMAL_TARGET_ABSENT", "REQUIRED_SURFACE_MISSING"]);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.productionArtifactScansExecuted, 0);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.evidenceTruthVerified, false);
+  assert.equal(prohibitedCapabilityAuditEvent.value.data.releaseGateClosed, false);
+  const platformLanguageReleaseAuditEvent = findEvent(VALID_MODEL, "EVT-20260812-015");
+  assert.equal(platformLanguageReleaseAuditEvent.value.subject.id, "platform-language-release-audit-contract");
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.acceptedMinimumOsVersion, "17.0");
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.acceptedPrimaryReleaseLanguage, "zh-Hans");
+  assert.deepEqual(platformLanguageReleaseAuditEvent.value.data.acceptedBaselineDecisionIds, ["D-011", "D-016"]);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.acceptedPlatformShapeDecisions, 0);
+  assert.deepEqual(platformLanguageReleaseAuditEvent.value.data.platformShapeDecisionIds, []);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.requiredEvidenceSurfaces, 25);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.formalSignedReleaseTargetPresent, false);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.currentAuditDisposition, "BLOCKED");
+  assert.deepEqual(platformLanguageReleaseAuditEvent.value.data.currentBlockers, ["FORMAL_TARGET_ABSENT", "PLATFORM_SHAPE_DECISION_REQUIRED", "REQUIRED_SURFACE_MISSING"]);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.releaseEvidenceExecuted, 0);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.decisionTruthVerified, false);
+  assert.equal(platformLanguageReleaseAuditEvent.value.data.releaseGateClosed, false);
 });
 
 test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) => {
@@ -163,6 +260,316 @@ test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) =
     });
     assertDiagnostic(report, "OPS_DANGLING_RESPONSE_TO");
   });
+});
+
+test("拒绝把 AI 凭据生命周期合同越级为生产或 Owner 授权", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-001");
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_AI_CREDENTIAL_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把体重事务合同越级为正式规则、HealthKit 或按日合并授权", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-002");
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.healthKitUsed = true;
+    event.value.data.dailyMergeAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_BODY_WEIGHT_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把七日能量事实读模型越级为公式、目标、平均、AI 或 HealthKit 授权", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-003");
+    event.value.data.burnFormulaAuthorized = true;
+    event.value.data.targetOrNetAuthorized = true;
+    event.value.data.averageOrLongerWindowAuthorized = true;
+    event.value.data.aiUsed = true;
+    event.value.data.healthKitUsed = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_SEVEN_DAY_ENERGY_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把手工消耗事实冒充测量、公式、步数、HealthKit 或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-004");
+    event.value.data.projectedQuality = "MEASURED";
+    event.value.data.burnFormulaAuthorized = true;
+    event.value.data.stepsUsed = true;
+    event.value.data.healthKitUsed = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_MANUAL_BURN_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把饮水事实合同越级为目标、快捷量、默认单位、撤销、趋势或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-005");
+    event.value.data.goalAuthorized = true;
+    event.value.data.quickAmountAuthorized = true;
+    event.value.data.defaultOrDisplayUnitAuthorized = true;
+    event.value.data.undoAuthorized = true;
+    event.value.data.trendAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_WATER_RECORD_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把提醒对账合同越级为类型、重复规则、通知内容、Push、后台定时器或原生实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-006");
+    event.value.data.systemPresentationGuaranteed = true;
+    event.value.data.reminderTypeAuthorized = true;
+    event.value.data.recurrenceRulesAuthorized = true;
+    event.value.data.notificationContentAuthorized = true;
+    event.value.data.pushOrApnsUsed = true;
+    event.value.data.backgroundTimerUsed = true;
+    event.value.data.realNotificationApiCalls = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_LOCAL_REMINDER_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把日期事实合同越级为未来日、补记、跨时区重基、默认今天、UI、持久化或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-007");
+    event.value.data.externalPolicyEvidenceRequired = false;
+    event.value.data.futureDateRuleAuthorized = true;
+    event.value.data.backfillRuleAuthorized = true;
+    event.value.data.crossTimeZoneRebaseAuthorized = true;
+    event.value.data.defaultTodayBehaviorAuthorized = true;
+    event.value.data.uiBehaviorAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_DATE_NAVIGATION_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把餐次分组合同越级为默认/自定义餐次、移动复制、目标、UI、持久化或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-008");
+    event.value.data.unassignedDistinctFromUnresolved = false;
+    event.value.data.historicalDefinitionPreserved = false;
+    event.value.data.builtInDefaultSlots = true;
+    event.value.data.defaultOrCustomRulesAuthorized = true;
+    event.value.data.moveOrCopyAuthorized = true;
+    event.value.data.targetRulesAuthorized = true;
+    event.value.data.uiBehaviorAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_MEAL_SLOT_GROUPING_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把宏量目标历史合同越级为算法、百分比换算、比较、舍入、写入或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-009");
+    event.value.data.historicalEffectiveDatePreserved = false;
+    event.value.data.futureVersionDoesNotRewritePast = false;
+    event.value.data.sourceAndUserEditTraceability = false;
+    event.value.data.actualTargetCompatibilityInferred = true;
+    event.value.data.targetAlgorithmAuthorized = true;
+    event.value.data.percentConversionAuthorized = true;
+    event.value.data.comparisonPolicyAuthorized = true;
+    event.value.data.roundingPolicyAuthorized = true;
+    event.value.data.mutationAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_MACRO_TARGET_HISTORY_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把日能量账本合同越级为 Left 公式、缺失默认值、负值、舍入、AI 或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-010");
+    event.value.data.exactIntakeAndBurnAggregation = false;
+    event.value.data.historicalTargetEffectiveDatePreserved = false;
+    event.value.data.leftStatus = "CALCULATED";
+    event.value.data.leftFormulaAuthorized = true;
+    event.value.data.targetAlgorithmAuthorized = true;
+    event.value.data.missingBurnDefaultAuthorized = true;
+    event.value.data.negativeLeftPolicyAuthorized = true;
+    event.value.data.roundingPolicyAuthorized = true;
+    event.value.data.mutationAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.aiUsed = true;
+    event.value.data.healthKitUsed = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_DAILY_ENERGY_LEDGER_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把本地档案合同越级为已批字段、当前/多档案策略、级联删除、公式、账号或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-011");
+    event.value.data.relatedDataEvidenceUnchanged = false;
+    event.value.data.relatedDataMutation = "CASCADE_DELETE";
+    event.value.data.approvedProfileFields = true;
+    event.value.data.activeProfilePolicyAuthorized = true;
+    event.value.data.multiProfileUxAuthorized = true;
+    event.value.data.cascadeDeleteAuthorized = true;
+    event.value.data.formulaAuthorized = true;
+    event.value.data.accountOrServerUsed = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_LOCAL_PROFILE_RECORD_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把本地数据访问合同越级为明文导出、备份恢复、秘密值、容器完成、外部 Files 控制或写入", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-012");
+    event.value.data.deliveryMode = "JSON_FILE";
+    event.value.data.keychainSecretValues = "INCLUDED";
+    event.value.data.nativeContainerInventory = "COMPLETE";
+    event.value.data.externalFilesCopies = "APP_CONTROLLED";
+    event.value.data.artifactCreation = "AUTHORIZED";
+    event.value.data.mutation = "AUTHORIZED";
+    event.value.data.plaintextExportAuthorized = true;
+    event.value.data.backupOrRestoreAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_LOCAL_DATA_ACCESS_MANIFEST_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把媒体权限合同越级为全库照片、视频、定位、D-031 保留、原生调用或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-013");
+    event.value.data.manualFallbackRequiredForCamera = false;
+    event.value.data.taskExplanationBeforeCameraEffect = false;
+    event.value.data.lateOutcomeRejected = false;
+    event.value.data.cameraPermissionScope = "APP_WIDE_PREWARM";
+    event.value.data.photoLibraryPermission = "FULL_LIBRARY";
+    event.value.data.videoCapture = "AUTHORIZED";
+    event.value.data.locationPermission = "AUTHORIZED";
+    event.value.data.mediaRetention = "PERSIST_ORIGINAL";
+    event.value.data.mediaPersistence = "AUTHORIZED";
+    event.value.data.permissionCopyAuthorized = true;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_MEDIA_PERMISSION_ORCHESTRATOR_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把缺少正式 Release 目标和生产报告的禁止能力审计越级为通过", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-014");
+    event.value.data.formalSignedReleaseTargetPresent = true;
+    event.value.data.currentAuditDisposition = "PASS";
+    event.value.data.currentBlockers = [];
+    event.value.data.workingTreeAbsenceIsPass = true;
+    event.value.data.everyRequiredSurfaceExecuted = true;
+    event.value.data.productionArtifactScansExecuted = 27;
+    event.value.data.releaseNetworkCapturesExecuted = 3;
+    event.value.data.runtimePermissionCapturesExecuted = 1;
+    event.value.data.prohibitedCapabilityFindings = "ZERO";
+    event.value.data.evidenceTruthVerified = true;
+    event.value.data.releaseGateClosed = true;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_PROHIBITED_CAPABILITY_AUDIT_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把 iOS 17/简中基线扩张成平台形态决定或 F22 Release 通过", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260812-015");
+    event.value.data.acceptedMinimumOsVersion = "16.0";
+    event.value.data.acceptedPrimaryReleaseLanguage = "en";
+    event.value.data.appAuthoredUiLanguageScope = "BILINGUAL";
+    event.value.data.acceptedPlatformShapeDecisions = 4;
+    event.value.data.platformShapeDecisionIds = ["D-011", "D-016", "D-038", "D-999"];
+    event.value.data.platformShapeInferredFromD038OrCurrentDevice = true;
+    event.value.data.formalSignedReleaseTargetPresent = true;
+    event.value.data.releaseEvidenceExecuted = 25;
+    event.value.data.currentAuditDisposition = "PASS";
+    event.value.data.currentBlockers = [];
+    event.value.data.decisionTruthVerified = true;
+    event.value.data.evidenceTruthVerified = true;
+    event.value.data.releaseGateClosed = true;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-12.jsonl",
+  );
 });
 
 test("拒绝快照计数漂移与活跃角色集合漂移", async (t) => {

@@ -11,14 +11,14 @@ const DECISION_ID_PATTERN = /^D-[0-9]{3}$/;
 const EVIDENCE_ID_PATTERN = /^(ACC|DAY|LOG|FOOD|BODY|AI|SYS|DATA)-[0-9]{2}$/;
 const GAP_THEME_ID_PATTERN = /^EG-[0-9]{2}$/;
 
-export const PHASE0_2026_08_11_OI03 = Object.freeze({
-  id: "PHASE0_2026_08_11_OI03",
+export const PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT",
   counts: Object.freeze({
     schemas: 4,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 111,
+    events: 126,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -38,6 +38,7 @@ export const PHASE0_2026_08_11_OI03 = Object.freeze({
     "2026-08-05": 5,
     "2026-08-06": 29,
     "2026-08-11": 5,
+    "2026-08-12": 15,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -87,6 +88,420 @@ export const PHASE0_2026_08_11_OI03 = Object.freeze({
       "D-047",
       "D-048",
     ]),
+  }),
+  aiCredentialContract: Object.freeze({
+    eventId: "EVT-20260812-001",
+    subjectId: "ai-credential-lifecycle-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    topLevelTests: 21,
+    fullSuitePassed: 302,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  bodyWeightContract: Object.freeze({
+    eventId: "EVT-20260812-002",
+    subjectId: "body-weight-record-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F10",
+    requirementId: "REQ-F10",
+    acceptanceId: "AT-F10",
+    topLevelTests: 18,
+    fullSuitePassed: 321,
+    originalUnitPreserved: true,
+    exactConversionPreserved: true,
+    sameDayRecordsPreserved: true,
+    realNetworkRequests: 0,
+    healthKitUsed: false,
+    bmiOrTargetRulesAuthorized: false,
+    dailyMergeAuthorized: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  sevenDayEnergyContract: Object.freeze({
+    eventId: "EVT-20260812-003",
+    subjectId: "seven-day-energy-trend-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F11",
+    requirementId: "REQ-F11",
+    acceptanceId: "AT-F11",
+    topLevelTests: 15,
+    fullSuitePassed: 337,
+    windowDays: 7,
+    missingDistinctFromZero: true,
+    sourceTraceabilityPreserved: true,
+    exactEnergyAggregation: true,
+    burnFormulaAuthorized: false,
+    targetOrNetAuthorized: false,
+    averageOrLongerWindowAuthorized: false,
+    realNetworkRequests: 0,
+    healthKitUsed: false,
+    aiUsed: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  manualBurnContract: Object.freeze({
+    eventId: "EVT-20260812-004",
+    subjectId: "manual-burn-record-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F13",
+    requirementId: "REQ-F13",
+    acceptanceId: "AT-F13",
+    topLevelTests: 13,
+    fullSuitePassed: 351,
+    projectedStream: "BURNED",
+    projectedSourceKind: "MANUAL_BURN",
+    projectedQuality: "USER_ENTERED",
+    exactEnergyPreserved: true,
+    burnFormulaAuthorized: false,
+    exerciseFieldsAuthorized: false,
+    stepsUsed: false,
+    healthKitUsed: false,
+    realNetworkRequests: 0,
+    aiUsed: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  waterRecordContract: Object.freeze({
+    eventId: "EVT-20260812-005",
+    subjectId: "water-record-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F14",
+    requirementId: "REQ-F14",
+    acceptanceId: "AT-F14",
+    topLevelTests: 16,
+    fullSuitePassed: 368,
+    originalValuePreserved: true,
+    explicitVersionedUnitDefinition: true,
+    exactDailyAggregation: true,
+    emptyDistinctFromZero: true,
+    goalAuthorized: false,
+    quickAmountAuthorized: false,
+    defaultOrDisplayUnitAuthorized: false,
+    undoAuthorized: false,
+    trendAuthorized: false,
+    reminderAuthorized: false,
+    healthKitUsed: false,
+    realNetworkRequests: 0,
+    aiUsed: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  localReminderContract: Object.freeze({
+    eventId: "EVT-20260812-006",
+    subjectId: "local-reminder-reconcile-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F15",
+    requirementId: "REQ-F15",
+    acceptanceId: "AT-F15",
+    topLevelTests: 18,
+    fullSuitePassed: 387,
+    localRuleCrudPreserved: true,
+    permissionIndependentPersistence: true,
+    rulesGenerationProtected: true,
+    desiredStateGenerationProtected: true,
+    pendingDeliveredSeparated: true,
+    unknownResultRequiresReenumeration: true,
+    systemPresentationGuaranteed: false,
+    reminderTypeAuthorized: false,
+    recurrenceRulesAuthorized: false,
+    notificationContentAuthorized: false,
+    pushOrApnsUsed: false,
+    backgroundTimerUsed: false,
+    realNotificationApiCalls: 0,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  dateNavigationContract: Object.freeze({
+    eventId: "EVT-20260812-007",
+    subjectId: "date-navigation-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F08",
+    requirementId: "REQ-F08",
+    acceptanceId: "AT-F08",
+    topLevelTests: 19,
+    fullSuitePassed: 407,
+    explicitDateObservation: true,
+    ianaTimeZoneValidated: true,
+    dstAndMidnightCovered: true,
+    observationGenerationProtected: true,
+    staleNavigationRejected: true,
+    externalPolicyEvidenceRequired: true,
+    selectionPreservedOnObservationRefresh: true,
+    futureDateRuleAuthorized: false,
+    backfillRuleAuthorized: false,
+    crossTimeZoneRebaseAuthorized: false,
+    defaultTodayBehaviorAuthorized: false,
+    uiBehaviorAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  mealSlotGroupingContract: Object.freeze({
+    eventId: "EVT-20260812-008",
+    subjectId: "meal-slot-grouping-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F06",
+    requirementId: "REQ-F06",
+    acceptanceId: "AT-F06",
+    topLevelTests: 17,
+    fullSuitePassed: 425,
+    explicitVersionedDefinition: true,
+    explicitOrderingPreserved: true,
+    emptySlotsPreserved: true,
+    unassignedDistinctFromUnresolved: true,
+    historicalDefinitionPreserved: true,
+    revisionTraceabilityPreserved: true,
+    builtInDefaultSlots: false,
+    defaultOrCustomRulesAuthorized: false,
+    moveOrCopyAuthorized: false,
+    targetRulesAuthorized: false,
+    uiBehaviorAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  macroTargetHistoryContract: Object.freeze({
+    eventId: "EVT-20260812-009",
+    subjectId: "macro-target-history-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F05",
+    requirementId: "REQ-F05",
+    acceptanceId: "AT-F05",
+    topLevelTests: 18,
+    fullSuitePassed: 444,
+    originalTargetValuePreserved: true,
+    explicitVersionedUnitDefinition: true,
+    zeroDistinctFromUnset: true,
+    historicalEffectiveDatePreserved: true,
+    futureVersionDoesNotRewritePast: true,
+    sourceAndUserEditTraceability: true,
+    actualMissingSemanticsPreserved: true,
+    actualTargetCompatibilityInferred: false,
+    targetAlgorithmAuthorized: false,
+    percentConversionAuthorized: false,
+    comparisonPolicyAuthorized: false,
+    roundingPolicyAuthorized: false,
+    mutationAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  dailyEnergyLedgerContract: Object.freeze({
+    eventId: "EVT-20260812-010",
+    subjectId: "daily-energy-ledger-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F04",
+    requirementId: "REQ-F04",
+    acceptanceId: "AT-F04",
+    topLevelTests: 19,
+    fullSuitePassed: 464,
+    exactIntakeAndBurnAggregation: true,
+    missingDistinctFromZero: true,
+    sourceRevisionTraceability: true,
+    historicalTargetEffectiveDatePreserved: true,
+    futureTargetDoesNotRewritePast: true,
+    targetSourceAndUserEditTraceability: true,
+    leftStatus: "POLICY_NOT_AUTHORIZED",
+    leftFormulaAuthorized: false,
+    targetAlgorithmAuthorized: false,
+    missingBurnDefaultAuthorized: false,
+    negativeLeftPolicyAuthorized: false,
+    roundingPolicyAuthorized: false,
+    mutationAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    aiUsed: false,
+    healthKitUsed: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  localProfileRecordContract: Object.freeze({
+    eventId: "EVT-20260812-011",
+    subjectId: "local-profile-record-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F12", "F17"]),
+    requirementIds: Object.freeze(["REQ-F12", "REQ-F17"]),
+    acceptanceIds: Object.freeze(["AT-F12", "AT-F17"]),
+    topLevelTests: 20,
+    fullSuitePassed: 485,
+    explicitVersionedOpaqueSchema: true,
+    emptyDocumentPreserved: true,
+    revisionCasAndIdempotency: true,
+    unknownResultReplay: true,
+    relatedDataEvidenceUnchanged: true,
+    relatedDataMutation: "NOT_AUTHORIZED",
+    approvedProfileFields: false,
+    activeProfilePolicyAuthorized: false,
+    multiProfileUxAuthorized: false,
+    cascadeDeleteAuthorized: false,
+    formulaAuthorized: false,
+    accountOrServerUsed: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  localDataAccessManifestContract: Object.freeze({
+    eventId: "EVT-20260812-012",
+    subjectId: "local-data-access-manifest-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F18",
+    requirementId: "REQ-F18",
+    acceptanceId: "AT-F18",
+    topLevelTests: 19,
+    fullSuitePassed: 505,
+    explicitVersionedDomainDefinitions: true,
+    emptyDomainsPreserved: true,
+    stableSnapshotAndCursorBinding: true,
+    completeReadVerification: true,
+    deliveryMode: "IN_APP_READ_ONLY",
+    businessDataBoundary: "IN_APP_READ_ONLY_PAGED",
+    keychainSecretValues: "EXCLUDED_NEVER_RETURNED",
+    nativeContainerInventory: "REQUIRES_NATIVE_ADAPTER",
+    externalFilesCopies: "OUT_OF_SCOPE_USER_CONTROLLED",
+    artifactCreation: "NOT_AUTHORIZED",
+    mutation: "NOT_AUTHORIZED",
+    plaintextExportAuthorized: false,
+    backupOrRestoreAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  mediaPermissionOrchestratorContract: Object.freeze({
+    eventId: "EVT-20260812-013",
+    subjectId: "media-permission-orchestrator-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F21",
+    requirementId: "REQ-F21",
+    acceptanceId: "AT-F21",
+    topLevelTests: 19,
+    fullSuitePassed: 525,
+    callerOwnedVersionedTaskDefinition: true,
+    manualFallbackRequiredForCamera: true,
+    taskExplanationBeforeCameraEffect: true,
+    lateOutcomeRejected: true,
+    cameraPermissionScope: "CURRENT_USER_TRIGGERED_TASK_ONLY",
+    photoLibraryPermission: "NOT_REQUESTED_USE_SYSTEM_USER_SELECTION",
+    videoCapture: "NOT_AUTHORIZED",
+    locationPermission: "NOT_AUTHORIZED",
+    mediaRetention: "D031_NOT_AUTHORIZED",
+    mediaPersistence: "NOT_AUTHORIZED",
+    permissionCopyAuthorized: false,
+    nativeApiCalls: 0,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  prohibitedCapabilityAuditContract: Object.freeze({
+    eventId: "EVT-20260812-014",
+    subjectId: "prohibited-capability-audit-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F20", "F23", "F24"]),
+    requirementIds: Object.freeze(["REQ-F20", "REQ-F23", "REQ-F24"]),
+    acceptanceIds: Object.freeze(["AT-F20", "AT-F23", "AT-F24"]),
+    topLevelTests: 18,
+    fullSuitePassed: 544,
+    capabilityCount: 3,
+    requiredEvidenceSurfaces: 27,
+    formalSignedReleaseTargetRequired: true,
+    formalSignedReleaseTargetPresent: false,
+    currentAuditDisposition: "BLOCKED",
+    currentBlockers: Object.freeze(["FORMAL_TARGET_ABSENT", "REQUIRED_SURFACE_MISSING"]),
+    workingTreeAbsenceIsPass: false,
+    everyRequiredSurfaceExecuted: false,
+    productionArtifactScansExecuted: 0,
+    releaseNetworkCapturesExecuted: 0,
+    runtimePermissionCapturesExecuted: 0,
+    prohibitedCapabilityFindings: "NOT_EVALUATED_NO_FORMAL_TARGET",
+    evidenceTruthVerified: false,
+    releaseGateClosed: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  platformLanguageReleaseAuditContract: Object.freeze({
+    eventId: "EVT-20260812-015",
+    subjectId: "platform-language-release-audit-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F22",
+    requirementId: "REQ-F22",
+    acceptanceId: "AT-F22",
+    topLevelTests: 20,
+    fullSuitePassed: 565,
+    acceptedMinimumOsVersion: "17.0",
+    acceptedPrimaryReleaseLanguage: "zh-Hans",
+    appAuthoredUiLanguageScope: "ZH_HANS_ONLY",
+    acceptedBaselineDecisionIds: Object.freeze(["D-011", "D-016"]),
+    platformShapeDimensions: Object.freeze(["DEVICE_FAMILIES", "ORIENTATIONS", "MAC_APP_AVAILABILITY", "VISION_PRO_APP_AVAILABILITY"]),
+    acceptedPlatformShapeDecisions: 0,
+    platformShapeDecisionIds: Object.freeze([]),
+    platformShapeInferredFromD038OrCurrentDevice: false,
+    requiredEvidenceSurfaces: 25,
+    formalSignedReleaseTargetRequired: true,
+    formalSignedReleaseTargetPresent: false,
+    releaseEvidenceExecuted: 0,
+    currentAuditDisposition: "BLOCKED",
+    currentBlockers: Object.freeze(["FORMAL_TARGET_ABSENT", "PLATFORM_SHAPE_DECISION_REQUIRED", "REQUIRED_SURFACE_MISSING"]),
+    decisionTruthVerified: false,
+    evidenceTruthVerified: false,
+    releaseGateClosed: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
   }),
   d039: Object.freeze({
     eventId: "EVT-20260805-005",
@@ -464,7 +879,7 @@ function duplicateValues(values) {
   return [...duplicates].sort();
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_11_OI03) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -1009,6 +1424,630 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_OWNER_OI03_EVENT_MISMATCH",
       "project-ops/events/2026-08-11.jsonl",
       "OI-03 权威事件必须与 Owner 事实一致且保持原生 iOS 未授权",
+    );
+  }
+
+  const bodyWeightEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.bodyWeightContract.subjectId,
+  );
+  const bodyWeightEvent = bodyWeightEvents[0]?.value;
+  const bodyWeightData = bodyWeightEvent?.data ?? {};
+  if (
+    bodyWeightEvents.length !== 1 ||
+    bodyWeightEvent?.eventId !== baseline.bodyWeightContract.eventId ||
+    bodyWeightEvent?.type !== "ARTIFACT_CREATED" ||
+    bodyWeightEvent?.actor?.id !== "project-manager" ||
+    bodyWeightData.contractStatus !== baseline.bodyWeightContract.contractStatus ||
+    bodyWeightData.artifactState !== baseline.bodyWeightContract.artifactState ||
+    bodyWeightData.featureId !== baseline.bodyWeightContract.featureId ||
+    bodyWeightData.requirementId !== baseline.bodyWeightContract.requirementId ||
+    bodyWeightData.acceptanceId !== baseline.bodyWeightContract.acceptanceId ||
+    bodyWeightData.topLevelTests !== baseline.bodyWeightContract.topLevelTests ||
+    bodyWeightData.fullSuitePassed !== baseline.bodyWeightContract.fullSuitePassed ||
+    bodyWeightData.originalUnitPreserved !== baseline.bodyWeightContract.originalUnitPreserved ||
+    bodyWeightData.exactConversionPreserved !== baseline.bodyWeightContract.exactConversionPreserved ||
+    bodyWeightData.sameDayRecordsPreserved !== baseline.bodyWeightContract.sameDayRecordsPreserved ||
+    bodyWeightData.realNetworkRequests !== baseline.bodyWeightContract.realNetworkRequests ||
+    bodyWeightData.healthKitUsed !== baseline.bodyWeightContract.healthKitUsed ||
+    bodyWeightData.bmiOrTargetRulesAuthorized !== baseline.bodyWeightContract.bmiOrTargetRulesAuthorized ||
+    bodyWeightData.dailyMergeAuthorized !== baseline.bodyWeightContract.dailyMergeAuthorized ||
+    bodyWeightData.nativeImplementationAuthorized !== baseline.bodyWeightContract.nativeImplementationAuthorized ||
+    bodyWeightData.formalImplementationAuthorized !== baseline.bodyWeightContract.formalImplementationAuthorized ||
+    bodyWeightData.gateStatesChanged !== baseline.bodyWeightContract.gateStatesChanged ||
+    bodyWeightData.ownerIntakeChanged !== baseline.bodyWeightContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_BODY_WEIGHT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "体重记录合同必须保留原始单位、精确换算和同日多记录，同时保持框架无关、非生产且不越过未决规则",
+    );
+  }
+
+  const sevenDayEnergyEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sevenDayEnergyContract.subjectId,
+  );
+  const sevenDayEnergyEvent = sevenDayEnergyEvents[0]?.value;
+  const sevenDayEnergyData = sevenDayEnergyEvent?.data ?? {};
+  if (
+    sevenDayEnergyEvents.length !== 1 ||
+    sevenDayEnergyEvent?.eventId !== baseline.sevenDayEnergyContract.eventId ||
+    sevenDayEnergyEvent?.type !== "ARTIFACT_CREATED" ||
+    sevenDayEnergyEvent?.actor?.id !== "project-manager" ||
+    sevenDayEnergyData.contractStatus !== baseline.sevenDayEnergyContract.contractStatus ||
+    sevenDayEnergyData.artifactState !== baseline.sevenDayEnergyContract.artifactState ||
+    sevenDayEnergyData.featureId !== baseline.sevenDayEnergyContract.featureId ||
+    sevenDayEnergyData.requirementId !== baseline.sevenDayEnergyContract.requirementId ||
+    sevenDayEnergyData.acceptanceId !== baseline.sevenDayEnergyContract.acceptanceId ||
+    sevenDayEnergyData.topLevelTests !== baseline.sevenDayEnergyContract.topLevelTests ||
+    sevenDayEnergyData.fullSuitePassed !== baseline.sevenDayEnergyContract.fullSuitePassed ||
+    sevenDayEnergyData.windowDays !== baseline.sevenDayEnergyContract.windowDays ||
+    sevenDayEnergyData.missingDistinctFromZero !== baseline.sevenDayEnergyContract.missingDistinctFromZero ||
+    sevenDayEnergyData.sourceTraceabilityPreserved !== baseline.sevenDayEnergyContract.sourceTraceabilityPreserved ||
+    sevenDayEnergyData.exactEnergyAggregation !== baseline.sevenDayEnergyContract.exactEnergyAggregation ||
+    sevenDayEnergyData.burnFormulaAuthorized !== baseline.sevenDayEnergyContract.burnFormulaAuthorized ||
+    sevenDayEnergyData.targetOrNetAuthorized !== baseline.sevenDayEnergyContract.targetOrNetAuthorized ||
+    sevenDayEnergyData.averageOrLongerWindowAuthorized !== baseline.sevenDayEnergyContract.averageOrLongerWindowAuthorized ||
+    sevenDayEnergyData.realNetworkRequests !== baseline.sevenDayEnergyContract.realNetworkRequests ||
+    sevenDayEnergyData.healthKitUsed !== baseline.sevenDayEnergyContract.healthKitUsed ||
+    sevenDayEnergyData.aiUsed !== baseline.sevenDayEnergyContract.aiUsed ||
+    sevenDayEnergyData.nativeImplementationAuthorized !== baseline.sevenDayEnergyContract.nativeImplementationAuthorized ||
+    sevenDayEnergyData.formalImplementationAuthorized !== baseline.sevenDayEnergyContract.formalImplementationAuthorized ||
+    sevenDayEnergyData.gateStatesChanged !== baseline.sevenDayEnergyContract.gateStatesChanged ||
+    sevenDayEnergyData.ownerIntakeChanged !== baseline.sevenDayEnergyContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_SEVEN_DAY_ENERGY_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "七日能量读模型必须保留缺失/零与来源语义，并保持无公式、目标、平均、AI、HealthKit 或正式实现授权",
+    );
+  }
+
+  const manualBurnEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.manualBurnContract.subjectId,
+  );
+  const manualBurnEvent = manualBurnEvents[0]?.value;
+  const manualBurnData = manualBurnEvent?.data ?? {};
+  if (
+    manualBurnEvents.length !== 1 ||
+    manualBurnEvent?.eventId !== baseline.manualBurnContract.eventId ||
+    manualBurnEvent?.type !== "ARTIFACT_CREATED" ||
+    manualBurnEvent?.actor?.id !== "project-manager" ||
+    manualBurnData.contractStatus !== baseline.manualBurnContract.contractStatus ||
+    manualBurnData.artifactState !== baseline.manualBurnContract.artifactState ||
+    manualBurnData.featureId !== baseline.manualBurnContract.featureId ||
+    manualBurnData.requirementId !== baseline.manualBurnContract.requirementId ||
+    manualBurnData.acceptanceId !== baseline.manualBurnContract.acceptanceId ||
+    manualBurnData.topLevelTests !== baseline.manualBurnContract.topLevelTests ||
+    manualBurnData.fullSuitePassed !== baseline.manualBurnContract.fullSuitePassed ||
+    manualBurnData.projectedStream !== baseline.manualBurnContract.projectedStream ||
+    manualBurnData.projectedSourceKind !== baseline.manualBurnContract.projectedSourceKind ||
+    manualBurnData.projectedQuality !== baseline.manualBurnContract.projectedQuality ||
+    manualBurnData.exactEnergyPreserved !== baseline.manualBurnContract.exactEnergyPreserved ||
+    manualBurnData.burnFormulaAuthorized !== baseline.manualBurnContract.burnFormulaAuthorized ||
+    manualBurnData.exerciseFieldsAuthorized !== baseline.manualBurnContract.exerciseFieldsAuthorized ||
+    manualBurnData.stepsUsed !== baseline.manualBurnContract.stepsUsed ||
+    manualBurnData.healthKitUsed !== baseline.manualBurnContract.healthKitUsed ||
+    manualBurnData.realNetworkRequests !== baseline.manualBurnContract.realNetworkRequests ||
+    manualBurnData.aiUsed !== baseline.manualBurnContract.aiUsed ||
+    manualBurnData.nativeImplementationAuthorized !== baseline.manualBurnContract.nativeImplementationAuthorized ||
+    manualBurnData.formalImplementationAuthorized !== baseline.manualBurnContract.formalImplementationAuthorized ||
+    manualBurnData.gateStatesChanged !== baseline.manualBurnContract.gateStatesChanged ||
+    manualBurnData.ownerIntakeChanged !== baseline.manualBurnContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_MANUAL_BURN_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "手工消耗合同必须投影为 USER_ENTERED/MANUAL_BURN，并保持无公式、运动字段、步数、HealthKit、AI 或正式实现授权",
+    );
+  }
+
+  const waterRecordEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.waterRecordContract.subjectId,
+  );
+  const waterRecordEvent = waterRecordEvents[0]?.value;
+  const waterRecordData = waterRecordEvent?.data ?? {};
+  if (
+    waterRecordEvents.length !== 1 ||
+    waterRecordEvent?.eventId !== baseline.waterRecordContract.eventId ||
+    waterRecordEvent?.type !== "ARTIFACT_CREATED" ||
+    waterRecordEvent?.actor?.id !== "project-manager" ||
+    waterRecordData.contractStatus !== baseline.waterRecordContract.contractStatus ||
+    waterRecordData.artifactState !== baseline.waterRecordContract.artifactState ||
+    waterRecordData.featureId !== baseline.waterRecordContract.featureId ||
+    waterRecordData.requirementId !== baseline.waterRecordContract.requirementId ||
+    waterRecordData.acceptanceId !== baseline.waterRecordContract.acceptanceId ||
+    waterRecordData.topLevelTests !== baseline.waterRecordContract.topLevelTests ||
+    waterRecordData.fullSuitePassed !== baseline.waterRecordContract.fullSuitePassed ||
+    waterRecordData.originalValuePreserved !== baseline.waterRecordContract.originalValuePreserved ||
+    waterRecordData.explicitVersionedUnitDefinition !== baseline.waterRecordContract.explicitVersionedUnitDefinition ||
+    waterRecordData.exactDailyAggregation !== baseline.waterRecordContract.exactDailyAggregation ||
+    waterRecordData.emptyDistinctFromZero !== baseline.waterRecordContract.emptyDistinctFromZero ||
+    waterRecordData.goalAuthorized !== baseline.waterRecordContract.goalAuthorized ||
+    waterRecordData.quickAmountAuthorized !== baseline.waterRecordContract.quickAmountAuthorized ||
+    waterRecordData.defaultOrDisplayUnitAuthorized !== baseline.waterRecordContract.defaultOrDisplayUnitAuthorized ||
+    waterRecordData.undoAuthorized !== baseline.waterRecordContract.undoAuthorized ||
+    waterRecordData.trendAuthorized !== baseline.waterRecordContract.trendAuthorized ||
+    waterRecordData.reminderAuthorized !== baseline.waterRecordContract.reminderAuthorized ||
+    waterRecordData.healthKitUsed !== baseline.waterRecordContract.healthKitUsed ||
+    waterRecordData.realNetworkRequests !== baseline.waterRecordContract.realNetworkRequests ||
+    waterRecordData.aiUsed !== baseline.waterRecordContract.aiUsed ||
+    waterRecordData.nativeImplementationAuthorized !== baseline.waterRecordContract.nativeImplementationAuthorized ||
+    waterRecordData.formalImplementationAuthorized !== baseline.waterRecordContract.formalImplementationAuthorized ||
+    waterRecordData.gateStatesChanged !== baseline.waterRecordContract.gateStatesChanged ||
+    waterRecordData.ownerIntakeChanged !== baseline.waterRecordContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_WATER_RECORD_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "饮水合同只登记原始容量、显式版本化单位定义、事务与精确当日汇总；不得授权目标、快捷量、默认/展示单位、撤销、趋势、提醒、HealthKit、AI 或正式实现",
+    );
+  }
+
+  const localReminderEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.localReminderContract.subjectId,
+  );
+  const localReminderEvent = localReminderEvents[0]?.value;
+  const localReminderData = localReminderEvent?.data ?? {};
+  if (
+    localReminderEvents.length !== 1 ||
+    localReminderEvent?.eventId !== baseline.localReminderContract.eventId ||
+    localReminderEvent?.type !== "ARTIFACT_CREATED" ||
+    localReminderEvent?.actor?.id !== "project-manager" ||
+    localReminderData.contractStatus !== baseline.localReminderContract.contractStatus ||
+    localReminderData.artifactState !== baseline.localReminderContract.artifactState ||
+    localReminderData.featureId !== baseline.localReminderContract.featureId ||
+    localReminderData.requirementId !== baseline.localReminderContract.requirementId ||
+    localReminderData.acceptanceId !== baseline.localReminderContract.acceptanceId ||
+    localReminderData.topLevelTests !== baseline.localReminderContract.topLevelTests ||
+    localReminderData.fullSuitePassed !== baseline.localReminderContract.fullSuitePassed ||
+    localReminderData.localRuleCrudPreserved !== baseline.localReminderContract.localRuleCrudPreserved ||
+    localReminderData.permissionIndependentPersistence !== baseline.localReminderContract.permissionIndependentPersistence ||
+    localReminderData.rulesGenerationProtected !== baseline.localReminderContract.rulesGenerationProtected ||
+    localReminderData.desiredStateGenerationProtected !== baseline.localReminderContract.desiredStateGenerationProtected ||
+    localReminderData.pendingDeliveredSeparated !== baseline.localReminderContract.pendingDeliveredSeparated ||
+    localReminderData.unknownResultRequiresReenumeration !== baseline.localReminderContract.unknownResultRequiresReenumeration ||
+    localReminderData.systemPresentationGuaranteed !== baseline.localReminderContract.systemPresentationGuaranteed ||
+    localReminderData.reminderTypeAuthorized !== baseline.localReminderContract.reminderTypeAuthorized ||
+    localReminderData.recurrenceRulesAuthorized !== baseline.localReminderContract.recurrenceRulesAuthorized ||
+    localReminderData.notificationContentAuthorized !== baseline.localReminderContract.notificationContentAuthorized ||
+    localReminderData.pushOrApnsUsed !== baseline.localReminderContract.pushOrApnsUsed ||
+    localReminderData.backgroundTimerUsed !== baseline.localReminderContract.backgroundTimerUsed ||
+    localReminderData.realNotificationApiCalls !== baseline.localReminderContract.realNotificationApiCalls ||
+    localReminderData.realNetworkRequests !== baseline.localReminderContract.realNetworkRequests ||
+    localReminderData.nativeImplementationAuthorized !== baseline.localReminderContract.nativeImplementationAuthorized ||
+    localReminderData.formalImplementationAuthorized !== baseline.localReminderContract.formalImplementationAuthorized ||
+    localReminderData.gateStatesChanged !== baseline.localReminderContract.gateStatesChanged ||
+    localReminderData.ownerIntakeChanged !== baseline.localReminderContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_LOCAL_REMINDER_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "提醒合同只登记本地规则 CRUD、权限独立保存、generation 防回滚和 pending/delivered 对账；不得授权提醒类型、重复规则、通知内容、Push/APNs、后台定时器、真实通知 API 或正式实现",
+    );
+  }
+
+  const dateNavigationEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.dateNavigationContract.subjectId,
+  );
+  const dateNavigationEvent = dateNavigationEvents[0]?.value;
+  const dateNavigationData = dateNavigationEvent?.data ?? {};
+  if (
+    dateNavigationEvents.length !== 1 ||
+    dateNavigationEvent?.eventId !== baseline.dateNavigationContract.eventId ||
+    dateNavigationEvent?.type !== "ARTIFACT_CREATED" ||
+    dateNavigationEvent?.actor?.id !== "project-manager" ||
+    dateNavigationData.contractStatus !== baseline.dateNavigationContract.contractStatus ||
+    dateNavigationData.artifactState !== baseline.dateNavigationContract.artifactState ||
+    dateNavigationData.featureId !== baseline.dateNavigationContract.featureId ||
+    dateNavigationData.requirementId !== baseline.dateNavigationContract.requirementId ||
+    dateNavigationData.acceptanceId !== baseline.dateNavigationContract.acceptanceId ||
+    dateNavigationData.topLevelTests !== baseline.dateNavigationContract.topLevelTests ||
+    dateNavigationData.fullSuitePassed !== baseline.dateNavigationContract.fullSuitePassed ||
+    dateNavigationData.explicitDateObservation !== baseline.dateNavigationContract.explicitDateObservation ||
+    dateNavigationData.ianaTimeZoneValidated !== baseline.dateNavigationContract.ianaTimeZoneValidated ||
+    dateNavigationData.dstAndMidnightCovered !== baseline.dateNavigationContract.dstAndMidnightCovered ||
+    dateNavigationData.observationGenerationProtected !== baseline.dateNavigationContract.observationGenerationProtected ||
+    dateNavigationData.staleNavigationRejected !== baseline.dateNavigationContract.staleNavigationRejected ||
+    dateNavigationData.externalPolicyEvidenceRequired !== baseline.dateNavigationContract.externalPolicyEvidenceRequired ||
+    dateNavigationData.selectionPreservedOnObservationRefresh !== baseline.dateNavigationContract.selectionPreservedOnObservationRefresh ||
+    dateNavigationData.futureDateRuleAuthorized !== baseline.dateNavigationContract.futureDateRuleAuthorized ||
+    dateNavigationData.backfillRuleAuthorized !== baseline.dateNavigationContract.backfillRuleAuthorized ||
+    dateNavigationData.crossTimeZoneRebaseAuthorized !== baseline.dateNavigationContract.crossTimeZoneRebaseAuthorized ||
+    dateNavigationData.defaultTodayBehaviorAuthorized !== baseline.dateNavigationContract.defaultTodayBehaviorAuthorized ||
+    dateNavigationData.uiBehaviorAuthorized !== baseline.dateNavigationContract.uiBehaviorAuthorized ||
+    dateNavigationData.persistenceUsed !== baseline.dateNavigationContract.persistenceUsed ||
+    dateNavigationData.systemClockRead !== baseline.dateNavigationContract.systemClockRead ||
+    dateNavigationData.realNetworkRequests !== baseline.dateNavigationContract.realNetworkRequests ||
+    dateNavigationData.nativeImplementationAuthorized !== baseline.dateNavigationContract.nativeImplementationAuthorized ||
+    dateNavigationData.formalImplementationAuthorized !== baseline.dateNavigationContract.formalImplementationAuthorized ||
+    dateNavigationData.gateStatesChanged !== baseline.dateNavigationContract.gateStatesChanged ||
+    dateNavigationData.ownerIntakeChanged !== baseline.dateNavigationContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_DATE_NAVIGATION_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "日期导航合同只登记显式日期观察、DST/午夜滚日、generation 防回滚和外部策略绑定；不得授权未来日、补记、跨时区重基、默认今天、UI、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const mealSlotGroupingEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.mealSlotGroupingContract.subjectId,
+  );
+  const mealSlotGroupingEvent = mealSlotGroupingEvents[0]?.value;
+  const mealSlotGroupingData = mealSlotGroupingEvent?.data ?? {};
+  if (
+    mealSlotGroupingEvents.length !== 1 ||
+    mealSlotGroupingEvent?.eventId !== baseline.mealSlotGroupingContract.eventId ||
+    mealSlotGroupingEvent?.type !== "ARTIFACT_CREATED" ||
+    mealSlotGroupingEvent?.actor?.id !== "project-manager" ||
+    mealSlotGroupingData.contractStatus !== baseline.mealSlotGroupingContract.contractStatus ||
+    mealSlotGroupingData.artifactState !== baseline.mealSlotGroupingContract.artifactState ||
+    mealSlotGroupingData.featureId !== baseline.mealSlotGroupingContract.featureId ||
+    mealSlotGroupingData.requirementId !== baseline.mealSlotGroupingContract.requirementId ||
+    mealSlotGroupingData.acceptanceId !== baseline.mealSlotGroupingContract.acceptanceId ||
+    mealSlotGroupingData.topLevelTests !== baseline.mealSlotGroupingContract.topLevelTests ||
+    mealSlotGroupingData.fullSuitePassed !== baseline.mealSlotGroupingContract.fullSuitePassed ||
+    mealSlotGroupingData.explicitVersionedDefinition !== baseline.mealSlotGroupingContract.explicitVersionedDefinition ||
+    mealSlotGroupingData.explicitOrderingPreserved !== baseline.mealSlotGroupingContract.explicitOrderingPreserved ||
+    mealSlotGroupingData.emptySlotsPreserved !== baseline.mealSlotGroupingContract.emptySlotsPreserved ||
+    mealSlotGroupingData.unassignedDistinctFromUnresolved !== baseline.mealSlotGroupingContract.unassignedDistinctFromUnresolved ||
+    mealSlotGroupingData.historicalDefinitionPreserved !== baseline.mealSlotGroupingContract.historicalDefinitionPreserved ||
+    mealSlotGroupingData.revisionTraceabilityPreserved !== baseline.mealSlotGroupingContract.revisionTraceabilityPreserved ||
+    mealSlotGroupingData.builtInDefaultSlots !== baseline.mealSlotGroupingContract.builtInDefaultSlots ||
+    mealSlotGroupingData.defaultOrCustomRulesAuthorized !== baseline.mealSlotGroupingContract.defaultOrCustomRulesAuthorized ||
+    mealSlotGroupingData.moveOrCopyAuthorized !== baseline.mealSlotGroupingContract.moveOrCopyAuthorized ||
+    mealSlotGroupingData.targetRulesAuthorized !== baseline.mealSlotGroupingContract.targetRulesAuthorized ||
+    mealSlotGroupingData.uiBehaviorAuthorized !== baseline.mealSlotGroupingContract.uiBehaviorAuthorized ||
+    mealSlotGroupingData.persistenceUsed !== baseline.mealSlotGroupingContract.persistenceUsed ||
+    mealSlotGroupingData.systemClockRead !== baseline.mealSlotGroupingContract.systemClockRead ||
+    mealSlotGroupingData.realNetworkRequests !== baseline.mealSlotGroupingContract.realNetworkRequests ||
+    mealSlotGroupingData.nativeImplementationAuthorized !== baseline.mealSlotGroupingContract.nativeImplementationAuthorized ||
+    mealSlotGroupingData.formalImplementationAuthorized !== baseline.mealSlotGroupingContract.formalImplementationAuthorized ||
+    mealSlotGroupingData.gateStatesChanged !== baseline.mealSlotGroupingContract.gateStatesChanged ||
+    mealSlotGroupingData.ownerIntakeChanged !== baseline.mealSlotGroupingContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_MEAL_SLOT_GROUPING_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "餐次分组合同只登记调用方版本化定义、显式顺序、空餐次、未分配/旧定义分离和 revision 反查；不得授权内建默认、默认/自定义规则、移动/复制、目标、UI、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const macroTargetHistoryEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.macroTargetHistoryContract.subjectId,
+  );
+  const macroTargetHistoryEvent = macroTargetHistoryEvents[0]?.value;
+  const macroTargetHistoryData = macroTargetHistoryEvent?.data ?? {};
+  if (
+    macroTargetHistoryEvents.length !== 1 ||
+    macroTargetHistoryEvent?.eventId !== baseline.macroTargetHistoryContract.eventId ||
+    macroTargetHistoryEvent?.type !== "ARTIFACT_CREATED" ||
+    macroTargetHistoryEvent?.actor?.id !== "project-manager" ||
+    macroTargetHistoryData.contractStatus !== baseline.macroTargetHistoryContract.contractStatus ||
+    macroTargetHistoryData.artifactState !== baseline.macroTargetHistoryContract.artifactState ||
+    macroTargetHistoryData.featureId !== baseline.macroTargetHistoryContract.featureId ||
+    macroTargetHistoryData.requirementId !== baseline.macroTargetHistoryContract.requirementId ||
+    macroTargetHistoryData.acceptanceId !== baseline.macroTargetHistoryContract.acceptanceId ||
+    macroTargetHistoryData.topLevelTests !== baseline.macroTargetHistoryContract.topLevelTests ||
+    macroTargetHistoryData.fullSuitePassed !== baseline.macroTargetHistoryContract.fullSuitePassed ||
+    macroTargetHistoryData.originalTargetValuePreserved !== baseline.macroTargetHistoryContract.originalTargetValuePreserved ||
+    macroTargetHistoryData.explicitVersionedUnitDefinition !== baseline.macroTargetHistoryContract.explicitVersionedUnitDefinition ||
+    macroTargetHistoryData.zeroDistinctFromUnset !== baseline.macroTargetHistoryContract.zeroDistinctFromUnset ||
+    macroTargetHistoryData.historicalEffectiveDatePreserved !== baseline.macroTargetHistoryContract.historicalEffectiveDatePreserved ||
+    macroTargetHistoryData.futureVersionDoesNotRewritePast !== baseline.macroTargetHistoryContract.futureVersionDoesNotRewritePast ||
+    macroTargetHistoryData.sourceAndUserEditTraceability !== baseline.macroTargetHistoryContract.sourceAndUserEditTraceability ||
+    macroTargetHistoryData.actualMissingSemanticsPreserved !== baseline.macroTargetHistoryContract.actualMissingSemanticsPreserved ||
+    macroTargetHistoryData.actualTargetCompatibilityInferred !== baseline.macroTargetHistoryContract.actualTargetCompatibilityInferred ||
+    macroTargetHistoryData.targetAlgorithmAuthorized !== baseline.macroTargetHistoryContract.targetAlgorithmAuthorized ||
+    macroTargetHistoryData.percentConversionAuthorized !== baseline.macroTargetHistoryContract.percentConversionAuthorized ||
+    macroTargetHistoryData.comparisonPolicyAuthorized !== baseline.macroTargetHistoryContract.comparisonPolicyAuthorized ||
+    macroTargetHistoryData.roundingPolicyAuthorized !== baseline.macroTargetHistoryContract.roundingPolicyAuthorized ||
+    macroTargetHistoryData.mutationAuthorized !== baseline.macroTargetHistoryContract.mutationAuthorized ||
+    macroTargetHistoryData.persistenceUsed !== baseline.macroTargetHistoryContract.persistenceUsed ||
+    macroTargetHistoryData.systemClockRead !== baseline.macroTargetHistoryContract.systemClockRead ||
+    macroTargetHistoryData.realNetworkRequests !== baseline.macroTargetHistoryContract.realNetworkRequests ||
+    macroTargetHistoryData.nativeImplementationAuthorized !== baseline.macroTargetHistoryContract.nativeImplementationAuthorized ||
+    macroTargetHistoryData.formalImplementationAuthorized !== baseline.macroTargetHistoryContract.formalImplementationAuthorized ||
+    macroTargetHistoryData.gateStatesChanged !== baseline.macroTargetHistoryContract.gateStatesChanged ||
+    macroTargetHistoryData.ownerIntakeChanged !== baseline.macroTargetHistoryContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_MACRO_TARGET_HISTORY_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "宏量目标历史合同只登记既有目标事实的原值、单位定义、来源、用户编辑状态和生效历史；不得推断实际/目标兼容性或授权算法、百分比换算、比较、舍入、写入、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const dailyEnergyLedgerEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.dailyEnergyLedgerContract.subjectId,
+  );
+  const dailyEnergyLedgerEvent = dailyEnergyLedgerEvents[0]?.value;
+  const dailyEnergyLedgerData = dailyEnergyLedgerEvent?.data ?? {};
+  if (
+    dailyEnergyLedgerEvents.length !== 1 ||
+    dailyEnergyLedgerEvent?.eventId !== baseline.dailyEnergyLedgerContract.eventId ||
+    dailyEnergyLedgerEvent?.type !== "ARTIFACT_CREATED" ||
+    dailyEnergyLedgerEvent?.actor?.id !== "project-manager" ||
+    dailyEnergyLedgerData.contractStatus !== baseline.dailyEnergyLedgerContract.contractStatus ||
+    dailyEnergyLedgerData.artifactState !== baseline.dailyEnergyLedgerContract.artifactState ||
+    dailyEnergyLedgerData.featureId !== baseline.dailyEnergyLedgerContract.featureId ||
+    dailyEnergyLedgerData.requirementId !== baseline.dailyEnergyLedgerContract.requirementId ||
+    dailyEnergyLedgerData.acceptanceId !== baseline.dailyEnergyLedgerContract.acceptanceId ||
+    dailyEnergyLedgerData.topLevelTests !== baseline.dailyEnergyLedgerContract.topLevelTests ||
+    dailyEnergyLedgerData.fullSuitePassed !== baseline.dailyEnergyLedgerContract.fullSuitePassed ||
+    dailyEnergyLedgerData.exactIntakeAndBurnAggregation !== baseline.dailyEnergyLedgerContract.exactIntakeAndBurnAggregation ||
+    dailyEnergyLedgerData.missingDistinctFromZero !== baseline.dailyEnergyLedgerContract.missingDistinctFromZero ||
+    dailyEnergyLedgerData.sourceRevisionTraceability !== baseline.dailyEnergyLedgerContract.sourceRevisionTraceability ||
+    dailyEnergyLedgerData.historicalTargetEffectiveDatePreserved !== baseline.dailyEnergyLedgerContract.historicalTargetEffectiveDatePreserved ||
+    dailyEnergyLedgerData.futureTargetDoesNotRewritePast !== baseline.dailyEnergyLedgerContract.futureTargetDoesNotRewritePast ||
+    dailyEnergyLedgerData.targetSourceAndUserEditTraceability !== baseline.dailyEnergyLedgerContract.targetSourceAndUserEditTraceability ||
+    dailyEnergyLedgerData.leftStatus !== baseline.dailyEnergyLedgerContract.leftStatus ||
+    dailyEnergyLedgerData.leftFormulaAuthorized !== baseline.dailyEnergyLedgerContract.leftFormulaAuthorized ||
+    dailyEnergyLedgerData.targetAlgorithmAuthorized !== baseline.dailyEnergyLedgerContract.targetAlgorithmAuthorized ||
+    dailyEnergyLedgerData.missingBurnDefaultAuthorized !== baseline.dailyEnergyLedgerContract.missingBurnDefaultAuthorized ||
+    dailyEnergyLedgerData.negativeLeftPolicyAuthorized !== baseline.dailyEnergyLedgerContract.negativeLeftPolicyAuthorized ||
+    dailyEnergyLedgerData.roundingPolicyAuthorized !== baseline.dailyEnergyLedgerContract.roundingPolicyAuthorized ||
+    dailyEnergyLedgerData.mutationAuthorized !== baseline.dailyEnergyLedgerContract.mutationAuthorized ||
+    dailyEnergyLedgerData.persistenceUsed !== baseline.dailyEnergyLedgerContract.persistenceUsed ||
+    dailyEnergyLedgerData.systemClockRead !== baseline.dailyEnergyLedgerContract.systemClockRead ||
+    dailyEnergyLedgerData.aiUsed !== baseline.dailyEnergyLedgerContract.aiUsed ||
+    dailyEnergyLedgerData.healthKitUsed !== baseline.dailyEnergyLedgerContract.healthKitUsed ||
+    dailyEnergyLedgerData.realNetworkRequests !== baseline.dailyEnergyLedgerContract.realNetworkRequests ||
+    dailyEnergyLedgerData.nativeImplementationAuthorized !== baseline.dailyEnergyLedgerContract.nativeImplementationAuthorized ||
+    dailyEnergyLedgerData.formalImplementationAuthorized !== baseline.dailyEnergyLedgerContract.formalImplementationAuthorized ||
+    dailyEnergyLedgerData.gateStatesChanged !== baseline.dailyEnergyLedgerContract.gateStatesChanged ||
+    dailyEnergyLedgerData.ownerIntakeChanged !== baseline.dailyEnergyLedgerContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_DAILY_ENERGY_LEDGER_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "日能量账本合同只登记指定日期的摄入/消耗/有效目标事实与来源；Left 必须保持 POLICY_NOT_AUTHORIZED，不得授权公式、目标生成、缺失消耗默认值、负值、舍入、写入、持久化、系统时钟、AI、HealthKit、网络、原生或正式实现",
+    );
+  }
+
+  const localProfileRecordEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.localProfileRecordContract.subjectId,
+  );
+  const localProfileRecordEvent = localProfileRecordEvents[0]?.value;
+  const localProfileRecordData = localProfileRecordEvent?.data ?? {};
+  if (
+    localProfileRecordEvents.length !== 1 ||
+    localProfileRecordEvent?.eventId !== baseline.localProfileRecordContract.eventId ||
+    localProfileRecordEvent?.type !== "ARTIFACT_CREATED" ||
+    localProfileRecordEvent?.actor?.id !== "project-manager" ||
+    localProfileRecordData.contractStatus !== baseline.localProfileRecordContract.contractStatus ||
+    localProfileRecordData.artifactState !== baseline.localProfileRecordContract.artifactState ||
+    !arraysEqualAsSets(localProfileRecordData.featureIds ?? [], baseline.localProfileRecordContract.featureIds) ||
+    !arraysEqualAsSets(localProfileRecordData.requirementIds ?? [], baseline.localProfileRecordContract.requirementIds) ||
+    !arraysEqualAsSets(localProfileRecordData.acceptanceIds ?? [], baseline.localProfileRecordContract.acceptanceIds) ||
+    localProfileRecordData.topLevelTests !== baseline.localProfileRecordContract.topLevelTests ||
+    localProfileRecordData.fullSuitePassed !== baseline.localProfileRecordContract.fullSuitePassed ||
+    localProfileRecordData.explicitVersionedOpaqueSchema !== baseline.localProfileRecordContract.explicitVersionedOpaqueSchema ||
+    localProfileRecordData.emptyDocumentPreserved !== baseline.localProfileRecordContract.emptyDocumentPreserved ||
+    localProfileRecordData.revisionCasAndIdempotency !== baseline.localProfileRecordContract.revisionCasAndIdempotency ||
+    localProfileRecordData.unknownResultReplay !== baseline.localProfileRecordContract.unknownResultReplay ||
+    localProfileRecordData.relatedDataEvidenceUnchanged !== baseline.localProfileRecordContract.relatedDataEvidenceUnchanged ||
+    localProfileRecordData.relatedDataMutation !== baseline.localProfileRecordContract.relatedDataMutation ||
+    localProfileRecordData.approvedProfileFields !== baseline.localProfileRecordContract.approvedProfileFields ||
+    localProfileRecordData.activeProfilePolicyAuthorized !== baseline.localProfileRecordContract.activeProfilePolicyAuthorized ||
+    localProfileRecordData.multiProfileUxAuthorized !== baseline.localProfileRecordContract.multiProfileUxAuthorized ||
+    localProfileRecordData.cascadeDeleteAuthorized !== baseline.localProfileRecordContract.cascadeDeleteAuthorized ||
+    localProfileRecordData.formulaAuthorized !== baseline.localProfileRecordContract.formulaAuthorized ||
+    localProfileRecordData.accountOrServerUsed !== baseline.localProfileRecordContract.accountOrServerUsed ||
+    localProfileRecordData.persistenceUsed !== baseline.localProfileRecordContract.persistenceUsed ||
+    localProfileRecordData.systemClockRead !== baseline.localProfileRecordContract.systemClockRead ||
+    localProfileRecordData.realNetworkRequests !== baseline.localProfileRecordContract.realNetworkRequests ||
+    localProfileRecordData.nativeImplementationAuthorized !== baseline.localProfileRecordContract.nativeImplementationAuthorized ||
+    localProfileRecordData.formalImplementationAuthorized !== baseline.localProfileRecordContract.formalImplementationAuthorized ||
+    localProfileRecordData.gateStatesChanged !== baseline.localProfileRecordContract.gateStatesChanged ||
+    localProfileRecordData.ownerIntakeChanged !== baseline.localProfileRecordContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_LOCAL_PROFILE_RECORD_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "F12/F17 本地档案合同只登记调用方版本化 opaque schema、CRUD CAS、幂等和非级联删除证据；不得授权资料字段、当前/多档案策略、级联目标/体重/日记/饮水删除、公式、账号/服务器、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const localDataAccessEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.localDataAccessManifestContract.subjectId,
+  );
+  const localDataAccessEvent = localDataAccessEvents[0]?.value;
+  const localDataAccessData = localDataAccessEvent?.data ?? {};
+  if (
+    localDataAccessEvents.length !== 1 ||
+    localDataAccessEvent?.eventId !== baseline.localDataAccessManifestContract.eventId ||
+    localDataAccessEvent?.type !== "ARTIFACT_CREATED" ||
+    localDataAccessEvent?.actor?.id !== "project-manager" ||
+    localDataAccessData.contractStatus !== baseline.localDataAccessManifestContract.contractStatus ||
+    localDataAccessData.artifactState !== baseline.localDataAccessManifestContract.artifactState ||
+    localDataAccessData.featureId !== baseline.localDataAccessManifestContract.featureId ||
+    localDataAccessData.requirementId !== baseline.localDataAccessManifestContract.requirementId ||
+    localDataAccessData.acceptanceId !== baseline.localDataAccessManifestContract.acceptanceId ||
+    localDataAccessData.topLevelTests !== baseline.localDataAccessManifestContract.topLevelTests ||
+    localDataAccessData.fullSuitePassed !== baseline.localDataAccessManifestContract.fullSuitePassed ||
+    localDataAccessData.explicitVersionedDomainDefinitions !== baseline.localDataAccessManifestContract.explicitVersionedDomainDefinitions ||
+    localDataAccessData.emptyDomainsPreserved !== baseline.localDataAccessManifestContract.emptyDomainsPreserved ||
+    localDataAccessData.stableSnapshotAndCursorBinding !== baseline.localDataAccessManifestContract.stableSnapshotAndCursorBinding ||
+    localDataAccessData.completeReadVerification !== baseline.localDataAccessManifestContract.completeReadVerification ||
+    localDataAccessData.deliveryMode !== baseline.localDataAccessManifestContract.deliveryMode ||
+    localDataAccessData.businessDataBoundary !== baseline.localDataAccessManifestContract.businessDataBoundary ||
+    localDataAccessData.keychainSecretValues !== baseline.localDataAccessManifestContract.keychainSecretValues ||
+    localDataAccessData.nativeContainerInventory !== baseline.localDataAccessManifestContract.nativeContainerInventory ||
+    localDataAccessData.externalFilesCopies !== baseline.localDataAccessManifestContract.externalFilesCopies ||
+    localDataAccessData.artifactCreation !== baseline.localDataAccessManifestContract.artifactCreation ||
+    localDataAccessData.mutation !== baseline.localDataAccessManifestContract.mutation ||
+    localDataAccessData.plaintextExportAuthorized !== baseline.localDataAccessManifestContract.plaintextExportAuthorized ||
+    localDataAccessData.backupOrRestoreAuthorized !== baseline.localDataAccessManifestContract.backupOrRestoreAuthorized ||
+    localDataAccessData.persistenceUsed !== baseline.localDataAccessManifestContract.persistenceUsed ||
+    localDataAccessData.systemClockRead !== baseline.localDataAccessManifestContract.systemClockRead ||
+    localDataAccessData.realNetworkRequests !== baseline.localDataAccessManifestContract.realNetworkRequests ||
+    localDataAccessData.nativeImplementationAuthorized !== baseline.localDataAccessManifestContract.nativeImplementationAuthorized ||
+    localDataAccessData.formalImplementationAuthorized !== baseline.localDataAccessManifestContract.formalImplementationAuthorized ||
+    localDataAccessData.gateStatesChanged !== baseline.localDataAccessManifestContract.gateStatesChanged ||
+    localDataAccessData.ownerIntakeChanged !== baseline.localDataAccessManifestContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_LOCAL_DATA_ACCESS_MANIFEST_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "F18 本地数据访问合同只登记应用内只读分页、空领域、快照/游标/页面绑定和全量完成证明；不得授权明文导出、备份/恢复、秘密值返回、原生容器枚举、Files 副本控制、写入、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const mediaPermissionEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.mediaPermissionOrchestratorContract.subjectId,
+  );
+  const mediaPermissionEvent = mediaPermissionEvents[0]?.value;
+  const mediaPermissionData = mediaPermissionEvent?.data ?? {};
+  if (
+    mediaPermissionEvents.length !== 1 ||
+    mediaPermissionEvent?.eventId !== baseline.mediaPermissionOrchestratorContract.eventId ||
+    mediaPermissionEvent?.type !== "ARTIFACT_CREATED" ||
+    mediaPermissionEvent?.actor?.id !== "project-manager" ||
+    mediaPermissionData.contractStatus !== baseline.mediaPermissionOrchestratorContract.contractStatus ||
+    mediaPermissionData.artifactState !== baseline.mediaPermissionOrchestratorContract.artifactState ||
+    mediaPermissionData.featureId !== baseline.mediaPermissionOrchestratorContract.featureId ||
+    mediaPermissionData.requirementId !== baseline.mediaPermissionOrchestratorContract.requirementId ||
+    mediaPermissionData.acceptanceId !== baseline.mediaPermissionOrchestratorContract.acceptanceId ||
+    mediaPermissionData.topLevelTests !== baseline.mediaPermissionOrchestratorContract.topLevelTests ||
+    mediaPermissionData.fullSuitePassed !== baseline.mediaPermissionOrchestratorContract.fullSuitePassed ||
+    mediaPermissionData.callerOwnedVersionedTaskDefinition !== baseline.mediaPermissionOrchestratorContract.callerOwnedVersionedTaskDefinition ||
+    mediaPermissionData.manualFallbackRequiredForCamera !== baseline.mediaPermissionOrchestratorContract.manualFallbackRequiredForCamera ||
+    mediaPermissionData.taskExplanationBeforeCameraEffect !== baseline.mediaPermissionOrchestratorContract.taskExplanationBeforeCameraEffect ||
+    mediaPermissionData.lateOutcomeRejected !== baseline.mediaPermissionOrchestratorContract.lateOutcomeRejected ||
+    mediaPermissionData.cameraPermissionScope !== baseline.mediaPermissionOrchestratorContract.cameraPermissionScope ||
+    mediaPermissionData.photoLibraryPermission !== baseline.mediaPermissionOrchestratorContract.photoLibraryPermission ||
+    mediaPermissionData.videoCapture !== baseline.mediaPermissionOrchestratorContract.videoCapture ||
+    mediaPermissionData.locationPermission !== baseline.mediaPermissionOrchestratorContract.locationPermission ||
+    mediaPermissionData.mediaRetention !== baseline.mediaPermissionOrchestratorContract.mediaRetention ||
+    mediaPermissionData.mediaPersistence !== baseline.mediaPermissionOrchestratorContract.mediaPersistence ||
+    mediaPermissionData.permissionCopyAuthorized !== baseline.mediaPermissionOrchestratorContract.permissionCopyAuthorized ||
+    mediaPermissionData.nativeApiCalls !== baseline.mediaPermissionOrchestratorContract.nativeApiCalls ||
+    mediaPermissionData.realNetworkRequests !== baseline.mediaPermissionOrchestratorContract.realNetworkRequests ||
+    mediaPermissionData.nativeImplementationAuthorized !== baseline.mediaPermissionOrchestratorContract.nativeImplementationAuthorized ||
+    mediaPermissionData.formalImplementationAuthorized !== baseline.mediaPermissionOrchestratorContract.formalImplementationAuthorized ||
+    mediaPermissionData.gateStatesChanged !== baseline.mediaPermissionOrchestratorContract.gateStatesChanged ||
+    mediaPermissionData.ownerIntakeChanged !== baseline.mediaPermissionOrchestratorContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_MEDIA_PERMISSION_ORCHESTRATOR_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "F21 媒体权限合同只登记当前任务触发的窄相机 effect、系统用户媒体选择零全库权限和拒绝/受限/撤权手工降级；不得授权权限文案、D-031 媒体保留、视频、定位、照片全库、持久化、真实原生调用、网络或正式实现",
+    );
+  }
+
+  const prohibitedCapabilityAuditEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.prohibitedCapabilityAuditContract.subjectId,
+  );
+  const prohibitedCapabilityAuditEvent = prohibitedCapabilityAuditEvents[0]?.value;
+  const prohibitedCapabilityAuditData = prohibitedCapabilityAuditEvent?.data ?? {};
+  if (
+    prohibitedCapabilityAuditEvents.length !== 1 ||
+    prohibitedCapabilityAuditEvent?.eventId !== baseline.prohibitedCapabilityAuditContract.eventId ||
+    prohibitedCapabilityAuditEvent?.type !== "ARTIFACT_CREATED" ||
+    prohibitedCapabilityAuditEvent?.actor?.id !== "project-manager" ||
+    prohibitedCapabilityAuditData.contractStatus !== baseline.prohibitedCapabilityAuditContract.contractStatus ||
+    prohibitedCapabilityAuditData.artifactState !== baseline.prohibitedCapabilityAuditContract.artifactState ||
+    JSON.stringify(prohibitedCapabilityAuditData.featureIds) !== JSON.stringify(baseline.prohibitedCapabilityAuditContract.featureIds) ||
+    JSON.stringify(prohibitedCapabilityAuditData.requirementIds) !== JSON.stringify(baseline.prohibitedCapabilityAuditContract.requirementIds) ||
+    JSON.stringify(prohibitedCapabilityAuditData.acceptanceIds) !== JSON.stringify(baseline.prohibitedCapabilityAuditContract.acceptanceIds) ||
+    prohibitedCapabilityAuditData.topLevelTests !== baseline.prohibitedCapabilityAuditContract.topLevelTests ||
+    prohibitedCapabilityAuditData.fullSuitePassed !== baseline.prohibitedCapabilityAuditContract.fullSuitePassed ||
+    prohibitedCapabilityAuditData.capabilityCount !== baseline.prohibitedCapabilityAuditContract.capabilityCount ||
+    prohibitedCapabilityAuditData.requiredEvidenceSurfaces !== baseline.prohibitedCapabilityAuditContract.requiredEvidenceSurfaces ||
+    prohibitedCapabilityAuditData.formalSignedReleaseTargetRequired !== baseline.prohibitedCapabilityAuditContract.formalSignedReleaseTargetRequired ||
+    prohibitedCapabilityAuditData.formalSignedReleaseTargetPresent !== baseline.prohibitedCapabilityAuditContract.formalSignedReleaseTargetPresent ||
+    prohibitedCapabilityAuditData.currentAuditDisposition !== baseline.prohibitedCapabilityAuditContract.currentAuditDisposition ||
+    JSON.stringify(prohibitedCapabilityAuditData.currentBlockers) !== JSON.stringify(baseline.prohibitedCapabilityAuditContract.currentBlockers) ||
+    prohibitedCapabilityAuditData.workingTreeAbsenceIsPass !== baseline.prohibitedCapabilityAuditContract.workingTreeAbsenceIsPass ||
+    prohibitedCapabilityAuditData.everyRequiredSurfaceExecuted !== baseline.prohibitedCapabilityAuditContract.everyRequiredSurfaceExecuted ||
+    prohibitedCapabilityAuditData.productionArtifactScansExecuted !== baseline.prohibitedCapabilityAuditContract.productionArtifactScansExecuted ||
+    prohibitedCapabilityAuditData.releaseNetworkCapturesExecuted !== baseline.prohibitedCapabilityAuditContract.releaseNetworkCapturesExecuted ||
+    prohibitedCapabilityAuditData.runtimePermissionCapturesExecuted !== baseline.prohibitedCapabilityAuditContract.runtimePermissionCapturesExecuted ||
+    prohibitedCapabilityAuditData.prohibitedCapabilityFindings !== baseline.prohibitedCapabilityAuditContract.prohibitedCapabilityFindings ||
+    prohibitedCapabilityAuditData.evidenceTruthVerified !== baseline.prohibitedCapabilityAuditContract.evidenceTruthVerified ||
+    prohibitedCapabilityAuditData.releaseGateClosed !== baseline.prohibitedCapabilityAuditContract.releaseGateClosed ||
+    prohibitedCapabilityAuditData.nativeImplementationAuthorized !== baseline.prohibitedCapabilityAuditContract.nativeImplementationAuthorized ||
+    prohibitedCapabilityAuditData.formalImplementationAuthorized !== baseline.prohibitedCapabilityAuditContract.formalImplementationAuthorized ||
+    prohibitedCapabilityAuditData.gateStatesChanged !== baseline.prohibitedCapabilityAuditContract.gateStatesChanged ||
+    prohibitedCapabilityAuditData.ownerIntakeChanged !== baseline.prohibitedCapabilityAuditContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_PROHIBITED_CAPABILITY_AUDIT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "F20/F23/F24 禁止能力审计必须保持当前 BLOCKED：无正式签名 Release Archive、无 27 面生产证据且未执行工件扫描/Release 网络/定位权限捕获；不得把工作区零发现冒充 PASS、验证证据真实性或关闭发布门禁",
+    );
+  }
+
+  const platformLanguageReleaseAuditEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.platformLanguageReleaseAuditContract.subjectId,
+  );
+  const platformLanguageReleaseAuditEvent = platformLanguageReleaseAuditEvents[0]?.value;
+  const platformLanguageReleaseAuditData = platformLanguageReleaseAuditEvent?.data ?? {};
+  if (
+    platformLanguageReleaseAuditEvents.length !== 1 ||
+    platformLanguageReleaseAuditEvent?.eventId !== baseline.platformLanguageReleaseAuditContract.eventId ||
+    platformLanguageReleaseAuditEvent?.type !== "ARTIFACT_CREATED" ||
+    platformLanguageReleaseAuditEvent?.actor?.id !== "project-manager" ||
+    platformLanguageReleaseAuditData.contractStatus !== baseline.platformLanguageReleaseAuditContract.contractStatus ||
+    platformLanguageReleaseAuditData.artifactState !== baseline.platformLanguageReleaseAuditContract.artifactState ||
+    platformLanguageReleaseAuditData.featureId !== baseline.platformLanguageReleaseAuditContract.featureId ||
+    platformLanguageReleaseAuditData.requirementId !== baseline.platformLanguageReleaseAuditContract.requirementId ||
+    platformLanguageReleaseAuditData.acceptanceId !== baseline.platformLanguageReleaseAuditContract.acceptanceId ||
+    platformLanguageReleaseAuditData.topLevelTests !== baseline.platformLanguageReleaseAuditContract.topLevelTests ||
+    platformLanguageReleaseAuditData.fullSuitePassed !== baseline.platformLanguageReleaseAuditContract.fullSuitePassed ||
+    platformLanguageReleaseAuditData.acceptedMinimumOsVersion !== baseline.platformLanguageReleaseAuditContract.acceptedMinimumOsVersion ||
+    platformLanguageReleaseAuditData.acceptedPrimaryReleaseLanguage !== baseline.platformLanguageReleaseAuditContract.acceptedPrimaryReleaseLanguage ||
+    platformLanguageReleaseAuditData.appAuthoredUiLanguageScope !== baseline.platformLanguageReleaseAuditContract.appAuthoredUiLanguageScope ||
+    JSON.stringify(platformLanguageReleaseAuditData.acceptedBaselineDecisionIds) !== JSON.stringify(baseline.platformLanguageReleaseAuditContract.acceptedBaselineDecisionIds) ||
+    JSON.stringify(platformLanguageReleaseAuditData.platformShapeDimensions) !== JSON.stringify(baseline.platformLanguageReleaseAuditContract.platformShapeDimensions) ||
+    platformLanguageReleaseAuditData.acceptedPlatformShapeDecisions !== baseline.platformLanguageReleaseAuditContract.acceptedPlatformShapeDecisions ||
+    JSON.stringify(platformLanguageReleaseAuditData.platformShapeDecisionIds) !== JSON.stringify(baseline.platformLanguageReleaseAuditContract.platformShapeDecisionIds) ||
+    platformLanguageReleaseAuditData.platformShapeInferredFromD038OrCurrentDevice !== baseline.platformLanguageReleaseAuditContract.platformShapeInferredFromD038OrCurrentDevice ||
+    platformLanguageReleaseAuditData.requiredEvidenceSurfaces !== baseline.platformLanguageReleaseAuditContract.requiredEvidenceSurfaces ||
+    platformLanguageReleaseAuditData.formalSignedReleaseTargetRequired !== baseline.platformLanguageReleaseAuditContract.formalSignedReleaseTargetRequired ||
+    platformLanguageReleaseAuditData.formalSignedReleaseTargetPresent !== baseline.platformLanguageReleaseAuditContract.formalSignedReleaseTargetPresent ||
+    platformLanguageReleaseAuditData.releaseEvidenceExecuted !== baseline.platformLanguageReleaseAuditContract.releaseEvidenceExecuted ||
+    platformLanguageReleaseAuditData.currentAuditDisposition !== baseline.platformLanguageReleaseAuditContract.currentAuditDisposition ||
+    JSON.stringify(platformLanguageReleaseAuditData.currentBlockers) !== JSON.stringify(baseline.platformLanguageReleaseAuditContract.currentBlockers) ||
+    platformLanguageReleaseAuditData.decisionTruthVerified !== baseline.platformLanguageReleaseAuditContract.decisionTruthVerified ||
+    platformLanguageReleaseAuditData.evidenceTruthVerified !== baseline.platformLanguageReleaseAuditContract.evidenceTruthVerified ||
+    platformLanguageReleaseAuditData.releaseGateClosed !== baseline.platformLanguageReleaseAuditContract.releaseGateClosed ||
+    platformLanguageReleaseAuditData.nativeImplementationAuthorized !== baseline.platformLanguageReleaseAuditContract.nativeImplementationAuthorized ||
+    platformLanguageReleaseAuditData.formalImplementationAuthorized !== baseline.platformLanguageReleaseAuditContract.formalImplementationAuthorized ||
+    platformLanguageReleaseAuditData.gateStatesChanged !== baseline.platformLanguageReleaseAuditContract.gateStatesChanged ||
+    platformLanguageReleaseAuditData.ownerIntakeChanged !== baseline.platformLanguageReleaseAuditContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "F22 审计只固定 D-011 iOS 17.0 与 D-016 首发简中；设备族、方向、Mac 和 Vision availability 均未决定，当前无签名 Archive 或 25 面报告，必须保持 BLOCKED，不得从 D-038/当前设备推导或声称决定/证据真实和门禁关闭",
+    );
+  }
+
+  const aiCredentialEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiCredentialContract.subjectId,
+  );
+  const aiCredentialEvent = aiCredentialEvents[0]?.value;
+  const aiCredentialData = aiCredentialEvent?.data ?? {};
+  if (
+    aiCredentialEvents.length !== 1 ||
+    aiCredentialEvent?.eventId !== baseline.aiCredentialContract.eventId ||
+    aiCredentialEvent?.type !== "ARTIFACT_CREATED" ||
+    aiCredentialEvent?.actor?.id !== "project-manager" ||
+    aiCredentialData.contractStatus !== baseline.aiCredentialContract.contractStatus ||
+    aiCredentialData.topLevelTests !== baseline.aiCredentialContract.topLevelTests ||
+    aiCredentialData.fullSuitePassed !== baseline.aiCredentialContract.fullSuitePassed ||
+    aiCredentialData.realNetworkRequests !== baseline.aiCredentialContract.realNetworkRequests ||
+    aiCredentialData.nativeImplementationAuthorized !== baseline.aiCredentialContract.nativeImplementationAuthorized ||
+    aiCredentialData.formalImplementationAuthorized !== baseline.aiCredentialContract.formalImplementationAuthorized ||
+    aiCredentialData.gateStatesChanged !== baseline.aiCredentialContract.gateStatesChanged ||
+    aiCredentialData.ownerIntakeChanged !== baseline.aiCredentialContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_AI_CREDENTIAL_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-12.jsonl",
+      "AI 凭据生命周期合同必须保持框架无关、非生产且不改变 Gate/Owner intake 的登记语义",
     );
   }
 

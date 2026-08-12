@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-11T17:41:03+08:00",
+  "generatedAt": "2026-08-12T23:48:24+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 111
+    "projectEvents": 126
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "OI-03 设备事实归并与 OI-02 原生选择卡；维持 D-039/D-040 未授权门禁",
+      "workPackage": "F22 平台/语言 Release 审计已登记并保持 BLOCKED；等待四项平台形态决定、签名 Archive/25 面证据及 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,21 @@
     }
   ],
   "currentWork": [
+    "F22 平台与语言 Release 审计合同已登记：固定已接受 D-011 iOS 17.0 和 D-016 首发简中，不从 D-038/当前 iPhone/工具默认值推导设备族、方向、Mac 或 Vision availability；当前四项决定均未形成权威决定，无签名 Archive、模拟器/真机/商店/布局/无障碍等 25 面证据，结果保持 BLOCKED，不验证决定/报告真实性或关闭发布门禁",
+    "F20/F23/F24 禁止能力 fail-closed 审计聚合合同已登记：必须以正式签名 Release Archive 绑定源码、依赖、原生配置、plist/entitlement/PrivacyInfo、UI/Store 目录、framework/二进制、运行时网络/权限等 27 面报告；当前无正式目标、无生产工件扫描或捕获，结果固定为 BLOCKED，不得把未初始化工作区的零发现冒充 PASS，也不验证证据真实性或关闭发布门禁",
+    "F12/F17 本地档案框架无关事务合同已登记：调用方版本化 opaque schema、显式空文档、CRUD revision CAS、幂等回放、未知结果恢复、并发序列化和非级联删除证据通过自动化；不授权资料字段、当前/多档案策略、级联目标/体重/日记/饮水删除、公式、账号/服务器、持久化、系统时钟、网络、原生或正式工程",
+    "F18 本地数据访问清单框架无关合同已登记：调用方版本化领域定义、空领域、应用内只读分页、snapshot/cursor/page 绑定和全量完成证明通过自动化；Keychain secret 不返回，真实原生容器待 adapter，外部 Files 副本不属 App 控制，不授权 D-035 明文导出、D-027/D-030 备份恢复、写入、持久化、系统时钟、网络、原生或正式工程",
+    "F21 媒体权限编排框架无关合同已登记：当前用户任务说明后才产生窄相机权限 effect，系统用户媒体选择不申请照片全库，拒绝/受限/撤权/取消和迟到回执保持手工路径；不授权权限文案、D-031 保留、视频、定位、持久化、真实原生 API、网络或正式工程",
+    "F04 每日能量框架无关事实账本已登记：指定日期摄入/消耗精确聚合、缺失/零分离、来源 revision 反查、既有能量目标来源/用户编辑状态、生效历史和未来版本不改写过去通过自动化；Left 固定为 POLICY_NOT_AUTHORIZED，不授权公式、目标生成、缺失消耗默认值、负值、舍入、写入、持久化、系统时钟、AI、HealthKit、网络、原生或正式工程",
+    "F05 宏量目标版本事实与历史框架无关读模型已登记：既有 P/C/F 目标原值、opaque 版本化单位定义、来源/用户编辑状态、生效历史、未来版本不改写过去和实际缺失语义通过自动化；不推断实际/目标兼容性，不授权目标算法、百分比换算、比较、舍入、写入、持久化、系统时钟、网络、原生或正式工程",
+    "F06 显式餐次定义与分组框架无关读模型已登记：调用方版本化定义、显式顺序、空餐次、未分配/旧定义分离、revision 反查和派生结果防篡改通过自动化；不授权内建默认、默认/自定义规则、移动/复制、目标、UI、持久化、系统时钟、网络、原生或正式工程",
+    "F08 日期事实与外部授权导航框架无关合同已登记：显式 instant、IANA 时区、规则版本、DST/午夜滚日、observation generation、防陈旧请求和外部策略指纹绑定通过自动化；不授权未来日、补记、跨时区重基、默认今天、UI、持久化、系统时钟、网络、原生或正式工程",
+    "F15 本地提醒规则与调度对账框架无关合同已登记：本地 CRUD、opaque 规则定义、权限独立保存、rules/desired-state generation 防回滚、pending/delivered 分离和未知结果重新枚举通过自动化；不授权提醒类型、重复规则、通知内容、Push/APNs、后台定时器、真实通知 API、原生或正式工程",
+    "F14 饮水记录框架无关事务与当日汇总合同已登记：原始容量、显式版本化单位定义、精确换算、增删改 revision CAS、幂等回放、跨日重算、空日与零值分离通过自动化；不授权目标、快捷量、默认/展示单位、撤销、趋势、提醒、HealthKit、AI、原生或正式工程",
+    "F13 手工消耗事实框架无关事务合同已登记：直接 kcal/kJ 输入、增删改 revision CAS、幂等回放、完整事务证据和 F11 的 BURNED / MANUAL_BURN / USER_ENTERED 投影通过自动化；不授权运动字段、消耗公式、步数、HealthKit、AI、原生或正式工程",
+    "F11 近七日摄入/消耗框架无关读模型已登记：连续七个本地日历日、缺失与显式零分离、精确 kcal/kJ 聚合、摄入/消耗来源分流、revision 反查和文字语义摘要通过自动化；不授权消耗公式、目标/剩余/净值、平均/更长周期、AI、HealthKit、原生或正式工程",
+    "F10 体重记录框架无关事务合同已登记：原始 kg/lb、精确换算、同日多记录、增删改 revision CAS、幂等回放与完整趋势证据通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权 BMI/目标/异常/显示精度/按日合并、HealthKit、原生或正式工程",
+    "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
     "Owner intake 已恢复为 IN_PROGRESS：13 条响应、12 个唯一决定保持待回读；OI-03 已记录为只有 iPhone 16 Pro Max（iOS 26.5）、当前无可用 Mac，下一张原生 choice-ui 是 OI-02",
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
     "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权",

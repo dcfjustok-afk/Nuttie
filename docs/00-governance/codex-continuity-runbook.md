@@ -93,10 +93,10 @@ Owner 决策的主交互通道是当前 Codex 聊天中的原生 `request_user_i
 
 ## 7. 本地工作台恢复
 
-仓库默认路径为 `D:\github\Nuttie`，工作台默认路径为 `D:\study\Nuttie-Discovery-Workbench`。在 Windows PowerShell 中：
+仓库路径必须从当前线程的 workspace root 或 `git rev-parse --show-toplevel` 读取，不能假定旧 checkout。当前工作区示例为 `D:\aaaProject\Nuttie`；外部工作台默认路径仍为 `D:\study\Nuttie-Discovery-Workbench`。该目录不存在时如实记录“未运行”，不要伪造 smoke。存在时在 Windows PowerShell 中：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\github\Nuttie
+node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\aaaProject\Nuttie
 ```
 
 浏览器打开：
@@ -108,7 +108,7 @@ http://127.0.0.1:4173/
 重建可离线读取的静态快照：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\github\Nuttie
+node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\aaaProject\Nuttie
 ```
 
 运行工作台 smoke：

@@ -7,12 +7,13 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 
 ## 当前阶段
 
-- 快照日期：2026-08-06
+- 快照日期：2026-08-12
 - 阶段：Phase 0，产品、体验、架构基线形成中
 - `G0 项目立项`：PASS
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：尚未初始化；未批准的库级选型不会提前固化
+- 框架无关契约与治理检查：全套 565 项测试通过，含 F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 
@@ -40,9 +41,24 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [追踪整改最终复验](docs/05-quality/traceability-review.md)
 - [项目事件流](project-ops/README.md)
 - [框架无关测试夹具](docs/04-engineering/testing/domain-contract-harness.md)
+- [体重记录事务合同](docs/04-engineering/testing/body-weight-record-harness.md)
+- [近七日摄入/消耗事实读模型](docs/04-engineering/testing/seven-day-energy-trend-harness.md)
+- [手工消耗事实事务合同](docs/04-engineering/testing/manual-burn-record-harness.md)
+- [饮水记录事务与当日汇总合同](docs/04-engineering/testing/water-record-harness.md)
+- [本地提醒规则与调度对账合同](docs/04-engineering/testing/local-reminder-reconcile-harness.md)
+- [日期事实与外部授权导航合同](docs/04-engineering/testing/date-navigation-harness.md)
+- [显式餐次定义与分组读模型合同](docs/04-engineering/testing/meal-slot-grouping-harness.md)
+- [宏量目标版本事实与历史读取合同](docs/04-engineering/testing/macro-target-history-harness.md)
+- [每日能量事实账本合同](docs/04-engineering/testing/daily-energy-ledger-harness.md)
+- [F01–F24 合同覆盖审计](docs/04-engineering/testing/feature-contract-coverage.md)
+- [本地档案事务与非级联删除合同](docs/04-engineering/testing/local-profile-record-harness.md)
+- [本地数据访问清单合同](docs/04-engineering/testing/local-data-access-manifest-harness.md)
+- [媒体权限编排合同](docs/04-engineering/testing/media-permission-orchestrator-harness.md)
+- [F20/F23/F24 禁止能力审计合同](docs/04-engineering/testing/prohibited-capability-audit-harness.md)
+- [F22 平台与语言 Release 审计合同](docs/04-engineering/testing/platform-language-release-audit-harness.md)
 - [AI 策略阻断夹具](docs/04-engineering/testing/ai-policy-harness.md)
 - [导入安全负向夹具](docs/04-engineering/testing/import-safety-harness.md)
-- [调研工作台](D:/study/Nuttie-Discovery-Workbench/index.html)
+- [调研工作台恢复与对账说明](docs/00-governance/workbench-reconcile-integration.md)
 
 ## 仓库状态说明
 

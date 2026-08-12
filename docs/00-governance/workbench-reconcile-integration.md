@@ -1,7 +1,8 @@
 # Discovery Workbench Reconcile Integration
 
 Status: verified handoff record
-Snapshot date: 2026-08-06 (Asia/Shanghai)
+Historical integration date: 2026-08-06 (Asia/Shanghai)
+Current ProjectOps snapshot date: 2026-08-12 (Asia/Shanghai)
 
 ## Scope
 
@@ -22,20 +23,26 @@ decision responses, or authorize implementation.
 
 ## Verified evidence
 
-The integration was checked against the current Nuttie workspace and passed:
+The repository-side integration contract was checked against the current
+Nuttie workspace and passed; the responsive result below remains historical
+evidence from 2026-08-06 because the external workbench is not present now:
 
 ```text
-ProjectOps validation: 71/71 PASS
+ProjectOps validation: 86/86 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 85/85 PASS
-Workbench smoke: 111 events, 114 messages, 25 agents, 70 documents
-Responsive check: desktop and 375px mobile viewports have no horizontal overflow
+Tool contract harnesses: 474/474 PASS
+Full repository suite: 565/565 PASS
+Workbench source baseline: 126 events, 114 messages, 25 agents; the 2026-08-12 AI credential lifecycle, F04 daily-energy ledger, F05 macro-target history, F06 meal-slot grouping, F08 date-navigation, F10 body-weight, F11 seven-day energy, F12/F17 local-profile record, F13 manual-burn, F14 water-record, F15 local-reminder reconciliation, F18 local-data-access manifest, F21 media-permission orchestrator, F20/F23/F24 prohibited-capability audit, and F22 platform/language Release audit contracts are registered locally. Both Release audit contracts remain BLOCKED because signed Archive, platform-shape decisions, and production evidence do not exist.
+Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
-The manually generated repository snapshot matches the latest source time. The
-external static workbench copy was rebuilt from it and live/static parity passed
-with `CURRENT` freshness, the exact OI-03 device fact, and OI-02 as the next
-native input.
+The repository snapshot matches the latest local source time. The external
+workbench integration and live/static parity passed on 2026-08-06; the external
+`D:\study\Nuttie-Discovery-Workbench` directory is absent from the current
+workspace, so its smoke was not rerun after the 2026-08-12 event. When restored,
+it must rebuild from the current repository and recheck `CURRENT` freshness,
+the exact OI-03 device fact, OI-02 as the next native input, and the 126/114/25
+source counts.
 
 ## Continuation boundary
 

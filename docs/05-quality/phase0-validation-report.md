@@ -37,7 +37,7 @@ F13 也完成语义复验：[能力地图](../01-research/capability-map.md) 的
 - Schema 使用声明 Draft 2020-12 的三个项目 schema 编译校验；严格模式和标准 format 校验均启用。
 - JSONL 逐行解析后校验，并独立检查全局 ID 集合、事件序号和跨文件回复链。
 - Markdown 检查覆盖 `docs/**/*.md`、根 README 与 `project-ops/README.md`；本地链接按来源文件相对解析。
-- Smoke 使用工作台现有 [测试脚本](../../../../study/Nuttie-Discovery-Workbench/qa/smoke-test.mjs) 对已运行服务执行；本审计未启动或停止服务，也未做浏览器视觉验收。
+- Smoke 在该历史审计时使用外部工作台脚本 `D:\study\Nuttie-Discovery-Workbench\qa\smoke-test.mjs` 对已运行服务执行；本审计未启动或停止服务，也未做浏览器视觉验收。该外部目录不属于本仓库，当前不存在时不能把历史 PASS 当作本轮复验。
 - Windows 环境没有产生 iOS Archive、签名、Keychain、相机、通知、迁移、性能或真机证据；这些仍必须在受支持的 Mac/Xcode 与真实 iPhone 上完成。
 
 ## 5. 当前门禁解释

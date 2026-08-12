@@ -65,6 +65,21 @@
 - [备份恢复对账检查](testing/backup-reconcile-harness.md)：generation、intent、active/previous ref 的框架无关 crash-consistency 模型。
 - [AI 响应合同检查](testing/ai-response-contract-harness.md)：不可信响应的版本、schema、预算和零写入解析夹具。
 - [AI 凭据生命周期合同](testing/ai-credential-lifecycle-harness.md)：BYOK 配置/替换/移除、Keychain 类密钥槽、durable intent、未知结果对账与 fail-closed 网络门。
+- [体重记录事务合同](testing/body-weight-record-harness.md)：F10 手工 kg/lb 原始输入、精确换算、同日多记录、revision CAS、幂等写入与完整趋势回执。
+- [近七日摄入/消耗事实读模型](testing/seven-day-energy-trend-harness.md)：F11 七日本地日历窗口、摄入/消耗分流、缺失语义、精确能量聚合、来源反查与文字摘要。
+- [手工消耗事实事务合同](testing/manual-burn-record-harness.md)：F13 直接能量输入、revision CAS、幂等事务与 `MANUAL_BURN / USER_ENTERED` 的 F11 投影。
+- [饮水记录事务与当日汇总合同](testing/water-record-harness.md)：F14 原始容量、显式版本化单位定义、revision CAS、幂等事务、跨日修改与精确当日汇总。
+- [本地提醒规则与调度对账合同](testing/local-reminder-reconcile-harness.md)：F15 本地规则 CRUD、opaque 规则定义、权限/规则 generation、pending/delivered 对账、未知平台结果恢复与旧状态防回滚。
+- [日期事实与外部授权导航合同](testing/date-navigation-harness.md)：F08 显式 instant/IANA 时区/规则版本、DST 与午夜滚日、观察 generation、防陈旧请求，以及与请求指纹绑定的外部策略决定。
+- [显式餐次定义与分组读模型合同](testing/meal-slot-grouping-harness.md)：F06 调用方版本化餐次定义、显式顺序、空餐次、未分配/旧定义分离、revision 反查与派生结果防篡改。
+- [宏量目标版本事实与历史读取合同](testing/macro-target-history-harness.md)：F05 既有 P/C/F 目标原值、opaque 单位定义、来源/用户编辑状态、生效历史和实际事实联合读取；比较与舍入保持未指定。
+- [每日能量事实账本合同](testing/daily-energy-ledger-harness.md)：F04 指定日期摄入/消耗精确聚合、来源 revision、既有能量目标生效历史与防篡改快照；Left 保持未授权。
+- [F01–F24 合同覆盖审计](testing/feature-contract-coverage.md)：逐项区分当前框架无关自动化证据、正式实现/原生缺口与 Owner 门禁，并给出下一工作包依据。
+- [本地档案事务与非级联删除合同](testing/local-profile-record-harness.md)：F12/F17 调用方版本化 opaque schema、空文档、CRUD CAS、幂等/并发事务和相关领域证据不变。
+- [本地数据访问清单合同](testing/local-data-access-manifest-harness.md)：F18 跨领域只读分页、空领域保留、snapshot/cursor/page 完整性与 App/原生/外部 Files 控制边界；不授权导出、备份或 mutation。
+- [媒体权限编排合同](testing/media-permission-orchestrator-harness.md)：F21 任务触发相机 effect、系统选择媒体零全库权限、拒绝/受限/撤权手工降级；不授权视频、定位、保留、持久化或真实原生调用。
+- [禁止能力审计合同](testing/prohibited-capability-audit-harness.md)：F20/F23/F24 要求正式签名 Release Archive 和 27 个完整证据面；当前未初始化工作区、缺面或未执行均 fail closed 为 `BLOCKED`。
+- [平台与语言 Release 审计合同](testing/platform-language-release-audit-harness.md)：F22 固定 D-011 iOS 17.0 与 D-016 简中，分离设备族/方向/Mac/Vision 四项未决维度，并要求签名 Archive 上 25 个发布证据面。
 - [ADR](adr/)：已批准架构决策的上下文与后果。
 - [技术决策候选](decisions/decision-candidates.md)：D-018 起的 Options / Trade-offs / Recommended，全部仍待 Owner 确认。
 - [技术栈调研总览](technology-stack-research.md)：按已批准边界、候选库、原生能力和 Spike 证据解释 React Native 技术栈。
