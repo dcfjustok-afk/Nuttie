@@ -1,0 +1,75 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: Nuttie · Product Design Lab
+      - heading "D-039 添加餐食首层方式" [level=1] [ref=e6]
+    - generic [ref=e7]: CANDIDATE
+  - region [ref=e8]:
+    - paragraph [ref=e9]: 方案预览，切换不代表选择
+    - tablist "D-039 候选方案" [ref=e10]:
+      - tab "A 本地 / 最近优先" [selected] [ref=e11] [cursor=pointer]:
+        - strong [ref=e12]: A
+        - generic [ref=e13]: 本地 / 最近优先
+      - tab "B 记住上次方式" [ref=e14] [cursor=pointer]:
+        - strong [ref=e15]: B
+        - generic [ref=e16]: 记住上次方式
+      - tab "C 六种方式平铺" [ref=e17] [cursor=pointer]:
+        - strong [ref=e18]: C
+        - generic [ref=e19]: 六种方式平铺
+    - paragraph [ref=e20]: A：本地搜索和最近使用先出现；条码扫描与可选 AI 并列。三种方案均可完成同一记录任务。
+  - region [ref=e21]:
+    - paragraph [ref=e22]: 评审状态模拟（仅当前页面内存）
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - text: AI 配置
+        - combobox "AI 配置" [ref=e25]:
+          - option "尚未配置" [selected]
+          - option "示例配置 / 准入 UNKNOWN"
+      - generic [ref=e26]:
+        - text: 媒体权限
+        - combobox "媒体权限" [ref=e27]:
+          - option "相机与相册可用（模拟）" [selected]
+          - option "相机已拒绝（模拟）"
+          - option "相册已拒绝（模拟）"
+  - tabpanel "A 本地 / 最近优先" [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: 9:41
+        - generic [ref=e32]: 本地模式 · 100%
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - strong [ref=e35]: 添加晚餐
+          - generic [ref=e36]: 方案 A · 未做决定
+        - generic [ref=e37]: 本次写入0 条
+      - generic [ref=e38]:
+        - heading "选择添加方式" [level=2] [ref=e39]
+        - paragraph [ref=e40]: 先用不联网的食品资料完成记录；需要时再选择条码或 AI。
+        - form "搜索本地食品" [ref=e41]:
+          - text: 搜索本地食品
+          - generic [ref=e42]:
+            - searchbox "搜索本地食品" [ref=e43]: 无糖酸奶
+            - button "搜索" [ref=e44] [cursor=pointer]
+        - heading "最近使用" [level=3] [ref=e45]
+        - list "最近使用食品" [ref=e46]:
+          - listitem [ref=e47]:
+            - button "即食燕麦片 今天早餐 · 40 克 · 152 千卡" [ref=e48] [cursor=pointer]:
+              - generic [ref=e49]:
+                - strong [ref=e50]: 即食燕麦片
+                - generic [ref=e51]: 今天早餐 · 40 克 · 152 千卡
+              - generic [ref=e52]: ›
+          - listitem [ref=e53]:
+            - button "熟鸡胸肉 昨天晚餐 · 120 克 · 198 千卡" [ref=e54] [cursor=pointer]:
+              - generic [ref=e55]:
+                - strong [ref=e56]: 熟鸡胸肉
+                - generic [ref=e57]: 昨天晚餐 · 120 克 · 198 千卡
+              - generic [ref=e58]: ›
+        - heading "其他方式" [level=3] [ref=e59]
+        - generic [ref=e60]:
+          - button "扫描条码 只查本地食品资料" [ref=e61] [cursor=pointer]:
+            - strong [ref=e62]: 扫描条码
+            - generic [ref=e63]: 只查本地食品资料
+          - button "AI 辅助 可选联网，发送前检查" [ref=e64] [cursor=pointer]:
+            - strong [ref=e65]: AI 辅助
+            - generic [ref=e66]: 可选联网，发送前检查
+        - button "没有合适食品？自建食品" [ref=e67] [cursor=pointer]
+  - paragraph [ref=e69]: 原型不联网、不写磁盘、不保存评审选择。刷新页面会恢复同一种子数据；Owner 明确回复前 D-039 保持 CANDIDATE。

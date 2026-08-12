@@ -1,0 +1,97 @@
+- main [ref=f4e2]:
+  - generic [ref=f4e3]:
+    - generic [ref=f4e4]:
+      - generic [ref=f4e5]: 栗
+      - generic [ref=f4e6]:
+        - heading "Nuttie UI System" [level=1] [ref=f4e7]
+        - generic [ref=f4e8]: Component catalog · v0.2
+    - link "查看核心画面 →" [ref=f4e9] [cursor=pointer]:
+      - /url: ./index.html
+  - generic [ref=f4e10]:
+    - generic [ref=f4e11]:
+      - heading "温暖，但不软弱。 可爱，但不打扰工作。" [level=2] [ref=f4e12]: 温暖，但不软弱。可爱，但不打扰工作。
+      - paragraph [ref=f4e13]: 组件以清晰操作、稳定布局和本地数据反馈为主。栗子角色只在需要情绪提示的关键位置出现。
+    - img "庆祝里程碑的卡通栗子" [ref=f4e14]
+  - generic [ref=f4e16]:
+    - generic [ref=f4e17]:
+      - heading "按钮 Button" [level=3] [ref=f4e18]
+      - paragraph [ref=f4e19]: 命令按重要性分层，最小高度 44px。
+      - generic [ref=f4e20]:
+        - button "保存记录" [ref=f4e21]
+        - button "稍后处理" [ref=f4e22]
+        - button "取消" [ref=f4e23]
+        - button "删除" [ref=f4e24]
+        - button "不可用" [disabled] [ref=f4e25]
+    - generic [ref=f4e26]:
+      - heading "状态提示 Alert" [level=3] [ref=f4e27]
+      - paragraph [ref=f4e28]: 颜色与文字同时表达状态，不依赖颜色判断。
+      - generic [ref=f4e29]:
+        - generic [ref=f4e30]: AI 只会在你确认后发送当前预览内容。
+        - generic [ref=f4e33]: 这条记录还有份量需要确认。
+        - generic [ref=f4e36]: 记录已保存在这台设备上。
+    - generic [ref=f4e39]:
+      - heading "输入 Field" [level=3] [ref=f4e40]
+      - paragraph [ref=f4e41]: 标签、值、辅助文字和错误信息有稳定位置。
+      - generic [ref=f4e42]:
+        - generic [ref=f4e43]:
+          - generic [ref=f4e44]: 食物名称
+          - generic [ref=f4e45]: 燕麦粥
+        - generic [ref=f4e46]:
+          - generic [ref=f4e47]: 份量
+          - generic [ref=f4e48]: 请输入
+        - paragraph [ref=f4e49]: 份量必须大于 0
+    - generic [ref=f4e50]:
+      - heading "选择 Selection" [level=3] [ref=f4e51]
+      - paragraph [ref=f4e52]: 短选项使用分段控件，多选标签使用 chips。
+      - generic [ref=f4e53]:
+        - tablist "餐次" [ref=f4e54]:
+          - tab "早餐" [selected] [ref=f4e55]
+          - tab "午餐" [ref=f4e56]
+          - tab "晚餐" [ref=f4e57]
+          - tab "零食" [ref=f4e58]
+        - generic [ref=f4e59]:
+          - generic [ref=f4e60]: 高蛋白
+          - generic [ref=f4e61]: 低糖
+          - generic [ref=f4e62]: 常吃
+    - generic [ref=f4e63]:
+      - heading "数据卡片 Data cards" [level=3] [ref=f4e64]
+      - paragraph [ref=f4e65]: 数字优先、单位清晰、变化可解释。
+      - generic [ref=f4e66]:
+        - generic [ref=f4e67]:
+          - generic [ref=f4e68]: 1,240
+          - text: 今日摄入 kcal
+        - generic [ref=f4e69]:
+          - generic [ref=f4e70]: 82g
+          - text: 蛋白质
+        - generic [ref=f4e71]:
+          - generic [ref=f4e72]: 6 天
+          - text: 连续记录
+      - generic [ref=f4e73]:
+        - generic [ref=f4e74]:
+          - strong [ref=f4e75]: 今日进度
+          - generic [ref=f4e76]: 68%
+        - progressbar "今日进度" [ref=f4e77]
+    - generic [ref=f4e79]:
+      - heading "栗子角色 Mascot roles" [level=3] [ref=f4e80]
+      - paragraph [ref=f4e81]: 四种语义角色，不作为纯装饰随机出现。
+      - generic [ref=f4e82]:
+        - generic [ref=f4e83]:
+          - generic [ref=f4e86]: Home
+          - text: 今日总览
+        - generic [ref=f4e87]:
+          - generic [ref=f4e90]: Meal
+          - text: 餐食记录
+        - generic [ref=f4e91]:
+          - generic [ref=f4e94]: Growth
+          - text: 趋势成长
+        - generic [ref=f4e95]:
+          - generic [ref=f4e98]: Streak
+          - text: 里程碑
+    - generic [ref=f4e99]:
+      - heading "品牌色 Color roles" [level=3] [ref=f4e100]
+      - paragraph [ref=f4e101]: 四个主要色各自承担固定语义。
+      - generic [ref=f4e102]:
+        - generic [ref=f4e103]: Chestnut#A85D3F
+        - generic [ref=f4e104]: Sprout#3F7C59
+        - generic [ref=f4e105]: Amber#E2A34A
+        - generic [ref=f4e106]: Sky#4E88A5

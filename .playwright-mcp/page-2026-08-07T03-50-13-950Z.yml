@@ -1,0 +1,126 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: Nuttie / visual system / v0.2
+      - heading "积“栗”前行， “立”见更好的自己。" [level=1] [ref=e6]: 积“栗”前行，“立”见更好的自己。
+    - generic [ref=e7]:
+      - paragraph [ref=e8]: 一款安静、可靠、带一点温度的本地自律工具。栗子不是装饰，而是把进度、记录和成长状态变成可读的情绪反馈。
+      - generic [ref=e9]: LOCAL-FIRST · ORIGINAL MASCOT · OWNER REVIEW
+  - generic "Nuttie design tokens" [ref=e10]:
+    - generic [ref=e11]: Chestnut / 品牌主色
+    - generic [ref=e13]: Sprout / 行动成功
+    - generic [ref=e15]: Amber / 提醒重点
+    - generic [ref=e17]: Sky / AI 与洞察
+    - generic [ref=e19]: 圆角 10 / 16 / 24
+    - generic [ref=e20]: 触控目标 ≥ 44px
+  - region "Nuttie visual concept frames" [ref=e21]:
+    - article [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: 01 / 今日总览
+        - generic [ref=e25]: 390 × 844
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]: 8月7日 · 星期五
+          - generic [ref=e30]: 本地模式
+        - generic [ref=e31]:
+          - generic [ref=e32]: 栗
+          - strong [ref=e33]: Nuttie
+        - generic [ref=e34]:
+          - img "拿着记录本的卡通栗子" [ref=e35]
+          - generic [ref=e37]:
+            - heading "早上好， 今天也稳稳来。" [level=2] [ref=e38]: 早上好，今天也稳稳来。
+            - generic [ref=e39]: Small steps, solid growth.
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - strong [ref=e42]: 今日进度
+            - generic [ref=e43]: 68%
+          - progressbar "今日进度" [ref=e44]
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e48]: 1,240
+              - text: 摄入 kcal
+            - generic [ref=e49]:
+              - generic [ref=e50]: 82g
+              - text: 蛋白质
+            - generic [ref=e51]:
+              - generic [ref=e52]: "6"
+              - text: 连续天
+        - generic [ref=e53]:
+          - button "记录一餐" [ref=e54] [cursor=pointer]
+          - button "喝水" [ref=e56] [cursor=pointer]
+          - button "记体重" [ref=e58] [cursor=pointer]
+          - button "记运动" [ref=e60] [cursor=pointer]
+        - navigation "主要导航" [ref=e62]:
+          - button "今天" [pressed] [ref=e63] [cursor=pointer]
+          - button "趋势" [ref=e64] [cursor=pointer]
+          - button "食物" [ref=e65] [cursor=pointer]
+          - button "设置" [ref=e66] [cursor=pointer]
+    - article [ref=e67]:
+      - generic [ref=e68]:
+        - generic [ref=e69]: 02 / 记录一餐
+        - generic [ref=e70]: 390 × 844
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - button "返回上一页" [ref=e74] [cursor=pointer]: ← 返回
+          - generic [ref=e75]: 草稿未保存
+        - generic [ref=e76]:
+          - generic [ref=e77]: 栗
+          - strong [ref=e78]: 记录这一餐
+        - tablist "餐次" [ref=e79]:
+          - tab "早餐" [selected] [ref=e80] [cursor=pointer]
+          - tab "午餐" [ref=e81] [cursor=pointer]
+          - tab "晚餐" [ref=e82] [cursor=pointer]
+          - tab "零食" [ref=e83] [cursor=pointer]
+        - button "搜索本地食物" [ref=e84] [cursor=pointer]
+        - button "扫描本地条码" [ref=e86] [cursor=pointer]:
+          - generic [ref=e87]: 扫描条码
+        - generic [ref=e88]: 先选来源，再确认份量。找不到时可以创建自己的食物，不会自动联网。
+        - generic [ref=e89]:
+          - img "端着餐碗陪伴记录的卡通栗子" [ref=e90]
+          - generic [ref=e92]:
+            - heading "这一餐， 慢慢记就好。" [level=2] [ref=e93]: 这一餐，慢慢记就好。
+            - generic [ref=e94]: AI 识别只在你主动确认后发送。
+        - button "检查并保存这条餐食记录" [ref=e95] [cursor=pointer]: 检查并保存
+        - navigation "主要导航" [ref=e96]:
+          - button "今天" [ref=e97] [cursor=pointer]
+          - button "趋势" [ref=e98] [cursor=pointer]
+          - button "食物" [pressed] [ref=e99] [cursor=pointer]
+          - button "设置" [ref=e100] [cursor=pointer]
+    - article [ref=e101]:
+      - generic [ref=e102]:
+        - generic [ref=e103]: 03 / 趋势成长
+        - generic [ref=e104]: 390 × 844
+      - generic [ref=e106]:
+        - generic [ref=e107]:
+          - generic [ref=e108]: 近 7 天
+          - generic [ref=e109]: 本地统计
+        - generic [ref=e110]:
+          - generic [ref=e111]: 栗
+          - strong [ref=e112]: 趋势成长
+        - generic [ref=e113]:
+          - img "给幼苗浇水的卡通栗子" [ref=e114]
+          - generic [ref=e116]:
+            - heading "看见一点点 变好的自己。" [level=2] [ref=e117]: 看见一点点变好的自己。
+            - generic [ref=e118]: 不追求完美，只看连续的行动。
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - strong [ref=e121]: 摄入与目标
+            - generic [ref=e122]: kcal / 日
+          - img "近7天摄入相对目标的柱状图：周一55%，周二72%，周三48%，周四64%，周五78%，周六60%，周日84%" [ref=e123]:
+            - emphasis [ref=e125]: 一
+            - emphasis [ref=e127]: 二
+            - emphasis [ref=e129]: 三
+            - emphasis [ref=e131]: 四
+            - emphasis [ref=e133]: 五
+            - emphasis [ref=e135]: 六
+            - emphasis [ref=e137]: 日
+          - paragraph [ref=e138]: 周日最高，为目标的 84%；近 7 天有 7 天本地记录。
+        - generic [ref=e139]: “今天比昨天多走了一小步。”连续记录 6 天 · 目标完成 4 天
+        - navigation "主要导航" [ref=e141]:
+          - button "今天" [ref=e142] [cursor=pointer]
+          - button "趋势" [pressed] [ref=e143] [cursor=pointer]
+          - button "食物" [ref=e144] [cursor=pointer]
+          - button "设置" [ref=e145] [cursor=pointer]
+  - generic [ref=e146]:
+    - generic [ref=e147]: "Palette: chestnut / sprout / amber / sky"
+    - generic [ref=e148]: "SVG assets: mascots + spot illustrations · Figma optional"
