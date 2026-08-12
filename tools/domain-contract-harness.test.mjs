@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { NUTRIENT_FIELDS } from "./nutrition-fields.mjs";
 import {
   aggregateNutritionSnapshots,
   dateContext,
@@ -50,6 +51,24 @@ test("aggregates known nutrients without converting missing values to zero", () 
   assert.equal(aggregate.completeness.fatG, "MISSING");
   assert.equal(aggregate.values.sodiumMg, 0);
   assert.equal(aggregate.completeness.sodiumMg, "PARTIAL");
+  assert.equal(aggregate.factQuality.energyKcal.legacyKnown, 2);
+  assert.equal(aggregate.factQuality.proteinG.legacyMissing, 1);
+  assert.equal(aggregate.factQuality.fatG.legacyMissing, 2);
+});
+
+test("rejects unversioned fact status claims before quality aggregation", () => {
+  const forged = structuredClone(nutritionSnapshot({
+    sourceId: "forged-source",
+    sourceVersion: "local-1",
+    nutrients: {},
+  }));
+  forged.facts = Object.fromEntries(NUTRIENT_FIELDS.map((field) => [field, {
+    value: null,
+    status: "MEASURED",
+  }]));
+  assert.throws(() => aggregateNutritionSnapshots([forged]), {
+    code: "UNVERIFIED_NUTRITION_FACTS",
+  });
 });
 
 test("summarizes only the selected local date and retains source versions", () => {
@@ -82,6 +101,7 @@ test("summarizes only the selected local date and retains source versions", () =
   assert.equal(empty.mealCount, 0);
   assert.equal(empty.values.energyKcal, null);
   assert.equal(empty.completeness.energyKcal, "MISSING");
+  assert.equal(empty.factQuality.energyKcal.missing, 0);
 });
 
 test("normalizes only explicit supported units", () => {

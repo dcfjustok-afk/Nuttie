@@ -5,6 +5,8 @@ import {
   PACK_SOURCE_KINDS,
   USER_NUTRIENT_STATUSES,
   createNutritionFactSnapshot,
+  normalizeNutritionFactSnapshotStructure,
+  validateNutritionFactSnapshotInput,
 } from "./nutrition-fact-snapshot-harness.mjs";
 
 const SOURCE_KINDS = Object.freeze({
@@ -23,6 +25,8 @@ const SOURCE_PRIORITY = Object.freeze({
 
 const CATALOG_DATA = new WeakMap();
 const VERIFIED_PACK_DATA = new WeakMap();
+const TRUSTED_PACK_SNAPSHOTS = new WeakSet();
+const TRUST_CONTEXTS = new WeakMap();
 const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const SHA256 = /^[a-f0-9]{64}$/;
 
@@ -32,8 +36,69 @@ function fail(message, code, details = {}) {
   throw error;
 }
 
-function clone(value) {
-  return value === undefined ? undefined : structuredClone(value);
+function packTrustFingerprint(snapshot) {
+  return JSON.stringify({
+    sourceId: snapshot.sourceId,
+    sourceVersion: snapshot.sourceVersion,
+    sourceKind: snapshot.sourceKind,
+    basis: snapshot.basis,
+    originalBasis: snapshot.originalBasis,
+    provenance: snapshot.provenance,
+    values: snapshot.values,
+    facts: snapshot.facts,
+  });
+}
+
+function issueVerifiedPackNutritionFactSnapshot(input) {
+  if (!PACK_SOURCE_KINDS.includes(input?.sourceKind)) {
+    fail("verified pack sourceKind is unsupported", "INVALID_SOURCE_KIND");
+  }
+  const snapshot = validateNutritionFactSnapshotInput(input);
+  TRUSTED_PACK_SNAPSHOTS.add(snapshot);
+  return snapshot;
+}
+
+function createNutritionSnapshotTrustContext(trustedSnapshots) {
+  if (!Array.isArray(trustedSnapshots) || trustedSnapshots.length === 0) {
+    fail("trustedSnapshots must be a non-empty array", "INVALID_TRUST_CONTEXT_INPUT");
+  }
+  const fingerprints = new Set(trustedSnapshots.map((snapshot, index) => {
+    if (!TRUSTED_PACK_SNAPSHOTS.has(snapshot)) {
+      fail(`trustedSnapshots[${index}] is not catalog-bound`, "UNTRUSTED_PACK_NUTRITION_SNAPSHOT");
+    }
+    return packTrustFingerprint(snapshot);
+  }));
+  const context = Object.freeze({ kind: "NUTRITION_SNAPSHOT_TRUST_CONTEXT" });
+  TRUST_CONTEXTS.set(context, fingerprints);
+  return context;
+}
+
+function normalizeNutritionFactSnapshot(input, { trustContext = null } = {}) {
+  const normalized = normalizeNutritionFactSnapshotStructure(input);
+  if (normalized.sourceKind !== SOURCE_KINDS.USER) {
+    const trustedFingerprints = TRUST_CONTEXTS.get(trustContext);
+    const trustedByContext = trustedFingerprints?.has(packTrustFingerprint(normalized)) === true;
+    if (!TRUSTED_PACK_SNAPSHOTS.has(input) && !trustedByContext) {
+      fail(
+        "pack nutrition snapshot is not bound to the verified catalog or trust context",
+        "UNTRUSTED_PACK_NUTRITION_SNAPSHOT",
+      );
+    }
+    TRUSTED_PACK_SNAPSHOTS.add(normalized);
+  }
+  return normalized;
+}
+
+function clone(value, seen = new Map()) {
+  if (value === undefined || value === null || typeof value !== "object") return value;
+  if (value.schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2") {
+    return normalizeNutritionFactSnapshot(value);
+  }
+  if (seen.has(value)) return seen.get(value);
+  const output = Array.isArray(value) ? [] : {};
+  seen.set(value, output);
+  for (const [key, child] of Object.entries(value)) output[key] = clone(child, seen);
+  return output;
 }
 
 function deepFreeze(value, seen = new Set()) {
@@ -170,7 +235,7 @@ function normalizeFoodRecord(input, source, field) {
     `${field}.sourceRecordId`,
     "INVALID_FOOD_RECORD",
   );
-  const nutrition = createNutritionFactSnapshot({
+  const snapshotInput = {
     sourceId: `${source.kind}.${source.sourceId}.${id}`,
     sourceVersion: source.sourceVersion,
     sourceKind: source.kind,
@@ -187,7 +252,10 @@ function normalizeFoodRecord(input, source, field) {
       packVersion: source.packVersion,
     },
     facts: input.nutrients,
-  });
+  };
+  const nutrition = source.kind === SOURCE_KINDS.USER
+    ? createNutritionFactSnapshot(snapshotInput)
+    : issueVerifiedPackNutritionFactSnapshot(snapshotInput);
   return {
     id: makeQualifiedFoodId(source.kind, source.sourceId, id),
     recordId: id,
@@ -557,9 +625,11 @@ export {
   PACK_SOURCE_KINDS,
   SOURCE_KINDS,
   USER_NUTRIENT_STATUSES,
+  createNutritionSnapshotTrustContext,
   createVerifiedPackCatalogSnapshot,
   createLocalFoodCatalog,
   lookupLocalFoodByGtin,
   makeQualifiedFoodId,
+  normalizeNutritionFactSnapshot,
   searchLocalFoods,
 };

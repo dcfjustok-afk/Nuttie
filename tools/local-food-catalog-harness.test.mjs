@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  createInMemoryManualMealRepository,
   createManualMealEntryState,
+  executeManualMealSave,
   requestManualMealSave,
   reviewManualMeal,
+  settleManualMealSave,
 } from "./manual-meal-entry-harness.mjs";
 
 import {
   NUTRIENT_UNITS,
   SOURCE_KINDS,
+  createNutritionSnapshotTrustContext,
   createVerifiedPackCatalogSnapshot,
   createLocalFoodCatalog,
   lookupLocalFoodByGtin,
@@ -351,17 +355,36 @@ test("missing, trace, estimated and numeric zero nutrition remain distinct", () 
   assert.equal(banana.nutrition.facts.fatG.status, "ESTIMATED");
 });
 
-test("a catalog fact snapshot survives manual meal review without semantic loss", () => {
+test("a catalog fact snapshot survives review, repository commit and settlement", async () => {
   const catalog = createLocalFoodCatalog({ installedPacks: [twPack] });
   const juice = searchLocalFoods(catalog, { query: "苹果汁" }).results[0];
+  const persistedJuice = structuredClone(juice.nutrition);
+  const trustContext = createNutritionSnapshotTrustContext([juice.nutrition]);
   const reviewed = reviewManualMeal(createManualMealEntryState({
     draft: {
       id: "meal-from-catalog",
       localDate: "2026-08-11",
-      nutrition: juice.nutrition,
+      nutrition: persistedJuice,
     },
-  }));
-  const saving = requestManualMealSave(reviewed, { commandId: "save-catalog-meal" });
+    nutritionTrustContext: trustContext,
+  }), { nutritionTrustContext: trustContext });
+  const saving = requestManualMealSave(reviewed, {
+    commandId: "save-catalog-meal",
+    nutritionTrustContext: trustContext,
+  });
+  const repository = createInMemoryManualMealRepository({ nutritionTrustContext: trustContext });
+  const outcome = await executeManualMealSave(
+    repository,
+    saving.effect,
+    { nutritionTrustContext: trustContext },
+  );
+  const saved = settleManualMealSave(saving.state, outcome);
+  const replayOutcome = await executeManualMealSave(
+    repository,
+    saving.effect,
+    { nutritionTrustContext: trustContext },
+  );
+  const replayed = settleManualMealSave(saving.state, replayOutcome);
 
   assert.equal(reviewed.status, "REVIEW_READY");
   assert.equal(reviewed.draft.nutrition.schemaVersion, "NUTRITION_FACT_SNAPSHOT_V2");
@@ -369,8 +392,16 @@ test("a catalog fact snapshot survives manual meal review without semantic loss"
   assert.equal(reviewed.draft.nutrition.facts.fiberG.originalText, "Tr");
   assert.deepEqual(reviewed.draft.nutrition.basis, grams100Basis);
   assert.equal(reviewed.previewSummary.completeness.fiberG, "MISSING");
+  assert.equal(reviewed.previewSummary.factQuality.fiberG.trace, 1);
+  assert.equal(reviewed.previewSummary.factQuality.fiberG.missing, 0);
   assert.equal(saving.state.pendingCommand.meal.nutrition.facts.fiberG.status, "TRACE");
   assert.equal(saving.state.pendingCommand.meal.nutrition.provenance.sourceRecordId, "apple-juice");
+  assert.equal(saved.status, "SAVED");
+  assert.equal(saved.committedSummary.factQuality.fiberG.trace, 1);
+  assert.equal(repository.snapshot().meals[0].nutrition.facts.fiberG.status, "TRACE");
+  assert.equal(replayed.receipt.disposition, "REPLAYED");
+  assert.equal(replayed.committedSummary.factQuality.fiberG.trace, 1);
+  assert.equal(repository.snapshot().meals.length, 1);
 });
 
 test("unit conversion, basis transformation and trace semantics fail closed", () => {
@@ -404,6 +435,10 @@ test("source provenance and storage partitions stay isolated", () => {
   assert.equal(user.source.storagePartition, "SQLCIPHER_USER_FOOD");
   assert.equal(user.source.packId, null);
   assert.equal(upstream.source.storagePartition.startsWith("TW_FDA:"), true);
+  assert.equal(
+    upstream.source.storagePartition,
+    `${SOURCE_KINDS.TW_FDA}:${twPackInput.sourceId}:tw.food.nutrition.active`,
+  );
   assert.equal(upstream.nutrition.sourceVersion, twPackInput.sourceVersion);
   assert.equal(upstream.source.contentSha256, "a".repeat(64));
   assert.equal(upstream.nutrition.provenance.noticeSha256, "b".repeat(64));

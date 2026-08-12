@@ -8,7 +8,7 @@
 
 这个 harness 把“检查并保存一条手工餐食”的 Application 合同变成可执行证据。它复用现有 `dailyNutritionSummary`，但不创建正式 React Native 页面、状态管理模块、SQLite schema、ORM adapter 或生产 Repository。
 
-合同只接收调用方显式提供的 `entryId`、`commandId`、`localDate` 与七项营养快照。它兼容基础数字快照与 `NUTRITION_FACT_SNAPSHOT_V2`；V2 的 fact 状态、原值/原单位、basis 和 provenance 会完整进入草稿、命令与 Repository 回读，幂等 fingerprint 也覆盖完整快照。它不读取当前时钟、不生成标识，也不推导默认餐次、营养目标、`Left`、宏量比例、健康评分或建议。
+合同只接收调用方显式提供的 `entryId`、`commandId`、`localDate` 与七项营养快照。它兼容明确无版本的基础数字快照与 `NUTRITION_FACT_SNAPSHOT_V2`，未知版本失败关闭；V2 的 fact 状态、原值/原单位、basis 和 provenance 会完整进入草稿、命令与 Repository 回读，幂等 fingerprint 也覆盖完整快照。pack V2 在 Repository plain-data 往返时必须注入由已验证 catalog 快照建立的 trust context。它不读取当前时钟、不生成标识，也不推导默认餐次、营养目标、`Left`、宏量比例、健康评分或建议。
 
 ## 状态合同
 
@@ -59,7 +59,7 @@ listMealsByLocalDate(localDate)
 
 `createInMemoryManualMealRepository` 只是测试 fake。它提供同一 `commandId` 幂等表、餐食集合、提交前故障和提交后响应丢失的注入点，以证明上述语义；它不决定 D-020、SQLite 表、索引、事务 API 或 ORM。
 
-当前 22 项测试覆盖：初始无默认值、有效/无效检查、预览失效、可观察 `SAVING`、重复点击抑制、完整提交、既有记录聚合、缺失值保留、提交前零写入、提交后未知结果重放、幂等冲突、重复 `entryId`、attempt 迟到回调、伪造结算、Repository 内部一致性、canonical 字段 allowlist、plain-data 边界、深拷贝冻结与终态保护。
+当前 24 项测试覆盖：初始无默认值、有效/无效检查、未知版本拒绝、V2 fact-only 幂等冲突、预览失效、可观察 `SAVING`、重复点击抑制、完整提交、既有记录聚合、缺失值保留、提交前零写入、提交后未知结果重放、幂等冲突、重复 `entryId`、attempt 迟到回调、伪造结算、Repository 内部一致性、canonical 字段 allowlist、plain-data 边界、深拷贝冻结与终态保护。catalog 测试另覆盖 pack V2 的 commit、settle 与 replay。
 
 两个 `Promise.all` 用例只证明当前单进程 fake 会把“同命令并发”收敛为 `COMMITTED + REPLAYED`，并把“不同命令争用同一 entry”收敛为一次提交和一次拒绝。它们不证明真实 SQLite adapter 的进程/线程并发；正式实现仍需 barrier、事务竞争和进程终止集成测试。
 
@@ -77,5 +77,7 @@ node --test tools/domain-contract-harness.test.mjs tools/domain-fixture-corpus.t
 node project-ops/validate.mjs
 git diff --check
 ```
+
+`createManualMealEntryState`、`reviewManualMeal`、`requestManualMealSave`、Repository fake 与执行器均显式接收同一个 catalog trust context。测试先对 pack V2 做 `structuredClone` 模拟数据库回读/进程重启，再覆盖 review、commit、settle 与 replay，避免只依赖同进程对象身份。
 
 这些命令只证明框架无关合同。正式 Repository 必须在 Owner 门禁满足、工程初始化和 D-020 选型完成后，用 SQLite/SQLCipher 事务、进程终止恢复和真机测试重新提供证据。

@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 
-import { NUTRIENT_FIELDS } from "./domain-contract-harness.mjs";
+import { NUTRIENT_FIELDS } from "./nutrition-fields.mjs";
 
 const NUTRIENT_UNITS = Object.freeze({
   energyKcal: "kcal",
@@ -124,6 +124,13 @@ function normalizeUnitToken(value, field) {
     fail(`${field} is unsupported`, "UNSUPPORTED_NUTRIENT_UNIT", { field });
   }
   return token;
+}
+
+function traceTextUnit(value) {
+  const match = value.normalize("NFKC").trim().match(
+    /^<\s*\d+(?:[.,]\d+)?\s*(kcal|kj|g|mg)$/iu,
+  );
+  return match ? match[1].toLocaleLowerCase("en-US") : null;
 }
 
 function unitFactor(field, originalUnit) {
@@ -262,7 +269,13 @@ function normalizeFact(input, field, sourceKind, transformVersion) {
       || !TRACE_TEXT.test(originalText.normalize("NFKC").trim())) {
       fail(`${field} trace state is inconsistent`, "INVALID_NUTRIENT_FACT", { field });
     }
-    unitFactor(field.split(".").at(-1), input.originalUnit);
+    const nutrient = field.split(".").at(-1);
+    unitFactor(nutrient, input.originalUnit);
+    const embeddedUnit = traceTextUnit(originalText);
+    if (embeddedUnit !== null
+      && embeddedUnit !== normalizeUnitToken(input.originalUnit, `${field}.originalUnit`)) {
+      fail(`${field} trace text and originalUnit disagree`, "TRACE_UNIT_MISMATCH", { field });
+    }
   } else {
     const nutrient = field.split(".").at(-1);
     const value = assertNumber(input.value, `${field}.value`);
@@ -288,7 +301,7 @@ function normalizeFact(input, field, sourceKind, transformVersion) {
   };
 }
 
-function createNutritionFactSnapshot(input) {
+function buildNutritionFactSnapshot(input) {
   assertExactKeys(
     input,
     [
@@ -353,7 +366,17 @@ function createNutritionFactSnapshot(input) {
   });
 }
 
-function normalizeNutritionFactSnapshot(input) {
+function createNutritionFactSnapshot(input) {
+  if (input?.sourceKind !== "USER") {
+    fail(
+      "pack nutrition snapshots must be issued by the verified catalog port",
+      "VERIFIED_PACK_ISSUER_REQUIRED",
+    );
+  }
+  return buildNutritionFactSnapshot(input);
+}
+
+function normalizeNutritionFactSnapshotStructure(input) {
   assertExactKeys(
     input,
     [
@@ -402,7 +425,7 @@ function normalizeNutritionFactSnapshot(input) {
       ...(fact.originalText === null ? {} : { originalText: fact.originalText }),
     }];
   }));
-  const normalized = createNutritionFactSnapshot({
+  const normalized = buildNutritionFactSnapshot({
     sourceId: input.sourceId,
     sourceVersion: input.sourceVersion,
     sourceKind: input.sourceKind,
@@ -417,6 +440,21 @@ function normalizeNutritionFactSnapshot(input) {
   return normalized;
 }
 
+function normalizeNutritionFactSnapshot(input) {
+  const normalized = normalizeNutritionFactSnapshotStructure(input);
+  if (normalized.sourceKind !== "USER") {
+    fail(
+      "pack nutrition snapshots must cross the verified catalog boundary",
+      "VERIFIED_PACK_ISSUER_REQUIRED",
+    );
+  }
+  return normalized;
+}
+
+function validateNutritionFactSnapshotInput(input) {
+  return buildNutritionFactSnapshot(input);
+}
+
 export {
   NUTRIENT_UNITS,
   PACK_NUTRIENT_STATUSES,
@@ -424,4 +462,6 @@ export {
   USER_NUTRIENT_STATUSES,
   createNutritionFactSnapshot,
   normalizeNutritionFactSnapshot,
+  normalizeNutritionFactSnapshotStructure,
+  validateNutritionFactSnapshotInput,
 };

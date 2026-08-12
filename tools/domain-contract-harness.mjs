@@ -1,12 +1,5 @@
-const NUTRIENT_FIELDS = Object.freeze([
-  "energyKcal",
-  "proteinG",
-  "carbohydrateG",
-  "fatG",
-  "fiberG",
-  "sugarG",
-  "sodiumMg",
-]);
+import { normalizeNutritionFactSnapshot } from "./local-food-catalog-harness.mjs";
+import { NUTRIENT_FIELDS } from "./nutrition-fields.mjs";
 
 const MASS_TO_GRAMS = Object.freeze({
   mg: 0.001,
@@ -163,6 +156,22 @@ function assertNutritionSnapshot(snapshot, field = "nutritionSnapshot") {
     fail(`${field}.values must be an object`, { code: "INVALID_NUTRIENTS", field });
   }
   assertSafeObject(snapshot.values, `${field}.values`);
+  const schemaVersion = snapshot.schemaVersion ?? null;
+  if (schemaVersion !== null && schemaVersion !== "NUTRITION_FACT_SNAPSHOT_V2") {
+    fail(`${field}.schemaVersion is unsupported`, {
+      code: "UNSUPPORTED_NUTRITION_SNAPSHOT",
+      field,
+    });
+  }
+  if (schemaVersion === null && Object.hasOwn(snapshot, "facts")) {
+    fail(`${field}.facts require a versioned snapshot`, {
+      code: "UNVERIFIED_NUTRITION_FACTS",
+      field,
+    });
+  }
+  if (schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2") {
+    normalizeNutritionFactSnapshot(snapshot);
+  }
   for (const nutrientField of NUTRIENT_FIELDS) {
     const value = snapshot.values[nutrientField];
     if (value !== null) nonNegativeNumber(value, `${field}.values.${nutrientField}`);
@@ -202,6 +211,7 @@ function aggregateNutritionSnapshots(snapshots) {
   snapshots.forEach((snapshot, index) => assertNutritionSnapshot(snapshot, `snapshots[${index}]`));
   const values = {};
   const completeness = {};
+  const factQuality = {};
   for (const field of NUTRIENT_FIELDS) {
     const knownValues = snapshots
       .map((snapshot) => snapshot.values[field])
@@ -214,11 +224,38 @@ function aggregateNutritionSnapshots(snapshots) {
       : knownValues.length === snapshots.length
         ? "COMPLETE"
         : "PARTIAL";
+    const counts = {
+      sourceReported: 0,
+      measured: 0,
+      estimated: 0,
+      userEntered: 0,
+      userConfirmed: 0,
+      trace: 0,
+      missing: 0,
+      legacyKnown: 0,
+      legacyMissing: 0,
+    };
+    for (const snapshot of snapshots) {
+      const status = snapshot.schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2"
+        ? snapshot.facts[field].status
+        : null;
+      if (status === "SOURCE_REPORTED") counts.sourceReported += 1;
+      else if (status === "MEASURED") counts.measured += 1;
+      else if (status === "ESTIMATED") counts.estimated += 1;
+      else if (status === "USER_ENTERED") counts.userEntered += 1;
+      else if (status === "USER_CONFIRMED") counts.userConfirmed += 1;
+      else if (status === "TRACE" || status === "USER_ENTERED_TRACE") counts.trace += 1;
+      else if (status === "MISSING") counts.missing += 1;
+      else if (snapshot.values[field] === null) counts.legacyMissing += 1;
+      else counts.legacyKnown += 1;
+    }
+    factQuality[field] = Object.freeze(counts);
   }
   return Object.freeze({
     snapshotCount: snapshots.length,
     values: Object.freeze(values),
     completeness: Object.freeze(completeness),
+    factQuality: Object.freeze(factQuality),
   });
 }
 
@@ -248,6 +285,7 @@ function dailyNutritionSummary({ meals, localDate }) {
     mealCount: selectedMeals.length,
     values: aggregate.values,
     completeness: aggregate.completeness,
+    factQuality: aggregate.factQuality,
     sources: Object.freeze(sources),
   });
 }

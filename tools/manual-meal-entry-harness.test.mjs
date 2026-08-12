@@ -3,6 +3,10 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { nutritionSnapshot } from "./domain-contract-harness.mjs";
 import {
+  NUTRIENT_UNITS,
+  createNutritionFactSnapshot,
+} from "./nutrition-fact-snapshot-harness.mjs";
+import {
   createInMemoryManualMealRepository,
   createManualMealEntryState,
   editManualMealDraft,
@@ -29,6 +33,46 @@ function savingState(draft = meal(), commandId = "cmd-1") {
   const editing = createManualMealEntryState({ draft });
   const reviewed = reviewManualMeal(editing);
   return requestManualMealSave(reviewed, { commandId });
+}
+
+function userFactSnapshot({ sourceRecordId = "user-food-1", proteinStatus = "USER_ENTERED" } = {}) {
+  const values = {
+    energyKcal: 320,
+    proteinG: 12,
+    carbohydrateG: 20,
+    fatG: 8,
+    fiberG: 2,
+    sugarG: 0,
+    sodiumMg: 100,
+  };
+  const facts = Object.fromEntries(Object.entries(values).map(([field, value]) => [field, {
+    value,
+    status: field === "proteinG" ? proteinStatus : "USER_ENTERED",
+    originalValue: value,
+    originalUnit: NUTRIENT_UNITS[field],
+  }]));
+  return createNutritionFactSnapshot({
+    sourceId: `USER.local-user.${sourceRecordId}`,
+    sourceVersion: "rev-1",
+    sourceKind: "USER",
+    basis: { amount: 1, unit: "serving", semantic: "DECLARED_SERVING" },
+    originalBasis: { amount: 1, unit: "serving", semantic: "DECLARED_SERVING" },
+    provenance: {
+      sourceRecordId,
+      transformVersion: "USER_INPUT_V1",
+      activeRef: null,
+      contentSha256: null,
+      licenseId: null,
+      noticeSha256: null,
+      packId: null,
+      packVersion: null,
+    },
+    facts,
+  });
+}
+
+function factMeal(id = "fact-meal", nutrition = userFactSnapshot()) {
+  return { id, localDate: "2026-08-11", nutrition };
 }
 
 test("starts in editing without inventing a date, meal type, or nutrition target", () => {
@@ -62,6 +106,31 @@ test("keeps an invalid draft editable and never creates a save effect", () => {
   assert.throws(() => requestManualMealSave(reviewed, { commandId: "cmd-invalid" }), {
     code: "INVALID_TRANSITION",
   });
+});
+
+test("rejects an unknown nutrition snapshot version instead of treating it as legacy", () => {
+  const unknown = structuredClone(factMeal());
+  unknown.nutrition.schemaVersion = "NUTRITION_FACT_SNAPSHOT_V3";
+  const reviewed = reviewManualMeal(createManualMealEntryState({ draft: unknown }));
+  assert.equal(reviewed.status, "EDITING");
+  assert.equal(reviewed.validationError.code, "UNSUPPORTED_NUTRITION_SNAPSHOT");
+});
+
+test("V2 fact-only changes participate in the idempotency fingerprint", async () => {
+  const repository = createInMemoryManualMealRepository();
+  const first = savingState(factMeal(), "v2-command");
+  const committed = await executeManualMealSave(repository, first.effect);
+  assert.equal(committed.status, "SUCCESS");
+
+  const changed = factMeal(
+    "fact-meal-2",
+    userFactSnapshot({ sourceRecordId: "user-food-2", proteinStatus: "USER_CONFIRMED" }),
+  );
+  const second = savingState(changed, "v2-command");
+  const conflict = await executeManualMealSave(repository, second.effect);
+  assert.equal(conflict.status, "FAILURE");
+  assert.equal(conflict.error.code, "IDEMPOTENCY_CONFLICT");
+  assert.equal(repository.snapshot().meals.length, 1);
 });
 
 test("editing a reviewed draft invalidates its preview and command context", () => {

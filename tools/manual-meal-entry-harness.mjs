@@ -1,5 +1,5 @@
 import { dailyNutritionSummary } from "./domain-contract-harness.mjs";
-import { normalizeNutritionFactSnapshot } from "./nutrition-fact-snapshot-harness.mjs";
+import { normalizeNutritionFactSnapshot } from "./local-food-catalog-harness.mjs";
 
 const STATUSES = Object.freeze({
   EDITING: "EDITING",
@@ -25,8 +25,18 @@ function fail(message, code, details = {}) {
   throw error;
 }
 
-function clone(value) {
-  return value === undefined ? undefined : structuredClone(value);
+function clone(value, seen = new Map(), nutritionTrustContext = null) {
+  if (value === undefined || value === null || typeof value !== "object") return value;
+  if (value.schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2") {
+    return normalizeNutritionFactSnapshot(value, { trustContext: nutritionTrustContext });
+  }
+  if (seen.has(value)) return seen.get(value);
+  const output = Array.isArray(value) ? [] : {};
+  seen.set(value, output);
+  for (const [key, child] of Object.entries(value)) {
+    output[key] = clone(child, seen, nutritionTrustContext);
+  }
+  return output;
 }
 
 function assertSerializableValue(value, field, seen = new Set()) {
@@ -65,8 +75,8 @@ function deepFreeze(value, seen = new Set()) {
   return Object.freeze(value);
 }
 
-function immutable(value) {
-  return deepFreeze(clone(value));
+function immutable(value, nutritionTrustContext = null) {
+  return deepFreeze(clone(value, new Map(), nutritionTrustContext));
 }
 
 function assertRecord(value, field) {
@@ -80,6 +90,15 @@ function assertRecord(value, field) {
   return value;
 }
 
+function assertRecordWithCode(value, field, code) {
+  try {
+    return assertRecord(value, field);
+  } catch (error) {
+    if (error.code === "INVALID_RECORD") fail(error.message, code, { field });
+    throw error;
+  }
+}
+
 function assertNonEmptyString(value, field, code) {
   if (typeof value !== "string" || value.trim().length === 0) {
     fail(`${field} is required`, code, { field });
@@ -87,11 +106,17 @@ function assertNonEmptyString(value, field, code) {
   return value;
 }
 
-function normalizeMeal(meal, field = "meal") {
+function normalizeMeal(meal, field = "meal", { nutritionTrustContext = null } = {}) {
   assertRecord(meal, field);
   assertNonEmptyString(meal.id, `${field}.id`, "MISSING_MEAL_ID");
-  const nutrition = meal.nutrition?.schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2"
-    ? normalizeNutritionFactSnapshot(meal.nutrition)
+  const schemaVersion = meal.nutrition?.schemaVersion;
+  if (schemaVersion !== undefined
+    && schemaVersion !== null
+    && schemaVersion !== "NUTRITION_FACT_SNAPSHOT_V2") {
+    fail("nutrition snapshot schemaVersion is unsupported", "UNSUPPORTED_NUTRITION_SNAPSHOT");
+  }
+  const nutrition = schemaVersion === "NUTRITION_FACT_SNAPSHOT_V2"
+    ? normalizeNutritionFactSnapshot(meal.nutrition, { trustContext: nutritionTrustContext })
     : (() => {
       const values = Object.fromEntries(NUTRIENT_FIELDS.map((nutrient) => [
         nutrient,
@@ -116,7 +141,7 @@ function normalizeMeal(meal, field = "meal") {
   });
 }
 
-function baseState({ status = STATUSES.EDITING, draft = null } = {}) {
+function baseState({ status = STATUSES.EDITING, draft = null } = {}, nutritionTrustContext = null) {
   return immutable({
     status,
     draft,
@@ -128,7 +153,7 @@ function baseState({ status = STATUSES.EDITING, draft = null } = {}) {
     saveError: null,
     receipt: null,
     committedSummary: null,
-  });
+  }, nutritionTrustContext);
 }
 
 function assertState(state) {
@@ -140,9 +165,11 @@ function assertState(state) {
   return state;
 }
 
-function createManualMealEntryState({ draft = null } = {}) {
+function createManualMealEntryState({ draft = null, nutritionTrustContext = null } = {}) {
   if (draft !== null) assertSerializableValue(draft, "draft");
-  return baseState({ draft: draft === null ? null : clone(draft) });
+  return baseState({
+    draft: draft === null ? null : clone(draft, new Map(), nutritionTrustContext),
+  }, nutritionTrustContext);
 }
 
 function editManualMealDraft(state, draft) {
@@ -157,51 +184,54 @@ function editManualMealDraft(state, draft) {
   return baseState({ draft: clone(draft) });
 }
 
-function reviewManualMeal(state) {
+function reviewManualMeal(state, { nutritionTrustContext = null } = {}) {
   assertState(state);
   if (state.status !== STATUSES.EDITING) {
     fail("only an editing draft can be reviewed", "INVALID_TRANSITION");
   }
   try {
-    const draft = normalizeMeal(state.draft, "draft");
+    const draft = normalizeMeal(state.draft, "draft", { nutritionTrustContext });
     const previewSummary = dailyNutritionSummary({
       localDate: draft.localDate,
       meals: [draft],
     });
     return immutable({
-      ...baseState({ status: STATUSES.REVIEW_READY, draft }),
+      ...baseState({ status: STATUSES.REVIEW_READY, draft }, nutritionTrustContext),
       previewSummary,
-    });
+    }, nutritionTrustContext);
   } catch (error) {
     return immutable({
-      ...baseState({ draft: state.draft }),
+      ...baseState({ draft: state.draft }, nutritionTrustContext),
       validationError: {
         code: error.code ?? "INVALID_DRAFT",
         field: error.field ?? null,
       },
-    });
+    }, nutritionTrustContext);
   }
 }
 
-function requestManualMealSave(state, { commandId } = {}) {
+function requestManualMealSave(state, { commandId, nutritionTrustContext = null } = {}) {
   assertState(state);
   if (state.status === STATUSES.SAVING) {
-    return immutable({ state, effect: null });
+    return immutable({ state, effect: null }, nutritionTrustContext);
   }
   if (state.status !== STATUSES.REVIEW_READY) {
     fail("only a reviewed draft can be saved", "INVALID_TRANSITION");
   }
   assertNonEmptyString(commandId, "commandId", "MISSING_COMMAND_ID");
-  const command = immutable({ commandId, meal: normalizeMeal(state.draft) });
+  const command = immutable({
+    commandId,
+    meal: normalizeMeal(state.draft, "draft", { nutritionTrustContext }),
+  }, nutritionTrustContext);
   const pendingAttempt = 1;
   const pendingFingerprint = commandFingerprint(command);
   const savingState = immutable({
-    ...baseState({ status: STATUSES.SAVING, draft: state.draft }),
+    ...baseState({ status: STATUSES.SAVING, draft: state.draft }, nutritionTrustContext),
     previewSummary: state.previewSummary,
     pendingCommand: command,
     pendingAttempt,
     pendingFingerprint,
-  });
+  }, nutritionTrustContext);
   return immutable({
     state: savingState,
     effect: {
@@ -210,7 +240,7 @@ function requestManualMealSave(state, { commandId } = {}) {
       attempt: pendingAttempt,
       fingerprint: pendingFingerprint,
     },
-  });
+  }, nutritionTrustContext);
 }
 
 function retryManualMealSave(state) {
@@ -278,8 +308,14 @@ function validateCommittedSummary(summary, command) {
   }
   assertRecord(summary.values, "committedSummary.values");
   assertRecord(summary.completeness, "committedSummary.completeness");
+  assertRecordWithCode(
+    summary.factQuality,
+    "committedSummary.factQuality",
+    "INVALID_COMMITTED_SUMMARY",
+  );
   const values = {};
   const completeness = {};
+  const factQuality = {};
   for (const field of NUTRIENT_FIELDS) {
     const value = summary.values[field];
     if (value !== null && (typeof value !== "number" || !Number.isFinite(value) || value < 0)) {
@@ -293,6 +329,44 @@ function validateCommittedSummary(summary, command) {
     }
     values[field] = value;
     completeness[field] = summary.completeness[field];
+    assertRecordWithCode(
+      summary.factQuality[field],
+      `committedSummary.factQuality.${field}`,
+      "INVALID_COMMITTED_SUMMARY",
+    );
+    factQuality[field] = {};
+    const qualityFields = [
+      "sourceReported",
+      "measured",
+      "estimated",
+      "userEntered",
+      "userConfirmed",
+      "trace",
+      "missing",
+      "legacyKnown",
+      "legacyMissing",
+    ];
+    if (Object.keys(summary.factQuality[field]).length !== qualityFields.length
+      || Object.keys(summary.factQuality[field]).some((quality) => !qualityFields.includes(quality))) {
+      fail("committed summary fact quality has an unexpected shape", "INVALID_COMMITTED_SUMMARY", {
+        field,
+      });
+    }
+    for (const quality of qualityFields) {
+      const count = summary.factQuality[field][quality];
+      if (!Number.isInteger(count) || count < 0) {
+        fail("committed summary fact quality is invalid", "INVALID_COMMITTED_SUMMARY", {
+          field: `${field}.${quality}`,
+        });
+      }
+      factQuality[field][quality] = count;
+    }
+    const qualityCount = Object.values(factQuality[field]).reduce((total, count) => total + count, 0);
+    if (qualityCount !== summary.mealCount) {
+      fail("committed summary fact quality count is inconsistent", "INVALID_COMMITTED_SUMMARY", {
+        field,
+      });
+    }
   }
   if (!Array.isArray(summary.sources)) {
     fail("committed summary sources are invalid", "INVALID_COMMITTED_SUMMARY");
@@ -330,9 +404,10 @@ function validateCommittedSummary(summary, command) {
       localDate: command.meal.localDate,
       meals: [command.meal],
     });
-    if (JSON.stringify({ values, completeness, sources }) !== JSON.stringify({
+    if (JSON.stringify({ values, completeness, factQuality, sources }) !== JSON.stringify({
       values: expected.values,
       completeness: expected.completeness,
+      factQuality: expected.factQuality,
       sources: expected.sources,
     })) {
       fail("single-meal summary differs from the saved meal", "INVALID_COMMITTED_SUMMARY");
@@ -343,13 +418,18 @@ function validateCommittedSummary(summary, command) {
     mealCount: summary.mealCount,
     values,
     completeness,
+    factQuality,
     sources,
   });
 }
 
-function validateListedMeals(meals, command) {
+function validateListedMeals(meals, command, { nutritionTrustContext = null } = {}) {
   if (!Array.isArray(meals)) fail("repository query must return an array", "INVALID_REPOSITORY_RESULT");
-  const normalized = meals.map((meal, index) => normalizeMeal(meal, `meals[${index}]`));
+  const normalized = meals.map((meal, index) => normalizeMeal(
+    meal,
+    `meals[${index}]`,
+    { nutritionTrustContext },
+  ));
   const ids = new Set();
   for (const meal of normalized) {
     if (meal.localDate !== command.meal.localDate) {
@@ -366,7 +446,7 @@ function validateListedMeals(meals, command) {
   return immutable(normalized);
 }
 
-async function executeManualMealSave(repository, effect) {
+async function executeManualMealSave(repository, effect, { nutritionTrustContext = null } = {}) {
   if (!repository || (typeof repository !== "object" && typeof repository !== "function")) {
     fail("repository must be an object", "INVALID_REPOSITORY_PORT");
   }
@@ -377,8 +457,8 @@ async function executeManualMealSave(repository, effect) {
   }
   const command = immutable({
     commandId: assertNonEmptyString(effect.command?.commandId, "commandId", "MISSING_COMMAND_ID"),
-    meal: normalizeMeal(effect.command?.meal),
-  });
+    meal: normalizeMeal(effect.command?.meal, "meal", { nutritionTrustContext }),
+  }, nutritionTrustContext);
   if (!Number.isInteger(effect.attempt) || effect.attempt < 1) {
     fail("effect attempt is invalid", "INVALID_EFFECT");
   }
@@ -417,6 +497,7 @@ async function executeManualMealSave(repository, effect) {
     const meals = validateListedMeals(
       await repository.listMealsByLocalDate(command.meal.localDate),
       command,
+      { nutritionTrustContext },
     );
     const committedSummary = dailyNutritionSummary({
       localDate: command.meal.localDate,
@@ -492,7 +573,11 @@ function repositoryError(code, outcome, retryable = true) {
   return error;
 }
 
-function createInMemoryManualMealRepository({ meals = [], failurePlan = [] } = {}) {
+function createInMemoryManualMealRepository({
+  meals = [],
+  failurePlan = [],
+  nutritionTrustContext = null,
+} = {}) {
   if (!Array.isArray(failurePlan) || failurePlan.some((failure) => !new Set([
     "BEFORE_COMMIT",
     "AFTER_COMMIT",
@@ -506,19 +591,23 @@ function createInMemoryManualMealRepository({ meals = [], failurePlan = [] } = {
 
   function validateInitialMeals(initialMeals) {
     if (!Array.isArray(initialMeals)) fail("initial meals must be an array", "INVALID_MEALS");
-    const normalized = initialMeals.map((meal, index) => normalizeMeal(meal, `meals[${index}]`));
+    const normalized = initialMeals.map((meal, index) => normalizeMeal(
+      meal,
+      `meals[${index}]`,
+      { nutritionTrustContext },
+    ));
     if (new Set(normalized.map(({ id }) => id)).size !== normalized.length) {
       fail("initial meals contain duplicate ids", "DUPLICATE_MEAL_ID");
     }
-    return normalized.map(clone);
+    return normalized.map((meal) => clone(meal, new Map(), nutritionTrustContext));
   }
 
   async function saveManualMeal(input) {
     calls.save += 1;
     const command = immutable({
       commandId: assertNonEmptyString(input?.commandId, "commandId", "MISSING_COMMAND_ID"),
-      meal: normalizeMeal(input?.meal),
-    });
+      meal: normalizeMeal(input?.meal, "meal", { nutritionTrustContext }),
+    }, nutritionTrustContext);
     const fingerprint = commandFingerprint(command);
     const prior = idempotency.get(command.commandId);
     if (prior) {
@@ -540,9 +629,15 @@ function createInMemoryManualMealRepository({ meals = [], failurePlan = [] } = {
       entryId: command.meal.id,
       localDate: command.meal.localDate,
     });
-    const nextRecords = [...records.map(clone), clone(command.meal)];
+    const nextRecords = [
+      ...records.map((record) => clone(record, new Map(), nutritionTrustContext)),
+      clone(command.meal, new Map(), nutritionTrustContext),
+    ];
     const nextIdempotency = new Map(idempotency);
-    nextIdempotency.set(command.commandId, { fingerprint, receipt: clone(receipt) });
+    nextIdempotency.set(command.commandId, {
+      fingerprint,
+      receipt: clone(receipt, new Map(), nutritionTrustContext),
+    });
     records = nextRecords;
     idempotency = nextIdempotency;
     if (failure === "AFTER_COMMIT") {
@@ -554,7 +649,10 @@ function createInMemoryManualMealRepository({ meals = [], failurePlan = [] } = {
   async function listMealsByLocalDate(localDate) {
     calls.list += 1;
     dailyNutritionSummary({ localDate, meals: [] });
-    return immutable(records.filter((meal) => meal.localDate === localDate));
+    return immutable(
+      records.filter((meal) => meal.localDate === localDate),
+      nutritionTrustContext,
+    );
   }
 
   function snapshot() {
@@ -563,7 +661,7 @@ function createInMemoryManualMealRepository({ meals = [], failurePlan = [] } = {
       commandIds: [...idempotency.keys()],
       calls,
       pendingFailures: plannedFailures,
-    });
+    }, nutritionTrustContext);
   }
 
   return Object.freeze({ saveManualMeal, listMealsByLocalDate, snapshot });
