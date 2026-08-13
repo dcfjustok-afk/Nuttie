@@ -119,23 +119,28 @@ PM 下一步从 `owner-intake.json` 指定的 OI-02 Bundle ID 状态卡继续，
 
 ## 8. 恢复与验证命令
 
-先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。当前实际仓库根目录是 `D:\aaaProject\Nuttie`。外部 `D:\study\Nuttie-Discovery-Workbench` 不存在，因此本轮没有伪造工作台 smoke；如恢复该工具，再用实际仓库路径启动：
+先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。仓库根目录必须从当前 checkout 动态解析，不能复用历史任务中的绝对路径。外部 `D:\study\Nuttie-Discovery-Workbench` 已恢复；本轮已从当前仓库重建静态快照并通过 live/static smoke，精确结果记录在 [工作台对账集成](workbench-reconcile-integration.md)。启动前仍应先解析实际仓库与工作台路径：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\aaaProject\Nuttie
+$repoRoot = (git rev-parse --show-toplevel).Trim()
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $repoRoot -PathType Container)) { throw "无法解析当前仓库根目录" }
+$repoRoot = (Resolve-Path -LiteralPath $repoRoot).Path
+$workbenchRoot = 'D:\study\Nuttie-Discovery-Workbench'
+if (-not (Test-Path -LiteralPath $workbenchRoot -PathType Container)) { throw "工作台目录不存在：$workbenchRoot" }
+node (Join-Path $workbenchRoot 'server.mjs') --port 4173 --workspace $repoRoot
 ```
 
 打开 `http://127.0.0.1:4173/`。基于已更新的 `project-ops/snapshots/current.json` 重建工作台静态副本并执行 smoke：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\aaaProject\Nuttie
-node D:\study\Nuttie-Discovery-Workbench\qa\smoke-test.mjs http://127.0.0.1:4173
+node (Join-Path $workbenchRoot 'qa\build-static-snapshot.mjs') $repoRoot
+node (Join-Path $workbenchRoot 'qa\smoke-test.mjs') http://127.0.0.1:4173
 ```
 
 若浏览器拒绝直接打开 D-038 本地文件，在仓库同源目录启动只绑定 loopback 的预览：
 
 ```powershell
-node D:\aaaProject\Nuttie\prototypes\d038-navigation-shell\server.mjs 4175
+node (Join-Path $repoRoot 'prototypes\d038-navigation-shell\server.mjs') 4175
 ```
 
 打开 `http://127.0.0.1:4175/`。端口冲突时可以换其他本地端口；不得把工作台或原型部署到公网。
@@ -143,8 +148,8 @@ node D:\aaaProject\Nuttie\prototypes\d038-navigation-shell\server.mjs 4175
 D-039 冻结预览使用独立 loopback 服务，并执行原型 smoke：
 
 ```powershell
-node D:\aaaProject\Nuttie\prototypes\d039-add-meal-entry\server.mjs 4176
-node D:\aaaProject\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0.1:4176/ $env:TEMP\Nuttie-D039-QA
+node (Join-Path $repoRoot 'prototypes\d039-add-meal-entry\server.mjs') 4176
+node (Join-Path $repoRoot 'prototypes\d039-add-meal-entry\qa-smoke.mjs') http://127.0.0.1:4176/ (Join-Path $env:TEMP 'Nuttie-D039-QA')
 ```
 
 打开 `http://127.0.0.1:4176/`。页面只用于评审，不保存 Owner 选择。
@@ -152,8 +157,8 @@ node D:\aaaProject\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127
 D-040 冻结预览和自动 QA：
 
 ```powershell
-node D:\aaaProject\Nuttie\prototypes\d040-onboarding-goals\server.mjs 4177
-node D:\aaaProject\Nuttie\prototypes\d040-onboarding-goals\qa-smoke.mjs http://127.0.0.1:4177/ $env:TEMP\Nuttie-D040-QA
+node (Join-Path $repoRoot 'prototypes\d040-onboarding-goals\server.mjs') 4177
+node (Join-Path $repoRoot 'prototypes\d040-onboarding-goals\qa-smoke.mjs') http://127.0.0.1:4177/ (Join-Path $env:TEMP 'Nuttie-D040-QA')
 ```
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。

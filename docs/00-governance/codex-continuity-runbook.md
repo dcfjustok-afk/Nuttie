@@ -93,10 +93,15 @@ Owner 决策的主交互通道是当前 Codex 聊天中的原生 `request_user_i
 
 ## 7. 本地工作台恢复
 
-仓库路径必须从当前线程的 workspace root 或 `git rev-parse --show-toplevel` 读取，不能假定旧 checkout。当前工作区示例为 `D:\aaaProject\Nuttie`；外部工作台默认路径仍为 `D:\study\Nuttie-Discovery-Workbench`。该目录不存在时如实记录“未运行”，不要伪造 smoke。存在时在 Windows PowerShell 中：
+仓库路径必须从当前线程的 workspace root 或 `git rev-parse --show-toplevel` 读取，不能假定旧 checkout。外部工作台默认路径仍为 `D:\study\Nuttie-Discovery-Workbench`。该目录不存在时如实记录“未运行”，不要伪造 smoke。存在时在 Windows PowerShell 中：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\server.mjs --port 4173 --workspace D:\aaaProject\Nuttie
+$repoRoot = (git rev-parse --show-toplevel).Trim()
+if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $repoRoot -PathType Container)) { throw "无法解析当前仓库根目录" }
+$repoRoot = (Resolve-Path -LiteralPath $repoRoot).Path
+$workbenchRoot = 'D:\study\Nuttie-Discovery-Workbench'
+if (-not (Test-Path -LiteralPath $workbenchRoot -PathType Container)) { throw "工作台目录不存在：$workbenchRoot" }
+node (Join-Path $workbenchRoot 'server.mjs') --port 4173 --workspace $repoRoot
 ```
 
 浏览器打开：
@@ -108,13 +113,13 @@ http://127.0.0.1:4173/
 重建可离线读取的静态快照：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\qa\build-static-snapshot.mjs D:\aaaProject\Nuttie
+node (Join-Path $workbenchRoot 'qa\build-static-snapshot.mjs') $repoRoot
 ```
 
 运行工作台 smoke：
 
 ```powershell
-node D:\study\Nuttie-Discovery-Workbench\qa\smoke-test.mjs http://127.0.0.1:4173
+node (Join-Path $workbenchRoot 'qa\smoke-test.mjs') http://127.0.0.1:4173
 ```
 
 若端口被占用，使用其他本地端口；不要把本地工作台部署到公网。静态快照不得包含 API key、Authorization、健康记录、照片、完整 prompt 或 AI 响应。
