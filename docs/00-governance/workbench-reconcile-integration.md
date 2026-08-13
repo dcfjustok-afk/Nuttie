@@ -29,19 +29,19 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 249 controlled instances
-ProjectOps validation: 104/104 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 250 controlled instances
+ProjectOps validation: 105/105 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 568/568 PASS
-Full repository suite: 691/691 PASS
-Repository source baseline: 132 events, 114 messages, 25 agents; the 2026-08-13 F09 food-insight availability contract is the latest registered artifact. It proves that seven trusted local nutrition facts retain source/missing/trace/estimated semantics, while health score, micronutrient labels, risks, and benefits stay in phased scope with zero authorized content exposure. It explicitly does not authorize algorithms, field sets, medical or personalized claims, AI generation, profile use, native code, or formal implementation. Earlier F19, F03, F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
+Tool contract harnesses: 581/581 PASS
+Full repository suite: 705/705 PASS
+Repository source baseline: 133 events, 114 messages, 25 agents; the 2026-08-13 F03 data-pack pre-auth contract is the latest registered artifact. It proves only tightening resource budgets, strict passive JSON and regular-file boundaries, exact manifest/entry/provenance/transform consistency, immutable subject fingerprints, and caller assertions bound to the exact subject. Caller assertions are not cryptographic verification; D-026 signature/trust roots, D-052 distribution licensing, activation, native code, and formal implementation remain unauthorized. Earlier F09, F19, F03 lookup, F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
 External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
-External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 132-event repository source
+External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 133-event repository source
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was not present for the F09 verification, so no current static copy
+workbench was not present for the data-pack verification, so no current static copy
 or live/static parity result is claimed. The following supporting-script digest
 belongs to the prior historical run and cannot substitute for a current run:
 

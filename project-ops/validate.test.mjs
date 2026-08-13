@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT,
+  PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 249,
+    instancesValidated: 250,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 132);
+  assert.equal(report.counts.events, 133);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -292,6 +292,39 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(foodInsightEvent.value.data.nativeApiCalls, 0);
   assert.equal(foodInsightEvent.value.data.realNetworkRequests, 0);
   assert.equal(foodInsightEvent.value.data.formalImplementationAuthorized, false);
+  const dataPackPreauthEvent = findEvent(VALID_MODEL, "EVT-20260813-007");
+  assert.equal(dataPackPreauthEvent.value.subject.id, "data-pack-preauth-contract");
+  assert.equal(dataPackPreauthEvent.value.data.featureId, "F03");
+  assert.equal(dataPackPreauthEvent.value.data.topLevelTests, 20);
+  assert.equal(dataPackPreauthEvent.value.data.fullSuitePassed, 704);
+  assert.equal(dataPackPreauthEvent.value.data.approvedDefaultLimitsBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.customLimitsCanOnlyTighten, true);
+  assert.equal(dataPackPreauthEvent.value.data.preAuthObjectKeysCounted, true);
+  assert.equal(dataPackPreauthEvent.value.data.preAuthStringBudgetBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.strictPassiveJsonBoundary, true);
+  assert.equal(dataPackPreauthEvent.value.data.regularFileOnly, true);
+  assert.equal(dataPackPreauthEvent.value.data.nfcAndCaseCollisionRejected, true);
+  assert.equal(dataPackPreauthEvent.value.data.manifestEntrySetExact, true);
+  assert.equal(dataPackPreauthEvent.value.data.manifestBytesBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.totalBytesBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.provenanceManifestIdentityBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.provenanceIdentitiesUnique, true);
+  assert.equal(dataPackPreauthEvent.value.data.transformVersionBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.transformStepIdsUnique, true);
+  assert.equal(dataPackPreauthEvent.value.data.packSubjectFingerprintBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.verificationEvidenceSubjectBound, true);
+  assert.equal(dataPackPreauthEvent.value.data.verificationTruth, "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS");
+  assert.equal(dataPackPreauthEvent.value.data.signatureProfile, "PENDING_D026");
+  assert.equal(dataPackPreauthEvent.value.data.activationStrategy, "PENDING_APPROVED_STRATEGY");
+  assert.equal(dataPackPreauthEvent.value.data.activationCommitted, false);
+  assert.equal(dataPackPreauthEvent.value.data.signatureAlgorithmSelected, false);
+  assert.equal(dataPackPreauthEvent.value.data.trustRootSelected, false);
+  assert.equal(dataPackPreauthEvent.value.data.licenseDistributionAuthorized, false);
+  assert.equal(dataPackPreauthEvent.value.data.filesystemReads, 0);
+  assert.equal(dataPackPreauthEvent.value.data.filesystemWrites, 0);
+  assert.equal(dataPackPreauthEvent.value.data.nativeApiCalls, 0);
+  assert.equal(dataPackPreauthEvent.value.data.realNetworkRequests, 0);
+  assert.equal(dataPackPreauthEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -337,7 +370,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 248);
+    assert.equal(report.schemaValidation.instancesValidated, 249);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -961,6 +994,41 @@ test("拒绝把 F09 能力保留合同越级为评分、微量、风险益处、
   assertDiagnostic(
     report,
     "OPS_FOOD_INSIGHT_AVAILABILITY_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝放宽数据包预算、伪造验证/激活或授权许可分发和正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-007");
+    event.value.data.customLimitsCanOnlyTighten = false;
+    event.value.data.preAuthObjectKeysCounted = false;
+    event.value.data.strictPassiveJsonBoundary = false;
+    event.value.data.regularFileOnly = false;
+    event.value.data.totalBytesBound = false;
+    event.value.data.provenanceManifestIdentityBound = false;
+    event.value.data.transformVersionBound = false;
+    event.value.data.packSubjectFingerprintBound = false;
+    event.value.data.verificationTruth = "CRYPTOGRAPHICALLY_VERIFIED";
+    event.value.data.signatureProfile = "ED25519_SELECTED";
+    event.value.data.activationStrategy = "ATOMIC_SWITCH";
+    event.value.data.activationCommitted = true;
+    event.value.data.signatureAlgorithmSelected = true;
+    event.value.data.trustRootSelected = true;
+    event.value.data.licenseDistributionAuthorized = true;
+    event.value.data.filesystemReads = 1;
+    event.value.data.filesystemWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_DATA_PACK_PREAUTH_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

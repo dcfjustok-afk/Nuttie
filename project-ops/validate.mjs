@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT",
+export const PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 132,
+    events: 133,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT = Object.freez
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 6,
+    "2026-08-13": 7,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -694,6 +694,49 @@ export const PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT = Object.freez
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  dataPackPreauthContract: Object.freeze({
+    eventId: "EVT-20260813-007",
+    subjectId: "data-pack-preauth-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F03",
+    requirementId: "REQ-F03",
+    acceptanceId: "AT-F03",
+    topLevelTests: 20,
+    fullSuitePassed: 704,
+    approvedDefaultLimitsBound: true,
+    customLimitsCanOnlyTighten: true,
+    preAuthObjectKeysCounted: true,
+    preAuthStringBudgetBound: true,
+    strictPassiveJsonBoundary: true,
+    regularFileOnly: true,
+    nfcAndCaseCollisionRejected: true,
+    manifestEntrySetExact: true,
+    manifestBytesBound: true,
+    totalBytesBound: true,
+    provenanceManifestIdentityBound: true,
+    provenanceIdentitiesUnique: true,
+    transformVersionBound: true,
+    transformStepIdsUnique: true,
+    packSubjectFingerprintBound: true,
+    verificationEvidenceSubjectBound: true,
+    verificationTruth: "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS",
+    signatureProfile: "PENDING_D026",
+    activationStrategy: "PENDING_APPROVED_STRATEGY",
+    activationCommitted: false,
+    signatureAlgorithmSelected: false,
+    trustRootSelected: false,
+    licenseDistributionAuthorized: false,
+    filesystemReads: 0,
+    filesystemWrites: 0,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeApiCalls: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1246,7 +1289,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2617,6 +2660,67 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_FOOD_INSIGHT_AVAILABILITY_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F09 合同只登记可信本地七项营养事实可用，并保留评分、微量、风险和益处能力范围但保持内容零暴露；不得授权算法、字段集、医学/个体化结论、AI、自动资料使用、原生或正式实现",
+    );
+  }
+
+  const dataPackPreauthEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.dataPackPreauthContract.subjectId,
+  );
+  const dataPackPreauthEvent = dataPackPreauthEvents[0]?.value;
+  const dataPackPreauthData = dataPackPreauthEvent?.data ?? {};
+  const dataPackPreauthBaseline = baseline.dataPackPreauthContract;
+  const dataPackPreauthFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "approvedDefaultLimitsBound",
+    "customLimitsCanOnlyTighten",
+    "preAuthObjectKeysCounted",
+    "preAuthStringBudgetBound",
+    "strictPassiveJsonBoundary",
+    "regularFileOnly",
+    "nfcAndCaseCollisionRejected",
+    "manifestEntrySetExact",
+    "manifestBytesBound",
+    "totalBytesBound",
+    "provenanceManifestIdentityBound",
+    "provenanceIdentitiesUnique",
+    "transformVersionBound",
+    "transformStepIdsUnique",
+    "packSubjectFingerprintBound",
+    "verificationEvidenceSubjectBound",
+    "verificationTruth",
+    "signatureProfile",
+    "activationStrategy",
+    "activationCommitted",
+    "signatureAlgorithmSelected",
+    "trustRootSelected",
+    "licenseDistributionAuthorized",
+    "filesystemReads",
+    "filesystemWrites",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeApiCalls",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    dataPackPreauthEvents.length !== 1 ||
+    dataPackPreauthEvent?.eventId !== dataPackPreauthBaseline.eventId ||
+    dataPackPreauthEvent?.type !== "ARTIFACT_CREATED" ||
+    dataPackPreauthEvent?.actor?.id !== "project-manager" ||
+    dataPackPreauthFields.some((field) => dataPackPreauthData[field] !== dataPackPreauthBaseline[field])
+  ) {
+    add(
+      "OPS_DATA_PACK_PREAUTH_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F03 数据包预授权合同只登记收紧型资源预算、严格被动 JSON/普通文件、精确 entry 集合、来源/转换一致性和 subject 绑定调用方声明；不得冒充真实验签、许可分发、激活、原生或正式实现已获授权",
     );
   }
 
