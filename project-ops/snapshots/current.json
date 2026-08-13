@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T19:26:22+08:00",
+  "generatedAt": "2026-08-13T19:59:15+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 127
+    "projectEvents": 128
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F18 领域注册表与一致性读取端口合同已登记；等待真实 adapter、SQLCipher snapshot transaction、UI/原生证据及 OI-02",
+      "workPackage": "F01/F02 AI 候选确认事务合同已登记；等待 Owner AI 候选、正式字段/Repository、UI/原生证据及 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F01/F02 AI 候选确认框架无关 Application 合同已登记：transport/响应失败保留易失本地输入，严格候选必须经显式选择、caller-owned confirmed value 和 review 后才生成幂等保存 effect；effect 不携带原始输入或 AI candidate，未知提交只用原命令重放，成功后清除易失输入；不授权 D-031/D-033/D-034/D-036/D-053、真实 transport、正式字段/映射、自动改日记/目标、持久化 Repository、原生或正式工程",
     "F22 平台与语言 Release 审计合同已登记：固定已接受 D-011 iOS 17.0 和 D-016 首发简中，不从 D-038/当前 iPhone/工具默认值推导设备族、方向、Mac 或 Vision availability；当前四项决定均未形成权威决定，无签名 Archive、模拟器/真机/商店/布局/无障碍等 25 面证据，结果保持 BLOCKED，不验证决定/报告真实性或关闭发布门禁",
     "F20/F23/F24 禁止能力 fail-closed 审计聚合合同已登记：必须以正式签名 Release Archive 绑定源码、依赖、原生配置、plist/entitlement/PrivacyInfo、UI/Store 目录、framework/二进制、运行时网络/权限等 27 面报告；当前无正式目标、无生产工件扫描或捕获，结果固定为 BLOCKED，不得把未初始化工作区的零发现冒充 PASS，也不验证证据真实性或关闭发布门禁",
     "F12/F17 本地档案框架无关事务合同已登记：调用方版本化 opaque schema、显式空文档、CRUD revision CAS、幂等回放、未知结果恢复、并发序列化和非级联删除证据通过自动化；不授权资料字段、当前/多档案策略、级联目标/体重/日记/饮水删除、公式、账号/服务器、持久化、系统时钟、网络、原生或正式工程",

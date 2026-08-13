@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT,
+  PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 244,
+    instancesValidated: 245,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 127);
+  assert.equal(report.counts.events, 128);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -174,6 +174,28 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(localDataRegistryEvent.value.data.sqlCipherSnapshotImplemented, false);
   assert.equal(localDataRegistryEvent.value.data.businessDomainFieldsApproved, false);
   assert.equal(localDataRegistryEvent.value.data.formalImplementationAuthorized, false);
+  const aiCandidateConfirmationEvent = findEvent(VALID_MODEL, "EVT-20260813-002");
+  assert.deepEqual(aiCandidateConfirmationEvent.value.data.featureIds, ["F01", "F02"]);
+  assert.equal(aiCandidateConfirmationEvent.value.data.volatileLocalInputPreserved, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.strictResponseContractReused, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.explicitCandidateReviewRequired, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.requestContextFingerprintBound, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.policyEvidenceFingerprintBound, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.candidateFingerprintBound, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.confirmedValueCallerOwned, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.saveEffectExcludesRawInputAndCandidate, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.idempotentConfirmedValueSave, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.unknownCommitReplayRequired, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.volatileInputPurgedAfterCommit, true);
+  assert.equal(aiCandidateConfirmationEvent.value.data.mediaRetentionAuthorized, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.nonLabelConfirmationPolicyAuthorized, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.transportProfileAuthorized, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.providerUsePolicyAuthorized, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.businessFieldMappingApproved, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.automaticDiaryOrTargetMutation, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.persistentRepositoryImplemented, false);
+  assert.equal(aiCandidateConfirmationEvent.value.data.realNetworkRequests, 0);
+  assert.equal(aiCandidateConfirmationEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -219,7 +241,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 243);
+    assert.equal(report.schemaValidation.instancesValidated, 244);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -662,6 +684,43 @@ test("拒绝把 F18 注册表端口冒充 SQLCipher、业务字段、导出备�
   assertDiagnostic(
     report,
     "OPS_LOCAL_DATA_ACCESS_REGISTRY_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把 AI 候选确认合同越级为真实 transport、字段映射、自动写库或 Owner 授权", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-002");
+    event.value.data.volatileLocalInputPreserved = false;
+    event.value.data.strictResponseContractReused = false;
+    event.value.data.explicitCandidateReviewRequired = false;
+    event.value.data.requestContextFingerprintBound = false;
+    event.value.data.policyEvidenceFingerprintBound = false;
+    event.value.data.candidateFingerprintBound = false;
+    event.value.data.confirmedValueCallerOwned = false;
+    event.value.data.saveEffectExcludesRawInputAndCandidate = false;
+    event.value.data.idempotentConfirmedValueSave = false;
+    event.value.data.unknownCommitReplayRequired = false;
+    event.value.data.volatileInputPurgedAfterCommit = false;
+    event.value.data.manualFallbackBeforeCommit = false;
+    event.value.data.mediaRetentionAuthorized = true;
+    event.value.data.nonLabelConfirmationPolicyAuthorized = true;
+    event.value.data.productionResourceBudgetAuthorized = true;
+    event.value.data.transportProfileAuthorized = true;
+    event.value.data.providerUsePolicyAuthorized = true;
+    event.value.data.businessFieldMappingApproved = true;
+    event.value.data.automaticDiaryOrTargetMutation = true;
+    event.value.data.persistentRepositoryImplemented = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_AI_CANDIDATE_CONFIRMATION_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

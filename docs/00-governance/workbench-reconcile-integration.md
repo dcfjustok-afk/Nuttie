@@ -2,7 +2,7 @@
 
 Status: verified handoff record
 Historical integration date: 2026-08-06 (Asia/Shanghai)
-Current ProjectOps snapshot date: 2026-08-12 (Asia/Shanghai)
+Current ProjectOps snapshot date: 2026-08-13 (Asia/Shanghai)
 
 ## Scope
 
@@ -28,12 +28,12 @@ Nuttie workspace and passed; the responsive result below remains historical
 evidence from 2026-08-06 because the external workbench is not present now:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 244 controlled instances
-ProjectOps validation: 99/99 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 245 controlled instances
+ProjectOps validation: 100/100 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 489/489 PASS
-Full repository suite: 607/607 PASS
-Workbench source baseline: 127 events, 114 messages, 25 agents; the 2026-08-13 F18 local-data registry/consistent-read port contract is the latest registered artifact, following the 2026-08-12 AI credential lifecycle, F04 daily-energy ledger, F05 macro-target history, F06 meal-slot grouping, F08 date-navigation, F10 body-weight, F11 seven-day energy, F12/F17 local-profile record, F13 manual-burn, F14 water-record, F15 local-reminder reconciliation, F18 local-data-access manifest, F21 media-permission orchestrator, F20/F23/F24 prohibited-capability audit, and F22 platform/language Release audit contracts. The F18 port does not claim a SQLCipher snapshot implementation. Both Release audit contracts remain BLOCKED because signed Archive, platform-shape decisions, and production evidence do not exist.
+Tool contract harnesses: 509/509 PASS
+Full repository suite: 628/628 PASS
+Workbench source baseline: 128 events, 114 messages, 25 agents; the 2026-08-13 F01/F02 AI candidate-confirmation contract is the latest registered artifact, following the F18 local-data registry/consistent-read port contract and the 2026-08-12 AI credential lifecycle, F04 daily-energy ledger, F05 macro-target history, F06 meal-slot grouping, F08 date-navigation, F10 body-weight, F11 seven-day energy, F12/F17 local-profile record, F13 manual-burn, F14 water-record, F15 local-reminder reconciliation, F18 local-data-access manifest, F21 media-permission orchestrator, F20/F23/F24 prohibited-capability audit, and F22 platform/language Release audit contracts. The AI contract does not authorize real transport, product field mapping, automatic diary/target mutation, or a persistent Repository; the F18 port does not claim a SQLCipher snapshot implementation. Both Release audit contracts remain BLOCKED because signed Archive, platform-shape decisions, and production evidence do not exist.
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
@@ -42,7 +42,7 @@ workbench integration and live/static parity passed on 2026-08-06; the external
 `D:\study\Nuttie-Discovery-Workbench` directory is absent from the current
 workspace, so its smoke was not rerun after the 2026-08-12 event. When restored,
 it must rebuild from the current repository and recheck `CURRENT` freshness,
-the exact OI-03 device fact, OI-02 as the next native input, and the 127/114/25
+the exact OI-03 device fact, OI-02 as the next native input, and the 128/114/25
 source counts.
 
 ## Continuation boundary

@@ -8,8 +8,8 @@
 
 | Feature | 当前自动化合同 | 已证明的边界 | 未完成/权威门禁 | 审计结论 |
 | --- | --- | --- | --- | --- |
-| F01 AI 拍照识餐 | `ai-policy`、`ai-response-contract`、`ai-credential-lifecycle` | policy fail-closed、恶意响应预算、BYOK 生命周期与零真实网络 | D-031/D-033/D-034/D-036/D-053、逐次图片预览、真实 transport/组件/抓包 | 部分覆盖，阻断 |
-| F02 AI 文字识餐 | 同 F01 | policy/响应/凭据公共底座 | 文字草稿应用流、显式 Provider 披露、真实 transport；D-033/D-053 | 部分覆盖，阻断 |
+| F01 AI 拍照识餐 | `ai-policy`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | policy fail-closed、恶意响应预算、BYOK 生命周期、易失候选、显式 review、用户确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053、真实图片输入/transport/组件/抓包 | Application 确认事务已覆盖，产品/原生阻断 |
+| F02 AI 文字识餐 | 同 F01 | Provider 失败保留本地输入、严格候选、request/policy/candidate 绑定与明确保存前零写入 | 正式文字字段/映射、显式 Provider UI、真实 transport；D-033/D-053 | Application 确认事务已覆盖，产品/网络阻断 |
 | F03 条码 | `data-pack-contract`、`import-safety`、`local-food-catalog` | 离线来源隔离、GTIN 精确查询、未命中手工路径、无网络回退 | 数据包签名算法 D-026、许可 D-052、相机/组件/真机 | 数据合同已覆盖，原生阻断 |
 | F04 日热量账本 | `daily-energy-ledger`、`seven-day-energy-trend` | 指定日摄入/消耗精确事实、目标生效历史、缺失/零、来源反查 | Left 公式、缺失消耗、负值、舍入与 UI 待 D-040/Owner | 事实层已覆盖，公式阻断 |
 | F05 宏量目标 | `macro-target-history`、`domain-contract` | P/C/F 实际缺失语义、目标原值/单位定义/来源/用户编辑/历史 | 目标算法、grams/percent、比较、舍入、编辑与 UI 待 D-040/Owner | 事实层已覆盖，算法阻断 |
@@ -45,6 +45,8 @@
 合同没有把 opaque 测试 payload 变成产品字段批准，也没有把 profile ID 集合解释为已批准多档案 UX。F12 的字段/公式/关联语义仍须由 D-040 和 Owner 决定。
 
 F18 已从“缺清单合同”继续推进到注册与一致性端口门禁：`local-data-access-manifest` 覆盖跨领域、只读、可分页/可追溯且不等同明文导出的访问清单；`local-data-access-registry` 要求唯一版本化领域注册表、每个领域恰好一次读取、generation/registry 绑定和完成/中止关闭回执，并证明内存事务期间的源写入不会造成跨领域混代。两者都明确区分 App 控制内业务数据、不得返回的 Keychain secret、需要原生枚举的受控容器与用户选择的外部 Files 备份。后续仍必须在批准的访问层上实现首发真实领域 adapter 与 SQLCipher snapshot transaction，并完成用户可访问 UI 和原生 inventory/真机证据；D-020/D-035/D-027/D-030 仍未授权。
+
+随后补上 F01/F02 的 AI 候选确认 Application 缺口：`ai-candidate-confirmation` 复用严格 response contract，保留 transport/响应失败前的易失本地输入，要求 candidate 选择、caller-owned confirmed value 和显式 review 后才生成保存 effect；effect 不携带原始输入或 AI candidate，提交后未知结果只用原命令重放，成功后清除易失输入。它不决定正式业务字段或映射，不授权 D-031/D-033/D-034/D-036/D-053、真实 transport、SQLite/SQLCipher、自动修改日记/目标、组件或原生实现。
 
 随后完成 F21 的应用编排缺口：`media-permission-orchestrator` 将相机、系统用户选择媒体和手工输入分离，只在当前用户任务且权限未决定时经过任务说明产生窄相机 effect；拒绝、受限、撤权、取消和迟到回执都保持手工路径。照片全库、视频、定位、媒体保留/持久化、真实原生调用和 AI 上传继续未授权；下一步仍需权限文案、D-031、正式 adapter、Info.plist 和真机证据。
 

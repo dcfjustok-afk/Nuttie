@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT",
+export const PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 127,
+    events: 128,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT = Object.freeze({
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 1,
+    "2026-08-13": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -501,6 +501,43 @@ export const PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT = Object.freeze({
     plaintextExportAuthorized: false,
     backupOrRestoreAuthorized: false,
     persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  aiCandidateConfirmationContract: Object.freeze({
+    eventId: "EVT-20260813-002",
+    subjectId: "ai-candidate-confirmation-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02"]),
+    topLevelTests: 20,
+    fullSuitePassed: 628,
+    volatileLocalInputPreserved: true,
+    strictResponseContractReused: true,
+    explicitCandidateReviewRequired: true,
+    requestContextFingerprintBound: true,
+    policyEvidenceFingerprintBound: true,
+    candidateFingerprintBound: true,
+    confirmedValueCallerOwned: true,
+    saveEffectExcludesRawInputAndCandidate: true,
+    idempotentConfirmedValueSave: true,
+    unknownCommitReplayRequired: true,
+    volatileInputPurgedAfterCommit: true,
+    manualFallbackBeforeCommit: true,
+    mediaRetentionAuthorized: false,
+    nonLabelConfirmationPolicyAuthorized: false,
+    productionResourceBudgetAuthorized: false,
+    transportProfileAuthorized: false,
+    providerUsePolicyAuthorized: false,
+    businessFieldMappingApproved: false,
+    automaticDiaryOrTargetMutation: false,
+    persistentRepositoryImplemented: false,
     systemClockRead: false,
     realNetworkRequests: 0,
     nativeImplementationAuthorized: false,
@@ -1060,7 +1097,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2166,6 +2203,58 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_LOCAL_DATA_ACCESS_REGISTRY_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F18 注册表合同只登记唯一领域集合、generation/registry 绑定和一致性只读事务端口；不得授权 D-020、SQLCipher 实现、业务字段、导出/备份、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const aiCandidateConfirmationEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiCandidateConfirmationContract.subjectId,
+  );
+  const aiCandidateConfirmationEvent = aiCandidateConfirmationEvents[0]?.value;
+  const aiCandidateConfirmationData = aiCandidateConfirmationEvent?.data ?? {};
+  const aiCandidateBaseline = baseline.aiCandidateConfirmationContract;
+  if (
+    aiCandidateConfirmationEvents.length !== 1 ||
+    aiCandidateConfirmationEvent?.eventId !== aiCandidateBaseline.eventId ||
+    aiCandidateConfirmationEvent?.type !== "ARTIFACT_CREATED" ||
+    aiCandidateConfirmationEvent?.actor?.id !== "project-manager" ||
+    aiCandidateConfirmationData.contractStatus !== aiCandidateBaseline.contractStatus ||
+    aiCandidateConfirmationData.artifactState !== aiCandidateBaseline.artifactState ||
+    !arraysEqualAsSets(aiCandidateConfirmationData.featureIds ?? [], aiCandidateBaseline.featureIds) ||
+    !arraysEqualAsSets(aiCandidateConfirmationData.requirementIds ?? [], aiCandidateBaseline.requirementIds) ||
+    !arraysEqualAsSets(aiCandidateConfirmationData.acceptanceIds ?? [], aiCandidateBaseline.acceptanceIds) ||
+    aiCandidateConfirmationData.topLevelTests !== aiCandidateBaseline.topLevelTests ||
+    aiCandidateConfirmationData.fullSuitePassed !== aiCandidateBaseline.fullSuitePassed ||
+    aiCandidateConfirmationData.volatileLocalInputPreserved !== aiCandidateBaseline.volatileLocalInputPreserved ||
+    aiCandidateConfirmationData.strictResponseContractReused !== aiCandidateBaseline.strictResponseContractReused ||
+    aiCandidateConfirmationData.explicitCandidateReviewRequired !== aiCandidateBaseline.explicitCandidateReviewRequired ||
+    aiCandidateConfirmationData.requestContextFingerprintBound !== aiCandidateBaseline.requestContextFingerprintBound ||
+    aiCandidateConfirmationData.policyEvidenceFingerprintBound !== aiCandidateBaseline.policyEvidenceFingerprintBound ||
+    aiCandidateConfirmationData.candidateFingerprintBound !== aiCandidateBaseline.candidateFingerprintBound ||
+    aiCandidateConfirmationData.confirmedValueCallerOwned !== aiCandidateBaseline.confirmedValueCallerOwned ||
+    aiCandidateConfirmationData.saveEffectExcludesRawInputAndCandidate !== aiCandidateBaseline.saveEffectExcludesRawInputAndCandidate ||
+    aiCandidateConfirmationData.idempotentConfirmedValueSave !== aiCandidateBaseline.idempotentConfirmedValueSave ||
+    aiCandidateConfirmationData.unknownCommitReplayRequired !== aiCandidateBaseline.unknownCommitReplayRequired ||
+    aiCandidateConfirmationData.volatileInputPurgedAfterCommit !== aiCandidateBaseline.volatileInputPurgedAfterCommit ||
+    aiCandidateConfirmationData.manualFallbackBeforeCommit !== aiCandidateBaseline.manualFallbackBeforeCommit ||
+    aiCandidateConfirmationData.mediaRetentionAuthorized !== aiCandidateBaseline.mediaRetentionAuthorized ||
+    aiCandidateConfirmationData.nonLabelConfirmationPolicyAuthorized !== aiCandidateBaseline.nonLabelConfirmationPolicyAuthorized ||
+    aiCandidateConfirmationData.productionResourceBudgetAuthorized !== aiCandidateBaseline.productionResourceBudgetAuthorized ||
+    aiCandidateConfirmationData.transportProfileAuthorized !== aiCandidateBaseline.transportProfileAuthorized ||
+    aiCandidateConfirmationData.providerUsePolicyAuthorized !== aiCandidateBaseline.providerUsePolicyAuthorized ||
+    aiCandidateConfirmationData.businessFieldMappingApproved !== aiCandidateBaseline.businessFieldMappingApproved ||
+    aiCandidateConfirmationData.automaticDiaryOrTargetMutation !== aiCandidateBaseline.automaticDiaryOrTargetMutation ||
+    aiCandidateConfirmationData.persistentRepositoryImplemented !== aiCandidateBaseline.persistentRepositoryImplemented ||
+    aiCandidateConfirmationData.systemClockRead !== aiCandidateBaseline.systemClockRead ||
+    aiCandidateConfirmationData.realNetworkRequests !== aiCandidateBaseline.realNetworkRequests ||
+    aiCandidateConfirmationData.nativeImplementationAuthorized !== aiCandidateBaseline.nativeImplementationAuthorized ||
+    aiCandidateConfirmationData.formalImplementationAuthorized !== aiCandidateBaseline.formalImplementationAuthorized ||
+    aiCandidateConfirmationData.gateStatesChanged !== aiCandidateBaseline.gateStatesChanged ||
+    aiCandidateConfirmationData.ownerIntakeChanged !== aiCandidateBaseline.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_AI_CANDIDATE_CONFIRMATION_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F01/F02 AI 候选确认合同只登记易失输入、严格候选、显式 review、审计指纹和用户确认值幂等保存端口；不得授权 D-031/D-033/D-034/D-036/D-053、真实 transport、正式字段/映射、自动改日记/目标、持久化 Repository、系统时钟、原生或正式实现",
     );
   }
 
