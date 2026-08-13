@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、快照与 OI-03/OI-02 门禁一致", () => {
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 135,
+    events: 136,
     messages: 114,
     agents: 25,
     activeAgents: 1,

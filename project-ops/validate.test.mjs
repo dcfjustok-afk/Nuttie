@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT,
+  PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 252,
+    instancesValidated: 253,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 135);
+  assert.equal(report.counts.events, 136);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -380,6 +380,35 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(wipeOutcomeEvent.value.data.nativeApiCalls, 0);
   assert.equal(wipeOutcomeEvent.value.data.realNetworkRequests, 0);
   assert.equal(wipeOutcomeEvent.value.data.formalImplementationAuthorized, false);
+  const aiPolicyEvent = findEvent(VALID_MODEL, "EVT-20260813-010");
+  assert.equal(aiPolicyEvent.value.subject.id, "ai-provider-policy-authorization-contract");
+  assert.deepEqual(aiPolicyEvent.value.data.featureIds, ["F01", "F02"]);
+  assert.equal(aiPolicyEvent.value.data.topLevelTests, 22);
+  assert.equal(aiPolicyEvent.value.data.fullSuitePassed, 739);
+  assert.equal(aiPolicyEvent.value.data.strictProviderPolicyProfile, true);
+  assert.equal(aiPolicyEvent.value.data.policyEvidenceReferencesBound, true);
+  assert.equal(aiPolicyEvent.value.data.riskSemanticsBound, true);
+  assert.equal(aiPolicyEvent.value.data.policyValidityWindowBound, true);
+  assert.equal(aiPolicyEvent.value.data.exactRequestSubjectBound, true);
+  assert.equal(aiPolicyEvent.value.data.providerOriginModelPayloadProfileRegionBound, true);
+  assert.equal(aiPolicyEvent.value.data.subjectFingerprintBound, true);
+  assert.equal(aiPolicyEvent.value.data.profileFingerprintBound, true);
+  assert.equal(aiPolicyEvent.value.data.authorizationFingerprintBound, true);
+  assert.equal(aiPolicyEvent.value.data.appleProhibitedUseBlocked, true);
+  assert.equal(aiPolicyEvent.value.data.labelPreviewSubjectBound, true);
+  assert.equal(aiPolicyEvent.value.data.legacyPlainAllowRejected, true);
+  assert.equal(aiPolicyEvent.value.data.d053DecisionState, "CANDIDATE");
+  assert.equal(aiPolicyEvent.value.data.d053Authorization, "NOT_AUTHORIZED");
+  assert.equal(aiPolicyEvent.value.data.matchingAllowStillBlocked, true);
+  assert.equal(aiPolicyEvent.value.data.policyTruth, "CALLER_POLICY_ASSERTION_NOT_PROVIDER_TRUTH");
+  assert.equal(aiPolicyEvent.value.data.networkRequests, 0);
+  assert.equal(aiPolicyEvent.value.data.authorizationReads, 0);
+  assert.equal(aiPolicyEvent.value.data.sensitiveBodySerializations, 0);
+  assert.equal(aiPolicyEvent.value.data.keychainReads, 0);
+  assert.equal(aiPolicyEvent.value.data.businessWrites, 0);
+  assert.equal(aiPolicyEvent.value.data.systemClockRead, false);
+  assert.equal(aiPolicyEvent.value.data.nativeImplementationAuthorized, false);
+  assert.equal(aiPolicyEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -425,7 +454,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 251);
+    assert.equal(report.schemaValidation.instancesValidated, 252);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1159,6 +1188,43 @@ test("拒绝把删除回执合同冒充真实容器、密钥、通知或正式�
   assertDiagnostic(
     report,
     "OPS_WIPE_OUTCOME_EVIDENCE_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把本地 ALLOW profile 或伪造 D-053 接受证据越级为可发送和正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-010");
+    event.value.data.strictProviderPolicyProfile = false;
+    event.value.data.policyEvidenceReferencesBound = false;
+    event.value.data.riskSemanticsBound = false;
+    event.value.data.policyValidityWindowBound = false;
+    event.value.data.exactRequestSubjectBound = false;
+    event.value.data.providerOriginModelPayloadProfileRegionBound = false;
+    event.value.data.subjectFingerprintBound = false;
+    event.value.data.profileFingerprintBound = false;
+    event.value.data.authorizationFingerprintBound = false;
+    event.value.data.appleProhibitedUseBlocked = false;
+    event.value.data.labelPreviewSubjectBound = false;
+    event.value.data.legacyPlainAllowRejected = false;
+    event.value.data.d053DecisionState = "ACCEPTED";
+    event.value.data.d053Authorization = "AUTHORIZED";
+    event.value.data.matchingAllowStillBlocked = false;
+    event.value.data.policyTruth = "PROVIDER_TRUTH_VERIFIED";
+    event.value.data.networkRequests = 1;
+    event.value.data.authorizationReads = 1;
+    event.value.data.sensitiveBodySerializations = 1;
+    event.value.data.keychainReads = 1;
+    event.value.data.businessWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

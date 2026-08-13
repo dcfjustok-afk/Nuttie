@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT",
+export const PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 135,
+    events: 136,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT = Object.freeze({
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 9,
+    "2026-08-13": 10,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -812,6 +812,43 @@ export const PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  aiProviderPolicyAuthorizationContract: Object.freeze({
+    eventId: "EVT-20260813-010",
+    subjectId: "ai-provider-policy-authorization-contract",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02"]),
+    topLevelTests: 22,
+    fullSuitePassed: 739,
+    strictProviderPolicyProfile: true,
+    policyEvidenceReferencesBound: true,
+    riskSemanticsBound: true,
+    policyValidityWindowBound: true,
+    exactRequestSubjectBound: true,
+    providerOriginModelPayloadProfileRegionBound: true,
+    subjectFingerprintBound: true,
+    profileFingerprintBound: true,
+    authorizationFingerprintBound: true,
+    appleProhibitedUseBlocked: true,
+    labelPreviewSubjectBound: true,
+    legacyPlainAllowRejected: true,
+    d053DecisionState: "CANDIDATE",
+    d053Authorization: "NOT_AUTHORIZED",
+    matchingAllowStillBlocked: true,
+    policyTruth: "CALLER_POLICY_ASSERTION_NOT_PROVIDER_TRUTH",
+    networkRequests: 0,
+    authorizationReads: 0,
+    sensitiveBodySerializations: 0,
+    keychainReads: 0,
+    businessWrites: 0,
+    systemClockRead: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1364,7 +1401,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2907,6 +2944,61 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_WIPE_OUTCOME_EVIDENCE_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F18 删除回执合同只登记严格被动 JSON、资源预算、证据身份、effect/observation/outcome 指纹和重放拒绝；调用方声明不得冒充真实容器、密钥、通知、文件系统、Keychain、原生或正式实现证据",
+    );
+  }
+
+  const aiPolicyEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiProviderPolicyAuthorizationContract.subjectId,
+  );
+  const aiPolicyEvent = aiPolicyEvents[0]?.value;
+  const aiPolicyData = aiPolicyEvent?.data ?? {};
+  const aiPolicyBaseline = baseline.aiProviderPolicyAuthorizationContract;
+  const aiPolicyFields = [
+    "contractStatus",
+    "artifactState",
+    "topLevelTests",
+    "fullSuitePassed",
+    "strictProviderPolicyProfile",
+    "policyEvidenceReferencesBound",
+    "riskSemanticsBound",
+    "policyValidityWindowBound",
+    "exactRequestSubjectBound",
+    "providerOriginModelPayloadProfileRegionBound",
+    "subjectFingerprintBound",
+    "profileFingerprintBound",
+    "authorizationFingerprintBound",
+    "appleProhibitedUseBlocked",
+    "labelPreviewSubjectBound",
+    "legacyPlainAllowRejected",
+    "d053DecisionState",
+    "d053Authorization",
+    "matchingAllowStillBlocked",
+    "policyTruth",
+    "networkRequests",
+    "authorizationReads",
+    "sensitiveBodySerializations",
+    "keychainReads",
+    "businessWrites",
+    "systemClockRead",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    aiPolicyEvents.length !== 1 ||
+    aiPolicyEvent?.eventId !== aiPolicyBaseline.eventId ||
+    aiPolicyEvent?.type !== "ARTIFACT_CREATED" ||
+    aiPolicyEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(aiPolicyData.featureIds) !== JSON.stringify(aiPolicyBaseline.featureIds) ||
+    JSON.stringify(aiPolicyData.requirementIds) !== JSON.stringify(aiPolicyBaseline.requirementIds) ||
+    JSON.stringify(aiPolicyData.acceptanceIds) !== JSON.stringify(aiPolicyBaseline.acceptanceIds) ||
+    aiPolicyFields.some((field) => aiPolicyData[field] !== aiPolicyBaseline[field])
+  ) {
+    add(
+      "OPS_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F01/F02 AI policy 合同只登记完整本地 profile、证据/风险/时间/地区、精确 request subject、指纹和 D-053 candidate/not-authorized 门禁；不得授权读 key、序列化敏感 body、联网、业务写入、原生或正式实现",
     );
   }
 

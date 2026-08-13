@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T23:35:42+08:00",
+  "generatedAt": "2026-08-13T23:48:42+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 135
+    "projectEvents": 136
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F18 删除回执合同已加固；等待真实容器/Keychain/通知 adapter、真机证据与 OI-02",
+      "workPackage": "F01/F02 AI Provider policy 与 D-053 门禁已加固；真实发送继续阻断并等待 Owner/OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F01/F02 AI Provider policy 与 D-053 发送前框架无关合同已加固：本地 profile 必须包含 Provider、origin/model/payload/profile/region 精确范围、terms/privacy 证据、审查/到期时间及保留/训练/人工访问/删除/广告/健康用途风险语义；request subject、profile 和 D-053 授权证据分别绑定指纹，Apple 禁止用途失败关闭。即使 profile=ALLOW 且精确匹配，D-053 仍为 CANDIDATE / NOT_AUTHORIZED，因此结果固定 D053_NOT_AUTHORIZED，不读取 key、不序列化敏感 body、不联网、不写业务状态、不授权原生或正式实现",
     "F18 全量删除回执框架无关合同已加固：outcome 使用严格被动 JSON 和固定资源预算，必须携带 evidence/verifier/profile 身份，并绑定确切 effect、observation 和 outcome 指纹；裸旧回执、篡改和跨 effect 重放失败关闭。回执边界固定 CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS，不声称真实容器已空、密钥已失效、通知已移除或外部 Files 已删除，也不授权文件系统、Keychain、原生或正式实现",
     "F19 恢复启动对账框架无关合同已加固：用结构化 generation 观察取代 complete/hashMatched 裸布尔，generation、intent 和完整 restore observation 均绑定指纹；存在 intent 时一律保持写入关闭，只返回绑定当前观察的未提交行动计划，外部执行并重新观察为稳定状态后才开放写入；不授权 D-027 密码学、D-030 恢复模式、D-035 明文导出、清理、文件系统、Keychain、原生或正式实现",
     "F03 离线数据包预授权框架无关合同已加固：批准资源上限只能收紧，预授权解析按真实 key/item/string/depth 预算拒绝异常输入，manifest/普通文件、来源、转换、NOTICE 和调用方验证声明绑定同一不可变 subject 指纹；调用方声明不等于 harness 真实验签，D-026 签名、D-052 许可分发、激活、文件系统、原生和正式实现均未获授权",
