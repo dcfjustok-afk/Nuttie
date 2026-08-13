@@ -31,6 +31,12 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
     ],
   }),
   Object.freeze({
+    schemaId: "https://nuttie.local/schemas/snapshot.schema.json",
+    instances: (model) => [
+      Object.freeze({ sourcePath: "project-ops/snapshots/current.json", value: model.snapshot }),
+    ],
+  }),
+  Object.freeze({
     schemaId: "https://nuttie.local/schemas/project-event.schema.json",
     instances: (model) =>
       model.events.map((record) =>
@@ -52,10 +58,10 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT",
+export const PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT",
   counts: Object.freeze({
-    schemas: 4,
+    schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
@@ -71,6 +77,17 @@ export const PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT = Object
     gapThemes: 9,
     ownerResponses: 13,
     ownerDecisionIds: 12,
+  }),
+  gateStates: Object.freeze({
+    G0: "PASS",
+    G1: "PASS",
+    G2: "IN_PROGRESS",
+    G3: "IN_PROGRESS",
+    G4: "IN_PROGRESS",
+    G5: "FAIL",
+    G6: "FAIL",
+    G7: "FAIL",
+    G8: "FAIL",
   }),
   activeAgentIds: Object.freeze(["root"]),
   eventCountsByDate: Object.freeze({
@@ -1007,7 +1024,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -1043,6 +1060,49 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
   model.schemas.forEach((record) => {
     if (!isPlainObject(record.value)) {
       add("OPS_INVALID_SHAPE", record.sourceFile, "Schema JSON 顶层必须是对象");
+    }
+  });
+
+  const snapshotGates = Array.isArray(model.snapshot?.gates) ? model.snapshot.gates : [];
+  if (!Array.isArray(model.snapshot?.gates)) {
+    add("OPS_INVALID_SHAPE", "project-ops/snapshots/current.json.gates", "gates 必须是数组");
+  }
+
+  const snapshotGateIds = snapshotGates.map((gate) => gate?.id);
+  const duplicateSnapshotGateIds = duplicateValues(
+    snapshotGateIds.filter((id) => typeof id === "string"),
+  );
+  if (duplicateSnapshotGateIds.length > 0) {
+    add(
+      "OPS_DUP_SNAPSHOT_GATE_ID",
+      "project-ops/snapshots/current.json.gates",
+      "快照 Gate ID 不唯一",
+      { duplicateSnapshotGateIds },
+    );
+  }
+
+  const expectedSnapshotGateIds = Object.keys(baseline.gateStates).sort();
+  const actualSnapshotGateIds = snapshotGateIds
+    .filter((id) => typeof id === "string")
+    .sort();
+  if (!arraysEqualAsSets(actualSnapshotGateIds, expectedSnapshotGateIds)) {
+    add(
+      "OPS_SNAPSHOT_GATE_SET_MISMATCH",
+      "project-ops/snapshots/current.json.gates",
+      "快照必须精确包含版本化基线中的 Gate 集合",
+      { expected: expectedSnapshotGateIds, actual: actualSnapshotGateIds },
+    );
+  }
+
+  snapshotGates.forEach((gate, index) => {
+    const expectedState = baseline.gateStates[gate?.id];
+    if (expectedState !== undefined && gate?.state !== expectedState) {
+      add(
+        "OPS_SNAPSHOT_GATE_STATE_MISMATCH",
+        `project-ops/snapshots/current.json.gates[${index}].state`,
+        `Gate ${gate.id} 状态与版本化基线不一致`,
+        { gateId: gate.id, expected: expectedState, actual: gate?.state },
+      );
     }
   });
 

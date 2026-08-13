@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nuttie.local/schemas/snapshot.schema.json",
+  "title": "Nuttie ProjectOps current snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "project",
+    "metrics",
+    "gates",
+    "pendingEvidenceIds",
+    "agents",
+    "currentWork",
+    "constraints",
+    "sourceEvents"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "englishName", "phase", "status"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "englishName": { "type": "string", "minLength": 1 },
+        "phase": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptedDecisions",
+        "candidateDecisions",
+        "competitorCapabilityGroups",
+        "evidenceItems",
+        "confirmedIosItems",
+        "crossSourceItems",
+        "evidenceGaps",
+        "gapThemeCount",
+        "agentRosterSize",
+        "activeAgents",
+        "agentMessages",
+        "projectEvents"
+      ],
+      "properties": {
+        "acceptedDecisions": { "type": "integer" },
+        "candidateDecisions": { "type": "integer" },
+        "competitorCapabilityGroups": { "type": "integer" },
+        "evidenceItems": { "type": "integer" },
+        "confirmedIosItems": { "type": "integer" },
+        "crossSourceItems": { "type": "integer" },
+        "evidenceGaps": { "type": "integer" },
+        "gapThemeCount": { "type": "integer" },
+        "agentRosterSize": { "type": "integer" },
+        "activeAgents": { "type": "integer" },
+        "agentMessages": { "type": "integer" },
+        "projectEvents": { "type": "integer" }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/gate" }
+    },
+    "pendingEvidenceIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^(ACC|DAY|LOG|FOOD|BODY|AI|SYS|DATA)-[0-9]{2}$" }
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/agent" }
+    },
+    "currentWork": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "sourceEvents": { "const": "project-ops/events/*.jsonl" }
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "state"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^G[0-8]$" },
+        "name": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["PASS", "IN_PROGRESS", "FAIL"] }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "state", "workPackage", "gate", "requiredHandoffs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["active", "blocked", "completed", "handoff_ready", "idle"] },
+        "workPackage": { "type": "string", "minLength": 1 },
+        "gate": { "type": "string", "minLength": 1 },
+        "requiredHandoffs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

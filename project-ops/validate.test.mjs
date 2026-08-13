@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT,
+  PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,13 +81,13 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
-    schemasChecked: 4,
-    instancesValidated: 242,
+    schemasChecked: 5,
+    instancesValidated: 243,
   });
-  assert.equal(report.counts.schemas, 4);
+  assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
   assert.equal(report.counts.events, 126);
   assert.equal(report.counts.messages, 114);
@@ -203,8 +203,8 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
       ownerSchema.value.properties.batchId.minimum = 1;
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
-    assert.equal(report.schemaValidation.schemasChecked, 4);
-    assert.equal(report.schemaValidation.instancesValidated, 241);
+    assert.equal(report.schemaValidation.schemasChecked, 5);
+    assert.equal(report.schemaValidation.instancesValidated, 242);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -240,6 +240,17 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     );
   });
 
+  await t.test("拒绝 Snapshot 未声明字段", () => {
+    const report = validateMutation((model) => {
+      model.snapshot.project.untrackedStatus = "UNKNOWN";
+    });
+    assertDiagnostic(
+      report,
+      "OPS_SCHEMA_INSTANCE_INVALID",
+      "project-ops/snapshots/current.json.project.untrackedStatus",
+    );
+  });
+
   await t.test("拒绝缺失或未映射的 Schema", () => {
     const missing = validateMutation((model) => {
       model.schemas = model.schemas.filter(
@@ -259,6 +270,44 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
       "OPS_SCHEMA_UNMAPPED",
       "project-ops/schemas/unmapped.schema.json.$id",
     );
+  });
+});
+
+test("快照 Gate 集合与状态必须匹配版本化基线", async (t) => {
+  await t.test("拒绝缺少 G8", () => {
+    const report = validateMutation((model) => {
+      model.snapshot.gates = model.snapshot.gates.filter((gate) => gate.id !== "G8");
+    });
+    assertDiagnostic(
+      report,
+      "OPS_SNAPSHOT_GATE_SET_MISMATCH",
+      "project-ops/snapshots/current.json.gates",
+    );
+  });
+
+  await t.test("拒绝重复 G0", () => {
+    const report = validateMutation((model) => {
+      model.snapshot.gates.push(structuredClone(model.snapshot.gates[0]));
+    });
+    assertDiagnostic(
+      report,
+      "OPS_DUP_SNAPSHOT_GATE_ID",
+      "project-ops/snapshots/current.json.gates",
+    );
+  });
+
+  await t.test("拒绝将 G4 提前标记为 PASS", () => {
+    const report = validateMutation((model) => {
+      model.snapshot.gates.find((gate) => gate.id === "G4").state = "PASS";
+    });
+    assertDiagnostic(report, "OPS_SNAPSHOT_GATE_STATE_MISMATCH");
+  });
+
+  await t.test("拒绝将 G2 错误回退为 FAIL", () => {
+    const report = validateMutation((model) => {
+      model.snapshot.gates.find((gate) => gate.id === "G2").state = "FAIL";
+    });
+    assertDiagnostic(report, "OPS_SNAPSHOT_GATE_STATE_MISMATCH");
   });
 });
 

@@ -28,11 +28,11 @@ Nuttie workspace and passed; the responsive result below remains historical
 evidence from 2026-08-06 because the external workbench is not present now:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 4 schemas and 242 controlled instances
-ProjectOps validation: 92/92 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 243 controlled instances
+ProjectOps validation: 98/98 PASS
 ProjectOps reconcile tests: 5/5 PASS
 Tool contract harnesses: 474/474 PASS
-Full repository suite: 585/585 PASS
+Full repository suite: 591/591 PASS
 Workbench source baseline: 126 events, 114 messages, 25 agents; the 2026-08-12 AI credential lifecycle, F04 daily-energy ledger, F05 macro-target history, F06 meal-slot grouping, F08 date-navigation, F10 body-weight, F11 seven-day energy, F12/F17 local-profile record, F13 manual-burn, F14 water-record, F15 local-reminder reconciliation, F18 local-data-access manifest, F21 media-permission orchestrator, F20/F23/F24 prohibited-capability audit, and F22 platform/language Release audit contracts are registered locally. Both Release audit contracts remain BLOCKED because signed Archive, platform-shape decisions, and production evidence do not exist.
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
