@@ -23,7 +23,7 @@
 | F13 消耗/运动/步数 | `manual-burn-record`、`seven-day-energy-trend` | 手工能量 CRUD、来源标记、F11 投影 | 运动字段/公式、步数、HealthKit、组件；D-007 | 手工消耗覆盖，系统能力阻断 |
 | F14 饮水 | `water-record` | 原始容量、显式单位定义、精确汇总、CRUD CAS | 快捷量、目标、展示单位、撤销、趋势、组件 | 核心事实/事务覆盖 |
 | F15 提醒 | `local-reminder-reconcile` | opaque 本地规则 CRUD、权限独立、generation、pending/delivered 对账 | 类型/重复/内容/DST 默认、真实 UserNotifications/真机 | 应用合同覆盖，原生阻断 |
-| F16 AI 健康/食谱/计划 | F01/F02 公共 AI harness | policy/响应/凭据 fail-closed | 载荷/IA/保存/非医疗/高风险、Provider 许可和真实 transport；D-033/D-053 | 公共底座部分覆盖，阻断 |
+| F16 AI 健康/食谱/计划 | `ai-guidance-reference`、F01/F02 公共 AI harness | policy/响应/凭据 fail-closed；严格 opaque 参考草稿、来源/生成时间/免责声明定义、本地编辑/放弃、零业务 effect | 正式 payload、IA、UXD-11 保存、医疗/高风险规则、Provider 许可和真实 transport；D-033/D-053 | 参考草稿 Application 边界已覆盖，产品/安全/网络阻断 |
 | F17 本地档案替代账号 | `local-profile-record` | 无账号/服务器能力面、版本化 opaque 文档、CRUD CAS、幂等/并发与非级联删除 | 当前/多档案 UX、正式 Repository/组件/E2E | 核心本地事务覆盖 |
 | F18 数据权利 | `local-data-access-manifest`、`local-data-access-registry`、`local-wipe-coordinator`、`meal-correction`、`body-weight-record` 等 | 唯一版本化领域注册表、一致性只读事务端口、跨领域分页清单/完整性证明、全量 wipe kill-point/对账、领域更正/删除底座 | 首发真实领域 adapter、SQLCipher snapshot transaction、UI、真实容器/Keychain/UserNotifications、备份范围/真机 | 注册/一致性端口与应用内访问覆盖，正式适配/原生阻断 |
 | F19 缓存/同步替代 | `backup-reconcile`、`import-safety`、`local-wipe-coordinator` | generation/pointer、导入安全、失败关闭 | D-027 加密 envelope/KDF、恢复模式 D-030、SQLite/Keychain/Files 真机 | 对账模型覆盖，加密/原生阻断 |
@@ -47,6 +47,8 @@
 F18 已从“缺清单合同”继续推进到注册与一致性端口门禁：`local-data-access-manifest` 覆盖跨领域、只读、可分页/可追溯且不等同明文导出的访问清单；`local-data-access-registry` 要求唯一版本化领域注册表、每个领域恰好一次读取、generation/registry 绑定和完成/中止关闭回执，并证明内存事务期间的源写入不会造成跨领域混代。两者都明确区分 App 控制内业务数据、不得返回的 Keychain secret、需要原生枚举的受控容器与用户选择的外部 Files 备份。后续仍必须在批准的访问层上实现首发真实领域 adapter 与 SQLCipher snapshot transaction，并完成用户可访问 UI 和原生 inventory/真机证据；D-020/D-035/D-027/D-030 仍未授权。
 
 随后补上 F01/F02 的 AI 候选确认 Application 缺口：`ai-candidate-confirmation` 复用严格 response contract，保留 transport/响应失败前的易失本地输入，要求 candidate 选择、caller-owned confirmed value 和显式 review 后才生成保存 effect；effect 不携带原始输入或 AI candidate，提交后未知结果只用原命令重放，成功后清除易失输入。它不决定正式业务字段或映射，不授权 D-031/D-033/D-034/D-036/D-053、真实 transport、SQLite/SQLCipher、自动修改日记/目标、组件或原生实现。
+
+随后补上 F16 的参考草稿 Application 缺口：`ai-guidance-reference` 将严格解析后的 opaque 内容固定为 `REFERENCE_ONLY / NOT_MEDICAL_ADVICE`，绑定调用方内容/免责声明定义、生成时间、request/policy/source 指纹，支持 revision CAS 本地编辑和放弃后易失内容清理，且所有 effect 恒为零。它不执行医疗安全分类，不授权高风险用途、UXD-04 IA、UXD-11 保存策略、D-033/D-053、正式 payload、业务 Repository、网络或原生实现。
 
 随后完成 F21 的应用编排缺口：`media-permission-orchestrator` 将相机、系统用户选择媒体和手工输入分离，只在当前用户任务且权限未决定时经过任务说明产生窄相机 effect；拒绝、受限、撤权、取消和迟到回执都保持手工路径。照片全库、视频、定位、媒体保留/持久化、真实原生调用和 AI 上传继续未授权；下一步仍需权限文案、D-031、正式 adapter、Info.plist 和真机证据。
 

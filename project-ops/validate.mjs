@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT",
+export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 128,
+    events: 129,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT = Object.freez
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 2,
+    "2026-08-13": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -537,6 +537,44 @@ export const PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT = Object.freez
     providerUsePolicyAuthorized: false,
     businessFieldMappingApproved: false,
     automaticDiaryOrTargetMutation: false,
+    persistentRepositoryImplemented: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  aiGuidanceReferenceContract: Object.freeze({
+    eventId: "EVT-20260813-003",
+    subjectId: "ai-guidance-reference-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F16",
+    requirementId: "REQ-F16",
+    acceptanceId: "AT-F16",
+    topLevelTests: 12,
+    fullSuitePassed: 641,
+    strictOpaqueResponseContract: true,
+    duplicateJsonKeysRejected: true,
+    referenceOnlyBoundary: true,
+    nonMedicalBoundary: true,
+    medicalSafetyEvaluation: "NOT_PERFORMED",
+    highRiskUseAuthorized: false,
+    callerOwnedContentDefinition: true,
+    callerOwnedDisclaimerDefinition: true,
+    generatedAtCallerSupplied: true,
+    requestAndPolicyEvidenceBound: true,
+    sourceAndEditFingerprintsBound: true,
+    revisionCasEditing: true,
+    discardPurgesVolatileContent: true,
+    observableEffects: 0,
+    automaticDiaryOrTargetMutation: false,
+    persistenceStrategyAuthorized: false,
+    iaPlacementAuthorized: false,
+    nonLabelConfirmationPolicyAuthorized: false,
+    providerUsePolicyAuthorized: false,
+    businessPayloadApproved: false,
     persistentRepositoryImplemented: false,
     systemClockRead: false,
     realNetworkRequests: 0,
@@ -1097,7 +1135,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2255,6 +2293,59 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_CANDIDATE_CONFIRMATION_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F01/F02 AI 候选确认合同只登记易失输入、严格候选、显式 review、审计指纹和用户确认值幂等保存端口；不得授权 D-031/D-033/D-034/D-036/D-053、真实 transport、正式字段/映射、自动改日记/目标、持久化 Repository、系统时钟、原生或正式实现",
+    );
+  }
+
+  const aiGuidanceReferenceEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiGuidanceReferenceContract.subjectId,
+  );
+  const aiGuidanceReferenceEvent = aiGuidanceReferenceEvents[0]?.value;
+  const aiGuidanceReferenceData = aiGuidanceReferenceEvent?.data ?? {};
+  const aiGuidanceBaseline = baseline.aiGuidanceReferenceContract;
+  if (
+    aiGuidanceReferenceEvents.length !== 1 ||
+    aiGuidanceReferenceEvent?.eventId !== aiGuidanceBaseline.eventId ||
+    aiGuidanceReferenceEvent?.type !== "ARTIFACT_CREATED" ||
+    aiGuidanceReferenceEvent?.actor?.id !== "project-manager" ||
+    aiGuidanceReferenceData.contractStatus !== aiGuidanceBaseline.contractStatus ||
+    aiGuidanceReferenceData.artifactState !== aiGuidanceBaseline.artifactState ||
+    aiGuidanceReferenceData.featureId !== aiGuidanceBaseline.featureId ||
+    aiGuidanceReferenceData.requirementId !== aiGuidanceBaseline.requirementId ||
+    aiGuidanceReferenceData.acceptanceId !== aiGuidanceBaseline.acceptanceId ||
+    aiGuidanceReferenceData.topLevelTests !== aiGuidanceBaseline.topLevelTests ||
+    aiGuidanceReferenceData.fullSuitePassed !== aiGuidanceBaseline.fullSuitePassed ||
+    aiGuidanceReferenceData.strictOpaqueResponseContract !== aiGuidanceBaseline.strictOpaqueResponseContract ||
+    aiGuidanceReferenceData.duplicateJsonKeysRejected !== aiGuidanceBaseline.duplicateJsonKeysRejected ||
+    aiGuidanceReferenceData.referenceOnlyBoundary !== aiGuidanceBaseline.referenceOnlyBoundary ||
+    aiGuidanceReferenceData.nonMedicalBoundary !== aiGuidanceBaseline.nonMedicalBoundary ||
+    aiGuidanceReferenceData.medicalSafetyEvaluation !== aiGuidanceBaseline.medicalSafetyEvaluation ||
+    aiGuidanceReferenceData.highRiskUseAuthorized !== aiGuidanceBaseline.highRiskUseAuthorized ||
+    aiGuidanceReferenceData.callerOwnedContentDefinition !== aiGuidanceBaseline.callerOwnedContentDefinition ||
+    aiGuidanceReferenceData.callerOwnedDisclaimerDefinition !== aiGuidanceBaseline.callerOwnedDisclaimerDefinition ||
+    aiGuidanceReferenceData.generatedAtCallerSupplied !== aiGuidanceBaseline.generatedAtCallerSupplied ||
+    aiGuidanceReferenceData.requestAndPolicyEvidenceBound !== aiGuidanceBaseline.requestAndPolicyEvidenceBound ||
+    aiGuidanceReferenceData.sourceAndEditFingerprintsBound !== aiGuidanceBaseline.sourceAndEditFingerprintsBound ||
+    aiGuidanceReferenceData.revisionCasEditing !== aiGuidanceBaseline.revisionCasEditing ||
+    aiGuidanceReferenceData.discardPurgesVolatileContent !== aiGuidanceBaseline.discardPurgesVolatileContent ||
+    aiGuidanceReferenceData.observableEffects !== aiGuidanceBaseline.observableEffects ||
+    aiGuidanceReferenceData.automaticDiaryOrTargetMutation !== aiGuidanceBaseline.automaticDiaryOrTargetMutation ||
+    aiGuidanceReferenceData.persistenceStrategyAuthorized !== aiGuidanceBaseline.persistenceStrategyAuthorized ||
+    aiGuidanceReferenceData.iaPlacementAuthorized !== aiGuidanceBaseline.iaPlacementAuthorized ||
+    aiGuidanceReferenceData.nonLabelConfirmationPolicyAuthorized !== aiGuidanceBaseline.nonLabelConfirmationPolicyAuthorized ||
+    aiGuidanceReferenceData.providerUsePolicyAuthorized !== aiGuidanceBaseline.providerUsePolicyAuthorized ||
+    aiGuidanceReferenceData.businessPayloadApproved !== aiGuidanceBaseline.businessPayloadApproved ||
+    aiGuidanceReferenceData.persistentRepositoryImplemented !== aiGuidanceBaseline.persistentRepositoryImplemented ||
+    aiGuidanceReferenceData.systemClockRead !== aiGuidanceBaseline.systemClockRead ||
+    aiGuidanceReferenceData.realNetworkRequests !== aiGuidanceBaseline.realNetworkRequests ||
+    aiGuidanceReferenceData.nativeImplementationAuthorized !== aiGuidanceBaseline.nativeImplementationAuthorized ||
+    aiGuidanceReferenceData.formalImplementationAuthorized !== aiGuidanceBaseline.formalImplementationAuthorized ||
+    aiGuidanceReferenceData.gateStatesChanged !== aiGuidanceBaseline.gateStatesChanged ||
+    aiGuidanceReferenceData.ownerIntakeChanged !== aiGuidanceBaseline.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_AI_GUIDANCE_REFERENCE_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F16 合同只登记严格 opaque response、参考草稿边界、调用方定义、来源/edit 指纹、本地编辑和放弃清理；不得授权 UXD-04/UXD-11、D-033/D-053、医疗安全、高风险用途、业务字段、自动改日记/目标、持久化、系统时钟、网络、原生或正式实现",
     );
   }
 

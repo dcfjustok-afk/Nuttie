@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T19:59:15+08:00",
+  "generatedAt": "2026-08-13T20:25:12+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 128
+    "projectEvents": 129
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F01/F02 AI 候选确认事务合同已登记；等待 Owner AI 候选、正式字段/Repository、UI/原生证据及 OI-02",
+      "workPackage": "F16 AI 参考草稿合同已登记；等待 Owner IA/保存/高风险/Provider 候选、UI/原生证据及 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F16 AI 指导框架无关参考草稿合同已登记：严格 opaque response 拒绝重复 key/秘密/超预算内容，草稿固定为 REFERENCE_ONLY / NOT_MEDICAL_ADVICE，本地 revision CAS 编辑保留来源，放弃后清除原始与当前内容，所有 effect 为零；不授权 UXD-04/UXD-11、D-033/D-053、医疗安全、高风险用途、正式 payload、自动改日记/目标、持久化、网络、原生或正式工程",
     "F01/F02 AI 候选确认框架无关 Application 合同已登记：transport/响应失败保留易失本地输入，严格候选必须经显式选择、caller-owned confirmed value 和 review 后才生成幂等保存 effect；effect 不携带原始输入或 AI candidate，未知提交只用原命令重放，成功后清除易失输入；不授权 D-031/D-033/D-034/D-036/D-053、真实 transport、正式字段/映射、自动改日记/目标、持久化 Repository、原生或正式工程",
     "F22 平台与语言 Release 审计合同已登记：固定已接受 D-011 iOS 17.0 和 D-016 首发简中，不从 D-038/当前 iPhone/工具默认值推导设备族、方向、Mac 或 Vision availability；当前四项决定均未形成权威决定，无签名 Archive、模拟器/真机/商店/布局/无障碍等 25 面证据，结果保持 BLOCKED，不验证决定/报告真实性或关闭发布门禁",
     "F20/F23/F24 禁止能力 fail-closed 审计聚合合同已登记：必须以正式签名 Release Archive 绑定源码、依赖、原生配置、plist/entitlement/PrivacyInfo、UI/Store 目录、framework/二进制、运行时网络/权限等 27 面报告；当前无正式目标、无生产工件扫描或捕获，结果固定为 BLOCKED，不得把未初始化工作区的零发现冒充 PASS，也不验证证据真实性或关闭发布门禁",

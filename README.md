@@ -13,7 +13,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：尚未初始化；未批准的库级选型不会提前固化
-- 框架无关契约与治理检查：全套 628 项测试通过，含 ProjectOps 5 份 Schema/245 个实例校验、F01/F02 AI 候选确认、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；AI 候选确认只证明显式 review 后的用户确认值幂等保存，不等于真实 transport 或正式业务字段已授权；F18 一致性端口也不等于 SQLCipher snapshot transaction 已实现；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：全套 641 项测试通过，含 ProjectOps 5 份 Schema/246 个实例校验、F01/F02 AI 候选确认、F16 AI 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；F16 只证明可编辑/可放弃、非医疗且零业务 effect 的参考草稿边界，不等于 IA、保存、高风险、D-033/D-053 或正式 payload 已授权；AI 候选确认也不等于真实 transport 或正式业务字段已授权；F18 一致性端口不等于 SQLCipher snapshot transaction 已实现；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 

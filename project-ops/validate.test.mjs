@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT,
+  PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_AI_CANDIDATE_CONFIRMATION_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 245,
+    instancesValidated: 246,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 128);
+  assert.equal(report.counts.events, 129);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -196,6 +196,32 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiCandidateConfirmationEvent.value.data.persistentRepositoryImplemented, false);
   assert.equal(aiCandidateConfirmationEvent.value.data.realNetworkRequests, 0);
   assert.equal(aiCandidateConfirmationEvent.value.data.formalImplementationAuthorized, false);
+  const aiGuidanceReferenceEvent = findEvent(VALID_MODEL, "EVT-20260813-003");
+  assert.equal(aiGuidanceReferenceEvent.value.subject.id, "ai-guidance-reference-contract");
+  assert.equal(aiGuidanceReferenceEvent.value.data.featureId, "F16");
+  assert.equal(aiGuidanceReferenceEvent.value.data.strictOpaqueResponseContract, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.duplicateJsonKeysRejected, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.referenceOnlyBoundary, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.nonMedicalBoundary, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.medicalSafetyEvaluation, "NOT_PERFORMED");
+  assert.equal(aiGuidanceReferenceEvent.value.data.highRiskUseAuthorized, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.callerOwnedContentDefinition, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.callerOwnedDisclaimerDefinition, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.requestAndPolicyEvidenceBound, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.sourceAndEditFingerprintsBound, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.revisionCasEditing, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.discardPurgesVolatileContent, true);
+  assert.equal(aiGuidanceReferenceEvent.value.data.observableEffects, 0);
+  assert.equal(aiGuidanceReferenceEvent.value.data.automaticDiaryOrTargetMutation, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.persistenceStrategyAuthorized, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.iaPlacementAuthorized, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.nonLabelConfirmationPolicyAuthorized, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.providerUsePolicyAuthorized, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.businessPayloadApproved, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.persistentRepositoryImplemented, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.systemClockRead, false);
+  assert.equal(aiGuidanceReferenceEvent.value.data.realNetworkRequests, 0);
+  assert.equal(aiGuidanceReferenceEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -241,7 +267,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 244);
+    assert.equal(report.schemaValidation.instancesValidated, 245);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -721,6 +747,44 @@ test("拒绝把 AI 候选确认合同越级为真实 transport、字段映射、
   assertDiagnostic(
     report,
     "OPS_AI_CANDIDATE_CONFIRMATION_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把 F16 参考草稿合同越级为自动写事实、医疗安全、已批保存或 Owner 授权", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-003");
+    event.value.data.strictOpaqueResponseContract = false;
+    event.value.data.duplicateJsonKeysRejected = false;
+    event.value.data.referenceOnlyBoundary = false;
+    event.value.data.nonMedicalBoundary = false;
+    event.value.data.medicalSafetyEvaluation = "PASSED";
+    event.value.data.highRiskUseAuthorized = true;
+    event.value.data.callerOwnedContentDefinition = false;
+    event.value.data.callerOwnedDisclaimerDefinition = false;
+    event.value.data.generatedAtCallerSupplied = false;
+    event.value.data.requestAndPolicyEvidenceBound = false;
+    event.value.data.sourceAndEditFingerprintsBound = false;
+    event.value.data.revisionCasEditing = false;
+    event.value.data.discardPurgesVolatileContent = false;
+    event.value.data.observableEffects = 1;
+    event.value.data.automaticDiaryOrTargetMutation = true;
+    event.value.data.persistenceStrategyAuthorized = true;
+    event.value.data.iaPlacementAuthorized = true;
+    event.value.data.nonLabelConfirmationPolicyAuthorized = true;
+    event.value.data.providerUsePolicyAuthorized = true;
+    event.value.data.businessPayloadApproved = true;
+    event.value.data.persistentRepositoryImplemented = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_AI_GUIDANCE_REFERENCE_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });
