@@ -40,11 +40,11 @@ REVIEWING
   -> DISCARDED
 ```
 
-- `REVIEWING` 保留规范化 AI 原始内容、生成时间、HTTPS origin、model、request/policy 证据和调用方定义。
+- `REVIEWING` 保留规范化 AI 原始内容、生成时间、共享 `AI_REQUEST_EVIDENCE_CONTEXT_V2` 和调用方定义；source evidence 提取 provider/origin/model/payload、subject/profile/authorization/policy-check/context 指纹供展示和核验。
 - `EDITING` 通过 revision CAS 接受本地修改，继续保留 AI 原始内容与来源，但将当前内容指纹与原始内容指纹分离。
 - `DISCARDED` 是幂等终态，清除原始内容和当前内容，只保留绑定来源、定义、最终 revision 和内容指纹的清除证据。
 
-活跃状态可用保留的规范化 AI 原始内容独立重建并核对 source evidence。放弃后内容已经清除，只能核对清除证据内部的指纹绑定；普通 SHA-256 不含秘密，不能证明 Provider、网络响应或外部来源的真实性。
+活跃状态可用保留的规范化 AI 原始内容与完整共享上下文独立重建并核对 `AI_GUIDANCE_SOURCE_EVIDENCE_V2`。放弃后内容已经清除，只能核对清除证据内部的指纹绑定；普通 SHA-256 不含秘密，共享上下文也固定声明未证明 transport、未授予发送，不能证明 Provider、网络响应或外部来源的真实性。
 
 所有状态的 `effect` 恒为 `null`。模块不导出保存、Repository、日记、目标、transport 或自动修改 API。
 
@@ -55,7 +55,7 @@ REVIEWING
 - 参考用途、非医疗、高风险未授权、业务零修改和 UXD-11 未决边界；
 - 调用方定义的非空、指纹、复制与冻结；
 - 严格 response 顶层、重复 key、资源预算和秘密/特殊值拒绝；
-- 显式 HTTPS request context、policy evidence 和调用方生成时间；
+- 完整共享 request context、subject/profile/authorization/policy-check 指纹和调用方生成时间；
 - AI 原始内容、当前编辑内容、来源、model、定义与 revision 指纹绑定；
 - stale edit、伪造状态、伪造来源和伪造清除证据拒绝；
 - 放弃后易失内容清除与幂等终态；

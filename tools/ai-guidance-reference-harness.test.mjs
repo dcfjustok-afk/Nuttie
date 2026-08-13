@@ -3,6 +3,12 @@ import fs from "node:fs";
 import test from "node:test";
 
 import * as guidanceContract from "./ai-guidance-reference-harness.mjs";
+import {
+  createD053AuthorizationEvidence,
+  createPolicyCheckSubject,
+  createProviderPolicyProfile,
+} from "./ai-policy-harness.mjs";
+import { createAiRequestEvidenceContext } from "./ai-request-evidence-context-harness.mjs";
 
 const {
   BOUNDARY,
@@ -14,18 +20,56 @@ const {
 
 const policyHash = "a".repeat(64);
 
-function context(overrides = {}) {
-  return {
-    schemaVersion: "AI_REQUEST_CONTEXT_V1",
-    requestId: "guidance-request-1",
-    origin: "https://ai.example.test",
+function context({ requestId = "guidance-request-1", transportProfileVersion = "transport-v1", subject: subjectOverrides = {}, profile: profileOverrides = {}, authorization: authorizationOverrides = {} } = {}) {
+  const subject = createPolicyCheckSubject({
+    schemaVersion: "POLICY_CHECK_SUBJECT_INPUT_V1",
+    providerId: "provider-local",
+    baseURL: "https://ai.example.test/v1",
     model: "model-1",
     payloadClass: "selected-seven-day-summary",
-    transportProfileVersion: "transport-v1",
-    policyProfileVersion: "policy-v1",
-    policyEvidenceFingerprint: policyHash,
-    ...overrides,
-  };
+    profileVersion: "policy-v1",
+    region: "CN",
+    observedAt: "2026-08-13T12:00:00Z",
+    ...subjectOverrides,
+  });
+  const profile = createProviderPolicyProfile({
+    schemaVersion: "PROVIDER_POLICY_PROFILE_INPUT_V1",
+    providerId: "provider-local",
+    origin: "https://ai.example.test",
+    models: ["model-1"],
+    payloadClasses: ["selected-seven-day-summary"],
+    profileVersion: "policy-v1",
+    termsEvidence: { kind: "HTTPS_URL", value: "https://ai.example.test/terms" },
+    privacyEvidence: { kind: "SNAPSHOT_SHA256", value: policyHash },
+    reviewedAt: "2026-08-01T00:00:00Z",
+    expiresAt: "2026-09-01T00:00:00Z",
+    riskProfile: {
+      retention: "BOUNDED",
+      training: "PROHIBITED",
+      humanAccess: "UNKNOWN",
+      deletionMechanism: "AVAILABLE",
+      advertisingMarketing: "PROHIBITED",
+      healthDataUse: "REQUESTED_SERVICE_ONLY",
+    },
+    state: "ALLOW",
+    reviewBasis: "Local test fixture; not provider truth or send authorization.",
+    region: "CN",
+    ...profileOverrides,
+  });
+  const authorizationEvidence = createD053AuthorizationEvidence({
+    schemaVersion: "D053_AUTHORIZATION_INPUT_V1",
+    evidenceId: "d053-current-governance",
+    recordedAt: "2026-08-13T12:00:00Z",
+    ...authorizationOverrides,
+  });
+  return createAiRequestEvidenceContext({
+    schemaVersion: "AI_REQUEST_EVIDENCE_CONTEXT_INPUT_V2",
+    requestId,
+    transportProfileVersion,
+    subject,
+    profile,
+    authorizationEvidence,
+  });
 }
 
 function definition(schemaVersion, definitionId, payload) {
@@ -63,8 +107,10 @@ test("creates only a volatile non-medical reference draft with source and genera
   assert.deepEqual(state.boundary, BOUNDARY);
   assert.equal(state.generatedAt, "2026-08-13T20:30:00+08:00");
   assert.equal(state.sourceEvidence.sourceKind, "AI_GENERATED_REFERENCE_DRAFT");
+  assert.equal(state.sourceEvidence.providerId, "provider-local");
   assert.equal(state.sourceEvidence.origin, "https://ai.example.test");
   assert.equal(state.sourceEvidence.model, "model-1");
+  assert.equal(state.sourceEvidence.authorizationFingerprint, state.context.authorizationEvidence.authorizationFingerprint);
   assert.equal(state.effect, null);
 });
 
@@ -142,12 +188,13 @@ test("rejects secrets, special objects, accessors, cycles, sparse arrays, and re
 });
 
 test("requires a normalized HTTPS request context and an explicit real generation instant", () => {
-  assert.throws(() => draft({ context: context({ origin: "http://ai.example.test" }) }), { code: "INVALID_AI_GUIDANCE_CONTEXT" });
-  assert.throws(() => draft({ context: context({ origin: "https://ai.example.test/path" }) }), { code: "INVALID_AI_GUIDANCE_CONTEXT" });
+  const forged = { ...context(), policySubject: { ...context().policySubject, baseURL: "http://ai.example.test" } };
+  assert.throws(() => draft({ context: forged }), { code: "INVALID_AI_GUIDANCE_CONTEXT" });
+  assert.throws(() => draft({ context: { ...context(), schemaVersion: "AI_REQUEST_CONTEXT_V1" } }), { code: "INVALID_AI_GUIDANCE_CONTEXT" });
   assert.throws(() => draft({ generatedAt: "2026-08-13" }), { code: "INVALID_AI_GUIDANCE_INSTANT" });
   assert.throws(() => draft({ generatedAt: "2026-02-30T20:30:00+08:00" }), { code: "INVALID_AI_GUIDANCE_INSTANT" });
-  const normalized = draft({ context: context({ origin: "https://AI.EXAMPLE.TEST:443" }) });
-  assert.equal(normalized.context.origin, "https://ai.example.test");
+  const normalized = draft({ context: context({ subject: { baseURL: "https://AI.EXAMPLE.TEST:443/v1" } }) });
+  assert.equal(normalized.context.policySubject.origin, "https://ai.example.test");
 });
 
 test("edits locally while preserving AI source, boundary, definitions, and original fingerprint", () => {
@@ -201,7 +248,9 @@ test("discard purges volatile content, is terminal, and remains idempotent", () 
 test("rejects forged boundary, provenance, content fingerprints, and discard evidence", () => {
   const state = draft();
   for (const forged of [
+    { ...state, schemaVersion: "AI_GUIDANCE_REFERENCE_STATE_V1" },
     { ...state, boundary: { ...state.boundary, businessMutation: "AUTHORIZED" } },
+    { ...state, sourceEvidence: { ...state.sourceEvidence, schemaVersion: "AI_GUIDANCE_SOURCE_EVIDENCE_V1" } },
     { ...state, sourceEvidence: { ...state.sourceEvidence, model: "forged-model" } },
     { ...state, sourceEvidence: { ...state.sourceEvidence, responseFingerprint: "b".repeat(64) } },
     { ...state, originalContent: { text: "forged-original" } },

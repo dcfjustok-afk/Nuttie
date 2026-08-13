@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT,
+  PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 255,
+    instancesValidated: 256,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 138);
+  assert.equal(report.counts.events, 139);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -463,6 +463,32 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiCandidateResponseV2Event.value.data.realNetworkRequests, 0);
   assert.equal(aiCandidateResponseV2Event.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiCandidateResponseV2Event.value.data.formalImplementationAuthorized, false);
+  const aiRequestEvidenceContextV2Event = findEvent(VALID_MODEL, "EVT-20260814-003");
+  assert.equal(aiRequestEvidenceContextV2Event.value.subject.id, "ai-request-evidence-context-v2-contract");
+  assert.deepEqual(aiRequestEvidenceContextV2Event.value.data.featureIds, ["F01", "F02", "F16"]);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.sharedContextTopLevelTests, 7);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.candidateTopLevelTests, 22);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.guidanceTopLevelTests, 12);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.fullSuitePassed, 763);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.contextSchemaVersion, "AI_REQUEST_EVIDENCE_CONTEXT_V2");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.candidateStateSchemaVersion, "AI_CANDIDATE_CONFIRMATION_STATE_V3");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.confirmedRecordSchemaVersion, "AI_CONFIRMED_RECORD_V3");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.guidanceStateSchemaVersion, "AI_GUIDANCE_REFERENCE_STATE_V2");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.exactPolicySubjectBound, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.completePolicyProfileBound, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.d053AuthorizationEvidenceBound, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.policyCheckEvidenceBound, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.onlyRemainingPolicyGate, "D053_NOT_AUTHORIZED");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.transportOccurrence, "NOT_ESTABLISHED");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.sendAuthorization, "NOT_GRANTED");
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.legacyRequestContextV1Rejected, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.legacyCandidateV1V2Rejected, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.legacyGuidanceV1Rejected, true);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.keychainReads, 0);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.sensitiveBodySerializations, 0);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.realNetworkRequests, 0);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.nativeImplementationAuthorized, false);
+  assert.equal(aiRequestEvidenceContextV2Event.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -508,7 +534,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 254);
+    assert.equal(report.schemaValidation.instancesValidated, 255);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1345,6 +1371,29 @@ test("拒绝把候选确认 V2 完整响应证据降级、改回 V1 或越级持
   assertDiagnostic(
     report,
     "OPS_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-14.jsonl",
+  );
+  const contextReport = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260814-003");
+    event.value.data.contextSchemaVersion = "AI_REQUEST_CONTEXT_V1";
+    event.value.data.candidateStateSchemaVersion = "AI_CANDIDATE_CONFIRMATION_STATE_V2";
+    event.value.data.guidanceStateSchemaVersion = "AI_GUIDANCE_REFERENCE_STATE_V1";
+    event.value.data.exactPolicySubjectBound = false;
+    event.value.data.completePolicyProfileBound = false;
+    event.value.data.d053AuthorizationEvidenceBound = false;
+    event.value.data.policyCheckEvidenceBound = false;
+    event.value.data.onlyRemainingPolicyGate = "PROVIDER_ELIGIBLE";
+    event.value.data.transportOccurrence = "ESTABLISHED";
+    event.value.data.sendAuthorization = "GRANTED";
+    event.value.data.keychainReads = 1;
+    event.value.data.sensitiveBodySerializations = 1;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+  });
+  assertDiagnostic(
+    contextReport,
+    "OPS_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-14.jsonl",
   );
 });

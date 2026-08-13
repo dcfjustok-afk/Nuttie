@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 
+import { normalizeAiRequestEvidenceContext } from "./ai-request-evidence-context-harness.mjs";
 import { parseAiResponse } from "./ai-response-contract-harness.mjs";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -60,41 +61,9 @@ function identifier(value, field, code = "INVALID_AI_CANDIDATE_CONFIRMATION_VALU
   return value;
 }
 
-function boundedString(value, field, code = "INVALID_AI_CANDIDATE_CONFIRMATION_VALUE") {
-  if (
-    typeof value !== "string" ||
-    value.trim().length === 0 ||
-    value.length > 512 ||
-    /[\u0000-\u001f\u007f]/.test(value)
-  ) fail(`${field} is invalid`, code, { field });
-  return value;
-}
-
 function sha256(value, field, code = "INVALID_AI_CANDIDATE_CONFIRMATION_VALUE") {
   if (typeof value !== "string" || !SHA256.test(value)) fail(`${field} is invalid`, code, { field });
   return value;
-}
-
-function normalizeOrigin(value, field = "context.origin") {
-  if (typeof value !== "string") fail(`${field} is invalid`, "INVALID_AI_REQUEST_CONTEXT", { field });
-  let url;
-  try {
-    url = new URL(value);
-  } catch (cause) {
-    fail(`${field} is invalid`, "INVALID_AI_REQUEST_CONTEXT", { field, cause });
-  }
-  if (
-    url.protocol !== "https:" ||
-    !url.hostname ||
-    url.username ||
-    url.password ||
-    url.pathname !== "/" ||
-    url.search ||
-    url.hash
-  ) {
-    fail(`${field} must be an HTTPS origin`, "INVALID_AI_REQUEST_CONTEXT", { field });
-  }
-  return url.origin;
 }
 
 function clone(value, seen = new Map()) {
@@ -200,47 +169,11 @@ function validateSafeJson(value, field, { rejectSecretFields = true } = {}) {
 }
 
 function normalizeRequestContext(input, field = "context") {
-  assertExactKeys(
-    input,
-    [
-      "schemaVersion",
-      "requestId",
-      "origin",
-      "model",
-      "payloadClass",
-      "transportProfileVersion",
-      "policyProfileVersion",
-      "policyEvidenceFingerprint",
-    ],
-    [],
-    field,
-    "INVALID_AI_REQUEST_CONTEXT",
-  );
-  if (input.schemaVersion !== "AI_REQUEST_CONTEXT_V1") {
-    fail(`${field}.schemaVersion is unsupported`, "INVALID_AI_REQUEST_CONTEXT", { field: `${field}.schemaVersion` });
+  try {
+    return normalizeAiRequestEvidenceContext(input, field);
+  } catch (cause) {
+    fail(`${field} is invalid`, "INVALID_AI_REQUEST_CONTEXT", { field, cause });
   }
-  return immutable({
-    schemaVersion: "AI_REQUEST_CONTEXT_V1",
-    requestId: identifier(input.requestId, `${field}.requestId`, "INVALID_AI_REQUEST_CONTEXT"),
-    origin: normalizeOrigin(input.origin, `${field}.origin`),
-    model: boundedString(input.model, `${field}.model`, "INVALID_AI_REQUEST_CONTEXT"),
-    payloadClass: boundedString(input.payloadClass, `${field}.payloadClass`, "INVALID_AI_REQUEST_CONTEXT"),
-    transportProfileVersion: boundedString(
-      input.transportProfileVersion,
-      `${field}.transportProfileVersion`,
-      "INVALID_AI_REQUEST_CONTEXT",
-    ),
-    policyProfileVersion: boundedString(
-      input.policyProfileVersion,
-      `${field}.policyProfileVersion`,
-      "INVALID_AI_REQUEST_CONTEXT",
-    ),
-    policyEvidenceFingerprint: sha256(
-      input.policyEvidenceFingerprint,
-      `${field}.policyEvidenceFingerprint`,
-      "INVALID_AI_REQUEST_CONTEXT",
-    ),
-  });
 }
 
 function normalizeConfirmedValue(input, field = "confirmedValue") {
@@ -269,7 +202,7 @@ function normalizeConfirmedValue(input, field = "confirmedValue") {
 
 function baseState({ status, localInput, context }) {
   return immutable({
-    schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V2",
+    schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V3",
     status,
     retention: "VOLATILE_APPLICATION_STATE_ONLY",
     localInput,
@@ -323,9 +256,9 @@ function validateReviewEvidence(reviewEvidence, { context, responseFingerprint, 
     invalidState("state selected candidate is invalid");
   }
   const expectedCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V3",
     requestId: context.requestId,
-    requestContextFingerprint: fingerprint(context),
+    requestContextFingerprint: context.contextFingerprint,
     responseFingerprint,
     candidateFingerprint: fingerprint(candidates[selectedCandidateIndex]),
     confirmedValueFingerprint: fingerprint(confirmedValue),
@@ -347,7 +280,7 @@ function assertState(state) {
     "state",
     "INVALID_AI_CANDIDATE_CONFIRMATION_STATE",
   );
-  if (state.schemaVersion !== "AI_CANDIDATE_CONFIRMATION_STATE_V2" || !Object.values(STATUSES).includes(state.status)) {
+  if (state.schemaVersion !== "AI_CANDIDATE_CONFIRMATION_STATE_V3" || !Object.values(STATUSES).includes(state.status)) {
     invalidState();
   }
   const expectedRetention = state.status === STATUSES.SAVED
@@ -446,14 +379,8 @@ function assertState(state) {
     if (state.status === STATUSES.SAVED) {
       const sourceEvidence = command.record.sourceEvidence;
       if (
-        sourceEvidence.requestId !== normalizedContext.requestId ||
-        sourceEvidence.origin !== normalizedContext.origin ||
-        sourceEvidence.model !== normalizedContext.model ||
-        sourceEvidence.payloadClass !== normalizedContext.payloadClass ||
-        sourceEvidence.transportProfileVersion !== normalizedContext.transportProfileVersion ||
-        sourceEvidence.policyProfileVersion !== normalizedContext.policyProfileVersion ||
-        sourceEvidence.policyEvidenceFingerprint !== normalizedContext.policyEvidenceFingerprint ||
-        sourceEvidence.requestContextFingerprint !== fingerprint(normalizedContext) ||
+        !isDeepStrictEqual(sourceEvidence.requestContext, normalizedContext) ||
+        sourceEvidence.requestContextFingerprint !== normalizedContext.contextFingerprint ||
         sourceEvidence.responseFingerprint !== state.responseFingerprint
       ) invalidState("saved state request context is not bound to the committed record");
     } else {
@@ -561,9 +488,9 @@ function reviewAiCandidate(state) {
   const candidateFingerprint = fingerprint(state.candidates[state.selectedCandidateIndex]);
   const confirmedValueFingerprint = fingerprint(state.confirmedValue);
   const reviewCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V3",
     requestId: state.context.requestId,
-    requestContextFingerprint: fingerprint(state.context),
+    requestContextFingerprint: state.context.contextFingerprint,
     responseFingerprint: state.responseFingerprint,
     candidateFingerprint,
     confirmedValueFingerprint,
@@ -574,19 +501,13 @@ function reviewAiCandidate(state) {
 
 function buildConfirmedRecord(state, recordId) {
   return immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_V2",
+    schemaVersion: "AI_CONFIRMED_RECORD_V3",
     recordId: identifier(recordId, "recordId", "INVALID_AI_CONFIRMED_RECORD"),
     confirmedValue: normalizeConfirmedValue(state.confirmedValue),
     sourceEvidence: {
-      schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V2",
+      schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V3",
       sourceKind: "AI_ASSISTED_USER_CONFIRMED",
-      requestId: state.context.requestId,
-      origin: state.context.origin,
-      model: state.context.model,
-      payloadClass: state.context.payloadClass,
-      transportProfileVersion: state.context.transportProfileVersion,
-      policyProfileVersion: state.context.policyProfileVersion,
-      policyEvidenceFingerprint: state.context.policyEvidenceFingerprint,
+      requestContext: state.context,
       requestContextFingerprint: state.reviewEvidence.requestContextFingerprint,
       responseFingerprint: state.reviewEvidence.responseFingerprint,
       candidateFingerprint: state.reviewEvidence.candidateFingerprint,
@@ -602,7 +523,7 @@ function requestAiCandidateSave(state, { commandId, recordId } = {}) {
     fail("review is required before save", "AI_CANDIDATE_REVIEW_REQUIRED");
   }
   const command = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V2",
+    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V3",
     commandId: identifier(commandId, "commandId", "INVALID_AI_CONFIRMED_RECORD_COMMAND"),
     record: buildConfirmedRecord(state, recordId),
   });
@@ -658,11 +579,11 @@ function validateCommand(command) {
     "command",
     "INVALID_AI_CONFIRMED_RECORD_COMMAND",
   );
-  if (command.schemaVersion !== "AI_CONFIRMED_RECORD_COMMAND_V2") {
+  if (command.schemaVersion !== "AI_CONFIRMED_RECORD_COMMAND_V3") {
     fail("command version is invalid", "INVALID_AI_CONFIRMED_RECORD_COMMAND");
   }
   const normalized = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V2",
+    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V3",
     commandId: identifier(command.commandId, "command.commandId", "INVALID_AI_CONFIRMED_RECORD_COMMAND"),
     record: validateConfirmedRecord(command.record),
   });
@@ -680,14 +601,13 @@ function validateConfirmedRecord(record, field = "record") {
     field,
     "INVALID_AI_CONFIRMED_RECORD",
   );
-  if (record.schemaVersion !== "AI_CONFIRMED_RECORD_V2") fail("record version is invalid", "INVALID_AI_CONFIRMED_RECORD");
+  if (record.schemaVersion !== "AI_CONFIRMED_RECORD_V3") fail("record version is invalid", "INVALID_AI_CONFIRMED_RECORD");
   const normalizedRecordId = identifier(record.recordId, `${field}.recordId`, "INVALID_AI_CONFIRMED_RECORD");
   const normalizedConfirmedValue = normalizeConfirmedValue(record.confirmedValue, `${field}.confirmedValue`);
   assertExactKeys(
     record.sourceEvidence,
     [
-      "schemaVersion", "sourceKind", "requestId", "origin", "model", "payloadClass",
-      "transportProfileVersion", "policyProfileVersion", "policyEvidenceFingerprint",
+      "schemaVersion", "sourceKind", "requestContext",
       "requestContextFingerprint", "responseFingerprint", "candidateFingerprint", "reviewFingerprint",
     ],
     [],
@@ -695,33 +615,19 @@ function validateConfirmedRecord(record, field = "record") {
     "INVALID_AI_CONFIRMED_RECORD",
   );
   if (
-    record.sourceEvidence.schemaVersion !== "AI_CONFIRMED_SOURCE_EVIDENCE_V2" ||
+    record.sourceEvidence.schemaVersion !== "AI_CONFIRMED_SOURCE_EVIDENCE_V3" ||
     record.sourceEvidence.sourceKind !== "AI_ASSISTED_USER_CONFIRMED"
   ) fail("record source evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
-  identifier(record.sourceEvidence.requestId, `${field}.sourceEvidence.requestId`, "INVALID_AI_CONFIRMED_RECORD");
-  const normalizedOrigin = normalizeOrigin(record.sourceEvidence.origin, `${field}.sourceEvidence.origin`);
-  for (const key of ["model", "payloadClass", "transportProfileVersion", "policyProfileVersion"]) {
-    boundedString(record.sourceEvidence[key], `${field}.sourceEvidence.${key}`, "INVALID_AI_CONFIRMED_RECORD");
-  }
-  for (const key of ["policyEvidenceFingerprint", "requestContextFingerprint", "responseFingerprint", "candidateFingerprint", "reviewFingerprint"]) {
+  const reconstructedContext = normalizeRequestContext(record.sourceEvidence.requestContext, `${field}.sourceEvidence.requestContext`);
+  for (const key of ["requestContextFingerprint", "responseFingerprint", "candidateFingerprint", "reviewFingerprint"]) {
     sha256(record.sourceEvidence[key], `${field}.sourceEvidence.${key}`, "INVALID_AI_CONFIRMED_RECORD");
   }
-  const reconstructedContext = immutable({
-    schemaVersion: "AI_REQUEST_CONTEXT_V1",
-    requestId: record.sourceEvidence.requestId,
-    origin: normalizedOrigin,
-    model: record.sourceEvidence.model,
-    payloadClass: record.sourceEvidence.payloadClass,
-    transportProfileVersion: record.sourceEvidence.transportProfileVersion,
-    policyProfileVersion: record.sourceEvidence.policyProfileVersion,
-    policyEvidenceFingerprint: record.sourceEvidence.policyEvidenceFingerprint,
-  });
-  if (record.sourceEvidence.requestContextFingerprint !== fingerprint(normalizeRequestContext(reconstructedContext))) {
+  if (record.sourceEvidence.requestContextFingerprint !== reconstructedContext.contextFingerprint) {
     fail("record request context evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
   }
   const reviewCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
-    requestId: record.sourceEvidence.requestId,
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V3",
+    requestId: reconstructedContext.requestId,
     requestContextFingerprint: record.sourceEvidence.requestContextFingerprint,
     responseFingerprint: record.sourceEvidence.responseFingerprint,
     candidateFingerprint: record.sourceEvidence.candidateFingerprint,
@@ -731,13 +637,10 @@ function validateConfirmedRecord(record, field = "record") {
     fail("record review evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
   }
   const normalized = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_V2",
+    schemaVersion: "AI_CONFIRMED_RECORD_V3",
     recordId: normalizedRecordId,
     confirmedValue: normalizedConfirmedValue,
-    sourceEvidence: {
-      ...record.sourceEvidence,
-      origin: normalizedOrigin,
-    },
+    sourceEvidence: record.sourceEvidence,
   });
   if (!isDeepStrictEqual(record, normalized)) {
     fail("record is not normalized", "INVALID_AI_CONFIRMED_RECORD");
@@ -754,7 +657,7 @@ function validateReceipt(receipt, command) {
     "INVALID_AI_CONFIRMED_RECORD_RECEIPT",
   );
   if (
-    receipt.schemaVersion !== "AI_CONFIRMED_RECORD_RECEIPT_V2" ||
+    receipt.schemaVersion !== "AI_CONFIRMED_RECORD_RECEIPT_V3" ||
     receipt.commandId !== command.commandId ||
     !["COMMITTED", "REPLAYED"].includes(receipt.disposition) ||
     receipt.recordId !== command.record.recordId ||
@@ -846,7 +749,7 @@ function settleAiCandidateSave(state, outcome) {
       fail("save outcome record is invalid", "INVALID_AI_CANDIDATE_SAVE_OUTCOME");
     }
     return immutable({
-      schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V2",
+      schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V3",
       status: STATUSES.SAVED,
       retention: "VOLATILE_INPUT_PURGED_AFTER_COMMIT",
       localInput: null,
@@ -933,7 +836,7 @@ function createInMemoryAiConfirmedRecordRepository({ records = [], faultPlan = [
         faultIndex += 1;
         if (fault === "BEFORE_COMMIT") throw repositoryError("INJECTED_BEFORE_COMMIT", "NOT_COMMITTED");
         const receipt = immutable({
-          schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V2",
+          schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V3",
           commandId: command.commandId,
           disposition: "COMMITTED",
           recordId: command.record.recordId,

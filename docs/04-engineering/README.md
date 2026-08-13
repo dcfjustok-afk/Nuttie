@@ -65,6 +65,7 @@
 - [恢复启动对账观察合同](testing/backup-reconcile-harness.md)：结构化 generation 观察、intent/快照指纹绑定、写入关闭的未提交行动计划和执行后重新观察；不冒充文件/Keychain effect 或密码学验证。
 - [F01/F02 不可信 AI 响应合同](testing/ai-response-contract-harness.md)：重复键/尾随数据/空候选/危险标签/资源预算失败关闭，规范化候选语义指纹、被动状态快照与零副作用边界。
 - [AI Provider policy 与 D-053 门禁](testing/ai-policy-harness.md)：完整本地 policy profile、证据/风险/有效期/地区、精确 request subject 和 D-053 candidate/not-authorized 指纹绑定；零 key/body/network/write。
+- [AI 请求证据共享上下文](testing/ai-request-evidence-context-harness.md)：以唯一 V2 上下文绑定精确 subject、完整 profile、D-053 evidence 和 policy-check；固定不证明 transport、不授予发送，供 F01/F02 与 F16 共同核验。
 - [AI 凭据生命周期合同](testing/ai-credential-lifecycle-harness.md)：BYOK 配置/替换/移除、Keychain 类密钥槽、durable intent、未知结果对账与 fail-closed 网络门。
 - [体重记录事务合同](testing/body-weight-record-harness.md)：F10 手工 kg/lb 原始输入、精确换算、同日多记录、revision CAS、幂等写入与完整趋势回执。
 - [近七日摄入/消耗事实读模型](testing/seven-day-energy-trend-harness.md)：F11 七日本地日历窗口、摄入/消耗分流、缺失语义、精确能量聚合、来源反查与文字摘要。
@@ -75,8 +76,8 @@
 - [显式餐次定义与分组读模型合同](testing/meal-slot-grouping-harness.md)：F06 调用方版本化餐次定义、显式顺序、空餐次、未分配/旧定义分离、revision 反查与派生结果防篡改。
 - [宏量目标版本事实与历史读取合同](testing/macro-target-history-harness.md)：F05 既有 P/C/F 目标原值、opaque 单位定义、来源/用户编辑状态、生效历史和实际事实联合读取；比较与舍入保持未指定。
 - [每日能量事实账本合同](testing/daily-energy-ledger-harness.md)：F04 指定日期摄入/消耗精确聚合、来源 revision、既有能量目标生效历史与防篡改快照；Left 保持未授权。
-- [AI 候选确认与幂等保存合同](testing/ai-candidate-confirmation-harness.md)：F01/F02 V2 状态/review/记录/命令/回执，完整 response/request/policy/candidate 指纹链、用户确认值幂等保存、旧 V1 失败关闭与成功后正文清理；不授权真实 transport、业务字段或自动改日记/目标。
-- [F16 AI 参考草稿合同](testing/ai-guidance-reference-harness.md)：严格 opaque response、调用方内容/免责声明定义、来源/edit 指纹、本地 revision 编辑和放弃清理；所有 effect 为零，不授权 IA、保存、医疗安全、高风险用途或自动改日记/目标。
+- [AI 候选确认与幂等保存合同](testing/ai-candidate-confirmation-harness.md)：F01/F02 V3 状态/review/记录/命令/回执，完整 response、共享 request/policy、candidate 指纹链、用户确认值幂等保存、旧 V1/V2 失败关闭与成功后正文清理；不授权真实 transport、业务字段或自动改日记/目标。
+- [F16 AI 参考草稿合同](testing/ai-guidance-reference-harness.md)：V2 状态/来源证据复用共享 request/policy 上下文，严格 opaque response、调用方内容/免责声明定义、来源/edit 指纹、本地 revision 编辑和放弃清理；所有 effect 为零，不授权 IA、保存、医疗安全、高风险用途或自动改日记/目标。
 - [F03 本地条码查找编排合同](testing/barcode-lookup-orchestrator-harness.md)：完整 GTIN 本地精确查询、候选显式选择、目录证据绑定与未命中调用方建档；不授权相机、写库、AI 或网络回退。
 - [F19 导入预检合同](testing/import-safety-harness.md)：严格 JSON/资源/路径碰撞边界、manifest/entry 精确集合、导入对象/调用方验证声明/活动状态指纹绑定与失败保持旧状态；不冒充真实验签或授权激活。
 - [F09 营养事实与洞察可用性合同](testing/food-insight-availability-harness.md)：可信本地七项营养事实可用；评分、微量标签、风险和益处能力保留但内容零暴露，不授权算法、字段集、医学/个体化结论或 AI。

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT",
+export const PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 138,
+    events: 139,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT = Obje
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 2,
+    "2026-08-14": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -920,6 +920,56 @@ export const PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT = Obje
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  aiRequestEvidenceContextV2Contract: Object.freeze({
+    eventId: "EVT-20260814-003",
+    subjectId: "ai-request-evidence-context-v2-contract",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02", "F16"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02", "REQ-F16"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02", "AT-F16"]),
+    sharedContextTopLevelTests: 7,
+    candidateTopLevelTests: 22,
+    guidanceTopLevelTests: 12,
+    fullSuitePassed: 763,
+    contextInputSchemaVersion: "AI_REQUEST_EVIDENCE_CONTEXT_INPUT_V2",
+    contextSchemaVersion: "AI_REQUEST_EVIDENCE_CONTEXT_V2",
+    contextBoundarySchemaVersion: "AI_REQUEST_EVIDENCE_BOUNDARY_V1",
+    candidateStateSchemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V3",
+    candidateReviewSchemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V3",
+    confirmedRecordSchemaVersion: "AI_CONFIRMED_RECORD_V3",
+    confirmedSourceSchemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V3",
+    confirmedCommandSchemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V3",
+    confirmedReceiptSchemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V3",
+    guidanceStateSchemaVersion: "AI_GUIDANCE_REFERENCE_STATE_V2",
+    guidanceSourceSchemaVersion: "AI_GUIDANCE_SOURCE_EVIDENCE_V2",
+    exactPolicySubjectBound: true,
+    completePolicyProfileBound: true,
+    d053AuthorizationEvidenceBound: true,
+    policyCheckEvidenceBound: true,
+    scopeMatchedRequired: true,
+    profileStateAllowsRequired: true,
+    appleProhibitedUseAbsentRequired: true,
+    onlyRemainingPolicyGate: "D053_NOT_AUTHORIZED",
+    evidenceKind: "CALLER_SUPPLIED_UNTRUSTED_RESPONSE_FIXTURE",
+    transportOccurrence: "NOT_ESTABLISHED",
+    sendAuthorization: "NOT_GRANTED",
+    downstreamUse: "PROVENANCE_ONLY",
+    legacyRequestContextV1Rejected: true,
+    legacyCandidateV1V2Rejected: true,
+    legacyGuidanceV1Rejected: true,
+    rawResponsePersisted: false,
+    candidateContentPersisted: false,
+    keychainReads: 0,
+    sensitiveBodySerializations: 0,
+    realNetworkRequests: 0,
+    businessWritesBeforeUserConfirmation: 0,
+    systemClockRead: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1472,7 +1522,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3176,6 +3226,76 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "F01/F02 候选确认 V2 只登记完整响应指纹贯穿状态/review/确认记录/命令/回执和旧 V1 失败关闭；不得持久化原始响应/候选正文或授权自动写库、网络、原生及正式实现",
+    );
+  }
+
+  const aiRequestEvidenceContextV2Events = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiRequestEvidenceContextV2Contract.subjectId,
+  );
+  const aiRequestEvidenceContextV2Event = aiRequestEvidenceContextV2Events[0]?.value;
+  const aiRequestEvidenceContextV2Data = aiRequestEvidenceContextV2Event?.data ?? {};
+  const aiRequestEvidenceContextV2Baseline = baseline.aiRequestEvidenceContextV2Contract;
+  const aiRequestEvidenceContextV2Fields = [
+    "contractStatus",
+    "artifactState",
+    "sharedContextTopLevelTests",
+    "candidateTopLevelTests",
+    "guidanceTopLevelTests",
+    "fullSuitePassed",
+    "contextInputSchemaVersion",
+    "contextSchemaVersion",
+    "contextBoundarySchemaVersion",
+    "candidateStateSchemaVersion",
+    "candidateReviewSchemaVersion",
+    "confirmedRecordSchemaVersion",
+    "confirmedSourceSchemaVersion",
+    "confirmedCommandSchemaVersion",
+    "confirmedReceiptSchemaVersion",
+    "guidanceStateSchemaVersion",
+    "guidanceSourceSchemaVersion",
+    "exactPolicySubjectBound",
+    "completePolicyProfileBound",
+    "d053AuthorizationEvidenceBound",
+    "policyCheckEvidenceBound",
+    "scopeMatchedRequired",
+    "profileStateAllowsRequired",
+    "appleProhibitedUseAbsentRequired",
+    "onlyRemainingPolicyGate",
+    "evidenceKind",
+    "transportOccurrence",
+    "sendAuthorization",
+    "downstreamUse",
+    "legacyRequestContextV1Rejected",
+    "legacyCandidateV1V2Rejected",
+    "legacyGuidanceV1Rejected",
+    "rawResponsePersisted",
+    "candidateContentPersisted",
+    "keychainReads",
+    "sensitiveBodySerializations",
+    "realNetworkRequests",
+    "businessWritesBeforeUserConfirmation",
+    "systemClockRead",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    aiRequestEvidenceContextV2Events.length !== 1 ||
+    aiRequestEvidenceContextV2Event?.eventId !== aiRequestEvidenceContextV2Baseline.eventId ||
+    aiRequestEvidenceContextV2Event?.type !== "ARTIFACT_CREATED" ||
+    aiRequestEvidenceContextV2Event?.actor?.id !== "project-manager" ||
+    JSON.stringify(aiRequestEvidenceContextV2Data.featureIds) !== JSON.stringify(aiRequestEvidenceContextV2Baseline.featureIds) ||
+    JSON.stringify(aiRequestEvidenceContextV2Data.requirementIds) !== JSON.stringify(aiRequestEvidenceContextV2Baseline.requirementIds) ||
+    JSON.stringify(aiRequestEvidenceContextV2Data.acceptanceIds) !== JSON.stringify(aiRequestEvidenceContextV2Baseline.acceptanceIds) ||
+    aiRequestEvidenceContextV2Fields.some(
+      (field) => aiRequestEvidenceContextV2Data[field] !== aiRequestEvidenceContextV2Baseline[field],
+    )
+  ) {
+    add(
+      "OPS_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "F01/F02/F16 AI request evidence context must retain exact subject/profile/D-053/check evidence, D053_NOT_AUTHORIZED, no transport claim, no send authorization, and no native or formal implementation authorization",
     );
   }
 

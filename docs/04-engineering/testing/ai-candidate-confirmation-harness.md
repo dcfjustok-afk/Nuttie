@@ -42,16 +42,18 @@ AWAITING_RESPONSE
 ## Repository Port
 
 ```text
-saveConfirmedRecord(AI_CONFIRMED_RECORD_COMMAND_V2)
-  -> AI_CONFIRMED_RECORD_RECEIPT_V2
+saveConfirmedRecord(AI_CONFIRMED_RECORD_COMMAND_V3)
+  -> AI_CONFIRMED_RECORD_RECEIPT_V3
 
 readConfirmedRecord(recordId)
-  -> AI_CONFIRMED_RECORD_V2
+  -> AI_CONFIRMED_RECORD_V3
 ```
 
-持久化记录包含 caller-owned `confirmedValue` 和 `AI_CONFIRMED_SOURCE_EVIDENCE_V2`。来源证据绑定 request ID、HTTPS origin、model、payload class、transport/profile 版本、policy evidence、完整 request context、完整 response、选中 candidate 和 review fingerprint，来源种类固定为 `AI_ASSISTED_USER_CONFIRMED`。它只保留指纹，不保留原始响应、候选 label/nutrients/confidence 或未选候选正文。
+持久化记录包含 caller-owned `confirmedValue` 和 `AI_CONFIRMED_SOURCE_EVIDENCE_V3`。来源证据保留完整、严格校验的 `AI_REQUEST_EVIDENCE_CONTEXT_V2`，从而绑定 request ID、精确 policy subject、完整本地 profile、D-053 authorization evidence、policy-check 结果、transport profile 和全部指纹；同时绑定完整 response、选中 candidate 和 review fingerprint，来源种类固定为 `AI_ASSISTED_USER_CONFIRMED`。它不保留原始响应、候选 label/nutrients/confidence 或未选候选正文。
 
-状态、review、记录、source evidence、命令与回执分别使用独立 V2 schema。旧 V1 缺少完整响应指纹，不能被解释为 V2 证据，所有恢复、执行与结算入口均失败关闭；正式工程若需要迁移，必须另行定义显式迁移策略，不能静默补造指纹。
+状态、review、记录、source evidence、命令与回执分别使用独立 V3 schema。旧 V1 缺少完整响应指纹，旧 V2 又只携带松散 policy 哈希；两者都不能被解释为 V3 证据，所有恢复、执行与结算入口均失败关闭。正式工程若需要迁移，必须另行定义显式迁移策略，不能静默补造指纹或 policy 证据。
+
+共享上下文固定为调用方注入的不可信响应样本，`transportOccurrence=NOT_ESTABLISHED`、`sendAuthorization=NOT_GRANTED`，且 policy-check 唯一剩余阻断必须是 `D053_NOT_AUTHORIZED`。因此这条持久化来源链提供可重建的本地治理追溯，不证明真实 Provider 请求或响应。
 
 新 `commandId` 必须在同一逻辑事务中写入确认记录和幂等结果。相同命令重放返回 `REPLAYED`；同 ID 不同 payload、不同命令竞争同一 record ID、伪造回执和不一致 readback 都失败关闭。提交后结果丢失或有效回执后的 readback 失败归类为 `UNKNOWN`，只能通过原命令收敛。
 
@@ -65,7 +67,8 @@ readConfirmedRecord(recordId)
 - 复用严格 AI response contract，非法响应不产生 candidate；
 - candidate 选择、caller-owned confirmed value、显式 review 与编辑失效；
 - request context、policy evidence、完整 response、candidate、confirmed value 和 review 的完整指纹绑定；未选候选变化也改变 review evidence；
-- 状态/review/记录/source/command/receipt V2 版本一致性，以及旧 V1 证据失败关闭；
+- 共享 request context 的完整 subject/profile/authorization/policy-check 证据绑定；
+- 状态/review/记录/source/command/receipt V3 版本一致性，以及旧 V1/V2 证据失败关闭；
 - 保存 effect 不携带原始本地输入或 AI candidate；
 - 幂等提交、提交前零写入、提交后未知结果重放和 post-receipt readback 分类；
 - command/record 冲突、并发序列化、伪造 effect/receipt/state/readback 和迟到 attempt 拒绝；

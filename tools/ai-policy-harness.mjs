@@ -403,6 +403,9 @@ export {
   createProviderPolicyProfile,
   emptyBusinessState,
   normalizeHttpsBaseUrl,
+  normalizeD053AuthorizationEvidence,
+  normalizePolicyCheckSubject,
+  normalizeProviderPolicyProfile,
   policyCheck,
   requestCandidate,
 };

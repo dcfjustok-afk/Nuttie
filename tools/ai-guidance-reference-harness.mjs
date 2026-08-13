@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 
+import { normalizeAiRequestEvidenceContext } from "./ai-request-evidence-context-harness.mjs";
 import { parseManifestPreAuth } from "./data-pack-contract-harness.mjs";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -100,16 +101,6 @@ function identifier(value, field, code = "INVALID_AI_GUIDANCE_VALUE") {
   return value;
 }
 
-function boundedString(value, field, code = "INVALID_AI_GUIDANCE_VALUE") {
-  if (
-    typeof value !== "string" ||
-    value.trim().length === 0 ||
-    value.length > 512 ||
-    /[\u0000-\u001f\u007f]/.test(value)
-  ) fail(`${field} is invalid`, code, { field });
-  return value;
-}
-
 function sha256(value, field, code = "INVALID_AI_GUIDANCE_VALUE") {
   if (typeof value !== "string" || !SHA256.test(value)) fail(`${field} is invalid`, code, { field });
   return value;
@@ -206,26 +197,6 @@ function nonEmptyDefinitionPayload(value, field) {
   return normalized;
 }
 
-function normalizeOrigin(value, field) {
-  if (typeof value !== "string") fail(`${field} is invalid`, "INVALID_AI_GUIDANCE_CONTEXT", { field });
-  let url;
-  try {
-    url = new URL(value);
-  } catch (cause) {
-    fail(`${field} is invalid`, "INVALID_AI_GUIDANCE_CONTEXT", { field, cause });
-  }
-  if (
-    url.protocol !== "https:" ||
-    !url.hostname ||
-    url.username ||
-    url.password ||
-    url.pathname !== "/" ||
-    url.search ||
-    url.hash
-  ) fail(`${field} must be an HTTPS origin`, "INVALID_AI_GUIDANCE_CONTEXT", { field });
-  return url.origin;
-}
-
 function instant(value, field) {
   const match = typeof value === "string" ? INSTANT.exec(value) : null;
   if (!match || !Number.isFinite(Date.parse(value))) {
@@ -244,29 +215,11 @@ function instant(value, field) {
 }
 
 function normalizeContext(input, field = "context") {
-  assertExactKeys(
-    input,
-    [
-      "schemaVersion", "requestId", "origin", "model", "payloadClass", "transportProfileVersion",
-      "policyProfileVersion", "policyEvidenceFingerprint",
-    ],
-    [],
-    field,
-    "INVALID_AI_GUIDANCE_CONTEXT",
-  );
-  if (input.schemaVersion !== "AI_REQUEST_CONTEXT_V1") {
-    fail(`${field}.schemaVersion is unsupported`, "INVALID_AI_GUIDANCE_CONTEXT", { field: `${field}.schemaVersion` });
+  try {
+    return normalizeAiRequestEvidenceContext(input, field);
+  } catch (cause) {
+    fail(`${field} is invalid`, "INVALID_AI_GUIDANCE_CONTEXT", { field, cause });
   }
-  return immutable({
-    schemaVersion: "AI_REQUEST_CONTEXT_V1",
-    requestId: identifier(input.requestId, `${field}.requestId`, "INVALID_AI_GUIDANCE_CONTEXT"),
-    origin: normalizeOrigin(input.origin, `${field}.origin`),
-    model: boundedString(input.model, `${field}.model`, "INVALID_AI_GUIDANCE_CONTEXT"),
-    payloadClass: boundedString(input.payloadClass, `${field}.payloadClass`, "INVALID_AI_GUIDANCE_CONTEXT"),
-    transportProfileVersion: boundedString(input.transportProfileVersion, `${field}.transportProfileVersion`, "INVALID_AI_GUIDANCE_CONTEXT"),
-    policyProfileVersion: boundedString(input.policyProfileVersion, `${field}.policyProfileVersion`, "INVALID_AI_GUIDANCE_CONTEXT"),
-    policyEvidenceFingerprint: sha256(input.policyEvidenceFingerprint, `${field}.policyEvidenceFingerprint`, "INVALID_AI_GUIDANCE_CONTEXT"),
-  });
 }
 
 function normalizeDefinition(input, expectedVersion, field) {
@@ -325,16 +278,20 @@ function parseGuidanceResponse(responseText) {
 
 function sourceEvidence({ context, generatedAt, response, content }) {
   return immutable({
-    schemaVersion: "AI_GUIDANCE_SOURCE_EVIDENCE_V1",
+    schemaVersion: "AI_GUIDANCE_SOURCE_EVIDENCE_V2",
     sourceKind: "AI_GENERATED_REFERENCE_DRAFT",
     requestId: context.requestId,
-    origin: context.origin,
-    model: context.model,
-    payloadClass: context.payloadClass,
+    providerId: context.policySubject.providerId,
+    origin: context.policySubject.origin,
+    model: context.policySubject.model,
+    payloadClass: context.policySubject.payloadClass,
     transportProfileVersion: context.transportProfileVersion,
-    policyProfileVersion: context.policyProfileVersion,
-    policyEvidenceFingerprint: context.policyEvidenceFingerprint,
-    requestContextFingerprint: fingerprint(context),
+    policyProfileVersion: context.policySubject.profileVersion,
+    policySubjectFingerprint: context.policySubject.subjectFingerprint,
+    policyProfileFingerprint: context.policyProfile.profileFingerprint,
+    authorizationFingerprint: context.authorizationEvidence.authorizationFingerprint,
+    policyCheckFingerprint: context.policyCheck.resultFingerprint,
+    requestContextFingerprint: context.contextFingerprint,
     responseFingerprint: fingerprint(response),
     originalContentFingerprint: fingerprint(content),
     generatedAt,
@@ -343,7 +300,7 @@ function sourceEvidence({ context, generatedAt, response, content }) {
 
 function activeDraftEvidence(state) {
   const core = immutable({
-    schemaVersion: "AI_GUIDANCE_DRAFT_EVIDENCE_V1",
+    schemaVersion: "AI_GUIDANCE_DRAFT_EVIDENCE_V2",
     requestContextFingerprint: state.sourceEvidence.requestContextFingerprint,
     sourceEvidenceFingerprint: fingerprint(state.sourceEvidence),
     contentDefinitionFingerprint: state.contentDefinition.definitionFingerprint,
@@ -359,8 +316,9 @@ function normalizeSourceEvidence(input, context, generatedAt, field = "state.sou
   assertExactKeys(
     input,
     [
-      "schemaVersion", "sourceKind", "requestId", "origin", "model", "payloadClass", "transportProfileVersion",
-      "policyProfileVersion", "policyEvidenceFingerprint", "requestContextFingerprint", "responseFingerprint",
+      "schemaVersion", "sourceKind", "requestId", "providerId", "origin", "model", "payloadClass", "transportProfileVersion",
+      "policyProfileVersion", "policySubjectFingerprint", "policyProfileFingerprint", "authorizationFingerprint",
+      "policyCheckFingerprint", "requestContextFingerprint", "responseFingerprint",
       "originalContentFingerprint", "generatedAt",
     ],
     [],
@@ -369,22 +327,29 @@ function normalizeSourceEvidence(input, context, generatedAt, field = "state.sou
   );
   const expectedContextFields = {
     requestId: context.requestId,
-    origin: context.origin,
-    model: context.model,
-    payloadClass: context.payloadClass,
+    providerId: context.policySubject.providerId,
+    origin: context.policySubject.origin,
+    model: context.policySubject.model,
+    payloadClass: context.policySubject.payloadClass,
     transportProfileVersion: context.transportProfileVersion,
-    policyProfileVersion: context.policyProfileVersion,
-    policyEvidenceFingerprint: context.policyEvidenceFingerprint,
+    policyProfileVersion: context.policySubject.profileVersion,
+    policySubjectFingerprint: context.policySubject.subjectFingerprint,
+    policyProfileFingerprint: context.policyProfile.profileFingerprint,
+    authorizationFingerprint: context.authorizationEvidence.authorizationFingerprint,
+    policyCheckFingerprint: context.policyCheck.resultFingerprint,
   };
   if (
-    input.schemaVersion !== "AI_GUIDANCE_SOURCE_EVIDENCE_V1" ||
+    input.schemaVersion !== "AI_GUIDANCE_SOURCE_EVIDENCE_V2" ||
     input.sourceKind !== "AI_GENERATED_REFERENCE_DRAFT" ||
     input.generatedAt !== generatedAt ||
-    input.requestContextFingerprint !== fingerprint(context) ||
+    input.requestContextFingerprint !== context.contextFingerprint ||
     Object.entries(expectedContextFields).some(([key, value]) => input[key] !== value)
   ) fail("guidance source evidence is invalid", "INVALID_AI_GUIDANCE_STATE", { field });
   sha256(input.responseFingerprint, `${field}.responseFingerprint`, "INVALID_AI_GUIDANCE_STATE");
   sha256(input.originalContentFingerprint, `${field}.originalContentFingerprint`, "INVALID_AI_GUIDANCE_STATE");
+  for (const key of ["policySubjectFingerprint", "policyProfileFingerprint", "authorizationFingerprint", "policyCheckFingerprint", "requestContextFingerprint"]) {
+    sha256(input[key], `${field}.${key}`, "INVALID_AI_GUIDANCE_STATE");
+  }
   return immutable(input);
 }
 
@@ -400,7 +365,7 @@ function assertState(state) {
     "state",
     "INVALID_AI_GUIDANCE_STATE",
   );
-  if (state.schemaVersion !== "AI_GUIDANCE_REFERENCE_STATE_V1" || !Object.values(STATUSES).includes(state.status)) {
+  if (state.schemaVersion !== "AI_GUIDANCE_REFERENCE_STATE_V2" || !Object.values(STATUSES).includes(state.status)) {
     fail("guidance state is invalid", "INVALID_AI_GUIDANCE_STATE");
   }
   const context = normalizeContext(state.context, "state.context");
@@ -448,7 +413,7 @@ function assertState(state) {
       "INVALID_AI_GUIDANCE_STATE",
     );
     const discardCore = immutable({
-      schemaVersion: "AI_GUIDANCE_DISCARD_EVIDENCE_V1",
+      schemaVersion: "AI_GUIDANCE_DISCARD_EVIDENCE_V2",
       revision: state.revision,
       currentContentFingerprint: state.currentContentFingerprint,
       sourceEvidenceFingerprint: fingerprint(source),
@@ -521,7 +486,7 @@ function createAiGuidanceReferenceDraft({
     content,
   });
   const base = {
-    schemaVersion: "AI_GUIDANCE_REFERENCE_STATE_V1",
+    schemaVersion: "AI_GUIDANCE_REFERENCE_STATE_V2",
     status: STATUSES.REVIEWING,
     retention: "VOLATILE_APPLICATION_STATE_ONLY",
     boundary: BOUNDARY,
@@ -568,7 +533,7 @@ function discardAiGuidanceReferenceDraft(state) {
   assertState(state);
   if (state.status === STATUSES.DISCARDED) return state;
   const discardCore = immutable({
-    schemaVersion: "AI_GUIDANCE_DISCARD_EVIDENCE_V1",
+    schemaVersion: "AI_GUIDANCE_DISCARD_EVIDENCE_V2",
     revision: state.revision,
     currentContentFingerprint: state.currentContentFingerprint,
     sourceEvidenceFingerprint: fingerprint(state.sourceEvidence),

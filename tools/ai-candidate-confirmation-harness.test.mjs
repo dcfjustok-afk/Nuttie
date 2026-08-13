@@ -15,23 +15,67 @@ import {
   reviewAiCandidate,
   settleAiCandidateSave,
 } from "./ai-candidate-confirmation-harness.mjs";
+import {
+  createD053AuthorizationEvidence,
+  createPolicyCheckSubject,
+  createProviderPolicyProfile,
+} from "./ai-policy-harness.mjs";
+import { createAiRequestEvidenceContext } from "./ai-request-evidence-context-harness.mjs";
 import { parseAiResponse } from "./ai-response-contract-harness.mjs";
 
 const hash = "a".repeat(64);
 const definitionHash = "b".repeat(64);
 
-function context(overrides = {}) {
-  return {
-    schemaVersion: "AI_REQUEST_CONTEXT_V1",
-    requestId: "request-1",
-    origin: "https://ai.example.test",
+function context({ requestId = "request-1", transportProfileVersion = "transport-1", subject: subjectOverrides = {}, profile: profileOverrides = {}, authorization: authorizationOverrides = {} } = {}) {
+  const subject = createPolicyCheckSubject({
+    schemaVersion: "POLICY_CHECK_SUBJECT_INPUT_V1",
+    providerId: "provider-local",
+    baseURL: "https://ai.example.test/v1",
     model: "model-1",
     payloadClass: "meal-text",
-    transportProfileVersion: "transport-1",
-    policyProfileVersion: "policy-1",
-    policyEvidenceFingerprint: hash,
-    ...overrides,
-  };
+    profileVersion: "policy-1",
+    region: "CN",
+    observedAt: "2026-08-13T12:00:00Z",
+    ...subjectOverrides,
+  });
+  const profile = createProviderPolicyProfile({
+    schemaVersion: "PROVIDER_POLICY_PROFILE_INPUT_V1",
+    providerId: "provider-local",
+    origin: "https://ai.example.test",
+    models: ["model-1"],
+    payloadClasses: ["meal-text"],
+    profileVersion: "policy-1",
+    termsEvidence: { kind: "HTTPS_URL", value: "https://ai.example.test/terms" },
+    privacyEvidence: { kind: "SNAPSHOT_SHA256", value: hash },
+    reviewedAt: "2026-08-01T00:00:00Z",
+    expiresAt: "2026-09-01T00:00:00Z",
+    riskProfile: {
+      retention: "BOUNDED",
+      training: "PROHIBITED",
+      humanAccess: "UNKNOWN",
+      deletionMechanism: "AVAILABLE",
+      advertisingMarketing: "PROHIBITED",
+      healthDataUse: "REQUESTED_SERVICE_ONLY",
+    },
+    state: "ALLOW",
+    reviewBasis: "Local test fixture; not provider truth or send authorization.",
+    region: "CN",
+    ...profileOverrides,
+  });
+  const authorizationEvidence = createD053AuthorizationEvidence({
+    schemaVersion: "D053_AUTHORIZATION_INPUT_V1",
+    evidenceId: "d053-current-governance",
+    recordedAt: "2026-08-13T12:00:00Z",
+    ...authorizationOverrides,
+  });
+  return createAiRequestEvidenceContext({
+    schemaVersion: "AI_REQUEST_EVIDENCE_CONTEXT_INPUT_V2",
+    requestId,
+    transportProfileVersion,
+    subject,
+    profile,
+    authorizationEvidence,
+  });
 }
 
 function localInput(overrides = {}) {
@@ -107,7 +151,10 @@ test("rejects unsafe request contexts, secrets, special objects, cycles, and res
     { code: "INVALID_AI_CANDIDATE_CONFIRMATION_VALUE" },
   );
   assert.throws(
-    () => createAiCandidateConfirmationState({ localInput: localInput(), context: context({ origin: "http://ai.example.test" }) }),
+    () => createAiCandidateConfirmationState({
+      localInput: localInput(),
+      context: { ...context(), policySubject: { ...context().policySubject, baseURL: "http://ai.example.test" } },
+    }),
     { code: "INVALID_AI_REQUEST_CONTEXT" },
   );
   assert.throws(
@@ -186,9 +233,9 @@ test("binds one selected candidate to a caller-owned confirmed value and explici
   assert.equal(selected.confirmedValue.payload.label, "燕麦牛奶（已确认）");
   const reviewed = reviewAiCandidate(selected);
   assert.equal(reviewed.status, "REVIEW_READY");
-  assert.equal(reviewed.schemaVersion, "AI_CANDIDATE_CONFIRMATION_STATE_V2");
+  assert.equal(reviewed.schemaVersion, "AI_CANDIDATE_CONFIRMATION_STATE_V3");
   assert.equal(reviewed.responseFingerprint, parseAiResponse(response()).responseFingerprint);
-  assert.equal(reviewed.reviewEvidence.schemaVersion, "AI_CANDIDATE_REVIEW_EVIDENCE_V2");
+  assert.equal(reviewed.reviewEvidence.schemaVersion, "AI_CANDIDATE_REVIEW_EVIDENCE_V3");
   assert.equal(reviewed.reviewEvidence.responseFingerprint, reviewed.responseFingerprint);
   assert.match(reviewed.reviewEvidence.candidateFingerprint, /^[a-f0-9]{64}$/);
   assert.match(reviewed.reviewEvidence.requestContextFingerprint, /^[a-f0-9]{64}$/);
@@ -232,11 +279,12 @@ test("creates one observable save effect without raw local input or candidate co
   assert.equal(state.status, "SAVING");
   assert.equal(effect.type, "SAVE_AI_CONFIRMED_RECORD");
   assert.equal(effect.command.record.sourceEvidence.sourceKind, "AI_ASSISTED_USER_CONFIRMED");
-  assert.equal(effect.command.schemaVersion, "AI_CONFIRMED_RECORD_COMMAND_V2");
-  assert.equal(effect.command.record.schemaVersion, "AI_CONFIRMED_RECORD_V2");
-  assert.equal(effect.command.record.sourceEvidence.schemaVersion, "AI_CONFIRMED_SOURCE_EVIDENCE_V2");
+  assert.equal(effect.command.schemaVersion, "AI_CONFIRMED_RECORD_COMMAND_V3");
+  assert.equal(effect.command.record.schemaVersion, "AI_CONFIRMED_RECORD_V3");
+  assert.equal(effect.command.record.sourceEvidence.schemaVersion, "AI_CONFIRMED_SOURCE_EVIDENCE_V3");
   assert.equal(effect.command.record.sourceEvidence.responseFingerprint, state.responseFingerprint);
-  assert.equal(effect.command.record.sourceEvidence.origin, "https://ai.example.test");
+  assert.equal(effect.command.record.sourceEvidence.requestContext.policySubject.origin, "https://ai.example.test");
+  assert.equal(effect.command.record.sourceEvidence.requestContext.policyCheck.reason, "D053_NOT_AUTHORIZED");
   const serialized = JSON.stringify(effect);
   assert.equal(serialized.includes("燕麦和牛奶"), false);
   assert.equal(serialized.includes("燕麦牛奶\""), false);
@@ -254,9 +302,9 @@ test("commits a user-confirmed value once with request and policy traceability",
   const saved = settleAiCandidateSave(state, outcome);
   assert.equal(saved.status, "SAVED");
   assert.equal(saved.receipt.disposition, "COMMITTED");
-  assert.equal(saved.receipt.schemaVersion, "AI_CONFIRMED_RECORD_RECEIPT_V2");
+  assert.equal(saved.receipt.schemaVersion, "AI_CONFIRMED_RECORD_RECEIPT_V3");
   assert.equal(saved.committedRecord.recordId, "record-1");
-  assert.equal(saved.committedRecord.sourceEvidence.policyEvidenceFingerprint, hash);
+  assert.equal(saved.committedRecord.sourceEvidence.requestContext.authorizationEvidence.authorization, "NOT_AUTHORIZED");
   assert.equal(saved.committedRecord.sourceEvidence.responseFingerprint, state.responseFingerprint);
   assert.equal(saved.responseFingerprint, state.responseFingerprint);
   assert.equal(
@@ -285,39 +333,45 @@ test("complete response evidence changes when an unselected candidate changes an
   assert.equal(left.reviewEvidence.responseFingerprint, left.responseFingerprint);
 });
 
-test("legacy V1 state, review, record, source, command, and receipt evidence fail closed", async () => {
+test("legacy V1 and V2 state, review, record, source, command, and receipt evidence fail closed", async () => {
   const reviewed = reviewedState();
-  assert.throws(
-    () => requestAiCandidateSave({ ...reviewed, schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V1" }, { commandId: "command-1", recordId: "record-1" }),
-    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
-  );
-  assert.throws(
-    () => requestAiCandidateSave({
-      ...reviewed,
-      reviewEvidence: { ...reviewed.reviewEvidence, schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V1" },
-    }, { commandId: "command-1", recordId: "record-1" }),
-    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
-  );
+  for (const version of ["V1", "V2"]) {
+    assert.throws(
+      () => requestAiCandidateSave({ ...reviewed, schemaVersion: `AI_CANDIDATE_CONFIRMATION_STATE_${version}` }, { commandId: "command-1", recordId: "record-1" }),
+      { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+    );
+    assert.throws(
+      () => requestAiCandidateSave({
+        ...reviewed,
+        reviewEvidence: { ...reviewed.reviewEvidence, schemaVersion: `AI_CANDIDATE_REVIEW_EVIDENCE_${version}` },
+      }, { commandId: "command-1", recordId: "record-1" }),
+      { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+    );
+  }
 
   const { state, effect } = savingState();
   const repository = createInMemoryAiConfirmedRecordRepository();
-  for (const [command, code] of [
-    [{ ...effect.command, schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V1" }, "INVALID_AI_CONFIRMED_RECORD_COMMAND"],
-    [{ ...effect.command, record: { ...effect.command.record, schemaVersion: "AI_CONFIRMED_RECORD_V1" } }, "INVALID_AI_CONFIRMED_RECORD"],
-    [{
-      ...effect.command,
-      record: {
-        ...effect.command.record,
-        sourceEvidence: { ...effect.command.record.sourceEvidence, schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V1" },
-      },
-    }, "INVALID_AI_CONFIRMED_RECORD"],
-  ]) await assert.rejects(executeAiCandidateSave(repository, { ...effect, command }), { code });
+  for (const version of ["V1", "V2"]) {
+    for (const [command, code] of [
+      [{ ...effect.command, schemaVersion: `AI_CONFIRMED_RECORD_COMMAND_${version}` }, "INVALID_AI_CONFIRMED_RECORD_COMMAND"],
+      [{ ...effect.command, record: { ...effect.command.record, schemaVersion: `AI_CONFIRMED_RECORD_${version}` } }, "INVALID_AI_CONFIRMED_RECORD"],
+      [{
+        ...effect.command,
+        record: {
+          ...effect.command.record,
+          sourceEvidence: { ...effect.command.record.sourceEvidence, schemaVersion: `AI_CONFIRMED_SOURCE_EVIDENCE_${version}` },
+        },
+      }, "INVALID_AI_CONFIRMED_RECORD"],
+    ]) await assert.rejects(executeAiCandidateSave(repository, { ...effect, command }), { code });
+  }
 
   const outcome = await executeAiCandidateSave(repository, effect);
-  assert.throws(
-    () => settleAiCandidateSave(state, { ...outcome, receipt: { ...outcome.receipt, schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V1" } }),
-    { code: "INVALID_AI_CONFIRMED_RECORD_RECEIPT" },
-  );
+  for (const version of ["V1", "V2"]) {
+    assert.throws(
+      () => settleAiCandidateSave(state, { ...outcome, receipt: { ...outcome.receipt, schemaVersion: `AI_CONFIRMED_RECORD_RECEIPT_${version}` } }),
+      { code: "INVALID_AI_CONFIRMED_RECORD_RECEIPT" },
+    );
+  }
 });
 
 test("pre-commit failure leaves both repository collections empty", async () => {
@@ -466,7 +520,13 @@ test("rejects forged review-ready and saving states before they can create or se
           ...state.pendingCommand.record,
           sourceEvidence: {
             ...state.pendingCommand.record.sourceEvidence,
-            policyProfileVersion: "forged-policy",
+            requestContext: {
+              ...state.pendingCommand.record.sourceEvidence.requestContext,
+              policyProfile: {
+                ...state.pendingCommand.record.sourceEvidence.requestContext.policyProfile,
+                state: "DENY",
+              },
+            },
           },
         },
       },
@@ -523,10 +583,12 @@ test("successful save purges volatile input and candidates while the repository 
   const { state, effect } = savingState();
   const repository = createInMemoryAiConfirmedRecordRepository();
   const saved = settleAiCandidateSave(state, await executeAiCandidateSave(repository, effect));
+  const storedRecord = repository.inspect().records[0];
   const persisted = JSON.stringify(repository.inspect());
   assert.equal(persisted.includes("燕麦和牛奶"), false);
   assert.equal(persisted.includes("confidence"), false);
-  assert.equal(persisted.includes("280"), false);
+  assert.equal("candidates" in storedRecord, false);
+  assert.equal("localInput" in storedRecord, false);
   assert.equal(saved.retention, "VOLATILE_INPUT_PURGED_AFTER_COMMIT");
   assert.equal(saved.localInput, null);
   assert.equal(saved.candidates, null);
