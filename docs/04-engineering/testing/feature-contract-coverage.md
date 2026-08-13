@@ -8,8 +8,8 @@
 
 | Feature | 当前自动化合同 | 已证明的边界 | 未完成/权威门禁 | 审计结论 |
 | --- | --- | --- | --- | --- |
-| F01 AI 拍照识餐 | `ai-policy`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | 完整本地 Provider profile/证据/风险/有效期/地区，精确 request subject 与三类指纹，Apple 禁项，D-053 candidate/not-authorized 强制阻断；不可信响应拒绝重复键、尾随数据、空候选、危险标签/数值和资源超限，绑定规范化语义指纹；BYOK 生命周期、易失候选、显式 review、确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053 Owner 接受、正式 Provider schema/复核、图片 transport/组件/抓包 | 发送前、响应解析与 Application 确认事务覆盖，Owner/原生阻断 |
-| F02 AI 文字识餐 | 同 F01 | Provider/profile/request/D-053 精确绑定与失败保留本地输入；裸 ALLOW/伪造授权失败关闭；响应失败不回显正文，空候选不进入编辑，候选仍未经确认且保存前零写入 | 正式文字字段/映射、正式 Provider schema、显式 Provider UI、真实 transport；D-033/D-053 | 发送前、响应解析与确认事务覆盖，Owner/网络阻断 |
+| F01 AI 拍照识餐 | `ai-policy`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | 完整本地 Provider profile/证据/风险/有效期/地区，精确 request subject 与三类指纹，Apple 禁项，D-053 candidate/not-authorized 强制阻断；不可信响应拒绝重复键、尾随数据、空候选、危险标签/数值和资源超限；完整 response 指纹贯穿 V2 状态/review/确认记录/命令/回执，未选候选变化可检测、旧 V1 失败关闭、正文不持久化；BYOK 生命周期、用户确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053 Owner 接受、正式 Provider schema/复核、V1→V2 正式迁移策略、图片 transport/组件/抓包 | 发送前、响应解析与 Application 确认事务覆盖，Owner/原生阻断 |
+| F02 AI 文字识餐 | 同 F01 | Provider/profile/request/D-053 精确绑定与失败保留本地输入；裸 ALLOW/伪造授权失败关闭；响应失败不回显正文，空候选不进入编辑，完整响应证据链不保存候选正文，候选仍未经确认且保存前零写入 | 正式文字字段/映射、正式 Provider schema、显式 Provider UI、真实 transport 与迁移策略；D-033/D-053 | 发送前、响应解析与确认事务覆盖，Owner/网络阻断 |
 | F03 条码 | `data-pack-contract`、`import-safety`、`local-food-catalog`、`barcode-lookup-orchestrator` | 离线来源隔离、只收紧的预授权资源预算、严格 manifest/普通文件/来源/转换一致性、subject/调用方验证声明绑定、完整 GTIN 精确查询、前导零、单/多候选显式选择、目录证据绑定、未命中调用方建档、无网络/写入 | 数据包真实验签与信任根 D-026、许可 D-052、激活/回滚、相机/复核/建档组件、真实 Repository/真机/样本统计 | 预授权与 Application 编排合同已覆盖，密码学/产品/原生阻断 |
 | F04 日热量账本 | `daily-energy-ledger`、`seven-day-energy-trend` | 指定日摄入/消耗精确事实、目标生效历史、缺失/零、来源反查 | Left 公式、缺失消耗、负值、舍入与 UI 待 D-040/Owner | 事实层已覆盖，公式阻断 |
 | F05 宏量目标 | `macro-target-history`、`domain-contract` | P/C/F 实际缺失语义、目标原值/单位定义/来源/用户编辑/历史 | 目标算法、grams/percent、比较、舍入、编辑与 UI 待 D-040/Owner | 事实层已覆盖，算法阻断 |
@@ -61,3 +61,5 @@ F19 本轮继续加固导入预检合同：限制只能从批准默认值收紧�
 F09 随后补上“事实可用与高级洞察保留”的合同：七项可信本地营养事实保留来源、缺失、微量和估算语义；pack 事实继续要求 verified catalog trust。FOOD-04~07 已证实的健康评分、微量标签、风险和益处能力不从 D-017 范围删除，但算法、字段集、来源、医学/适用边界和 Owner 决定形成前，四类内容统一 `NOT_AUTHORIZED / NONE`，请求不能注入占位分数或文案。
 
 F01/F02 随后加固不可信 AI 响应合同：严格预解析拒绝解码后重复 key、尾随数据、空候选、危险 Unicode 标签、安全数值违规和资源超限，规范化候选绑定语义 `responseFingerprint`，失败只返回错误码且不回显正文；调用方状态只允许被动 JSON 快照。它不冻结正式 Provider schema，不证明营养真实性，不授权 policy、凭据、正文组装、网络、持久化、自动确认或正式实现。
+
+F01/F02 候选确认随后升级完整响应证据链：`responseFingerprint` 从严格解析结果进入 V2 状态，在编辑中保留，并绑定 review、确认记录 source evidence、命令和回执；未选候选变化不再被单一 candidate 指纹遗漏。状态/review/记录/source/command/receipt 均独立升级 V2，旧 V1 失败关闭。保存端仍只携带用户确认值与指纹，不携带原始响应或候选正文；正式迁移、网络、Repository 和自动业务写入仍未授权。

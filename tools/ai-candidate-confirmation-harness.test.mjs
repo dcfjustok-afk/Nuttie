@@ -15,6 +15,7 @@ import {
   reviewAiCandidate,
   settleAiCandidateSave,
 } from "./ai-candidate-confirmation-harness.mjs";
+import { parseAiResponse } from "./ai-response-contract-harness.mjs";
 
 const hash = "a".repeat(64);
 const definitionHash = "b".repeat(64);
@@ -185,6 +186,10 @@ test("binds one selected candidate to a caller-owned confirmed value and explici
   assert.equal(selected.confirmedValue.payload.label, "燕麦牛奶（已确认）");
   const reviewed = reviewAiCandidate(selected);
   assert.equal(reviewed.status, "REVIEW_READY");
+  assert.equal(reviewed.schemaVersion, "AI_CANDIDATE_CONFIRMATION_STATE_V2");
+  assert.equal(reviewed.responseFingerprint, parseAiResponse(response()).responseFingerprint);
+  assert.equal(reviewed.reviewEvidence.schemaVersion, "AI_CANDIDATE_REVIEW_EVIDENCE_V2");
+  assert.equal(reviewed.reviewEvidence.responseFingerprint, reviewed.responseFingerprint);
   assert.match(reviewed.reviewEvidence.candidateFingerprint, /^[a-f0-9]{64}$/);
   assert.match(reviewed.reviewEvidence.requestContextFingerprint, /^[a-f0-9]{64}$/);
   assert.match(reviewed.reviewEvidence.reviewFingerprint, /^[a-f0-9]{64}$/);
@@ -215,6 +220,7 @@ test("editing after review invalidates old review and save context", () => {
   });
   assert.equal(edited.status, "EDITING");
   assert.equal(edited.reviewEvidence, null);
+  assert.equal(edited.responseFingerprint, reviewed.responseFingerprint);
   assert.equal(edited.pendingCommand, null);
   assert.throws(() => requestAiCandidateSave(edited, { commandId: "command-1", recordId: "record-1" }), {
     code: "AI_CANDIDATE_REVIEW_REQUIRED",
@@ -226,6 +232,10 @@ test("creates one observable save effect without raw local input or candidate co
   assert.equal(state.status, "SAVING");
   assert.equal(effect.type, "SAVE_AI_CONFIRMED_RECORD");
   assert.equal(effect.command.record.sourceEvidence.sourceKind, "AI_ASSISTED_USER_CONFIRMED");
+  assert.equal(effect.command.schemaVersion, "AI_CONFIRMED_RECORD_COMMAND_V2");
+  assert.equal(effect.command.record.schemaVersion, "AI_CONFIRMED_RECORD_V2");
+  assert.equal(effect.command.record.sourceEvidence.schemaVersion, "AI_CONFIRMED_SOURCE_EVIDENCE_V2");
+  assert.equal(effect.command.record.sourceEvidence.responseFingerprint, state.responseFingerprint);
   assert.equal(effect.command.record.sourceEvidence.origin, "https://ai.example.test");
   const serialized = JSON.stringify(effect);
   assert.equal(serialized.includes("燕麦和牛奶"), false);
@@ -244,14 +254,70 @@ test("commits a user-confirmed value once with request and policy traceability",
   const saved = settleAiCandidateSave(state, outcome);
   assert.equal(saved.status, "SAVED");
   assert.equal(saved.receipt.disposition, "COMMITTED");
+  assert.equal(saved.receipt.schemaVersion, "AI_CONFIRMED_RECORD_RECEIPT_V2");
   assert.equal(saved.committedRecord.recordId, "record-1");
   assert.equal(saved.committedRecord.sourceEvidence.policyEvidenceFingerprint, hash);
+  assert.equal(saved.committedRecord.sourceEvidence.responseFingerprint, state.responseFingerprint);
+  assert.equal(saved.responseFingerprint, state.responseFingerprint);
   assert.equal(
     saved.committedRecord.sourceEvidence.requestContextFingerprint,
     reviewedState().reviewEvidence.requestContextFingerprint,
   );
   assert.equal(saved.committedRecord.confirmedValue.payload.label, "燕麦牛奶（已确认）");
   assert.deepEqual(repository.inspect().commandIds, ["command-1"]);
+});
+
+test("complete response evidence changes when an unselected candidate changes and remains bound through review", () => {
+  const initial = createAiCandidateConfirmationState({ localInput: localInput(), context: context() });
+  const candidates = [
+    JSON.parse(response()).candidates[0],
+    { label: "未选择候选", nutrients: { energyKcal: 100 }, confidence: 0.5 },
+  ];
+  const leftEditing = receiveAiCandidateResponse(initial, response({ candidates }));
+  const rightEditing = receiveAiCandidateResponse(initial, response({
+    candidates: [candidates[0], { ...candidates[1], confidence: 0.4 }],
+  }));
+  const left = reviewAiCandidate(editAiCandidate(leftEditing, { candidateIndex: 0, confirmedValue: confirmedValue() }));
+  const right = reviewAiCandidate(editAiCandidate(rightEditing, { candidateIndex: 0, confirmedValue: confirmedValue() }));
+  assert.notEqual(left.responseFingerprint, right.responseFingerprint);
+  assert.equal(left.reviewEvidence.candidateFingerprint, right.reviewEvidence.candidateFingerprint);
+  assert.notEqual(left.reviewEvidence.reviewFingerprint, right.reviewEvidence.reviewFingerprint);
+  assert.equal(left.reviewEvidence.responseFingerprint, left.responseFingerprint);
+});
+
+test("legacy V1 state, review, record, source, command, and receipt evidence fail closed", async () => {
+  const reviewed = reviewedState();
+  assert.throws(
+    () => requestAiCandidateSave({ ...reviewed, schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V1" }, { commandId: "command-1", recordId: "record-1" }),
+    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+  );
+  assert.throws(
+    () => requestAiCandidateSave({
+      ...reviewed,
+      reviewEvidence: { ...reviewed.reviewEvidence, schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V1" },
+    }, { commandId: "command-1", recordId: "record-1" }),
+    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+  );
+
+  const { state, effect } = savingState();
+  const repository = createInMemoryAiConfirmedRecordRepository();
+  for (const [command, code] of [
+    [{ ...effect.command, schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V1" }, "INVALID_AI_CONFIRMED_RECORD_COMMAND"],
+    [{ ...effect.command, record: { ...effect.command.record, schemaVersion: "AI_CONFIRMED_RECORD_V1" } }, "INVALID_AI_CONFIRMED_RECORD"],
+    [{
+      ...effect.command,
+      record: {
+        ...effect.command.record,
+        sourceEvidence: { ...effect.command.record.sourceEvidence, schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V1" },
+      },
+    }, "INVALID_AI_CONFIRMED_RECORD"],
+  ]) await assert.rejects(executeAiCandidateSave(repository, { ...effect, command }), { code });
+
+  const outcome = await executeAiCandidateSave(repository, effect);
+  assert.throws(
+    () => settleAiCandidateSave(state, { ...outcome, receipt: { ...outcome.receipt, schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V1" } }),
+    { code: "INVALID_AI_CONFIRMED_RECORD_RECEIPT" },
+  );
 });
 
 test("pre-commit failure leaves both repository collections empty", async () => {
@@ -373,6 +439,20 @@ test("rejects forged review-ready and saving states before they can create or se
     }, { commandId: "command-1", recordId: "record-1" }),
     { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
   );
+  assert.throws(
+    () => requestAiCandidateSave({ ...reviewed, responseFingerprint: "c".repeat(64) }, {
+      commandId: "command-1",
+      recordId: "record-1",
+    }),
+    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+  );
+  assert.throws(
+    () => requestAiCandidateSave({
+      ...reviewed,
+      reviewEvidence: { ...reviewed.reviewEvidence, responseFingerprint: "c".repeat(64) },
+    }, { commandId: "command-1", recordId: "record-1" }),
+    { code: "INVALID_AI_CANDIDATE_CONFIRMATION_STATE" },
+  );
 
   const { state, effect } = savingState();
   const repository = createInMemoryAiConfirmedRecordRepository();
@@ -450,6 +530,7 @@ test("successful save purges volatile input and candidates while the repository 
   assert.equal(saved.retention, "VOLATILE_INPUT_PURGED_AFTER_COMMIT");
   assert.equal(saved.localInput, null);
   assert.equal(saved.candidates, null);
+  assert.equal(saved.responseFingerprint, saved.committedRecord.sourceEvidence.responseFingerprint);
   assert.equal(saved.confirmedValue, null);
   assert.equal(saved.reviewEvidence, null);
   assert.equal(saved.committedRecord.confirmedValue.payload.label, "燕麦牛奶（已确认）");

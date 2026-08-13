@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_AI_RESPONSE_CONTRACT,
+  PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_AI_RESPONSE_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 254,
+    instancesValidated: 255,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 137);
+  assert.equal(report.counts.events, 138);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -437,6 +437,32 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiResponseEvent.value.data.systemClockRead, false);
   assert.equal(aiResponseEvent.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiResponseEvent.value.data.formalImplementationAuthorized, false);
+  const aiCandidateResponseV2Event = findEvent(VALID_MODEL, "EVT-20260814-002");
+  assert.equal(aiCandidateResponseV2Event.value.subject.id, "ai-candidate-response-evidence-v2-contract");
+  assert.deepEqual(aiCandidateResponseV2Event.value.data.featureIds, ["F01", "F02"]);
+  assert.equal(aiCandidateResponseV2Event.value.data.topLevelTests, 22);
+  assert.equal(aiCandidateResponseV2Event.value.data.fullSuitePassed, 755);
+  assert.equal(aiCandidateResponseV2Event.value.data.stateSchemaVersion, "AI_CANDIDATE_CONFIRMATION_STATE_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.reviewEvidenceSchemaVersion, "AI_CANDIDATE_REVIEW_EVIDENCE_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.confirmedRecordSchemaVersion, "AI_CONFIRMED_RECORD_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.sourceEvidenceSchemaVersion, "AI_CONFIRMED_SOURCE_EVIDENCE_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.commandSchemaVersion, "AI_CONFIRMED_RECORD_COMMAND_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.receiptSchemaVersion, "AI_CONFIRMED_RECORD_RECEIPT_V2");
+  assert.equal(aiCandidateResponseV2Event.value.data.completeResponseFingerprintBound, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.unselectedCandidateChangeDetected, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.responseFingerprintBoundToReview, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.responseFingerprintPersistedAsEvidence, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.candidateFingerprintStillBound, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.confirmedValueFingerprintStillBound, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.legacyV1EvidenceRejected, true);
+  assert.equal(aiCandidateResponseV2Event.value.data.rawResponsePersisted, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.candidateContentPersisted, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.automaticDiaryOrTargetMutation, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.persistentRepositoryImplemented, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.systemClockRead, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.realNetworkRequests, 0);
+  assert.equal(aiCandidateResponseV2Event.value.data.nativeImplementationAuthorized, false);
+  assert.equal(aiCandidateResponseV2Event.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -482,7 +508,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 253);
+    assert.equal(report.schemaValidation.instancesValidated, 254);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1287,6 +1313,40 @@ test("拒绝把严格 AI 响应合同越级为 Provider 真值、已确认候选
     event.value.data.ownerIntakeChanged = true;
   });
   assertDiagnostic(report, "OPS_AI_RESPONSE_CONTRACT_MISMATCH", "project-ops/events/2026-08-14.jsonl");
+});
+
+test("拒绝把候选确认 V2 完整响应证据降级、改回 V1 或越级持久化候选正文和正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260814-002");
+    event.value.data.stateSchemaVersion = "AI_CANDIDATE_CONFIRMATION_STATE_V1";
+    event.value.data.reviewEvidenceSchemaVersion = "AI_CANDIDATE_REVIEW_EVIDENCE_V1";
+    event.value.data.confirmedRecordSchemaVersion = "AI_CONFIRMED_RECORD_V1";
+    event.value.data.sourceEvidenceSchemaVersion = "AI_CONFIRMED_SOURCE_EVIDENCE_V1";
+    event.value.data.commandSchemaVersion = "AI_CONFIRMED_RECORD_COMMAND_V1";
+    event.value.data.receiptSchemaVersion = "AI_CONFIRMED_RECORD_RECEIPT_V1";
+    event.value.data.completeResponseFingerprintBound = false;
+    event.value.data.unselectedCandidateChangeDetected = false;
+    event.value.data.responseFingerprintBoundToReview = false;
+    event.value.data.responseFingerprintPersistedAsEvidence = false;
+    event.value.data.candidateFingerprintStillBound = false;
+    event.value.data.confirmedValueFingerprintStillBound = false;
+    event.value.data.legacyV1EvidenceRejected = false;
+    event.value.data.rawResponsePersisted = true;
+    event.value.data.candidateContentPersisted = true;
+    event.value.data.automaticDiaryOrTargetMutation = true;
+    event.value.data.persistentRepositoryImplemented = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-14.jsonl",
+  );
 });
 
 test("拒绝把媒体权限合同越级为全库照片、视频、定位、D-031 保留、原生调用或正式实现", () => {

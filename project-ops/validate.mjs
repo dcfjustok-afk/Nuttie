@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_AI_RESPONSE_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_14_AI_RESPONSE_CONTRACT",
+export const PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 137,
+    events: 138,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_AI_RESPONSE_CONTRACT = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 1,
+    "2026-08-14": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -886,6 +886,40 @@ export const PHASE0_2026_08_14_AI_RESPONSE_CONTRACT = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  aiCandidateResponseEvidenceV2Contract: Object.freeze({
+    eventId: "EVT-20260814-002",
+    subjectId: "ai-candidate-response-evidence-v2-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02"]),
+    topLevelTests: 22,
+    fullSuitePassed: 755,
+    stateSchemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V2",
+    reviewEvidenceSchemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
+    confirmedRecordSchemaVersion: "AI_CONFIRMED_RECORD_V2",
+    sourceEvidenceSchemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V2",
+    commandSchemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V2",
+    receiptSchemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V2",
+    completeResponseFingerprintBound: true,
+    unselectedCandidateChangeDetected: true,
+    responseFingerprintBoundToReview: true,
+    responseFingerprintPersistedAsEvidence: true,
+    candidateFingerprintStillBound: true,
+    confirmedValueFingerprintStillBound: true,
+    legacyV1EvidenceRejected: true,
+    rawResponsePersisted: false,
+    candidateContentPersisted: false,
+    automaticDiaryOrTargetMutation: false,
+    persistentRepositoryImplemented: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1438,7 +1472,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_RESPONSE_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3090,6 +3124,58 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_RESPONSE_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "F01/F02 AI 响应合同只登记不可信输出的严格解析、资源预算、规范化候选、语义指纹和被动状态快照；不得授权 Provider schema、policy、凭据、正文、网络、持久化、原生或正式实现",
+    );
+  }
+
+  const aiCandidateResponseV2Events = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiCandidateResponseEvidenceV2Contract.subjectId,
+  );
+  const aiCandidateResponseV2Event = aiCandidateResponseV2Events[0]?.value;
+  const aiCandidateResponseV2Data = aiCandidateResponseV2Event?.data ?? {};
+  const aiCandidateResponseV2Baseline = baseline.aiCandidateResponseEvidenceV2Contract;
+  const aiCandidateResponseV2Fields = [
+    "contractStatus",
+    "artifactState",
+    "topLevelTests",
+    "fullSuitePassed",
+    "stateSchemaVersion",
+    "reviewEvidenceSchemaVersion",
+    "confirmedRecordSchemaVersion",
+    "sourceEvidenceSchemaVersion",
+    "commandSchemaVersion",
+    "receiptSchemaVersion",
+    "completeResponseFingerprintBound",
+    "unselectedCandidateChangeDetected",
+    "responseFingerprintBoundToReview",
+    "responseFingerprintPersistedAsEvidence",
+    "candidateFingerprintStillBound",
+    "confirmedValueFingerprintStillBound",
+    "legacyV1EvidenceRejected",
+    "rawResponsePersisted",
+    "candidateContentPersisted",
+    "automaticDiaryOrTargetMutation",
+    "persistentRepositoryImplemented",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    aiCandidateResponseV2Events.length !== 1 ||
+    aiCandidateResponseV2Event?.eventId !== aiCandidateResponseV2Baseline.eventId ||
+    aiCandidateResponseV2Event?.type !== "ARTIFACT_CREATED" ||
+    aiCandidateResponseV2Event?.actor?.id !== "project-manager" ||
+    JSON.stringify(aiCandidateResponseV2Data.featureIds) !== JSON.stringify(aiCandidateResponseV2Baseline.featureIds) ||
+    JSON.stringify(aiCandidateResponseV2Data.requirementIds) !== JSON.stringify(aiCandidateResponseV2Baseline.requirementIds) ||
+    JSON.stringify(aiCandidateResponseV2Data.acceptanceIds) !== JSON.stringify(aiCandidateResponseV2Baseline.acceptanceIds) ||
+    aiCandidateResponseV2Fields.some((field) => aiCandidateResponseV2Data[field] !== aiCandidateResponseV2Baseline[field])
+  ) {
+    add(
+      "OPS_AI_CANDIDATE_RESPONSE_EVIDENCE_V2_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "F01/F02 候选确认 V2 只登记完整响应指纹贯穿状态/review/确认记录/命令/回执和旧 V1 失败关闭；不得持久化原始响应/候选正文或授权自动写库、网络、原生及正式实现",
     );
   }
 

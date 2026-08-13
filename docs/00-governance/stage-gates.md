@@ -16,7 +16,7 @@
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
 | G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过，仍待 Owner 处理范围与体验候选 |
 | G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-039 已通过 PX-2 并待 PX-3 Owner 评审，D-040 质量问题已关闭但仍处于 PX-0 输入缺口；导航、首启、评分等关键候选仍待 Owner |
-| G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；框架无关契约与治理检查全套 753 项测试通过，含 ProjectOps 5 份 Schema/254 个实例校验、F01/F02 不可信 AI 响应、Provider policy/D-053 门禁与候选确认、F18 删除严格回执、F19 恢复/导入预检、F03 数据包/条码、F09 营养事实/洞察、AI 凭据、F16 参考草稿及其他本地合同和两项 Release 审计；AI 响应严格解析不等于 Provider/schema/营养真值，完整本地 AI profile 与 request 精确匹配也仍因 D-053 `CANDIDATE / NOT_AUTHORIZED` 阻断，零 key/body/network/write，D-033/D-034/D-036 和真实 Provider 证据仍缺；删除真实容器/Keychain/通知、恢复 D-027/D-030/D-035、数据包 D-026/D-052/激活及两项 Release 生产证据也保持阻断；Owner 候选、正式实现、Mac/真机和 Release 证据仍未关闭 |
+| G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；框架无关契约与治理检查全套 756 项测试通过，含 ProjectOps 5 份 Schema/255 个实例校验、F01/F02 不可信 AI 响应、Provider policy/D-053 门禁与 V2 候选确认完整响应证据链、F18 删除严格回执、F19 恢复/导入预检、F03 数据包/条码、F09 营养事实/洞察、AI 凭据、F16 参考草稿及其他本地合同和两项 Release 审计；完整响应指纹贯穿 V2 证据且旧 V1 失败关闭，但严格解析/指纹不等于 Provider/schema/营养真值，完整本地 AI profile 与 request 精确匹配也仍因 D-053 `CANDIDATE / NOT_AUTHORIZED` 阻断，零 key/body/network/write，D-033/D-034/D-036 和真实 Provider 证据仍缺；删除真实容器/Keychain/通知、恢复 D-027/D-030/D-035、数据包 D-026/D-052/激活及两项 Release 生产证据也保持阻断；Owner 候选、正式实现、Mac/真机和 Release 证据仍未关闭 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
 | G7 | Release Ready | FAIL | 尚无候选构建、发布授权、回退和分发检查 |

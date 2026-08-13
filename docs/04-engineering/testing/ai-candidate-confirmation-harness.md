@@ -15,7 +15,7 @@
 ## 三类数据边界
 
 1. `localInput` 是用户本地文字/媒体引用的 opaque、JSON-safe 输入，只保存在 `VOLATILE_APPLICATION_STATE_ONLY` 状态中；transport 或响应失败时原样保留。
-2. `candidates` 必须先通过既有 `parseAiResponse` 的严格 schema、未知字段与资源预算校验，只作为未经确认的编辑参考。
+2. `candidates` 必须先通过既有 `parseAiResponse` 的严格 schema、未知字段与资源预算校验，只作为未经确认的编辑参考；完整规范化响应同时生成 `responseFingerprint`，用于检测未选候选变化。
 3. `AI_CONFIRMED_VALUE_V1` 由调用方提供版本化 definition 与用户确认 payload。本合同不解释 payload 字段，也不把测试中的餐食文字变成正式业务 schema。
 
 保存 effect 只携带第三类数据和审计来源，不携带 `localInput`、原始响应、候选 label/nutrients/confidence 或秘密字段。保存成功后，终态清除本地输入、AI candidate、编辑值和 review 临时对象；Repository 只保留用户确认记录。
@@ -32,24 +32,26 @@ AWAITING_RESPONSE
 
 - transport/响应失败保持 `AWAITING_RESPONSE` 和原本地输入；手工路径仍可达。
 - `EDITING` 必须显式选择一个已校验 candidate，并提供 caller-owned confirmed value。
-- `REVIEW_READY` 同时绑定 request context、candidate 和 confirmed value fingerprint；再次编辑会清除旧 review 与保存上下文。
+- `REVIEW_READY` 同时绑定 request context、完整 response、选中 candidate 和 confirmed value fingerprint；再次编辑保留完整 response fingerprint，但会清除旧 review 与保存上下文。
 - `SAVING` 之前不会生成 Repository effect；重复保存点击不产生第二个 effect。
 - `SAVE_FAILED / NOT_COMMITTED` 可以回到手工草稿；`SAVE_FAILED / UNKNOWN` 必须先用同一命令重放，不能编辑或重新创建记录。
-- `SAVED` 是终态，并把 retention 标记为 `VOLATILE_INPUT_PURGED_AFTER_COMMIT`。
+- `SAVED` 是终态，并把 retention 标记为 `VOLATILE_INPUT_PURGED_AFTER_COMMIT`；原始响应和候选正文被清除，非正文 `responseFingerprint` 保留并与 committed record 对账。
 
 所有状态在转换入口按状态 union 重建验证。伪造 `REVIEW_READY`、篡改 request/policy/candidate/review 指纹或替换 pending command 都不能生成或结算保存。
 
 ## Repository Port
 
 ```text
-saveConfirmedRecord(AI_CONFIRMED_RECORD_COMMAND_V1)
-  -> AI_CONFIRMED_RECORD_RECEIPT_V1
+saveConfirmedRecord(AI_CONFIRMED_RECORD_COMMAND_V2)
+  -> AI_CONFIRMED_RECORD_RECEIPT_V2
 
 readConfirmedRecord(recordId)
-  -> AI_CONFIRMED_RECORD_V1
+  -> AI_CONFIRMED_RECORD_V2
 ```
 
-持久化记录包含 caller-owned `confirmedValue` 和 `AI_CONFIRMED_SOURCE_EVIDENCE_V1`。来源证据绑定 request ID、HTTPS origin、model、payload class、transport/profile 版本、policy evidence、完整 request context、candidate 和 review fingerprint，来源种类固定为 `AI_ASSISTED_USER_CONFIRMED`。
+持久化记录包含 caller-owned `confirmedValue` 和 `AI_CONFIRMED_SOURCE_EVIDENCE_V2`。来源证据绑定 request ID、HTTPS origin、model、payload class、transport/profile 版本、policy evidence、完整 request context、完整 response、选中 candidate 和 review fingerprint，来源种类固定为 `AI_ASSISTED_USER_CONFIRMED`。它只保留指纹，不保留原始响应、候选 label/nutrients/confidence 或未选候选正文。
+
+状态、review、记录、source evidence、命令与回执分别使用独立 V2 schema。旧 V1 缺少完整响应指纹，不能被解释为 V2 证据，所有恢复、执行与结算入口均失败关闭；正式工程若需要迁移，必须另行定义显式迁移策略，不能静默补造指纹。
 
 新 `commandId` 必须在同一逻辑事务中写入确认记录和幂等结果。相同命令重放返回 `REPLAYED`；同 ID 不同 payload、不同命令竞争同一 record ID、伪造回执和不一致 readback 都失败关闭。提交后结果丢失或有效回执后的 readback 失败归类为 `UNKNOWN`，只能通过原命令收敛。
 
@@ -57,12 +59,13 @@ readConfirmedRecord(recordId)
 
 ## 当前自动化证据
 
-20 项 Node 测试覆盖：
+22 项 Node 测试覆盖：
 
 - 易失本地输入复制/冻结、失败保留、秘密字段/特殊对象/循环与资源滥用拒绝；
 - 复用严格 AI response contract，非法响应不产生 candidate；
 - candidate 选择、caller-owned confirmed value、显式 review 与编辑失效；
-- request context、policy evidence、candidate、confirmed value 和 review 的完整指纹绑定；
+- request context、policy evidence、完整 response、candidate、confirmed value 和 review 的完整指纹绑定；未选候选变化也改变 review evidence；
+- 状态/review/记录/source/command/receipt V2 版本一致性，以及旧 V1 证据失败关闭；
 - 保存 effect 不携带原始本地输入或 AI candidate；
 - 幂等提交、提交前零写入、提交后未知结果重放和 post-receipt readback 分类；
 - command/record 冲突、并发序列化、伪造 effect/receipt/state/readback 和迟到 attempt 拒绝；

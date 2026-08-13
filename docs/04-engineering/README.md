@@ -75,7 +75,7 @@
 - [显式餐次定义与分组读模型合同](testing/meal-slot-grouping-harness.md)：F06 调用方版本化餐次定义、显式顺序、空餐次、未分配/旧定义分离、revision 反查与派生结果防篡改。
 - [宏量目标版本事实与历史读取合同](testing/macro-target-history-harness.md)：F05 既有 P/C/F 目标原值、opaque 单位定义、来源/用户编辑状态、生效历史和实际事实联合读取；比较与舍入保持未指定。
 - [每日能量事实账本合同](testing/daily-energy-ledger-harness.md)：F04 指定日期摄入/消耗精确聚合、来源 revision、既有能量目标生效历史与防篡改快照；Left 保持未授权。
-- [AI 候选确认与幂等保存合同](testing/ai-candidate-confirmation-harness.md)：F01/F02 易失本地输入、严格候选校验、显式 review、request/policy/candidate 指纹绑定、用户确认值幂等保存与成功后临时数据清理；不授权真实 transport、业务字段或自动改日记/目标。
+- [AI 候选确认与幂等保存合同](testing/ai-candidate-confirmation-harness.md)：F01/F02 V2 状态/review/记录/命令/回执，完整 response/request/policy/candidate 指纹链、用户确认值幂等保存、旧 V1 失败关闭与成功后正文清理；不授权真实 transport、业务字段或自动改日记/目标。
 - [F16 AI 参考草稿合同](testing/ai-guidance-reference-harness.md)：严格 opaque response、调用方内容/免责声明定义、来源/edit 指纹、本地 revision 编辑和放弃清理；所有 effect 为零，不授权 IA、保存、医疗安全、高风险用途或自动改日记/目标。
 - [F03 本地条码查找编排合同](testing/barcode-lookup-orchestrator-harness.md)：完整 GTIN 本地精确查询、候选显式选择、目录证据绑定与未命中调用方建档；不授权相机、写库、AI 或网络回退。
 - [F19 导入预检合同](testing/import-safety-harness.md)：严格 JSON/资源/路径碰撞边界、manifest/entry 精确集合、导入对象/调用方验证声明/活动状态指纹绑定与失败保持旧状态；不冒充真实验签或授权激活。

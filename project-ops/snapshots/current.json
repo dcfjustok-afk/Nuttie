@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T00:02:42+08:00",
+  "generatedAt": "2026-08-14T00:13:27+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 137
+    "projectEvents": 138
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F01/F02 不可信 AI 响应合同已加固；真实发送继续阻断并等待 Owner/OI-02",
+      "workPackage": "F01/F02 候选确认完整响应证据链已升级 V2；真实发送继续阻断并等待 Owner/OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F01/F02 AI 候选确认完整响应证据链已升级 V2：规范化完整 responseFingerprint 随候选进入状态，编辑时保留，并同时绑定 review、确认记录 source evidence、幂等命令和回执；即使选中 candidate 不变，未选候选变化也会改变 review 指纹。状态/review/记录/source/command/receipt 均升级独立 V2，旧 V1 明确失败关闭；只持久化指纹与用户确认值，不持久化原始响应或候选正文，不授权自动改日记/目标、真实 Repository、网络、原生或正式实现",
     "F01/F02 不可信 AI 响应框架无关合同已加固：严格预解析拒绝解码后重复 key、尾随数据、空候选、未知字段、危险 Unicode 标签、非有限/负零/越界数值和超预算输入；规范化候选绑定语义 responseFingerprint，validation 只复制严格被动状态且错误不回显原响应。候选仍为 UNCONFIRMED_EDITABLE_REFERENCE_ONLY，schema 只是 TEST_CONTRACT_NOT_FORMAL_PROVIDER_API，不读取 key、不序列化敏感 body、不联网、不写业务状态、不授权 Provider policy、原生或正式实现",
     "F01/F02 AI Provider policy 与 D-053 发送前框架无关合同已加固：本地 profile 必须包含 Provider、origin/model/payload/profile/region 精确范围、terms/privacy 证据、审查/到期时间及保留/训练/人工访问/删除/广告/健康用途风险语义；request subject、profile 和 D-053 授权证据分别绑定指纹，Apple 禁止用途失败关闭。即使 profile=ALLOW 且精确匹配，D-053 仍为 CANDIDATE / NOT_AUTHORIZED，因此结果固定 D053_NOT_AUTHORIZED，不读取 key、不序列化敏感 body、不联网、不写业务状态、不授权原生或正式实现",
     "F18 全量删除回执框架无关合同已加固：outcome 使用严格被动 JSON 和固定资源预算，必须携带 evidence/verifier/profile 身份，并绑定确切 effect、observation 和 outcome 指纹；裸旧回执、篡改和跨 effect 重放失败关闭。回执边界固定 CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS，不声称真实容器已空、密钥已失效、通知已移除或外部 Files 已删除，也不授权文件系统、Keychain、原生或正式实现",

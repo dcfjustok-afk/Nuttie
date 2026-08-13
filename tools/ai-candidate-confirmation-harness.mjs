@@ -269,12 +269,13 @@ function normalizeConfirmedValue(input, field = "confirmedValue") {
 
 function baseState({ status, localInput, context }) {
   return immutable({
-    schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V1",
+    schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V2",
     status,
     retention: "VOLATILE_APPLICATION_STATE_ONLY",
     localInput,
     context,
     candidates: null,
+    responseFingerprint: null,
     responseError: null,
     selectedCandidateIndex: null,
     confirmedValue: null,
@@ -292,23 +293,24 @@ function invalidState(message = "AI candidate confirmation state is invalid") {
   fail(message, "INVALID_AI_CANDIDATE_CONFIRMATION_STATE");
 }
 
-function normalizeCandidates(candidates, field = "state.candidates") {
+function normalizeCandidateResponse(candidates, field = "state.candidates") {
   if (!Array.isArray(candidates)) invalidState(`${field} must be an array`);
   try {
     const safeCandidates = validateSafeJson(candidates, field, { rejectSecretFields: false });
-    return parseAiResponse(JSON.stringify({ schemaVersion: 1, candidates: safeCandidates })).candidates;
+    return parseAiResponse(JSON.stringify({ schemaVersion: 1, candidates: safeCandidates }));
   } catch (cause) {
     fail(`${field} is invalid`, "INVALID_AI_CANDIDATE_CONFIRMATION_STATE", { field, cause });
   }
 }
 
-function validateReviewEvidence(reviewEvidence, { context, candidates, selectedCandidateIndex, confirmedValue }) {
+function validateReviewEvidence(reviewEvidence, { context, responseFingerprint, candidates, selectedCandidateIndex, confirmedValue }) {
   assertExactKeys(
     reviewEvidence,
     [
       "schemaVersion",
       "requestId",
       "requestContextFingerprint",
+      "responseFingerprint",
       "candidateFingerprint",
       "confirmedValueFingerprint",
       "reviewFingerprint",
@@ -321,9 +323,10 @@ function validateReviewEvidence(reviewEvidence, { context, candidates, selectedC
     invalidState("state selected candidate is invalid");
   }
   const expectedCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V1",
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
     requestId: context.requestId,
     requestContextFingerprint: fingerprint(context),
+    responseFingerprint,
     candidateFingerprint: fingerprint(candidates[selectedCandidateIndex]),
     confirmedValueFingerprint: fingerprint(confirmedValue),
   });
@@ -336,7 +339,7 @@ function assertState(state) {
   assertExactKeys(
     state,
     [
-      "schemaVersion", "status", "retention", "localInput", "context", "candidates", "responseError",
+      "schemaVersion", "status", "retention", "localInput", "context", "candidates", "responseFingerprint", "responseError",
       "selectedCandidateIndex", "confirmedValue", "reviewEvidence", "pendingCommand", "pendingAttempt",
       "pendingFingerprint", "saveError", "receipt", "committedRecord",
     ],
@@ -344,7 +347,7 @@ function assertState(state) {
     "state",
     "INVALID_AI_CANDIDATE_CONFIRMATION_STATE",
   );
-  if (state.schemaVersion !== "AI_CANDIDATE_CONFIRMATION_STATE_V1" || !Object.values(STATUSES).includes(state.status)) {
+  if (state.schemaVersion !== "AI_CANDIDATE_CONFIRMATION_STATE_V2" || !Object.values(STATUSES).includes(state.status)) {
     invalidState();
   }
   const expectedRetention = state.status === STATUSES.SAVED
@@ -389,9 +392,16 @@ function assertState(state) {
   let normalizedConfirmedValue = null;
   let normalizedReviewEvidence = null;
   if (statusesWithCandidates.has(state.status)) {
-    normalizedCandidates = normalizeCandidates(state.candidates);
+    const normalizedResponse = normalizeCandidateResponse(state.candidates);
+    normalizedCandidates = normalizedResponse.candidates;
     if (!isDeepStrictEqual(state.candidates, normalizedCandidates)) invalidState("state candidates are not normalized");
-  } else if (state.candidates !== null) invalidState("state candidates must be absent");
+    if (state.responseFingerprint !== normalizedResponse.responseFingerprint) invalidState("state response fingerprint is invalid");
+  } else {
+    if (state.candidates !== null) invalidState("state candidates must be absent");
+    if (state.status === STATUSES.SAVED) {
+      sha256(state.responseFingerprint, "state.responseFingerprint", "INVALID_AI_CANDIDATE_CONFIRMATION_STATE");
+    } else if (state.responseFingerprint !== null) invalidState("state response fingerprint must be absent");
+  }
 
   if (state.status === STATUSES.EDITING) {
     if ((state.selectedCandidateIndex === null) !== (state.confirmedValue === null)) {
@@ -411,6 +421,7 @@ function assertState(state) {
     if (!isDeepStrictEqual(state.confirmedValue, normalizedConfirmedValue)) invalidState("state confirmed value is invalid");
     normalizedReviewEvidence = validateReviewEvidence(state.reviewEvidence, {
       context: normalizedContext,
+      responseFingerprint: state.responseFingerprint,
       candidates: normalizedCandidates,
       selectedCandidateIndex: state.selectedCandidateIndex,
       confirmedValue: normalizedConfirmedValue,
@@ -442,7 +453,8 @@ function assertState(state) {
         sourceEvidence.transportProfileVersion !== normalizedContext.transportProfileVersion ||
         sourceEvidence.policyProfileVersion !== normalizedContext.policyProfileVersion ||
         sourceEvidence.policyEvidenceFingerprint !== normalizedContext.policyEvidenceFingerprint ||
-        sourceEvidence.requestContextFingerprint !== fingerprint(normalizedContext)
+        sourceEvidence.requestContextFingerprint !== fingerprint(normalizedContext) ||
+        sourceEvidence.responseFingerprint !== state.responseFingerprint
       ) invalidState("saved state request context is not bound to the committed record");
     } else {
       const expectedRecord = buildConfirmedRecord(
@@ -509,6 +521,7 @@ function receiveAiCandidateResponse(state, responseText) {
     return immutable({
       ...baseState({ status: STATUSES.EDITING, localInput: state.localInput, context: state.context }),
       candidates: response.candidates,
+      responseFingerprint: response.responseFingerprint,
     });
   } catch (error) {
     return immutable({
@@ -529,6 +542,7 @@ function editAiCandidate(state, { candidateIndex, confirmedValue } = {}) {
   return immutable({
     ...baseState({ status: STATUSES.EDITING, localInput: state.localInput, context: state.context }),
     candidates: state.candidates,
+    responseFingerprint: state.responseFingerprint,
     selectedCandidateIndex: candidateIndex,
     confirmedValue: normalizeConfirmedValue(confirmedValue),
   });
@@ -547,9 +561,10 @@ function reviewAiCandidate(state) {
   const candidateFingerprint = fingerprint(state.candidates[state.selectedCandidateIndex]);
   const confirmedValueFingerprint = fingerprint(state.confirmedValue);
   const reviewCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V1",
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
     requestId: state.context.requestId,
     requestContextFingerprint: fingerprint(state.context),
+    responseFingerprint: state.responseFingerprint,
     candidateFingerprint,
     confirmedValueFingerprint,
   });
@@ -559,11 +574,11 @@ function reviewAiCandidate(state) {
 
 function buildConfirmedRecord(state, recordId) {
   return immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_V1",
+    schemaVersion: "AI_CONFIRMED_RECORD_V2",
     recordId: identifier(recordId, "recordId", "INVALID_AI_CONFIRMED_RECORD"),
     confirmedValue: normalizeConfirmedValue(state.confirmedValue),
     sourceEvidence: {
-      schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V1",
+      schemaVersion: "AI_CONFIRMED_SOURCE_EVIDENCE_V2",
       sourceKind: "AI_ASSISTED_USER_CONFIRMED",
       requestId: state.context.requestId,
       origin: state.context.origin,
@@ -573,6 +588,7 @@ function buildConfirmedRecord(state, recordId) {
       policyProfileVersion: state.context.policyProfileVersion,
       policyEvidenceFingerprint: state.context.policyEvidenceFingerprint,
       requestContextFingerprint: state.reviewEvidence.requestContextFingerprint,
+      responseFingerprint: state.reviewEvidence.responseFingerprint,
       candidateFingerprint: state.reviewEvidence.candidateFingerprint,
       reviewFingerprint: state.reviewEvidence.reviewFingerprint,
     },
@@ -586,7 +602,7 @@ function requestAiCandidateSave(state, { commandId, recordId } = {}) {
     fail("review is required before save", "AI_CANDIDATE_REVIEW_REQUIRED");
   }
   const command = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V1",
+    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V2",
     commandId: identifier(commandId, "commandId", "INVALID_AI_CONFIRMED_RECORD_COMMAND"),
     record: buildConfirmedRecord(state, recordId),
   });
@@ -642,11 +658,11 @@ function validateCommand(command) {
     "command",
     "INVALID_AI_CONFIRMED_RECORD_COMMAND",
   );
-  if (command.schemaVersion !== "AI_CONFIRMED_RECORD_COMMAND_V1") {
+  if (command.schemaVersion !== "AI_CONFIRMED_RECORD_COMMAND_V2") {
     fail("command version is invalid", "INVALID_AI_CONFIRMED_RECORD_COMMAND");
   }
   const normalized = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V1",
+    schemaVersion: "AI_CONFIRMED_RECORD_COMMAND_V2",
     commandId: identifier(command.commandId, "command.commandId", "INVALID_AI_CONFIRMED_RECORD_COMMAND"),
     record: validateConfirmedRecord(command.record),
   });
@@ -664,7 +680,7 @@ function validateConfirmedRecord(record, field = "record") {
     field,
     "INVALID_AI_CONFIRMED_RECORD",
   );
-  if (record.schemaVersion !== "AI_CONFIRMED_RECORD_V1") fail("record version is invalid", "INVALID_AI_CONFIRMED_RECORD");
+  if (record.schemaVersion !== "AI_CONFIRMED_RECORD_V2") fail("record version is invalid", "INVALID_AI_CONFIRMED_RECORD");
   const normalizedRecordId = identifier(record.recordId, `${field}.recordId`, "INVALID_AI_CONFIRMED_RECORD");
   const normalizedConfirmedValue = normalizeConfirmedValue(record.confirmedValue, `${field}.confirmedValue`);
   assertExactKeys(
@@ -672,14 +688,14 @@ function validateConfirmedRecord(record, field = "record") {
     [
       "schemaVersion", "sourceKind", "requestId", "origin", "model", "payloadClass",
       "transportProfileVersion", "policyProfileVersion", "policyEvidenceFingerprint",
-      "requestContextFingerprint", "candidateFingerprint", "reviewFingerprint",
+      "requestContextFingerprint", "responseFingerprint", "candidateFingerprint", "reviewFingerprint",
     ],
     [],
     `${field}.sourceEvidence`,
     "INVALID_AI_CONFIRMED_RECORD",
   );
   if (
-    record.sourceEvidence.schemaVersion !== "AI_CONFIRMED_SOURCE_EVIDENCE_V1" ||
+    record.sourceEvidence.schemaVersion !== "AI_CONFIRMED_SOURCE_EVIDENCE_V2" ||
     record.sourceEvidence.sourceKind !== "AI_ASSISTED_USER_CONFIRMED"
   ) fail("record source evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
   identifier(record.sourceEvidence.requestId, `${field}.sourceEvidence.requestId`, "INVALID_AI_CONFIRMED_RECORD");
@@ -687,7 +703,7 @@ function validateConfirmedRecord(record, field = "record") {
   for (const key of ["model", "payloadClass", "transportProfileVersion", "policyProfileVersion"]) {
     boundedString(record.sourceEvidence[key], `${field}.sourceEvidence.${key}`, "INVALID_AI_CONFIRMED_RECORD");
   }
-  for (const key of ["policyEvidenceFingerprint", "requestContextFingerprint", "candidateFingerprint", "reviewFingerprint"]) {
+  for (const key of ["policyEvidenceFingerprint", "requestContextFingerprint", "responseFingerprint", "candidateFingerprint", "reviewFingerprint"]) {
     sha256(record.sourceEvidence[key], `${field}.sourceEvidence.${key}`, "INVALID_AI_CONFIRMED_RECORD");
   }
   const reconstructedContext = immutable({
@@ -704,9 +720,10 @@ function validateConfirmedRecord(record, field = "record") {
     fail("record request context evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
   }
   const reviewCore = immutable({
-    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V1",
+    schemaVersion: "AI_CANDIDATE_REVIEW_EVIDENCE_V2",
     requestId: record.sourceEvidence.requestId,
     requestContextFingerprint: record.sourceEvidence.requestContextFingerprint,
+    responseFingerprint: record.sourceEvidence.responseFingerprint,
     candidateFingerprint: record.sourceEvidence.candidateFingerprint,
     confirmedValueFingerprint: fingerprint(normalizedConfirmedValue),
   });
@@ -714,7 +731,7 @@ function validateConfirmedRecord(record, field = "record") {
     fail("record review evidence is invalid", "INVALID_AI_CONFIRMED_RECORD");
   }
   const normalized = immutable({
-    schemaVersion: "AI_CONFIRMED_RECORD_V1",
+    schemaVersion: "AI_CONFIRMED_RECORD_V2",
     recordId: normalizedRecordId,
     confirmedValue: normalizedConfirmedValue,
     sourceEvidence: {
@@ -737,7 +754,7 @@ function validateReceipt(receipt, command) {
     "INVALID_AI_CONFIRMED_RECORD_RECEIPT",
   );
   if (
-    receipt.schemaVersion !== "AI_CONFIRMED_RECORD_RECEIPT_V1" ||
+    receipt.schemaVersion !== "AI_CONFIRMED_RECORD_RECEIPT_V2" ||
     receipt.commandId !== command.commandId ||
     !["COMMITTED", "REPLAYED"].includes(receipt.disposition) ||
     receipt.recordId !== command.record.recordId ||
@@ -829,12 +846,13 @@ function settleAiCandidateSave(state, outcome) {
       fail("save outcome record is invalid", "INVALID_AI_CANDIDATE_SAVE_OUTCOME");
     }
     return immutable({
-      schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V1",
+      schemaVersion: "AI_CANDIDATE_CONFIRMATION_STATE_V2",
       status: STATUSES.SAVED,
       retention: "VOLATILE_INPUT_PURGED_AFTER_COMMIT",
       localInput: null,
       context: state.context,
       candidates: null,
+      responseFingerprint: state.responseFingerprint,
       responseError: null,
       selectedCandidateIndex: null,
       confirmedValue: null,
@@ -915,7 +933,7 @@ function createInMemoryAiConfirmedRecordRepository({ records = [], faultPlan = [
         faultIndex += 1;
         if (fault === "BEFORE_COMMIT") throw repositoryError("INJECTED_BEFORE_COMMIT", "NOT_COMMITTED");
         const receipt = immutable({
-          schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V1",
+          schemaVersion: "AI_CONFIRMED_RECORD_RECEIPT_V2",
           commandId: command.commandId,
           disposition: "COMMITTED",
           recordId: command.record.recordId,

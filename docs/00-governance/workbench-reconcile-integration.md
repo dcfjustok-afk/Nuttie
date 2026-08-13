@@ -29,19 +29,19 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 254 controlled instances
-ProjectOps validation: 109/109 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 255 controlled instances
+ProjectOps validation: 110/110 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 625/625 PASS
-Full repository suite: 753/753 PASS
-Repository source baseline: 137 events, 114 messages, 25 agents; the 2026-08-14 F01/F02 untrusted AI-response contract is the latest registered artifact. It rejects decoded duplicate keys, trailing data, empty candidate sets, unsafe labels/numbers, and resource abuse; normalized candidates are bound by a semantic fingerprint, validation accepts only passive state snapshots, and failures do not reflect response content. This does not prove Provider/schema/nutrition truth or authorize policy, credentials, body construction, network, persistence, native, or formal implementation. The earlier AI Provider-policy contract still blocks even exact local ALLOW profiles because D-053 is CANDIDATE/NOT_AUTHORIZED. F18 wipe, F19 restore/import, F03 data-pack/lookup, F09, F16, F18 access, prohibited-capability, and platform/language contracts retain their recorded boundaries.
+Tool contract harnesses: 627/627 PASS
+Full repository suite: 756/756 PASS
+Repository source baseline: 138 events, 114 messages, 25 agents; the latest 2026-08-14 F01/F02 candidate-confirmation V2 contract binds the complete normalized response fingerprint through state, review, confirmed-record source evidence, idempotent command, and receipt. Changes to unselected candidates are detectable, all affected internal schemas use explicit V2 identifiers, and legacy V1 evidence fails closed. Only fingerprints and caller-confirmed values persist; raw responses and candidate content do not. This does not authorize formal migration, Provider/schema/nutrition truth, policy, credentials, network, native, or formal implementation. The earlier AI Provider-policy contract still blocks even exact local ALLOW profiles because D-053 is CANDIDATE/NOT_AUTHORIZED. F18 wipe, F19 restore/import, F03 data-pack/lookup, F09, F16, F18 access, prohibited-capability, and platform/language contracts retain their recorded boundaries.
 External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
-External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 137-event repository source
+External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 138-event repository source
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was not present for the AI response verification, so no current static copy
+workbench was not present for the AI candidate-response V2 verification, so no current static copy
 or live/static parity result is claimed. The following supporting-script digest
 belongs to the prior historical run and cannot substitute for a current run:
 
