@@ -26,7 +26,7 @@
 | F16 AI 健康/食谱/计划 | `ai-guidance-reference`、F01/F02 公共 AI harness | policy/响应/凭据 fail-closed；严格 opaque 参考草稿、来源/生成时间/免责声明定义、本地编辑/放弃、零业务 effect | 正式 payload、IA、UXD-11 保存、医疗/高风险规则、Provider 许可和真实 transport；D-033/D-053 | 参考草稿 Application 边界已覆盖，产品/安全/网络阻断 |
 | F17 本地档案替代账号 | `local-profile-record` | 无账号/服务器能力面、版本化 opaque 文档、CRUD CAS、幂等/并发与非级联删除 | 当前/多档案 UX、正式 Repository/组件/E2E | 核心本地事务覆盖 |
 | F18 数据权利 | `local-data-access-manifest`、`local-data-access-registry`、`local-wipe-coordinator`、`meal-correction`、`body-weight-record` 等 | 唯一版本化领域注册表、一致性只读事务端口、跨领域分页清单/完整性证明、全量 wipe kill-point/对账、领域更正/删除底座 | 首发真实领域 adapter、SQLCipher snapshot transaction、UI、真实容器/Keychain/UserNotifications、备份范围/真机 | 注册/一致性端口与应用内访问覆盖，正式适配/原生阻断 |
-| F19 缓存/同步替代 | `backup-reconcile`、`import-safety`、`local-wipe-coordinator` | generation/pointer、导入安全、失败关闭 | D-027 加密 envelope/KDF、恢复模式 D-030、SQLite/Keychain/Files 真机 | 对账模型覆盖，加密/原生阻断 |
+| F19 缓存/同步替代 | `backup-reconcile`、`import-safety`、`local-wipe-coordinator` | generation/pointer；严格 JSON/资源/路径碰撞预检；manifest/entry 精确集合；subject/调用方验证声明/活动状态指纹绑定；激活前失败保持旧状态 | D-026 真实验签与正式 manifest、D-027 加密 envelope/KDF、恢复/激活模式 D-030、SQLite/Keychain/Files 真机 | 预检与对账模型覆盖，密码学/激活/原生阻断 |
 | F20 移除会员 IAP | `prohibited-capability-audit`（当前 `BLOCKED`） | 工作区零发现不得判通过；锁定源码/依赖/原生配置/plist/entitlement/UI/二进制/Store 目录/Release 网络 9 面 | 正式签名 Release Archive 上执行全部报告 | fail-closed 聚合合同覆盖；生产证据仍缺 |
 | F21 媒体权限 | `media-permission-orchestrator`、D-039 原型 smoke | 任务触发相机 effect、系统选择媒体零全库权限、拒绝/受限/撤权手工降级、迟到回执拒绝 | 权限文案、媒体保留 D-031、正式 adapter、Info.plist/真实相机/照片真机 | 应用编排覆盖，产品文案/保留/原生阻断 |
 | F22 平台/语言 | `platform-language-release-audit`（当前 `BLOCKED`）、视觉/原型 smoke | 锁定 D-011 iOS 17.0、D-016 简中和 25 个 Release 证据面；不从 D-038/当前设备推导平台形态 | 正式签名 Archive；设备族/方向/Mac/Vision 四项决定；模拟器/真机/商店/布局/无障碍报告 | fail-closed 聚合合同覆盖；决定与生产证据仍缺 |
@@ -55,3 +55,5 @@ F18 已从“缺清单合同”继续推进到注册与一致性端口门禁：`
 F20/F23/F24 随后补上禁止能力审计聚合合同。它不把当前未初始化工程的“零发现”包装成验收通过，而是要求正式签名 Release Archive 以及 27 个与工件绑定的完整证据面；缺正式目标、缺面、未执行或任一发现均为 `BLOCKED`。当前实际状态仍是 `FORMAL_TARGET_ABSENT + REQUIRED_SURFACE_MISSING`，没有执行生产工件扫描、Release 网络捕获或运行时定位权限捕获，也没有关闭任何门禁。
 
 F22 也补上平台与语言 Release 聚合合同：D-011 的 iOS 17.0 与 D-016 的首发简中被固定为已接受输入，但设备族、方向、Mac availability 和 Vision Pro availability 分别保持未决定，不能从 D-038、当前 iPhone 或工具默认值推导。正式通过还要求签名 Archive 上 25 个配置、商店、模拟器、真机、布局与无障碍报告；当前结论为 `FORMAL_TARGET_ABSENT + PLATFORM_SHAPE_DECISION_REQUIRED + REQUIRED_SURFACE_MISSING`。
+
+F19 本轮继续加固导入预检合同：限制只能从批准默认值收紧；普通 JSON、NFC/大小写路径冲突和 manifest/entry 精确集合失败关闭；导入对象、结构化调用方验证声明及活动状态以指纹绑定，拒绝篡改、证据重放和状态漂移。验证声明明确是 `CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS`，不是实际密码学证明；激活仍固定等待 D-026/D-027/D-030，并保持零文件、网络、原生和数据写入。

@@ -7,8 +7,8 @@ Current ProjectOps snapshot date: 2026-08-13 (Asia/Shanghai)
 
 ## Scope
 
-The local workbench at `D:\study\Nuttie-Discovery-Workbench` now consumes the
-read-only ProjectOps reconcile report in both runtime modes:
+The historical local workbench integration at `D:\study\Nuttie-Discovery-Workbench`
+was designed to consume the read-only ProjectOps reconcile report in both runtime modes:
 
 - `server.mjs` exposes `reconcile` from `/api/project-state` and the SSE state
   event.
@@ -29,19 +29,19 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 247 controlled instances
-ProjectOps validation: 102/102 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 248 controlled instances
+ProjectOps validation: 103/103 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 541/541 PASS
-Full repository suite: 662/662 PASS
-Repository source baseline: 130 events, 114 messages, 25 agents; the 2026-08-13 F03 barcode lookup-orchestrator contract is the latest registered artifact. It proves only complete-GTIN local exact lookup, trusted-catalog evidence binding, explicit candidate selection, and caller-owned review/manual-creation handoff; it does not authorize camera access, fuzzy recognition, coverage claims, catalog/diary writes, AI/network fallback, persistence, native code, or formal implementation. Earlier F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
+Tool contract harnesses: 554/554 PASS
+Full repository suite: 676/676 PASS
+Repository source baseline: 131 events, 114 messages, 25 agents; the 2026-08-13 F19 import-safety preflight contract is the latest registered artifact. It proves strict JSON/resource/path-collision rejection, exact manifest/entry sets, import-subject/caller-asserted-verification/active-state fingerprint binding, and fail-closed behavior before activation. It explicitly does not perform real signature verification, choose D-026/D-027/D-030, activate data, access files/native APIs, or authorize formal implementation. Earlier F03, F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
 External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
-External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 130-event repository source
+External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 131-event repository source
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was not present for the F03 verification, so no current static copy
+workbench was not present for the F19 verification, so no current static copy
 or live/static parity result is claimed. The following supporting-script digest
 belongs to the prior historical run and cannot substitute for a current run:
 

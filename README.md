@@ -13,7 +13,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：尚未初始化；未批准的库级选型不会提前固化
-- 框架无关契约与治理检查：全套 662 项测试通过，含 ProjectOps 5 份 Schema/247 个实例校验、F03 本地条码查找编排、F01/F02 AI 候选确认、F16 AI 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；F03 只证明完整 GTIN 本地精确查询、候选显式选择和调用方复核/建档交接，不等于相机、写库、覆盖率或网络/AI 回退已授权；F16、AI 候选和 F18 也仍保持各自非生产边界；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：全套 676 项测试通过，含 ProjectOps 5 份 Schema/248 个实例校验、F19 导入预检加固、F03 本地条码查找编排、F01/F02 AI 候选确认、F16 AI 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；F19 只证明严格资源/路径/证据绑定和激活前失败保持旧状态，调用方验证声明不等于真实验签，D-026/D-027/D-030 与激活仍未授权；其他合同也保持各自非生产边界；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 

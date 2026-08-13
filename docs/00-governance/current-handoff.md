@@ -16,7 +16,7 @@
 
 `project-ops/decisions.json` 生成于 `2026-07-31T17:42:28+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 17 项 `ACCEPTED` 和 14 项 `CANDIDATE`。
 
-`project-ops/snapshots/current.json` 已于 `2026-08-13T22:16:59+08:00` 完成人工归并，当前记录 17 项 accepted、14 项 candidate、130 个事件、114 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。最新事件登记 F03 完整 GTIN 本地精确查询、可信目录证据绑定、候选显式选择与未命中调用方建档交接合同；它不授权模糊识别、覆盖率承诺、相机权限、食品/日记写入、AI/网络回退、持久化、原生或正式实现。此前 F16、F01/F02、AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21、F20/F23/F24 和 F22 合同仍保持原边界。两项 Release 聚合审计继续为 `BLOCKED`；OI-03 仍精确为 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac，不授权 iOS 原生工作。D-039 仍保持 PX-2，D-040 仍阻断于 PX-0。
+`project-ops/snapshots/current.json` 已于 `2026-08-13T22:38:22+08:00` 完成人工归并，当前记录 17 项 accepted、14 项 candidate、131 个事件、114 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。最新事件登记 F19 导入预检合同：严格 JSON/资源/路径碰撞失败关闭，绑定 manifest/entry、导入对象、调用方验证声明和活动状态，但调用方声明不等于真实验签，激活仍等待 D-026/D-027/D-030。此前 F03、F16、F01/F02、AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21、F20/F23/F24 和 F22 合同仍保持原边界。两项 Release 聚合审计继续为 `BLOCKED`；OI-03 仍精确为 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac，不授权 iOS 原生工作。D-039 仍保持 PX-2，D-040 仍阻断于 PX-0。
 
 门禁状态以 [阶段门禁](stage-gates.md) 为准：G0/G1 已通过；G2/G3/G4 仍在形成证据；G5~G8 因尚无经批准实现、构建、Beta 或发布证据而保持 `FAIL`。这里的 `FAIL` 表示退出条件尚不存在，不表示项目异常。
 
@@ -103,11 +103,11 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 2. **D-038 尚未通过最终 Owner Gate。** DesignOps 与主 Agent 的桌面/移动视觉、console 和关键交互验收已完成；仍须由 Owner 明确选择 A/B/C，未选择前正式 IA/路由外壳保持阻断。
 3. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得创建正式餐食录入页面、路由或据此改变决定台账。
 4. **D-040 尚未关闭 PX-0 输入。** A/B/C 流程、恢复、无目标和失败零写入已形成可操作原型，但最小字段、目标公式、适用范围和特殊人群停止规则未获 Owner 与领域评审确认；不得把固定测试夹具当作产品目标或进入正式实现。
-5. **G4 仍未通过，但框架无关的本地契约证据持续增加。** F03 新增完整 GTIN 本地精确查询编排：保留前导零，绑定可信目录证据，单/多候选都显式选择，命中交给调用方统一复核，未命中只携带 GTIN 交给调用方建档；不声称相机、模糊识别、覆盖率、写库、AI/网络回退或正式实现已授权。此前 F01/F02、F16、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 及两项 Release 聚合合同边界不变。8 月 13 日框架无关契约与治理检查全套 662 项测试通过；ProjectOps 受控 Draft 2020-12 子集校验 5 份 Schema 和 247 个实例。两项 Release 聚合审计继续 `BLOCKED`。外部工作台路径本轮不存在，因此没有伪造静态重建或 live/static smoke；其历史 PASS 不代表当前 130 事件状态已在外部工作台复验。所有成果仍为 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，不构成正式实现、构建、迁移、签名 Archive、真机或 Release 证据。
+5. **G4 仍未通过，但框架无关的本地契约证据持续增加。** F19 导入预检现已拒绝非普通 JSON、超预算输入、NFC/大小写路径冲突、manifest/entry 不一致、证据重放/篡改和活动状态漂移；`READY_FOR_ACTIVATION` 只说明预检材料结构完整，调用方验证声明不等于真实验签，激活固定等待 D-026/D-027/D-030。F03 及此前 F01/F02、F16、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 和两项 Release 聚合合同边界不变。8 月 13 日框架无关契约与治理检查全套 676 项测试通过；ProjectOps 受控 Draft 2020-12 子集校验 5 份 Schema 和 248 个实例。两项 Release 聚合审计继续 `BLOCKED`。外部工作台路径本轮不存在，因此没有伪造静态重建或 live/static smoke；其历史 PASS 不代表当前 131 事件状态已在外部工作台复验。所有成果仍为 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，不构成正式实现、构建、迁移、签名 Archive、真机或 Release 证据。
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 原生链路仍阻断。** 已记录 iPhone 16 Pro Max / iOS 26.5，但当前无可用 Mac、macOS、Xcode、CocoaPods、Bundle ID、签名链、App Store Connect record 或 TestFlight build；只有 iPhone 不构成原生构建能力。
 
-当前机器验收基线包含 5 个 Schema、`247` 个受控实例、`31` 条决定、1 份 Owner intake、`130` 个事件、`114` 条消息和 25 个角色；验证器新增锁定 F03 本地条码查找编排边界，并继续锁定此前所有非生产合同。`project-ops/reconcile.mjs` 对账 OI-03、OI-02、D-039 与 D-040；证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`。Windows 主机仍不能替代未来 Mac/真机审计。
+当前机器验收基线包含 5 个 Schema、`248` 个受控实例、`31` 条决定、1 份 Owner intake、`131` 个事件、`114` 条消息和 25 个角色；验证器新增锁定 F19 导入预检边界，并继续锁定 F03 及此前所有非生产合同。`project-ops/reconcile.mjs` 对账 OI-03、OI-02、D-039 与 D-040；证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`。Windows 主机仍不能替代未来 Mac/真机审计。
 
 ## 7. 下一步 Owner 互动
 
@@ -119,7 +119,7 @@ PM 下一步从 `owner-intake.json` 指定的 OI-02 Bundle ID 状态卡继续，
 
 ## 8. 恢复与验证命令
 
-先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。仓库根目录必须从当前 checkout 动态解析，不能复用历史任务中的绝对路径。外部 `D:\study\Nuttie-Discovery-Workbench` 已恢复；本轮已从当前仓库重建静态快照并通过 live/static smoke，精确结果记录在 [工作台对账集成](workbench-reconcile-integration.md)。启动前仍应先解析实际仓库与工作台路径：
+先按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的启动顺序读取权威文件。仓库根目录必须从当前 checkout 动态解析，不能复用历史任务中的绝对路径。外部 `D:\study\Nuttie-Discovery-Workbench` 在本轮机器上不存在，因此未执行静态重建或 live/static smoke；[工作台对账集成](workbench-reconcile-integration.md) 已如实记录 `NOT RUN`。未来恢复时仍应先解析实际仓库与工作台路径：
 
 ```powershell
 $repoRoot = (git rev-parse --show-toplevel).Trim()
@@ -163,4 +163,4 @@ node (Join-Path $repoRoot 'prototypes\d040-onboarding-goals\qa-smoke.mjs') http:
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 17/14；事件/消息/角色是 130/114/25 且仅 `root` 活跃；最新事件登记 F03 本地条码查找编排合同且不改变 Gate/Owner intake，不得冒充模糊识别、覆盖率、相机、写库、AI/网络回退、持久化或正式实现已授权；F16、F01/F02、F18、F21、F20/F23/F24 和 F22 仍保持此前 fail-closed 边界；OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac，下一题是 OI-02；Gate、D-032、D-039、D-040 状态未变；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源、签名 Archive 或 TestFlight 产物；外部工作台当前未复验。
+恢复后至少重新确认：决定是 17/14；事件/消息/角色是 131/114/25 且仅 `root` 活跃；最新事件登记 F19 导入预检合同且不改变 Gate/Owner intake，不得冒充真实验签、备份密码学、恢复/激活、文件或原生实现已授权；F03、F16、F01/F02、F18、F21、F20/F23/F24 和 F22 仍保持此前 fail-closed 边界；OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac，下一题是 OI-02；Gate、D-032、D-039、D-040 状态未变；没有正式 `package.json`、lockfile、Expo config、`ios/`、Apple 资源、签名 Archive 或 TestFlight 产物；外部工作台当前未复验。

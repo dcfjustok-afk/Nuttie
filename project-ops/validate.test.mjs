@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT,
+  PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 247,
+    instancesValidated: 248,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 130);
+  assert.equal(report.counts.events, 131);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -242,6 +242,29 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(barcodeLookupEvent.value.data.nativeApiCalls, 0);
   assert.equal(barcodeLookupEvent.value.data.realNetworkRequests, 0);
   assert.equal(barcodeLookupEvent.value.data.formalImplementationAuthorized, false);
+  const importSafetyEvent = findEvent(VALID_MODEL, "EVT-20260813-005");
+  assert.equal(importSafetyEvent.value.subject.id, "import-safety-preflight-contract");
+  assert.equal(importSafetyEvent.value.data.featureId, "F19");
+  assert.equal(importSafetyEvent.value.data.topLevelTests, 19);
+  assert.equal(importSafetyEvent.value.data.fullSuitePassed, 676);
+  assert.equal(importSafetyEvent.value.data.customLimitsCanOnlyTighten, true);
+  assert.equal(importSafetyEvent.value.data.strictPlainJsonBoundary, true);
+  assert.equal(importSafetyEvent.value.data.nfcAndCaseCollisionRejected, true);
+  assert.equal(importSafetyEvent.value.data.manifestEntrySetExact, true);
+  assert.equal(importSafetyEvent.value.data.importSubjectFingerprintBound, true);
+  assert.equal(importSafetyEvent.value.data.verificationEvidenceSubjectBound, true);
+  assert.equal(importSafetyEvent.value.data.verificationTruth, "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS");
+  assert.equal(importSafetyEvent.value.data.activeStateFingerprintBound, true);
+  assert.equal(importSafetyEvent.value.data.activationStrategy, "PENDING_D026_D027_D030");
+  assert.equal(importSafetyEvent.value.data.activationCommitted, false);
+  assert.equal(importSafetyEvent.value.data.signatureAlgorithmSelected, false);
+  assert.equal(importSafetyEvent.value.data.backupCryptoProfileSelected, false);
+  assert.equal(importSafetyEvent.value.data.restoreModeSelected, false);
+  assert.equal(importSafetyEvent.value.data.filesystemReads, 0);
+  assert.equal(importSafetyEvent.value.data.filesystemWrites, 0);
+  assert.equal(importSafetyEvent.value.data.nativeApiCalls, 0);
+  assert.equal(importSafetyEvent.value.data.realNetworkRequests, 0);
+  assert.equal(importSafetyEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -287,7 +310,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 246);
+    assert.equal(report.schemaValidation.instancesValidated, 247);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -838,6 +861,40 @@ test("拒绝把 F03 条码编排合同越级为模糊识别、覆盖承诺、自
   assertDiagnostic(
     report,
     "OPS_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把 F19 导入预检合同越级为真实验签、恢复激活、文件写入或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-005");
+    event.value.data.approvedDefaultLimitsBound = false;
+    event.value.data.customLimitsCanOnlyTighten = false;
+    event.value.data.strictPlainJsonBoundary = false;
+    event.value.data.nfcAndCaseCollisionRejected = false;
+    event.value.data.manifestEntrySetExact = false;
+    event.value.data.importSubjectFingerprintBound = false;
+    event.value.data.verificationEvidenceSubjectBound = false;
+    event.value.data.verificationTruth = "HARNESS_CRYPTOGRAPHICALLY_VERIFIED";
+    event.value.data.activeStateFingerprintBound = false;
+    event.value.data.activationStrategy = "REPLACE_ACTIVE";
+    event.value.data.activationCommitted = true;
+    event.value.data.signatureAlgorithmSelected = true;
+    event.value.data.backupCryptoProfileSelected = true;
+    event.value.data.restoreModeSelected = true;
+    event.value.data.filesystemReads = 1;
+    event.value.data.filesystemWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_IMPORT_SAFETY_PREFLIGHT_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

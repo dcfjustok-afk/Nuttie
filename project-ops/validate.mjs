@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT",
+export const PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 130,
+    events: 131,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT = Object.fre
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 4,
+    "2026-08-13": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -611,6 +611,40 @@ export const PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT = Object.fre
     systemClockRead: false,
     nativeApiCalls: 0,
     realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  importSafetyPreflightContract: Object.freeze({
+    eventId: "EVT-20260813-005",
+    subjectId: "import-safety-preflight-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F19",
+    requirementId: "REQ-F19",
+    acceptanceId: "AT-F19",
+    topLevelTests: 19,
+    fullSuitePassed: 676,
+    approvedDefaultLimitsBound: true,
+    customLimitsCanOnlyTighten: true,
+    strictPlainJsonBoundary: true,
+    nfcAndCaseCollisionRejected: true,
+    manifestEntrySetExact: true,
+    importSubjectFingerprintBound: true,
+    verificationEvidenceSubjectBound: true,
+    verificationTruth: "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS",
+    activeStateFingerprintBound: true,
+    activationStrategy: "PENDING_D026_D027_D030",
+    activationCommitted: false,
+    signatureAlgorithmSelected: false,
+    backupCryptoProfileSelected: false,
+    restoreModeSelected: false,
+    filesystemReads: 0,
+    filesystemWrites: 0,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeApiCalls: 0,
     nativeImplementationAuthorized: false,
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
@@ -1168,7 +1202,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2430,6 +2464,58 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F03 合同只登记完整 GTIN 本地精确查询、目录证据绑定、候选显式选择和调用方复核/建档交接；不得授权模糊识别、覆盖率承诺、相机权限、食品或日记写入、AI/网络回退、持久化 Repository、原生或正式实现",
+    );
+  }
+
+  const importSafetyEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.importSafetyPreflightContract.subjectId,
+  );
+  const importSafetyEvent = importSafetyEvents[0]?.value;
+  const importSafetyData = importSafetyEvent?.data ?? {};
+  const importSafetyBaseline = baseline.importSafetyPreflightContract;
+  const importSafetyFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "approvedDefaultLimitsBound",
+    "customLimitsCanOnlyTighten",
+    "strictPlainJsonBoundary",
+    "nfcAndCaseCollisionRejected",
+    "manifestEntrySetExact",
+    "importSubjectFingerprintBound",
+    "verificationEvidenceSubjectBound",
+    "verificationTruth",
+    "activeStateFingerprintBound",
+    "activationStrategy",
+    "activationCommitted",
+    "signatureAlgorithmSelected",
+    "backupCryptoProfileSelected",
+    "restoreModeSelected",
+    "filesystemReads",
+    "filesystemWrites",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeApiCalls",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    importSafetyEvents.length !== 1 ||
+    importSafetyEvent?.eventId !== importSafetyBaseline.eventId ||
+    importSafetyEvent?.type !== "ARTIFACT_CREATED" ||
+    importSafetyEvent?.actor?.id !== "project-manager" ||
+    importSafetyFields.some((field) => importSafetyData[field] !== importSafetyBaseline[field])
+  ) {
+    add(
+      "OPS_IMPORT_SAFETY_PREFLIGHT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F19 合同只登记严格资源预算、路径冲突拒绝、导入对象/验证声明/活动状态指纹绑定和失败保持旧状态；不得冒充真实验签、备份密码学、恢复/激活策略、文件系统、原生或正式实现已获授权",
     );
   }
 

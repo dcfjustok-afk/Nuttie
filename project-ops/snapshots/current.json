@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T22:16:59+08:00",
+  "generatedAt": "2026-08-13T22:38:22+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 130
+    "projectEvents": 131
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F03 本地条码查找编排合同已登记；等待 D-026/D-052、相机/复核/建档 UI、真实 Repository/离线包/真机证据及 OI-02",
+      "workPackage": "F19 导入预检合同已加固；等待 D-026/D-027/D-030、真实验签/加密恢复/激活、原生适配与 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F19 导入预检框架无关合同已加固：只允许收紧批准资源上限，拒绝非普通 JSON、稀疏数组、accessor/symbol、NFC/大小写路径冲突和 manifest/entry 不一致，绑定导入对象、调用方验证声明及活动状态指纹；调用方声明不等于 harness 真实验签，激活固定 PENDING_D026_D027_D030，不读取/写入文件、不联网、不调用原生、不授权正式实现",
     "F03 本地条码查找编排合同已登记：只接受完整 8/12/13/14 位 GTIN 并保留前导零，绑定可信本地目录精确查询证据，单/多候选都要求显式选择，未命中只携带 GTIN 交给调用方建档；不授权模糊识别、覆盖率承诺、相机权限、食品/日记写入、AI/网络回退、持久化、原生或正式工程",
     "F16 AI 指导框架无关参考草稿合同已登记：严格 opaque response 拒绝重复 key/秘密/超预算内容，草稿固定为 REFERENCE_ONLY / NOT_MEDICAL_ADVICE，本地 revision CAS 编辑保留来源，放弃后清除原始与当前内容，所有 effect 为零；不授权 UXD-04/UXD-11、D-033/D-053、医疗安全、高风险用途、正式 payload、自动改日记/目标、持久化、网络、原生或正式工程",
     "F01/F02 AI 候选确认框架无关 Application 合同已登记：transport/响应失败保留易失本地输入，严格候选必须经显式选择、caller-owned confirmed value 和 review 后才生成幂等保存 effect；effect 不携带原始输入或 AI candidate，未知提交只用原命令重放，成功后清除易失输入；不授权 D-031/D-033/D-034/D-036/D-053、真实 transport、正式字段/映射、自动改日记/目标、持久化 Repository、原生或正式工程",
