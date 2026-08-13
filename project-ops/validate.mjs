@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT",
+export const PHASE0_2026_08_14_AI_RESPONSE_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_AI_RESPONSE_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 136,
+    events: 137,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -98,6 +98,7 @@ export const PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT = Objec
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
+    "2026-08-14": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -849,6 +850,42 @@ export const PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT = Objec
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  aiResponseContract: Object.freeze({
+    eventId: "EVT-20260814-001",
+    subjectId: "ai-response-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02"]),
+    topLevelTests: 16,
+    fullSuitePassed: 752,
+    untrustedResponseBoundary: true,
+    duplicateJsonKeysRejected: true,
+    trailingDataRejected: true,
+    nonEmptyCandidateSetRequired: true,
+    exactCandidateSchema: true,
+    normalizedSafeLabels: true,
+    resourceBudgetsBound: true,
+    unsafeNumbersRejected: true,
+    semanticResponseFingerprintBound: true,
+    passiveStateSnapshotBound: true,
+    errorContentNotReflected: true,
+    candidateAuthority: "UNCONFIRMED_EDITABLE_REFERENCE_ONLY",
+    schemaAuthority: "TEST_CONTRACT_NOT_FORMAL_PROVIDER_API",
+    persistenceAuthorized: false,
+    policyAuthorizationGranted: false,
+    keychainReads: 0,
+    sensitiveBodySerializations: 0,
+    realNetworkRequests: 0,
+    filesystemWrites: 0,
+    businessWrites: 0,
+    systemClockRead: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1401,7 +1438,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_RESPONSE_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2999,6 +3036,60 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_PROVIDER_POLICY_AUTHORIZATION_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F01/F02 AI policy 合同只登记完整本地 profile、证据/风险/时间/地区、精确 request subject、指纹和 D-053 candidate/not-authorized 门禁；不得授权读 key、序列化敏感 body、联网、业务写入、原生或正式实现",
+    );
+  }
+
+  const aiResponseEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiResponseContract.subjectId,
+  );
+  const aiResponseEvent = aiResponseEvents[0]?.value;
+  const aiResponseData = aiResponseEvent?.data ?? {};
+  const aiResponseBaseline = baseline.aiResponseContract;
+  const aiResponseFields = [
+    "contractStatus",
+    "artifactState",
+    "topLevelTests",
+    "fullSuitePassed",
+    "untrustedResponseBoundary",
+    "duplicateJsonKeysRejected",
+    "trailingDataRejected",
+    "nonEmptyCandidateSetRequired",
+    "exactCandidateSchema",
+    "normalizedSafeLabels",
+    "resourceBudgetsBound",
+    "unsafeNumbersRejected",
+    "semanticResponseFingerprintBound",
+    "passiveStateSnapshotBound",
+    "errorContentNotReflected",
+    "candidateAuthority",
+    "schemaAuthority",
+    "persistenceAuthorized",
+    "policyAuthorizationGranted",
+    "keychainReads",
+    "sensitiveBodySerializations",
+    "realNetworkRequests",
+    "filesystemWrites",
+    "businessWrites",
+    "systemClockRead",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    aiResponseEvents.length !== 1 ||
+    aiResponseEvent?.eventId !== aiResponseBaseline.eventId ||
+    aiResponseEvent?.type !== "ARTIFACT_CREATED" ||
+    aiResponseEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(aiResponseData.featureIds) !== JSON.stringify(aiResponseBaseline.featureIds) ||
+    JSON.stringify(aiResponseData.requirementIds) !== JSON.stringify(aiResponseBaseline.requirementIds) ||
+    JSON.stringify(aiResponseData.acceptanceIds) !== JSON.stringify(aiResponseBaseline.acceptanceIds) ||
+    aiResponseFields.some((field) => aiResponseData[field] !== aiResponseBaseline[field])
+  ) {
+    add(
+      "OPS_AI_RESPONSE_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "F01/F02 AI 响应合同只登记不可信输出的严格解析、资源预算、规范化候选、语义指纹和被动状态快照；不得授权 Provider schema、policy、凭据、正文、网络、持久化、原生或正式实现",
     );
   }
 

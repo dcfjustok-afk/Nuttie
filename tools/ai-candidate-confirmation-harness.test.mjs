@@ -193,9 +193,9 @@ test("binds one selected candidate to a caller-owned confirmed value and explici
 test("rejects missing candidates and unsafe caller-owned confirmed values", () => {
   const initial = createAiCandidateConfirmationState({ localInput: localInput(), context: context() });
   const empty = receiveAiCandidateResponse(initial, response({ candidates: [] }));
-  assert.throws(() => editAiCandidate(empty, { candidateIndex: 0, confirmedValue: confirmedValue() }), {
-    code: "INVALID_AI_CANDIDATE_INDEX",
-  });
+  assert.equal(empty.status, "AWAITING_RESPONSE");
+  assert.deepEqual(empty.responseError, { code: "RESPONSE_CANDIDATE_COUNT_INVALID" });
+  assert.throws(() => editAiCandidate(empty, { candidateIndex: 0, confirmedValue: confirmedValue() }), { code: "INVALID_AI_CANDIDATE_TRANSITION" });
   const editing = receiveAiCandidateResponse(initial, response());
   assert.throws(
     () => editAiCandidate(editing, {
