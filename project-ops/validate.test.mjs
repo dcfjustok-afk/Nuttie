@@ -82,6 +82,11 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
   assert.equal(report.baseline, PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT.id);
+  assert.deepEqual(report.schemaValidation, {
+    profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
+    schemasChecked: 4,
+    instancesValidated: 242,
+  });
   assert.equal(report.counts.schemas, 4);
   assert.equal(report.counts.decisions, 31);
   assert.equal(report.counts.events, 126);
@@ -187,6 +192,74 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(platformLanguageReleaseAuditEvent.value.data.releaseEvidenceExecuted, 0);
   assert.equal(platformLanguageReleaseAuditEvent.value.data.decisionTruthVerified, false);
   assert.equal(platformLanguageReleaseAuditEvent.value.data.releaseGateClosed, false);
+});
+
+test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t) => {
+  await t.test("拒绝未支持的 Schema 关键字", () => {
+    const report = validateMutation((model) => {
+      const ownerSchema = model.schemas.find(
+        (record) => record.value.$id === "https://nuttie.local/schemas/owner-intake.schema.json",
+      );
+      ownerSchema.value.properties.batchId.minimum = 1;
+    });
+    assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
+    assert.equal(report.schemaValidation.schemasChecked, 4);
+    assert.equal(report.schemaValidation.instancesValidated, 241);
+  });
+
+  await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
+    const report = validateMutation((model) => {
+      delete model.events[0].value.summary;
+    });
+    assertDiagnostic(
+      report,
+      "OPS_SCHEMA_INSTANCE_INVALID",
+      `${VALID_MODEL.events[0].sourceFile}:${VALID_MODEL.events[0].lineNumber}.summary`,
+    );
+  });
+
+  await t.test("拒绝 Message 空接收方", () => {
+    const report = validateMutation((model) => {
+      model.messages[0].value.to = [];
+    });
+    assertDiagnostic(
+      report,
+      "OPS_SCHEMA_INSTANCE_INVALID",
+      `${VALID_MODEL.messages[0].sourceFile}:${VALID_MODEL.messages[0].lineNumber}.to`,
+    );
+  });
+
+  await t.test("拒绝 Owner intake 未声明字段", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.unreviewedOwnerChoice = true;
+    });
+    assertDiagnostic(
+      report,
+      "OPS_SCHEMA_INSTANCE_INVALID",
+      "project-ops/owner-intake.json.unreviewedOwnerChoice",
+    );
+  });
+
+  await t.test("拒绝缺失或未映射的 Schema", () => {
+    const missing = validateMutation((model) => {
+      model.schemas = model.schemas.filter(
+        (record) => record.value.$id !== "https://nuttie.local/schemas/project-message.schema.json",
+      );
+    });
+    assertDiagnostic(missing, "OPS_SCHEMA_REQUIRED_MISSING", "project-ops/schemas");
+
+    const unmapped = validateMutation((model) => {
+      const schema = structuredClone(model.schemas[0]);
+      schema.sourceFile = "project-ops/schemas/unmapped.schema.json";
+      schema.value.$id = "https://nuttie.local/schemas/unmapped.schema.json";
+      model.schemas.push(schema);
+    });
+    assertDiagnostic(
+      unmapped,
+      "OPS_SCHEMA_UNMAPPED",
+      "project-ops/schemas/unmapped.schema.json.$id",
+    );
+  });
 });
 
 test("拒绝重复 ID、事件断号、日期错配和悬空回复", async (t) => {
@@ -998,6 +1071,7 @@ test("CLI 对通过、一致性失败和 JSONL 解析失败使用稳定退出码
   assert.equal(JSON.parse(valid.stdout).ok, true);
 
   const inconsistentRoot = copyValidationFixture();
+  const schemaInvalidRoot = copyValidationFixture();
   const malformedRoot = copyValidationFixture();
   try {
     const snapshotPath = path.join(inconsistentRoot, "project-ops", "snapshots", "current.json");
@@ -1011,6 +1085,22 @@ test("CLI 对通过、一致性失败和 JSONL 解析失败使用稳定退出码
     );
     assert.equal(inconsistent.status, 1, inconsistent.stdout);
     assert.equal(JSON.parse(inconsistent.stderr).ok, false);
+
+    const ownerIntakePath = path.join(schemaInvalidRoot, "project-ops", "owner-intake.json");
+    const ownerIntake = JSON.parse(fs.readFileSync(ownerIntakePath, "utf8"));
+    ownerIntake.unknown = true;
+    fs.writeFileSync(ownerIntakePath, `${JSON.stringify(ownerIntake, null, 2)}\n`, "utf8");
+    const schemaInvalid = spawnSync(
+      process.execPath,
+      [VALIDATOR_PATH, "--workspace", schemaInvalidRoot],
+      { encoding: "utf8" },
+    );
+    assert.equal(schemaInvalid.status, 1, schemaInvalid.stdout);
+    assert.ok(
+      JSON.parse(schemaInvalid.stderr).diagnostics.some(
+        (diagnostic) => diagnostic.code === "OPS_SCHEMA_INSTANCE_INVALID",
+      ),
+    );
 
     const messagePath = path.join(
       malformedRoot,
@@ -1028,6 +1118,7 @@ test("CLI 对通过、一致性失败和 JSONL 解析失败使用稳定退出码
     assert.equal(JSON.parse(malformed.stderr).error.code, "OPS_JSONL_PARSE_ERROR");
   } finally {
     fs.rmSync(inconsistentRoot, { recursive: true, force: true });
+    fs.rmSync(schemaInvalidRoot, { recursive: true, force: true });
     fs.rmSync(malformedRoot, { recursive: true, force: true });
   }
 });

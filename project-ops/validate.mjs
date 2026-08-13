@@ -2,6 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  PROJECT_OPS_SCHEMA_PROFILE,
+  inspectSchemaDefinition,
+  validateSchemaInstance,
+} from "./json-schema-subset.mjs";
+
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const DEFAULT_WORKSPACE_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 const EVENT_FILE_PATTERN = /^([0-9]{4}-[0-9]{2}-[0-9]{2})\.jsonl$/;
@@ -10,6 +16,41 @@ const MESSAGE_ID_PATTERN = /^MSG-[0-9]{8}-[0-9]{3,}$/;
 const DECISION_ID_PATTERN = /^D-[0-9]{3}$/;
 const EVIDENCE_ID_PATTERN = /^(ACC|DAY|LOG|FOOD|BODY|AI|SYS|DATA)-[0-9]{2}$/;
 const GAP_THEME_ID_PATTERN = /^EG-[0-9]{2}$/;
+
+const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
+  Object.freeze({
+    schemaId: "https://nuttie.local/schemas/decision-register.schema.json",
+    instances: (model) => [
+      Object.freeze({ sourcePath: "project-ops/decisions.json", value: model.decisionRegister }),
+    ],
+  }),
+  Object.freeze({
+    schemaId: "https://nuttie.local/schemas/owner-intake.schema.json",
+    instances: (model) => [
+      Object.freeze({ sourcePath: "project-ops/owner-intake.json", value: model.ownerIntake }),
+    ],
+  }),
+  Object.freeze({
+    schemaId: "https://nuttie.local/schemas/project-event.schema.json",
+    instances: (model) =>
+      model.events.map((record) =>
+        Object.freeze({
+          sourcePath: `${record.sourceFile}:${record.lineNumber}`,
+          value: record.value,
+        }),
+      ),
+  }),
+  Object.freeze({
+    schemaId: "https://nuttie.local/schemas/project-message.schema.json",
+    instances: (model) =>
+      model.messages.map((record) =>
+        Object.freeze({
+          sourcePath: `${record.sourceFile}:${record.lineNumber}`,
+          value: record.value,
+        }),
+      ),
+  }),
+]);
 
 export const PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT = Object.freeze({
   id: "PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT",
@@ -879,6 +920,93 @@ function duplicateValues(values) {
   return [...duplicates].sort();
 }
 
+function validateProjectOpsSchemas(model, add) {
+  const schemasById = new Map();
+  const schemaIds = [];
+  let instancesValidated = 0;
+
+  for (const record of model.schemas) {
+    const schemaId = record.value?.$id;
+    if (typeof schemaId !== "string" || schemaId.length === 0) {
+      add(
+        "OPS_SCHEMA_ID_INVALID",
+        `${record.sourceFile}.$id`,
+        "ProjectOps Schema 必须声明非空 $id",
+      );
+      continue;
+    }
+    if (schemasById.has(schemaId)) {
+      add(
+        "OPS_SCHEMA_ID_DUPLICATE",
+        `${record.sourceFile}.$id`,
+        `ProjectOps Schema $id 重复: ${schemaId}`,
+      );
+      continue;
+    }
+    schemasById.set(schemaId, record);
+    schemaIds.push(schemaId);
+
+    for (const error of inspectSchemaDefinition(record.value)) {
+      add(
+        "OPS_SCHEMA_DEFINITION_INVALID",
+        `${record.sourceFile}${error.schemaPath}`,
+        error.message,
+        { keyword: error.keyword, profile: PROJECT_OPS_SCHEMA_PROFILE.id },
+      );
+    }
+  }
+
+  const expectedSchemaIds = PROJECT_OPS_SCHEMA_TARGETS.map((target) => target.schemaId);
+  for (const schemaId of expectedSchemaIds) {
+    if (!schemasById.has(schemaId)) {
+      add(
+        "OPS_SCHEMA_REQUIRED_MISSING",
+        "project-ops/schemas",
+        `缺少必需 ProjectOps Schema: ${schemaId}`,
+      );
+    }
+  }
+  for (const schemaId of schemaIds) {
+    if (!expectedSchemaIds.includes(schemaId)) {
+      add(
+        "OPS_SCHEMA_UNMAPPED",
+        `${schemasById.get(schemaId).sourceFile}.$id`,
+        `ProjectOps Schema 没有受控实例映射: ${schemaId}`,
+      );
+    }
+  }
+
+  for (const target of PROJECT_OPS_SCHEMA_TARGETS) {
+    const record = schemasById.get(target.schemaId);
+    if (!record || inspectSchemaDefinition(record.value).length > 0) {
+      continue;
+    }
+    for (const instance of target.instances(model)) {
+      instancesValidated += 1;
+      for (const error of validateSchemaInstance(record.value, instance.value)) {
+        add(
+          "OPS_SCHEMA_INSTANCE_INVALID",
+          error.instancePath
+            ? `${instance.sourcePath}.${error.instancePath}`
+            : instance.sourcePath,
+          error.message,
+          {
+            keyword: error.keyword,
+            schemaId: target.schemaId,
+            schemaPath: error.schemaPath,
+          },
+        );
+      }
+    }
+  }
+
+  return Object.freeze({
+    profile: PROJECT_OPS_SCHEMA_PROFILE.id,
+    schemasChecked: model.schemas.length,
+    instancesValidated,
+  });
+}
+
 export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_12_PLATFORM_LANGUAGE_RELEASE_AUDIT_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
@@ -897,6 +1025,8 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       });
     }
   };
+
+  const schemaValidation = validateProjectOpsSchemas(model, add);
 
   const versionedDocuments = [
     ["project-ops/decisions.json", model.decisionRegister],
@@ -2590,7 +2720,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     ok: diagnostics.length === 0,
     baseline: baseline.id,
     scope: "Project Ops parsing and cross-source operational invariants",
-    schemaValidation: "NOT_PERFORMED_USE_AJV_FOR_DRAFT_2020_12",
+    schemaValidation,
     counts: {
       schemas: model.schemas.length,
       decisions: decisions.length,

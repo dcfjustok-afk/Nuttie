@@ -2,7 +2,7 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-12（Asia/Shanghai）；ProjectOps 人工归并快照已同步至本日 |
+| 快照日期 | 2026-08-13（Asia/Shanghai）；ProjectOps 人工归并快照仍与 2026-08-12 最新事件源一致 |
 | 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
 | 权威决定 | 17 项 `ACCEPTED`；14 项 `CANDIDATE` |
@@ -103,7 +103,7 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 2. **D-038 尚未通过最终 Owner Gate。** DesignOps 与主 Agent 的桌面/移动视觉、console 和关键交互验收已完成；仍须由 Owner 明确选择 A/B/C，未选择前正式 IA/路由外壳保持阻断。
 3. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得创建正式餐食录入页面、路由或据此改变决定台账。
 4. **D-040 尚未关闭 PX-0 输入。** A/B/C 流程、恢复、无目标和失败零写入已形成可操作原型，但最小字段、目标公式、适用范围和特殊人群停止规则未获 Owner 与领域评审确认；不得把固定测试夹具当作产品目标或进入正式实现。
-5. **G4 仍未通过，但框架无关的本地契约证据持续增加。** 除既有 Domain、AI policy、导入安全、数据包、备份、餐食、营养和 wipe 夹具外，本轮新增合同已覆盖 F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 的框架无关事实、事务、读模型和应用编排；`tools/prohibited-capability-audit-harness.*` 锁定 F20/F23/F24 签名 Release Archive 与 27 个禁止能力必查面，`tools/platform-language-release-audit-harness.*` 固定 F22 的 D-011 iOS 17.0、D-016 首发简中，并将设备族、方向、Mac、Vision availability 和 25 个发布证据面分开门控。8 月 12 日框架无关契约与治理检查全套 565 项测试通过；两项 Release 聚合审计都保持 `BLOCKED`，因为没有正式目标、四项平台形态决定、生产扫描、模拟器/真机/Store/布局/无障碍或 Release 网络/权限捕获。D-039/D-040 自动 smoke、导航候选浏览器交互和视觉资产合同也复验通过。所有这些仍为 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`：不依赖 RN/SQLite/真实 Keychain/HealthKit/网络/UserNotifications/相机/照片，不冻结资料字段、当前/多档案策略、档案级联删除、显示精度、异常阈值、BMI、目标体重、同日聚合、内建默认餐次、默认/自定义餐次规则、移动/复制、运动字段、消耗公式、Left 公式/缺失默认值/负值/舍入、目标生成、百分比换算、实际/目标比较、目标舍入、目标/净值、平均/更长周期、未来日/补记/跨时区重基/默认今天、饮水目标/快捷量/单位/撤销/趋势、提醒类型/重复规则/通知内容/滚动窗口/DST 默认策略、权限文案、媒体保留、明文导出、备份恢复、秘密值访问、真实容器完成、设备族/方向/Mac/Vision availability，或 D-026/D-027/D-030/D-031/D-033/D-034/D-035/D-036/D-053，也不构成正式实现、构建、迁移、签名 Archive、真机或 Release 网络证据。
+5. **G4 仍未通过，但框架无关的本地契约证据持续增加。** 除既有 Domain、AI policy、导入安全、数据包、备份、餐食、营养和 wipe 夹具外，本轮新增合同已覆盖 F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 的框架无关事实、事务、读模型和应用编排；`tools/prohibited-capability-audit-harness.*` 锁定 F20/F23/F24 签名 Release Archive 与 27 个禁止能力必查面，`tools/platform-language-release-audit-harness.*` 固定 F22 的 D-011 iOS 17.0、D-016 首发简中，并将设备族、方向、Mac、Vision availability 和 25 个发布证据面分开门控。8 月 13 日框架无关契约与治理检查全套 585 项测试通过；ProjectOps 使用无第三方依赖的受控 Draft 2020-12 子集校验 4 份 Schema 和 242 个 decisions/Owner intake/Event/Message 实例，未支持关键字与循环/外部 `$ref` 失败关闭，但不宣称完整通用 JSON Schema 引擎合规。两项 Release 聚合审计都保持 `BLOCKED`，因为没有正式目标、四项平台形态决定、生产扫描、模拟器/真机/Store/布局/无障碍或 Release 网络/权限捕获。D-039/D-040 自动 smoke、导航候选浏览器交互和视觉资产合同也复验通过。所有这些仍为 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`：不依赖 RN/SQLite/真实 Keychain/HealthKit/网络/UserNotifications/相机/照片，不冻结资料字段、当前/多档案策略、档案级联删除、显示精度、异常阈值、BMI、目标体重、同日聚合、内建默认餐次、默认/自定义餐次规则、移动/复制、运动字段、消耗公式、Left 公式/缺失默认值/负值/舍入、目标生成、百分比换算、实际/目标比较、目标舍入、目标/净值、平均/更长周期、未来日/补记/跨时区重基/默认今天、饮水目标/快捷量/单位/撤销/趋势、提醒类型/重复规则/通知内容/滚动窗口/DST 默认策略、权限文案、媒体保留、明文导出、备份恢复、秘密值访问、真实容器完成、设备族/方向/Mac/Vision availability，或 D-026/D-027/D-030/D-031/D-033/D-034/D-035/D-036/D-053，也不构成正式实现、构建、迁移、签名 Archive、真机或 Release 网络证据。
 6. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 7. **Apple 原生链路仍阻断。** 已记录 iPhone 16 Pro Max / iOS 26.5，但当前无可用 Mac、macOS、Xcode、CocoaPods、Bundle ID、签名链、App Store Connect record 或 TestFlight build；只有 iPhone 不构成原生构建能力。
 
