@@ -2,7 +2,7 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-13（Asia/Shanghai）；ProjectOps 人工归并快照仍与 2026-08-12 最新事件源一致 |
+| 快照日期 | 2026-08-13（Asia/Shanghai）；ProjectOps 人工归并快照与 2026-08-13 最新事件源一致 |
 | 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
 | 权威决定 | 17 项 `ACCEPTED`；14 项 `CANDIDATE` |
