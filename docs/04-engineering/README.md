@@ -62,7 +62,7 @@
 - [营养事实快照 V2](testing/nutrition-fact-snapshot-harness.md)：原始值/单位、basis、provenance、状态白名单与餐食保存往返合同。
 - [餐食纠错事务合同](testing/meal-correction-harness.md)：EDIT/MOVE/DELETE 状态机、幂等回放、事务双快照证据与 V2 来源保真。
 - [食品数据包预授权合同](testing/data-pack-contract-harness.md)：只收紧资源预算、严格被动 JSON/普通文件边界、manifest/entry/来源/转换一致性、不可变 subject 指纹和调用方验证声明绑定；不冒充真实验签或授权激活。
-- [备份恢复对账检查](testing/backup-reconcile-harness.md)：generation、intent、active/previous ref 的框架无关 crash-consistency 模型。
+- [恢复启动对账观察合同](testing/backup-reconcile-harness.md)：结构化 generation 观察、intent/快照指纹绑定、写入关闭的未提交行动计划和执行后重新观察；不冒充文件/Keychain effect 或密码学验证。
 - [AI 响应合同检查](testing/ai-response-contract-harness.md)：不可信响应的版本、schema、预算和零写入解析夹具。
 - [AI 凭据生命周期合同](testing/ai-credential-lifecycle-harness.md)：BYOK 配置/替换/移除、Keychain 类密钥槽、durable intent、未知结果对账与 fail-closed 网络门。
 - [体重记录事务合同](testing/body-weight-record-harness.md)：F10 手工 kg/lb 原始输入、精确换算、同日多记录、revision CAS、幂等写入与完整趋势回执。

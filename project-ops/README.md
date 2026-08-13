@@ -47,11 +47,11 @@ node project-ops/reconcile.mjs
 node --test project-ops/reconcile.test.mjs
 ```
 
-`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT` 基线并检查：
+`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT` 基线并检查：
 
-- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 250 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
+- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 251 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
 - JSON/JSONL 解析、决定/事件/消息/证据 ID 唯一性。
-- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/7` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
+- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/8` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
 - Agent 消息 `responseTo`、证据状态与五条 pending 集合。
 - 决定、事件、消息、角色、证据和 gap theme 的源计数、快照计数与版本化基线。
 - Agent ID 唯一性与唯一 active 角色 `root`；Owner intake 精确 12 项候选、未完成状态、D-047 A→C 审计链、唯一 OI-03 设备事实和 OI-02 原生 choice-ui 入口。
@@ -74,12 +74,13 @@ node --test project-ops/reconcile.test.mjs
 - F19 导入预检合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记严格 JSON/资源/路径碰撞边界、manifest/entry 精确集合、导入对象/调用方验证声明/活动状态指纹绑定和失败保持旧状态；验证声明不等于真实验签，激活固定等待 D-026/D-027/D-030，不得授权文件系统、网络、原生或正式实现。
 - F09 营养事实与洞察可用性合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记可信本地七项营养事实可用和评分/微量标签/风险/益处能力保留但内容零暴露；不得授权算法、字段全集、医学/个体化结论、AI、自动资料使用、网络、原生或正式实现，也不得借未知规则删除 D-017 范围。
 - F03 数据包预授权合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记批准预算只能收紧、真实 object key/string/depth 预解析预算、严格被动 JSON/普通文件、manifest/entry/来源/转换一致性、不可变 subject 指纹和调用方验证声明绑定；调用方声明不等于真实验签，不得授权 D-026 签名/trust root、D-052 许可分发、激活、文件系统、网络、原生或正式实现。
+- F19 恢复启动对账合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记结构化 generation 观察、generation/intent/restore observation 指纹、intent 存在时写入关闭、绑定当前观察的未提交行动计划和外部执行后重新观察；调用方观察不等于 harness 做过密码学/文件/Keychain 验证，不得授权 D-027/D-030/D-035、清理、持久化 effect、网络、原生或正式实现。
 - F21 媒体权限编排合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记当前任务说明后的窄相机权限 effect、系统用户媒体选择零照片全库权限，以及拒绝/受限/撤权/取消和迟到回执的手工降级；不得授权权限文案、D-031 媒体保留、视频、定位、持久化、真实原生 API、网络或正式实现。
 - F20/F23/F24 禁止能力审计合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION / BLOCKED`：正式签名 Release Archive 和 27 面报告均不存在，生产工件扫描、Release 网络捕获与定位权限捕获均未执行；不得把当前工作区零发现冒充 PASS、宣称证据真实或关闭发布门禁。
 - F22 平台/语言 Release 审计保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION / BLOCKED`：只固定 D-011 iOS 17.0 与 D-016 首发简中；设备族、方向、Mac、Vision availability 四项决定未形成，无签名 Archive 和 25 面生产证据；不得从 D-038、当前设备或工具默认值推导，不得宣称决定/报告真实或关闭发布门禁。
 
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。Owner 关闭 OI-02、完成整批回读、完成 D-039 PX-3、关闭 D-040 PX-0 输入，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
-内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 250 个受控实例通过校验”。
+内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 251 个受控实例通过校验”。
 
-`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已记录的 OI-03 设备事实、Owner 原生 `OI-02` choice-ui 门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 2026-08-13 的 F03 数据包预授权合同登记事件，并与最新来源时间一致。
+`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已记录的 OI-03 设备事实、Owner 原生 `OI-02` choice-ui 门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 2026-08-13 的 F19 恢复启动对账合同登记事件，并与最新来源时间一致。

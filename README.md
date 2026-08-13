@@ -13,7 +13,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：尚未初始化；未批准的库级选型不会提前固化
-- 框架无关契约与治理检查：全套 705 项测试通过，含 ProjectOps 5 份 Schema/250 个实例校验、F03 数据包预授权边界与本地条码查找、F09 营养事实/洞察可用性、F19 导入预检、F01/F02 AI 候选确认、F16 AI 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；数据包合同只证明收紧型资源预算、严格被动 JSON/普通文件/集合一致性和 subject 绑定声明，不等于真实验签、许可或激活已授权；F09 只证明可信七项营养事实可用以及评分/微量/风险/益处能力保留但内容零暴露；其他合同也保持各自非生产边界；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：全套 719 项测试通过，含 ProjectOps 5 份 Schema/251 个实例校验、F19 恢复启动对账与导入预检、F03 数据包预授权边界与本地条码查找、F09 营养事实/洞察可用性、F01/F02 AI 候选确认、F16 AI 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；恢复对账只证明结构化观察、intent/快照绑定、未提交行动计划和执行后重新观察，不等于密码学、文件/Keychain effect、清理或恢复模式已授权；数据包合同也不等于真实验签、许可或激活已授权；F09 高级洞察内容仍为零暴露；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT,
+  PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 250,
+    instancesValidated: 251,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 133);
+  assert.equal(report.counts.events, 134);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -325,6 +325,35 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(dataPackPreauthEvent.value.data.nativeApiCalls, 0);
   assert.equal(dataPackPreauthEvent.value.data.realNetworkRequests, 0);
   assert.equal(dataPackPreauthEvent.value.data.formalImplementationAuthorized, false);
+  const restoreReconcileEvent = findEvent(VALID_MODEL, "EVT-20260813-008");
+  assert.equal(restoreReconcileEvent.value.subject.id, "restore-reconcile-observation-contract");
+  assert.equal(restoreReconcileEvent.value.data.featureId, "F19");
+  assert.equal(restoreReconcileEvent.value.data.topLevelTests, 21);
+  assert.equal(restoreReconcileEvent.value.data.fullSuitePassed, 718);
+  assert.equal(restoreReconcileEvent.value.data.structuredGenerationObservations, true);
+  assert.equal(restoreReconcileEvent.value.data.generationObservationFingerprintBound, true);
+  assert.equal(restoreReconcileEvent.value.data.restoreObservationFingerprintBound, true);
+  assert.equal(restoreReconcileEvent.value.data.restoreIntentFingerprintBound, true);
+  assert.equal(restoreReconcileEvent.value.data.strictPlainBoundary, true);
+  assert.equal(restoreReconcileEvent.value.data.generationObservationBudgetBound, true);
+  assert.equal(restoreReconcileEvent.value.data.keyUnavailableFailsClosed, true);
+  assert.equal(restoreReconcileEvent.value.data.intentKeepsWritesClosed, true);
+  assert.equal(restoreReconcileEvent.value.data.actionPlanObservationBound, true);
+  assert.equal(restoreReconcileEvent.value.data.actionPlanEffectsCommitted, false);
+  assert.equal(restoreReconcileEvent.value.data.reobservationRequiredBeforeWrites, true);
+  assert.equal(restoreReconcileEvent.value.data.cleanupAuthorized, false);
+  assert.equal(restoreReconcileEvent.value.data.assertionTruth, "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS");
+  assert.equal(restoreReconcileEvent.value.data.cryptoProfile, "PENDING_D027");
+  assert.equal(restoreReconcileEvent.value.data.restoreMode, "PENDING_D030");
+  assert.equal(restoreReconcileEvent.value.data.plaintextExport, "PENDING_D035");
+  assert.equal(restoreReconcileEvent.value.data.cryptographicVerificationPerformed, false);
+  assert.equal(restoreReconcileEvent.value.data.filesystemReads, 0);
+  assert.equal(restoreReconcileEvent.value.data.filesystemWrites, 0);
+  assert.equal(restoreReconcileEvent.value.data.keychainReads, 0);
+  assert.equal(restoreReconcileEvent.value.data.keychainWrites, 0);
+  assert.equal(restoreReconcileEvent.value.data.nativeApiCalls, 0);
+  assert.equal(restoreReconcileEvent.value.data.realNetworkRequests, 0);
+  assert.equal(restoreReconcileEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -370,7 +399,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 249);
+    assert.equal(report.schemaValidation.instancesValidated, 250);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1029,6 +1058,45 @@ test("拒绝放宽数据包预算、伪造验证/激活或授权许可分发和�
   assertDiagnostic(
     report,
     "OPS_DATA_PACK_PREAUTH_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把恢复观察计划冒充密码学验证、已提交清理、已开放写入或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-008");
+    event.value.data.structuredGenerationObservations = false;
+    event.value.data.generationObservationFingerprintBound = false;
+    event.value.data.restoreObservationFingerprintBound = false;
+    event.value.data.restoreIntentFingerprintBound = false;
+    event.value.data.strictPlainBoundary = false;
+    event.value.data.generationObservationBudgetBound = false;
+    event.value.data.keyUnavailableFailsClosed = false;
+    event.value.data.intentKeepsWritesClosed = false;
+    event.value.data.actionPlanObservationBound = false;
+    event.value.data.actionPlanEffectsCommitted = true;
+    event.value.data.reobservationRequiredBeforeWrites = false;
+    event.value.data.cleanupAuthorized = true;
+    event.value.data.assertionTruth = "CRYPTOGRAPHICALLY_VERIFIED";
+    event.value.data.cryptoProfile = "ARGON2_AES_GCM_APPROVED";
+    event.value.data.restoreMode = "REPLACE";
+    event.value.data.plaintextExport = "APPROVED";
+    event.value.data.cryptographicVerificationPerformed = true;
+    event.value.data.filesystemReads = 1;
+    event.value.data.filesystemWrites = 1;
+    event.value.data.keychainReads = 1;
+    event.value.data.keychainWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_RESTORE_RECONCILE_OBSERVATION_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

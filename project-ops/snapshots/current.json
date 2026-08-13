@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-13T23:08:24+08:00",
+  "generatedAt": "2026-08-13T23:21:03+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 133
+    "projectEvents": 134
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F03 数据包预授权合同已加固；等待 D-026 签名、D-052 许可、真实激活实现与 OI-02",
+      "workPackage": "F19 恢复启动对账合同已加固；等待 D-027/D-030、真实文件/Keychain adapter 与 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "F19 恢复启动对账框架无关合同已加固：用结构化 generation 观察取代 complete/hashMatched 裸布尔，generation、intent 和完整 restore observation 均绑定指纹；存在 intent 时一律保持写入关闭，只返回绑定当前观察的未提交行动计划，外部执行并重新观察为稳定状态后才开放写入；不授权 D-027 密码学、D-030 恢复模式、D-035 明文导出、清理、文件系统、Keychain、原生或正式实现",
     "F03 离线数据包预授权框架无关合同已加固：批准资源上限只能收紧，预授权解析按真实 key/item/string/depth 预算拒绝异常输入，manifest/普通文件、来源、转换、NOTICE 和调用方验证声明绑定同一不可变 subject 指纹；调用方声明不等于 harness 真实验签，D-026 签名、D-052 许可分发、激活、文件系统、原生和正式实现均未获授权",
     "F09 营养事实与洞察可用性框架无关合同已登记：可信本地七项营养事实可见且保留缺失/微量/估算语义，pack 营养继续要求目录信任；健康评分、微量标签、风险和益处四类能力按 FOOD-04~07 保留在分期范围，但内容暴露固定 NONE，不授权算法、字段集、医学/个体化结论、AI、自动档案使用、网络、原生或正式工程",
     "F19 导入预检框架无关合同已加固：只允许收紧批准资源上限，拒绝非普通 JSON、稀疏数组、accessor/symbol、NFC/大小写路径冲突和 manifest/entry 不一致，绑定导入对象、调用方验证声明及活动状态指纹；调用方声明不等于 harness 真实验签，激活固定 PENDING_D026_D027_D030，不读取/写入文件、不联网、不调用原生、不授权正式实现",

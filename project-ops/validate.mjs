@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT",
+export const PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 133,
+    events: 134,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT = Object.freeze({
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 7,
+    "2026-08-13": 8,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -737,6 +737,45 @@ export const PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  restoreReconcileObservationContract: Object.freeze({
+    eventId: "EVT-20260813-008",
+    subjectId: "restore-reconcile-observation-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F19",
+    requirementId: "REQ-F19",
+    acceptanceId: "AT-F19",
+    topLevelTests: 21,
+    fullSuitePassed: 718,
+    structuredGenerationObservations: true,
+    generationObservationFingerprintBound: true,
+    restoreObservationFingerprintBound: true,
+    restoreIntentFingerprintBound: true,
+    strictPlainBoundary: true,
+    generationObservationBudgetBound: true,
+    keyUnavailableFailsClosed: true,
+    intentKeepsWritesClosed: true,
+    actionPlanObservationBound: true,
+    actionPlanEffectsCommitted: false,
+    reobservationRequiredBeforeWrites: true,
+    cleanupAuthorized: false,
+    assertionTruth: "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS",
+    cryptoProfile: "PENDING_D027",
+    restoreMode: "PENDING_D030",
+    plaintextExport: "PENDING_D035",
+    cryptographicVerificationPerformed: false,
+    filesystemReads: 0,
+    filesystemWrites: 0,
+    keychainReads: 0,
+    keychainWrites: 0,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeApiCalls: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1289,7 +1328,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_DATA_PACK_PREAUTH_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2721,6 +2760,63 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_DATA_PACK_PREAUTH_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F03 数据包预授权合同只登记收紧型资源预算、严格被动 JSON/普通文件、精确 entry 集合、来源/转换一致性和 subject 绑定调用方声明；不得冒充真实验签、许可分发、激活、原生或正式实现已获授权",
+    );
+  }
+
+  const restoreReconcileEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.restoreReconcileObservationContract.subjectId,
+  );
+  const restoreReconcileEvent = restoreReconcileEvents[0]?.value;
+  const restoreReconcileData = restoreReconcileEvent?.data ?? {};
+  const restoreReconcileBaseline = baseline.restoreReconcileObservationContract;
+  const restoreReconcileFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "structuredGenerationObservations",
+    "generationObservationFingerprintBound",
+    "restoreObservationFingerprintBound",
+    "restoreIntentFingerprintBound",
+    "strictPlainBoundary",
+    "generationObservationBudgetBound",
+    "keyUnavailableFailsClosed",
+    "intentKeepsWritesClosed",
+    "actionPlanObservationBound",
+    "actionPlanEffectsCommitted",
+    "reobservationRequiredBeforeWrites",
+    "cleanupAuthorized",
+    "assertionTruth",
+    "cryptoProfile",
+    "restoreMode",
+    "plaintextExport",
+    "cryptographicVerificationPerformed",
+    "filesystemReads",
+    "filesystemWrites",
+    "keychainReads",
+    "keychainWrites",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeApiCalls",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    restoreReconcileEvents.length !== 1 ||
+    restoreReconcileEvent?.eventId !== restoreReconcileBaseline.eventId ||
+    restoreReconcileEvent?.type !== "ARTIFACT_CREATED" ||
+    restoreReconcileEvent?.actor?.id !== "project-manager" ||
+    restoreReconcileFields.some((field) => restoreReconcileData[field] !== restoreReconcileBaseline[field])
+  ) {
+    add(
+      "OPS_RESTORE_RECONCILE_OBSERVATION_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F19 恢复对账合同只登记结构化 generation 观察、intent/观察指纹绑定、intent 存在时写入关闭、未提交行动计划和执行后重新观察；不得授权密码学、恢复模式、清理、文件系统、Keychain、原生或正式实现",
     );
   }
 
