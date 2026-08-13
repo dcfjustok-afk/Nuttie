@@ -16,7 +16,7 @@
 | F06 餐次 | `meal-slot-grouping`、`meal-correction` | 显式版本化定义、顺序、空餐次、未分配/旧定义、移动事务底座 | 默认餐次数量/名称、自定义规则、组件/E2E | 读模型已覆盖，产品规则阻断 |
 | F07 日志详情 | `manual-meal-entry`、`meal-correction`、`nutrition-fact-snapshot` | 营养快照保存、编辑/移动/删除 CAS、幂等与来源保真 | 高级操作范围、组件/E2E、正式 Repository | 核心事务合同已覆盖 |
 | F08 日期导航 | `date-navigation`、`domain-contract` | 显式观察、IANA/DST/午夜、generation、外部策略绑定 | 未来日、补记、跨时区重基、默认今天和 UI | 事实/策略边界已覆盖 |
-| F09 营养/评分/洞察 | `nutrition-fact-snapshot`、`local-food-catalog`、`domain-contract` | 七项营养原值/单位/basis/provenance/缺失/估算 | 评分、微量字段全集、风险/益处来源与组件 | 基础事实已覆盖，评分阻断 |
+| F09 营养/评分/洞察 | `nutrition-fact-snapshot`、`local-food-catalog`、`food-insight-availability`、`domain-contract` | 可信本地七项营养原值/单位/basis/provenance/缺失/微量/估算可用；评分、微量标签、风险、益处四类能力按 FOOD-04~07 保留但内容固定零暴露 | 评分算法/阈值/适用范围、微量字段全集/来源、风险/益处医学依据/生成方式/免责声明、Owner 决定与组件 | 基础事实与未授权内容门禁已覆盖，高级规则/组件阻断 |
 | F10 体重 | `body-weight-record` | kg/lb 原值、精确换算、同日多笔、CRUD CAS、趋势重算 | 显示精度、异常、BMI/目标、同日展示、组件/E2E | 核心事务合同已覆盖 |
 | F11 摄入/消耗洞察 | `seven-day-energy-trend` | 七日本地日历窗口、事实分流、缺失/零、精确聚合、文字摘要 | 更长周期、平均/净值/目标、组件/图表无障碍 | 已证范围读模型覆盖 |
 | F12 画像/目标 | `local-profile-record`、`macro-target-history`、`daily-energy-ledger` | 版本化 opaque 档案 CRUD、非级联删除、既有目标事实历史 | 最小字段、公式、资料与目标关系、多档案产品策略 | 核心档案事务覆盖，字段/公式阻断 |
@@ -57,3 +57,5 @@ F20/F23/F24 随后补上禁止能力审计聚合合同。它不把当前未初�
 F22 也补上平台与语言 Release 聚合合同：D-011 的 iOS 17.0 与 D-016 的首发简中被固定为已接受输入，但设备族、方向、Mac availability 和 Vision Pro availability 分别保持未决定，不能从 D-038、当前 iPhone 或工具默认值推导。正式通过还要求签名 Archive 上 25 个配置、商店、模拟器、真机、布局与无障碍报告；当前结论为 `FORMAL_TARGET_ABSENT + PLATFORM_SHAPE_DECISION_REQUIRED + REQUIRED_SURFACE_MISSING`。
 
 F19 本轮继续加固导入预检合同：限制只能从批准默认值收紧；普通 JSON、NFC/大小写路径冲突和 manifest/entry 精确集合失败关闭；导入对象、结构化调用方验证声明及活动状态以指纹绑定，拒绝篡改、证据重放和状态漂移。验证声明明确是 `CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS`，不是实际密码学证明；激活仍固定等待 D-026/D-027/D-030，并保持零文件、网络、原生和数据写入。
+
+F09 随后补上“事实可用与高级洞察保留”的合同：七项可信本地营养事实保留来源、缺失、微量和估算语义；pack 事实继续要求 verified catalog trust。FOOD-04~07 已证实的健康评分、微量标签、风险和益处能力不从 D-017 范围删除，但算法、字段集、来源、医学/适用边界和 Owner 决定形成前，四类内容统一 `NOT_AUTHORIZED / NONE`，请求不能注入占位分数或文案。

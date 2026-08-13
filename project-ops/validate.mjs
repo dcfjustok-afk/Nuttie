@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT",
+export const PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 131,
+    events: 132,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT = Object.freeze(
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 5,
+    "2026-08-13": 6,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -640,6 +640,50 @@ export const PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT = Object.freeze(
     signatureAlgorithmSelected: false,
     backupCryptoProfileSelected: false,
     restoreModeSelected: false,
+    filesystemReads: 0,
+    filesystemWrites: 0,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeApiCalls: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  foodInsightAvailabilityContract: Object.freeze({
+    eventId: "EVT-20260813-006",
+    subjectId: "food-insight-availability-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F09",
+    requirementId: "REQ-F09",
+    acceptanceId: "AT-F09",
+    topLevelTests: 14,
+    fullSuitePassed: 691,
+    trustedLocalNutritionSnapshotOnly: true,
+    approvedNutrientFieldCount: 7,
+    nutritionFactsAvailable: true,
+    missingNotZero: true,
+    traceWithoutNumericValue: true,
+    estimatedSourceVisible: true,
+    packCatalogTrustRequired: true,
+    advancedCapabilityIds: Object.freeze([
+      "HEALTH_SCORE",
+      "MICRONUTRIENT_LABELS",
+      "HEALTH_RISKS",
+      "HEALTH_BENEFITS",
+    ]),
+    publicEvidenceIds: Object.freeze(["FOOD-04", "FOOD-05", "FOOD-06", "FOOD-07"]),
+    advancedCapabilityScopePreserved: true,
+    advancedContentExposure: "NONE",
+    healthScoreAlgorithmAuthorized: false,
+    micronutrientFieldSetAuthorized: false,
+    riskBenefitGenerationAuthorized: false,
+    medicalConclusionAuthorized: false,
+    personalizedClaimAuthorized: false,
+    aiGenerationAuthorized: false,
+    automaticProfileUseAuthorized: false,
+    observableEffects: 0,
     filesystemReads: 0,
     filesystemWrites: 0,
     systemClockRead: false,
@@ -1202,7 +1246,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2516,6 +2560,63 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_IMPORT_SAFETY_PREFLIGHT_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F19 合同只登记严格资源预算、路径冲突拒绝、导入对象/验证声明/活动状态指纹绑定和失败保持旧状态；不得冒充真实验签、备份密码学、恢复/激活策略、文件系统、原生或正式实现已获授权",
+    );
+  }
+
+  const foodInsightEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.foodInsightAvailabilityContract.subjectId,
+  );
+  const foodInsightEvent = foodInsightEvents[0]?.value;
+  const foodInsightData = foodInsightEvent?.data ?? {};
+  const foodInsightBaseline = baseline.foodInsightAvailabilityContract;
+  const foodInsightScalarFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "trustedLocalNutritionSnapshotOnly",
+    "approvedNutrientFieldCount",
+    "nutritionFactsAvailable",
+    "missingNotZero",
+    "traceWithoutNumericValue",
+    "estimatedSourceVisible",
+    "packCatalogTrustRequired",
+    "advancedCapabilityScopePreserved",
+    "advancedContentExposure",
+    "healthScoreAlgorithmAuthorized",
+    "micronutrientFieldSetAuthorized",
+    "riskBenefitGenerationAuthorized",
+    "medicalConclusionAuthorized",
+    "personalizedClaimAuthorized",
+    "aiGenerationAuthorized",
+    "automaticProfileUseAuthorized",
+    "observableEffects",
+    "filesystemReads",
+    "filesystemWrites",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeApiCalls",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    foodInsightEvents.length !== 1 ||
+    foodInsightEvent?.eventId !== foodInsightBaseline.eventId ||
+    foodInsightEvent?.type !== "ARTIFACT_CREATED" ||
+    foodInsightEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(foodInsightData.advancedCapabilityIds) !== JSON.stringify(foodInsightBaseline.advancedCapabilityIds) ||
+    JSON.stringify(foodInsightData.publicEvidenceIds) !== JSON.stringify(foodInsightBaseline.publicEvidenceIds) ||
+    foodInsightScalarFields.some((field) => foodInsightData[field] !== foodInsightBaseline[field])
+  ) {
+    add(
+      "OPS_FOOD_INSIGHT_AVAILABILITY_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F09 合同只登记可信本地七项营养事实可用，并保留评分、微量、风险和益处能力范围但保持内容零暴露；不得授权算法、字段集、医学/个体化结论、AI、自动资料使用、原生或正式实现",
     );
   }
 

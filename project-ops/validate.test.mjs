@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT,
+  PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_IMPORT_SAFETY_PREFLIGHT_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_FOOD_INSIGHT_AVAILABILITY_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 248,
+    instancesValidated: 249,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 131);
+  assert.equal(report.counts.events, 132);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -265,6 +265,33 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(importSafetyEvent.value.data.nativeApiCalls, 0);
   assert.equal(importSafetyEvent.value.data.realNetworkRequests, 0);
   assert.equal(importSafetyEvent.value.data.formalImplementationAuthorized, false);
+  const foodInsightEvent = findEvent(VALID_MODEL, "EVT-20260813-006");
+  assert.equal(foodInsightEvent.value.subject.id, "food-insight-availability-contract");
+  assert.equal(foodInsightEvent.value.data.featureId, "F09");
+  assert.equal(foodInsightEvent.value.data.topLevelTests, 14);
+  assert.equal(foodInsightEvent.value.data.fullSuitePassed, 691);
+  assert.equal(foodInsightEvent.value.data.trustedLocalNutritionSnapshotOnly, true);
+  assert.equal(foodInsightEvent.value.data.approvedNutrientFieldCount, 7);
+  assert.equal(foodInsightEvent.value.data.nutritionFactsAvailable, true);
+  assert.equal(foodInsightEvent.value.data.missingNotZero, true);
+  assert.equal(foodInsightEvent.value.data.traceWithoutNumericValue, true);
+  assert.equal(foodInsightEvent.value.data.estimatedSourceVisible, true);
+  assert.equal(foodInsightEvent.value.data.packCatalogTrustRequired, true);
+  assert.deepEqual(foodInsightEvent.value.data.advancedCapabilityIds, ["HEALTH_SCORE", "MICRONUTRIENT_LABELS", "HEALTH_RISKS", "HEALTH_BENEFITS"]);
+  assert.deepEqual(foodInsightEvent.value.data.publicEvidenceIds, ["FOOD-04", "FOOD-05", "FOOD-06", "FOOD-07"]);
+  assert.equal(foodInsightEvent.value.data.advancedCapabilityScopePreserved, true);
+  assert.equal(foodInsightEvent.value.data.advancedContentExposure, "NONE");
+  assert.equal(foodInsightEvent.value.data.healthScoreAlgorithmAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.micronutrientFieldSetAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.riskBenefitGenerationAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.medicalConclusionAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.personalizedClaimAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.aiGenerationAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.automaticProfileUseAuthorized, false);
+  assert.equal(foodInsightEvent.value.data.observableEffects, 0);
+  assert.equal(foodInsightEvent.value.data.nativeApiCalls, 0);
+  assert.equal(foodInsightEvent.value.data.realNetworkRequests, 0);
+  assert.equal(foodInsightEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -310,7 +337,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 247);
+    assert.equal(report.schemaValidation.instancesValidated, 248);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -895,6 +922,45 @@ test("拒绝把 F19 导入预检合同越级为真实验签、恢复激活、文
   assertDiagnostic(
     report,
     "OPS_IMPORT_SAFETY_PREFLIGHT_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把 F09 能力保留合同越级为评分、微量、风险益处、资料使用或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-006");
+    event.value.data.trustedLocalNutritionSnapshotOnly = false;
+    event.value.data.approvedNutrientFieldCount = 8;
+    event.value.data.nutritionFactsAvailable = false;
+    event.value.data.missingNotZero = false;
+    event.value.data.traceWithoutNumericValue = false;
+    event.value.data.estimatedSourceVisible = false;
+    event.value.data.packCatalogTrustRequired = false;
+    event.value.data.advancedCapabilityIds.push("PERSONALIZED_PLAN");
+    event.value.data.publicEvidenceIds.push("AI-06");
+    event.value.data.advancedCapabilityScopePreserved = false;
+    event.value.data.advancedContentExposure = "SYNTHETIC_PLACEHOLDERS";
+    event.value.data.healthScoreAlgorithmAuthorized = true;
+    event.value.data.micronutrientFieldSetAuthorized = true;
+    event.value.data.riskBenefitGenerationAuthorized = true;
+    event.value.data.medicalConclusionAuthorized = true;
+    event.value.data.personalizedClaimAuthorized = true;
+    event.value.data.aiGenerationAuthorized = true;
+    event.value.data.automaticProfileUseAuthorized = true;
+    event.value.data.observableEffects = 1;
+    event.value.data.filesystemReads = 1;
+    event.value.data.filesystemWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_FOOD_INSIGHT_AVAILABILITY_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

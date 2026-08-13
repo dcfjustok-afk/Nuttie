@@ -78,6 +78,7 @@
 - [F16 AI 参考草稿合同](testing/ai-guidance-reference-harness.md)：严格 opaque response、调用方内容/免责声明定义、来源/edit 指纹、本地 revision 编辑和放弃清理；所有 effect 为零，不授权 IA、保存、医疗安全、高风险用途或自动改日记/目标。
 - [F03 本地条码查找编排合同](testing/barcode-lookup-orchestrator-harness.md)：完整 GTIN 本地精确查询、候选显式选择、目录证据绑定与未命中调用方建档；不授权相机、写库、AI 或网络回退。
 - [F19 导入预检合同](testing/import-safety-harness.md)：严格 JSON/资源/路径碰撞边界、manifest/entry 精确集合、导入对象/调用方验证声明/活动状态指纹绑定与失败保持旧状态；不冒充真实验签或授权激活。
+- [F09 营养事实与洞察可用性合同](testing/food-insight-availability-harness.md)：可信本地七项营养事实可用；评分、微量标签、风险和益处能力保留但内容零暴露，不授权算法、字段集、医学/个体化结论或 AI。
 - [F01–F24 合同覆盖审计](testing/feature-contract-coverage.md)：逐项区分当前框架无关自动化证据、正式实现/原生缺口与 Owner 门禁，并给出下一工作包依据。
 - [本地档案事务与非级联删除合同](testing/local-profile-record-harness.md)：F12/F17 调用方版本化 opaque schema、空文档、CRUD CAS、幂等/并发事务和相关领域证据不变。
 - [本地数据访问清单合同](testing/local-data-access-manifest-harness.md)：F18 跨领域只读分页、空领域保留、snapshot/cursor/page 完整性与 App/原生/外部 Files 控制边界；不授权导出、备份或 mutation。
