@@ -10,7 +10,7 @@ test("accepts a bounded versioned response without persistence", () => {
 });
 
 test("rejects malformed JSON, unknown fields, unsupported schema, and invalid nutrient values", () => {
-  for (const [responseText, code] of [["{", "RESPONSE_INVALID_JSON"], [JSON.stringify({ schemaVersion: 1, candidates: [], extra: true }), "RESPONSE_UNKNOWN_FIELD"], [JSON.stringify({ schemaVersion: 2, candidates: [] }), "RESPONSE_SCHEMA_INVALID"], [JSON.stringify({ schemaVersion: 1, candidates: [{ label: "x", nutrients: { energyKcal: -1 } }] }), "CANDIDATE_NUTRIENT_INVALID"]]) {
+  for (const [responseText, code] of [["{", "RESPONSE_INVALID_JSON"], [JSON.stringify({ schemaVersion: 1, candidates: [], extra: true }), "RESPONSE_UNKNOWN_FIELD"], [JSON.stringify({ schemaVersion: 1, candidates: [{ label: "x", nutrients: { calciumMg: 20 } }] }), "CANDIDATE_NUTRIENTS_UNKNOWN_FIELD"], [JSON.stringify({ schemaVersion: 2, candidates: [] }), "RESPONSE_SCHEMA_INVALID"], [JSON.stringify({ schemaVersion: 1, candidates: [{ label: "x", nutrients: { energyKcal: -1 } }] }), "CANDIDATE_NUTRIENT_INVALID"]]) {
     const result = validateResponseCandidate({ responseText, state: { records: [{ id: "r1" }] } });
     assert.equal(result.status, "BLOCKED"); assert.equal(result.error.code, code); assert.equal(result.persisted, false); assert.deepEqual(result.state, { records: [{ id: "r1" }] });
   }

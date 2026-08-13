@@ -30,6 +30,9 @@ function parseAiResponse(input) {
     for (const key of Object.keys(candidate)) if (!["label", "nutrients", "confidence"].includes(key)) reject("candidate has an unknown field", "CANDIDATE_UNKNOWN_FIELD", { index, key });
     if (typeof candidate.label !== "string" || candidate.label.trim().length === 0) reject("candidate label is required", "CANDIDATE_LABEL_INVALID", { index });
     if (!candidate.nutrients || typeof candidate.nutrients !== "object" || Array.isArray(candidate.nutrients)) reject("candidate nutrients are invalid", "CANDIDATE_NUTRIENTS_INVALID", { index });
+    for (const field of Object.keys(candidate.nutrients)) {
+      if (!NUTRIENT_FIELDS.includes(field)) reject("candidate nutrients have an unknown field", "CANDIDATE_NUTRIENTS_UNKNOWN_FIELD", { index, field });
+    }
     const nutrients = {};
     for (const field of NUTRIENT_FIELDS) {
       const nutrient = candidate.nutrients[field];
