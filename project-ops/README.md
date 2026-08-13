@@ -47,9 +47,9 @@ node project-ops/reconcile.mjs
 node --test project-ops/reconcile.test.mjs
 ```
 
-`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT` 基线并检查：
+`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT` 基线并检查：
 
-- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 243 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
+- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 244 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
 - JSON/JSONL 解析、决定/事件/消息/证据 ID 唯一性。
 - 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
 - Agent 消息 `responseTo`、证据状态与五条 pending 集合。
@@ -74,6 +74,6 @@ node --test project-ops/reconcile.test.mjs
 
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。Owner 关闭 OI-02、完成整批回读、完成 D-039 PX-3、关闭 D-040 PX-0 输入，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
-内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 243 个受控实例通过校验”。
+内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 244 个受控实例通过校验”。
 
 `reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已记录的 OI-03 设备事实、Owner 原生 `OI-02` choice-ui 门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 2026-08-12 的 F22 平台/语言 Release 审计合同登记事件，并与最新来源时间一致。

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-12T23:48:24+08:00",
+  "generatedAt": "2026-08-13T19:26:22+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 114,
-    "projectEvents": 126
+    "projectEvents": 127
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "F22 平台/语言 Release 审计已登记并保持 BLOCKED；等待四项平台形态决定、签名 Archive/25 面证据及 OI-02",
+      "workPackage": "F18 领域注册表与一致性读取端口合同已登记；等待真实 adapter、SQLCipher snapshot transaction、UI/原生证据及 OI-02",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -239,7 +239,7 @@
     "F22 平台与语言 Release 审计合同已登记：固定已接受 D-011 iOS 17.0 和 D-016 首发简中，不从 D-038/当前 iPhone/工具默认值推导设备族、方向、Mac 或 Vision availability；当前四项决定均未形成权威决定，无签名 Archive、模拟器/真机/商店/布局/无障碍等 25 面证据，结果保持 BLOCKED，不验证决定/报告真实性或关闭发布门禁",
     "F20/F23/F24 禁止能力 fail-closed 审计聚合合同已登记：必须以正式签名 Release Archive 绑定源码、依赖、原生配置、plist/entitlement/PrivacyInfo、UI/Store 目录、framework/二进制、运行时网络/权限等 27 面报告；当前无正式目标、无生产工件扫描或捕获，结果固定为 BLOCKED，不得把未初始化工作区的零发现冒充 PASS，也不验证证据真实性或关闭发布门禁",
     "F12/F17 本地档案框架无关事务合同已登记：调用方版本化 opaque schema、显式空文档、CRUD revision CAS、幂等回放、未知结果恢复、并发序列化和非级联删除证据通过自动化；不授权资料字段、当前/多档案策略、级联目标/体重/日记/饮水删除、公式、账号/服务器、持久化、系统时钟、网络、原生或正式工程",
-    "F18 本地数据访问清单框架无关合同已登记：调用方版本化领域定义、空领域、应用内只读分页、snapshot/cursor/page 绑定和全量完成证明通过自动化；Keychain secret 不返回，真实原生容器待 adapter，外部 Files 副本不属 App 控制，不授权 D-035 明文导出、D-027/D-030 备份恢复、写入、持久化、系统时钟、网络、原生或正式工程",
+    "F18 本地数据访问清单与注册表框架无关合同已登记：唯一版本化领域注册表、完整领域集合、generation/registry 绑定、每领域恰好一次一致性读取、完成/中止关闭回执、空领域、应用内只读分页和全量证明通过自动化；尚未实现首发真实 adapter 或 SQLCipher snapshot transaction，Keychain secret 不返回，真实原生容器待 adapter，外部 Files 副本不属 App 控制，不授权 D-020、D-035 明文导出、D-027/D-030 备份恢复、业务字段、写入、持久化、系统时钟、网络、原生或正式工程",
     "F21 媒体权限编排框架无关合同已登记：当前用户任务说明后才产生窄相机权限 effect，系统用户媒体选择不申请照片全库，拒绝/受限/撤权/取消和迟到回执保持手工路径；不授权权限文案、D-031 保留、视频、定位、持久化、真实原生 API、网络或正式工程",
     "F04 每日能量框架无关事实账本已登记：指定日期摄入/消耗精确聚合、缺失/零分离、来源 revision 反查、既有能量目标来源/用户编辑状态、生效历史和未来版本不改写过去通过自动化；Left 固定为 POLICY_NOT_AUTHORIZED，不授权公式、目标生成、缺失消耗默认值、负值、舍入、写入、持久化、系统时钟、AI、HealthKit、网络、原生或正式工程",
     "F05 宏量目标版本事实与历史框架无关读模型已登记：既有 P/C/F 目标原值、opaque 版本化单位定义、来源/用户编辑状态、生效历史、未来版本不改写过去和实际缺失语义通过自动化；不推断实际/目标兼容性，不授权目标算法、百分比换算、比较、舍入、写入、持久化、系统时钟、网络、原生或正式工程",

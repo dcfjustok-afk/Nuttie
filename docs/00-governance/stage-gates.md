@@ -16,7 +16,7 @@
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
 | G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过，仍待 Owner 处理范围与体验候选 |
 | G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-039 已通过 PX-2 并待 PX-3 Owner 评审，D-040 质量问题已关闭但仍处于 PX-0 输入缺口；导航、首启、评分等关键候选仍待 Owner |
-| G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；框架无关契约与治理检查全套 591 项测试通过，含 ProjectOps 5 份 Schema/243 个实例校验、AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；两项 Release 审计因无签名 Archive、平台形态决定和生产证据保持 `BLOCKED`，Owner 候选、正式实现、Mac/真机和 Release 证据仍阻断 |
+| G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；框架无关契约与治理检查全套 607 项测试通过，含 ProjectOps 5 份 Schema/244 个实例校验、AI 凭据、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；F18 已补唯一领域注册表与一致性读取端口但尚无真实 adapter/SQLCipher snapshot transaction；两项 Release 审计因无签名 Archive、平台形态决定和生产证据保持 `BLOCKED`，Owner 候选、正式实现、Mac/真机和 Release 证据仍阻断 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
 | G7 | Release Ready | FAIL | 尚无候选构建、发布授权、回退和分发检查 |

@@ -77,6 +77,7 @@
 - [F01–F24 合同覆盖审计](testing/feature-contract-coverage.md)：逐项区分当前框架无关自动化证据、正式实现/原生缺口与 Owner 门禁，并给出下一工作包依据。
 - [本地档案事务与非级联删除合同](testing/local-profile-record-harness.md)：F12/F17 调用方版本化 opaque schema、空文档、CRUD CAS、幂等/并发事务和相关领域证据不变。
 - [本地数据访问清单合同](testing/local-data-access-manifest-harness.md)：F18 跨领域只读分页、空领域保留、snapshot/cursor/page 完整性与 App/原生/外部 Files 控制边界；不授权导出、备份或 mutation。
+- [本地数据领域注册表与一致性读取合同](testing/local-data-access-registry-harness.md)：F18 唯一版本化领域注册表、generation/registry 绑定、每领域恰好一次读取、事务关闭回执与跨领域一致性端口；不选择 SQLite 访问层或宣称 SQLCipher 已实现。
 - [媒体权限编排合同](testing/media-permission-orchestrator-harness.md)：F21 任务触发相机 effect、系统选择媒体零全库权限、拒绝/受限/撤权手工降级；不授权视频、定位、保留、持久化或真实原生调用。
 - [禁止能力审计合同](testing/prohibited-capability-audit-harness.md)：F20/F23/F24 要求正式签名 Release Archive 和 27 个完整证据面；当前未初始化工作区、缺面或未执行均 fail closed 为 `BLOCKED`。
 - [平台与语言 Release 审计合同](testing/platform-language-release-audit-harness.md)：F22 固定 D-011 iOS 17.0 与 D-016 简中，分离设备族/方向/Mac/Vision 四项未决维度，并要求签名 Archive 上 25 个发布证据面。

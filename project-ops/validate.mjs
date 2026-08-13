@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT",
+export const PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 126,
+    events: 127,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,6 +97,7 @@ export const PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT = Object.freeze({
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
+    "2026-08-13": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -462,6 +463,41 @@ export const PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT = Object.freeze({
     externalFilesCopies: "OUT_OF_SCOPE_USER_CONTROLLED",
     artifactCreation: "NOT_AUTHORIZED",
     mutation: "NOT_AUTHORIZED",
+    plaintextExportAuthorized: false,
+    backupOrRestoreAuthorized: false,
+    persistenceUsed: false,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  localDataAccessRegistryContract: Object.freeze({
+    eventId: "EVT-20260813-001",
+    subjectId: "local-data-access-registry-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F18",
+    requirementId: "REQ-F18",
+    acceptanceId: "AT-F18",
+    topLevelTests: 15,
+    fullSuitePassed: 607,
+    singleVersionedDomainRegistry: true,
+    uniqueDomainPositionAndAdapter: true,
+    completeRegisteredDomainSetRequired: true,
+    consistentReadSnapshotPort: true,
+    repositoryGenerationBound: true,
+    registryFingerprintBound: true,
+    everyRegisteredDomainReadExactlyOnce: true,
+    emptyDomainsPreserved: true,
+    abortedTransactionClosed: true,
+    closeReceiptRequiredBeforePublish: true,
+    mixedGenerationPrevented: true,
+    deliveryMode: "IN_APP_READ_ONLY",
+    sqliteAccessLayerAuthorized: false,
+    sqlCipherSnapshotImplemented: false,
+    businessDomainFieldsApproved: false,
     plaintextExportAuthorized: false,
     backupOrRestoreAuthorized: false,
     persistenceUsed: false,
@@ -1024,7 +1060,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2081,6 +2117,55 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_LOCAL_DATA_ACCESS_MANIFEST_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-12.jsonl",
       "F18 本地数据访问合同只登记应用内只读分页、空领域、快照/游标/页面绑定和全量完成证明；不得授权明文导出、备份/恢复、秘密值返回、原生容器枚举、Files 副本控制、写入、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const localDataRegistryEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.localDataAccessRegistryContract.subjectId,
+  );
+  const localDataRegistryEvent = localDataRegistryEvents[0]?.value;
+  const localDataRegistryData = localDataRegistryEvent?.data ?? {};
+  if (
+    localDataRegistryEvents.length !== 1 ||
+    localDataRegistryEvent?.eventId !== baseline.localDataAccessRegistryContract.eventId ||
+    localDataRegistryEvent?.type !== "ARTIFACT_CREATED" ||
+    localDataRegistryEvent?.actor?.id !== "project-manager" ||
+    localDataRegistryData.contractStatus !== baseline.localDataAccessRegistryContract.contractStatus ||
+    localDataRegistryData.artifactState !== baseline.localDataAccessRegistryContract.artifactState ||
+    localDataRegistryData.featureId !== baseline.localDataAccessRegistryContract.featureId ||
+    localDataRegistryData.requirementId !== baseline.localDataAccessRegistryContract.requirementId ||
+    localDataRegistryData.acceptanceId !== baseline.localDataAccessRegistryContract.acceptanceId ||
+    localDataRegistryData.topLevelTests !== baseline.localDataAccessRegistryContract.topLevelTests ||
+    localDataRegistryData.fullSuitePassed !== baseline.localDataAccessRegistryContract.fullSuitePassed ||
+    localDataRegistryData.singleVersionedDomainRegistry !== baseline.localDataAccessRegistryContract.singleVersionedDomainRegistry ||
+    localDataRegistryData.uniqueDomainPositionAndAdapter !== baseline.localDataAccessRegistryContract.uniqueDomainPositionAndAdapter ||
+    localDataRegistryData.completeRegisteredDomainSetRequired !== baseline.localDataAccessRegistryContract.completeRegisteredDomainSetRequired ||
+    localDataRegistryData.consistentReadSnapshotPort !== baseline.localDataAccessRegistryContract.consistentReadSnapshotPort ||
+    localDataRegistryData.repositoryGenerationBound !== baseline.localDataAccessRegistryContract.repositoryGenerationBound ||
+    localDataRegistryData.registryFingerprintBound !== baseline.localDataAccessRegistryContract.registryFingerprintBound ||
+    localDataRegistryData.everyRegisteredDomainReadExactlyOnce !== baseline.localDataAccessRegistryContract.everyRegisteredDomainReadExactlyOnce ||
+    localDataRegistryData.emptyDomainsPreserved !== baseline.localDataAccessRegistryContract.emptyDomainsPreserved ||
+    localDataRegistryData.abortedTransactionClosed !== baseline.localDataAccessRegistryContract.abortedTransactionClosed ||
+    localDataRegistryData.closeReceiptRequiredBeforePublish !== baseline.localDataAccessRegistryContract.closeReceiptRequiredBeforePublish ||
+    localDataRegistryData.mixedGenerationPrevented !== baseline.localDataAccessRegistryContract.mixedGenerationPrevented ||
+    localDataRegistryData.deliveryMode !== baseline.localDataAccessRegistryContract.deliveryMode ||
+    localDataRegistryData.sqliteAccessLayerAuthorized !== baseline.localDataAccessRegistryContract.sqliteAccessLayerAuthorized ||
+    localDataRegistryData.sqlCipherSnapshotImplemented !== baseline.localDataAccessRegistryContract.sqlCipherSnapshotImplemented ||
+    localDataRegistryData.businessDomainFieldsApproved !== baseline.localDataAccessRegistryContract.businessDomainFieldsApproved ||
+    localDataRegistryData.plaintextExportAuthorized !== baseline.localDataAccessRegistryContract.plaintextExportAuthorized ||
+    localDataRegistryData.backupOrRestoreAuthorized !== baseline.localDataAccessRegistryContract.backupOrRestoreAuthorized ||
+    localDataRegistryData.persistenceUsed !== baseline.localDataAccessRegistryContract.persistenceUsed ||
+    localDataRegistryData.systemClockRead !== baseline.localDataAccessRegistryContract.systemClockRead ||
+    localDataRegistryData.realNetworkRequests !== baseline.localDataAccessRegistryContract.realNetworkRequests ||
+    localDataRegistryData.nativeImplementationAuthorized !== baseline.localDataAccessRegistryContract.nativeImplementationAuthorized ||
+    localDataRegistryData.formalImplementationAuthorized !== baseline.localDataAccessRegistryContract.formalImplementationAuthorized ||
+    localDataRegistryData.gateStatesChanged !== baseline.localDataAccessRegistryContract.gateStatesChanged ||
+    localDataRegistryData.ownerIntakeChanged !== baseline.localDataAccessRegistryContract.ownerIntakeChanged
+  ) {
+    add(
+      "OPS_LOCAL_DATA_ACCESS_REGISTRY_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F18 注册表合同只登记唯一领域集合、generation/registry 绑定和一致性只读事务端口；不得授权 D-020、SQLCipher 实现、业务字段、导出/备份、持久化、系统时钟、网络、原生或正式实现",
     );
   }
 

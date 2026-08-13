@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT,
+  PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_SNAPSHOT_SCHEMA_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_LOCAL_DATA_REGISTRY_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 243,
+    instancesValidated: 244,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 126);
+  assert.equal(report.counts.events, 127);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -159,6 +159,21 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(localDataAccessEvent.value.data.externalFilesCopies, "OUT_OF_SCOPE_USER_CONTROLLED");
   assert.equal(localDataAccessEvent.value.data.plaintextExportAuthorized, false);
   assert.equal(localDataAccessEvent.value.data.mutation, "NOT_AUTHORIZED");
+  const localDataRegistryEvent = findEvent(VALID_MODEL, "EVT-20260813-001");
+  assert.equal(localDataRegistryEvent.value.subject.id, "local-data-access-registry-contract");
+  assert.equal(localDataRegistryEvent.value.data.singleVersionedDomainRegistry, true);
+  assert.equal(localDataRegistryEvent.value.data.completeRegisteredDomainSetRequired, true);
+  assert.equal(localDataRegistryEvent.value.data.consistentReadSnapshotPort, true);
+  assert.equal(localDataRegistryEvent.value.data.repositoryGenerationBound, true);
+  assert.equal(localDataRegistryEvent.value.data.registryFingerprintBound, true);
+  assert.equal(localDataRegistryEvent.value.data.everyRegisteredDomainReadExactlyOnce, true);
+  assert.equal(localDataRegistryEvent.value.data.abortedTransactionClosed, true);
+  assert.equal(localDataRegistryEvent.value.data.closeReceiptRequiredBeforePublish, true);
+  assert.equal(localDataRegistryEvent.value.data.mixedGenerationPrevented, true);
+  assert.equal(localDataRegistryEvent.value.data.sqliteAccessLayerAuthorized, false);
+  assert.equal(localDataRegistryEvent.value.data.sqlCipherSnapshotImplemented, false);
+  assert.equal(localDataRegistryEvent.value.data.businessDomainFieldsApproved, false);
+  assert.equal(localDataRegistryEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -204,7 +219,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 242);
+    assert.equal(report.schemaValidation.instancesValidated, 243);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -616,6 +631,38 @@ test("拒绝把本地数据访问合同越级为明文导出、备份恢复、�
     report,
     "OPS_LOCAL_DATA_ACCESS_MANIFEST_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-12.jsonl",
+  );
+});
+
+test("拒绝把 F18 注册表端口冒充 SQLCipher、业务字段、导出备份或正式实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-001");
+    event.value.data.singleVersionedDomainRegistry = false;
+    event.value.data.completeRegisteredDomainSetRequired = false;
+    event.value.data.consistentReadSnapshotPort = false;
+    event.value.data.repositoryGenerationBound = false;
+    event.value.data.registryFingerprintBound = false;
+    event.value.data.everyRegisteredDomainReadExactlyOnce = false;
+    event.value.data.abortedTransactionClosed = false;
+    event.value.data.closeReceiptRequiredBeforePublish = false;
+    event.value.data.mixedGenerationPrevented = false;
+    event.value.data.sqliteAccessLayerAuthorized = true;
+    event.value.data.sqlCipherSnapshotImplemented = true;
+    event.value.data.businessDomainFieldsApproved = true;
+    event.value.data.plaintextExportAuthorized = true;
+    event.value.data.backupOrRestoreAuthorized = true;
+    event.value.data.persistenceUsed = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_LOCAL_DATA_ACCESS_REGISTRY_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
   );
 });
 

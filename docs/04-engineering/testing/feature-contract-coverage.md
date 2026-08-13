@@ -2,7 +2,7 @@
 
 状态：`WORKING COVERAGE MAP / NON_PRODUCTION`
 
-日期：2026-08-12
+日期：2026-08-13
 
 本表把 [验收追踪基线](../../02-product/acceptance-traceability.md)、[工程边界](../architecture/feature-boundary-map.md) 与当前框架无关 harness 对齐。`已覆盖` 只表示列出的合同边界已有自动化证据，不等于组件、SQLite/SQLCipher、React Native、原生、真机或 Release 验收完成。
 
@@ -25,7 +25,7 @@
 | F15 提醒 | `local-reminder-reconcile` | opaque 本地规则 CRUD、权限独立、generation、pending/delivered 对账 | 类型/重复/内容/DST 默认、真实 UserNotifications/真机 | 应用合同覆盖，原生阻断 |
 | F16 AI 健康/食谱/计划 | F01/F02 公共 AI harness | policy/响应/凭据 fail-closed | 载荷/IA/保存/非医疗/高风险、Provider 许可和真实 transport；D-033/D-053 | 公共底座部分覆盖，阻断 |
 | F17 本地档案替代账号 | `local-profile-record` | 无账号/服务器能力面、版本化 opaque 文档、CRUD CAS、幂等/并发与非级联删除 | 当前/多档案 UX、正式 Repository/组件/E2E | 核心本地事务覆盖 |
-| F18 数据权利 | `local-data-access-manifest`、`local-wipe-coordinator`、`meal-correction`、`body-weight-record` 等 | 跨领域只读分页清单/完整性证明、全量 wipe kill-point/对账、领域更正/删除底座 | 正式领域注册表与 UI、真实容器/Keychain/UserNotifications、备份范围/真机 | 应用内访问与核心删除协调覆盖，正式适配/原生阻断 |
+| F18 数据权利 | `local-data-access-manifest`、`local-data-access-registry`、`local-wipe-coordinator`、`meal-correction`、`body-weight-record` 等 | 唯一版本化领域注册表、一致性只读事务端口、跨领域分页清单/完整性证明、全量 wipe kill-point/对账、领域更正/删除底座 | 首发真实领域 adapter、SQLCipher snapshot transaction、UI、真实容器/Keychain/UserNotifications、备份范围/真机 | 注册/一致性端口与应用内访问覆盖，正式适配/原生阻断 |
 | F19 缓存/同步替代 | `backup-reconcile`、`import-safety`、`local-wipe-coordinator` | generation/pointer、导入安全、失败关闭 | D-027 加密 envelope/KDF、恢复模式 D-030、SQLite/Keychain/Files 真机 | 对账模型覆盖，加密/原生阻断 |
 | F20 移除会员 IAP | `prohibited-capability-audit`（当前 `BLOCKED`） | 工作区零发现不得判通过；锁定源码/依赖/原生配置/plist/entitlement/UI/二进制/Store 目录/Release 网络 9 面 | 正式签名 Release Archive 上执行全部报告 | fail-closed 聚合合同覆盖；生产证据仍缺 |
 | F21 媒体权限 | `media-permission-orchestrator`、D-039 原型 smoke | 任务触发相机 effect、系统选择媒体零全库权限、拒绝/受限/撤权手工降级、迟到回执拒绝 | 权限文案、媒体保留 D-031、正式 adapter、Info.plist/真实相机/照片真机 | 应用编排覆盖，产品文案/保留/原生阻断 |
@@ -44,7 +44,7 @@
 
 合同没有把 opaque 测试 payload 变成产品字段批准，也没有把 profile ID 集合解释为已批准多档案 UX。F12 的字段/公式/关联语义仍须由 D-040 和 Owner 决定。
 
-F18 的下一步从“缺清单合同”推进为正式适配门禁：`local-data-access-manifest` 已覆盖跨领域、只读、可分页/可追溯且不等同明文导出的访问清单，并明确区分 App 控制内业务数据、不得返回的 Keychain secret、需要原生枚举的受控容器与用户选择的外部 Files 备份。后续必须建立唯一领域注册表、SQLCipher 一致性读事务、用户可访问 UI 和原生 inventory/真机证据；D-035/D-027/D-030 仍未授权。
+F18 已从“缺清单合同”继续推进到注册与一致性端口门禁：`local-data-access-manifest` 覆盖跨领域、只读、可分页/可追溯且不等同明文导出的访问清单；`local-data-access-registry` 要求唯一版本化领域注册表、每个领域恰好一次读取、generation/registry 绑定和完成/中止关闭回执，并证明内存事务期间的源写入不会造成跨领域混代。两者都明确区分 App 控制内业务数据、不得返回的 Keychain secret、需要原生枚举的受控容器与用户选择的外部 Files 备份。后续仍必须在批准的访问层上实现首发真实领域 adapter 与 SQLCipher snapshot transaction，并完成用户可访问 UI 和原生 inventory/真机证据；D-020/D-035/D-027/D-030 仍未授权。
 
 随后完成 F21 的应用编排缺口：`media-permission-orchestrator` 将相机、系统用户选择媒体和手工输入分离，只在当前用户任务且权限未决定时经过任务说明产生窄相机 effect；拒绝、受限、撤权、取消和迟到回执都保持手工路径。照片全库、视频、定位、媒体保留/持久化、真实原生调用和 AI 上传继续未授权；下一步仍需权限文案、D-031、正式 adapter、Info.plist 和真机证据。
 
