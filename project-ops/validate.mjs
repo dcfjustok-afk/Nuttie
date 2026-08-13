@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT",
+export const PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 134,
+    events: 135,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT = Object.f
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 8,
+    "2026-08-13": 9,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -776,6 +776,42 @@ export const PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT = Object.f
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  wipeOutcomeEvidenceContract: Object.freeze({
+    eventId: "EVT-20260813-009",
+    subjectId: "wipe-outcome-evidence-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F18",
+    requirementId: "REQ-F18",
+    acceptanceId: "AT-F18",
+    topLevelTests: 41,
+    fullSuitePassed: 722,
+    strictPassiveOutcomeBoundary: true,
+    outcomeResourceBudgetBound: true,
+    evidenceIdentityRequired: true,
+    effectFingerprintBound: true,
+    observationFingerprintBound: true,
+    outcomeFingerprintBound: true,
+    crossEffectReplayRejected: true,
+    legacyNakedOutcomeRejected: true,
+    statusErrorSemanticsBound: true,
+    assertionTruth: "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS",
+    externalFilesScope: "OUT_OF_SCOPE",
+    realContainerEmptinessVerified: false,
+    realSecretInvalidationVerified: false,
+    realNotificationRemovalVerified: false,
+    filesystemReads: 0,
+    filesystemWrites: 0,
+    keychainReads: 0,
+    keychainWrites: 0,
+    systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeApiCalls: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1328,7 +1364,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_RESTORE_RECONCILE_OBSERVATION_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_WIPE_OUTCOME_EVIDENCE_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2817,6 +2853,60 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_RESTORE_RECONCILE_OBSERVATION_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F19 恢复对账合同只登记结构化 generation 观察、intent/观察指纹绑定、intent 存在时写入关闭、未提交行动计划和执行后重新观察；不得授权密码学、恢复模式、清理、文件系统、Keychain、原生或正式实现",
+    );
+  }
+
+  const wipeOutcomeEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.wipeOutcomeEvidenceContract.subjectId,
+  );
+  const wipeOutcomeEvent = wipeOutcomeEvents[0]?.value;
+  const wipeOutcomeData = wipeOutcomeEvent?.data ?? {};
+  const wipeOutcomeBaseline = baseline.wipeOutcomeEvidenceContract;
+  const wipeOutcomeFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "strictPassiveOutcomeBoundary",
+    "outcomeResourceBudgetBound",
+    "evidenceIdentityRequired",
+    "effectFingerprintBound",
+    "observationFingerprintBound",
+    "outcomeFingerprintBound",
+    "crossEffectReplayRejected",
+    "legacyNakedOutcomeRejected",
+    "statusErrorSemanticsBound",
+    "assertionTruth",
+    "externalFilesScope",
+    "realContainerEmptinessVerified",
+    "realSecretInvalidationVerified",
+    "realNotificationRemovalVerified",
+    "filesystemReads",
+    "filesystemWrites",
+    "keychainReads",
+    "keychainWrites",
+    "systemClockRead",
+    "realNetworkRequests",
+    "nativeApiCalls",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    wipeOutcomeEvents.length !== 1 ||
+    wipeOutcomeEvent?.eventId !== wipeOutcomeBaseline.eventId ||
+    wipeOutcomeEvent?.type !== "ARTIFACT_CREATED" ||
+    wipeOutcomeEvent?.actor?.id !== "project-manager" ||
+    wipeOutcomeFields.some((field) => wipeOutcomeData[field] !== wipeOutcomeBaseline[field])
+  ) {
+    add(
+      "OPS_WIPE_OUTCOME_EVIDENCE_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F18 删除回执合同只登记严格被动 JSON、资源预算、证据身份、effect/observation/outcome 指纹和重放拒绝；调用方声明不得冒充真实容器、密钥、通知、文件系统、Keychain、原生或正式实现证据",
     );
   }
 

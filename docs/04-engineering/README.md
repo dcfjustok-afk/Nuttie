@@ -57,7 +57,7 @@
 - [视觉资产契约检查](testing/visual-kit-check.md)：Figma-ready 栗子视觉资产的本地结构与安全边界。
 - [领域合同夹具](testing/domain-contract-harness.md)：七项营养、显式日期、每日汇总与基础内存 CRUD 的框架无关证据。
 - [手工餐食保存合同](testing/manual-meal-entry-harness.md)：状态转换、Repository port、`commandId` 幂等和未知提交结果重放证据。
-- [全量本地删除协调器合同](testing/local-wipe-coordinator-harness.md)：durable intent、严格删除顺序、未知回执对账和负向空状态验证证据。
+- [全量本地删除协调器合同](testing/local-wipe-coordinator-harness.md)：durable intent、严格删除顺序、未知回执对账、负向空状态，以及 evidence/verifier/profile 身份和 effect/observation/outcome 三层指纹；不冒充真实原生清理证据。
 - [本地食品目录合同](testing/local-food-catalog-harness.md)：隔离来源的离线搜索、GTIN 精确查询、营养事实语义与未命中建档边界。
 - [营养事实快照 V2](testing/nutrition-fact-snapshot-harness.md)：原始值/单位、basis、provenance、状态白名单与餐食保存往返合同。
 - [餐食纠错事务合同](testing/meal-correction-harness.md)：EDIT/MOVE/DELETE 状态机、幂等回放、事务双快照证据与 V2 来源保真。

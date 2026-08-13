@@ -9,8 +9,10 @@ import {
   WIPE_PHASES,
   WIPE_PROTOCOL_VERSION,
   WIPE_STATUSES,
+  OUTCOME_ASSERTION_BOUNDARY,
   beginConfirmedWipe,
   createInMemoryWipeAdapter,
+  createWipeEffectOutcome,
   createWipeCoordinatorState,
   executeWipeEffect,
   recoverWipeFromIntent,
@@ -18,6 +20,7 @@ import {
   requestNextWipeEffect,
   requestWipeReconciliation,
   settleWipeEffect,
+  wipeEffectFingerprint,
 } from "./local-wipe-coordinator-harness.mjs";
 
 const INTENT = Object.freeze({
@@ -273,18 +276,99 @@ test("stale attempts and forged operation outcomes cannot advance", async () => 
   assert.equal(state.phase, WIPE_PHASES.IDLE);
 });
 
+test("adapter outcomes are immutable caller assertions bound to the exact effect and observation", async () => {
+  const adapter = createInMemoryWipeAdapter();
+  const { effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
+  const outcome = await executeWipeEffect(adapter, effect);
+
+  assert.equal(outcome.schemaVersion, "WIPE_EFFECT_OUTCOME_V1");
+  assert.equal(outcome.assertionBoundary, OUTCOME_ASSERTION_BOUNDARY);
+  assert.equal(outcome.verifierId, "in-memory-wipe-adapter");
+  assert.equal(outcome.profileId, "harness-observation-v1");
+  assert.match(outcome.evidenceId, /^wipe_[a-f0-9]{32}\./);
+  assert.equal(outcome.effectFingerprint, wipeEffectFingerprint(effect));
+  assert.match(outcome.observationFingerprint, /^[a-f0-9]{64}$/);
+  assert.match(outcome.outcomeFingerprint, /^[a-f0-9]{64}$/);
+  assert.equal(Object.isFrozen(outcome), true);
+  assert.equal(Object.isFrozen(outcome.observation), true);
+});
+
+test("legacy naked outcomes, extra fields, tampering, and cross-effect replay are rejected", async () => {
+  const adapter = createInMemoryWipeAdapter();
+  let { state, effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
+  const outcome = await executeWipeEffect(adapter, effect);
+
+  const legacy = {
+    operationId: outcome.operationId,
+    phase: outcome.phase,
+    attempt: outcome.attempt,
+    protocolVersion: outcome.protocolVersion,
+    status: outcome.status,
+    observation: outcome.observation,
+    errorCode: outcome.errorCode,
+  };
+  assert.throws(() => settleWipeEffect(state, legacy), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => settleWipeEffect(state, { ...outcome, extra: true }), { code: "INVALID_WIPE_OUTCOME" });
+  const changedObservation = structuredClone(outcome);
+  changedObservation.observation.durable = false;
+  assert.throws(() => settleWipeEffect(state, changedObservation), { code: "INVALID_WIPE_OUTCOME" });
+
+  state = settleWipeEffect(state, outcome);
+  ({ state, effect } = requestNextWipeEffect(state));
+  assert.throws(() => settleWipeEffect(state, outcome), { code: "STALE_WIPE_OUTCOME" });
+  assert.notEqual(outcome.effectFingerprint, wipeEffectFingerprint(effect));
+});
+
+test("outcome input rejects sparse arrays, accessors, symbols, non-finite values, and oversized strings", () => {
+  const { effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
+  const base = {
+    schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
+    operationId: effect.operationId,
+    phase: effect.phase,
+    attempt: effect.attempt,
+    protocolVersion: effect.protocolVersion,
+    status: "APPLIED",
+    evidenceId: "test-outcome-evidence",
+    verifierId: "test-caller-observer",
+    profileId: "test-observation-profile",
+    effectFingerprint: wipeEffectFingerprint(effect),
+    observation: { durable: true, intentFingerprint: effect.intentFingerprint },
+    errorCode: null,
+  };
+  const sparse = [];
+  sparse.length = 1;
+  assert.throws(() => createWipeEffectOutcome({ ...base, observation: { list: sparse } }), { code: "INVALID_WIPE_OUTCOME" });
+  const accessor = { durable: true };
+  Object.defineProperty(accessor, "intentFingerprint", { enumerable: true, get: () => effect.intentFingerprint });
+  assert.throws(() => createWipeEffectOutcome({ ...base, observation: accessor }), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, observation: { value: Number.NaN } }), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, observation: { value: "x".repeat(1025) } }), { code: "WIPE_OUTCOME_RESOURCE_LIMIT" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, [Symbol("hidden")]: true }), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, errorCode: "SHOULD_NOT_EXIST" }), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, status: "UNKNOWN", observation: null, errorCode: null }), { code: "INVALID_WIPE_OUTCOME" });
+  assert.throws(() => createWipeEffectOutcome({ ...base, verifierId: "" }), { code: "INVALID_WIPE_OUTCOME" });
+  const cyclic = {};
+  cyclic.self = cyclic;
+  assert.throws(() => createWipeEffectOutcome({ ...base, observation: cyclic }), { code: "INVALID_WIPE_OUTCOME" });
+});
+
 test("missing writer acknowledgements cannot close connections", async () => {
   const adapter = createInMemoryWipeAdapter();
   let { state, effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
   state = await applyPending(state, effect, adapter);
   ({ state, effect } = requestNextWipeEffect(state));
 
-  const incompleteOutcome = {
+  const incompleteOutcome = createWipeEffectOutcome({
+    schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
     operationId: effect.operationId,
     phase: effect.phase,
     attempt: effect.attempt,
     protocolVersion: effect.protocolVersion,
     status: "APPLIED",
+    evidenceId: "incomplete-writer-evidence",
+    verifierId: "test-caller-observer",
+    profileId: "test-observation-profile",
+    effectFingerprint: wipeEffectFingerprint(effect),
     observation: {
       gateClosed: true,
       writerRegistryRevision: HARNESS_WRITER_REGISTRY.revision,
@@ -295,7 +379,8 @@ test("missing writer acknowledgements cannot close connections", async () => {
       pendingNotifications: 0,
       deliveredNotifications: 0,
     },
-  };
+    errorCode: null,
+  });
   const reconciling = settleWipeEffect(state, incompleteOutcome);
   assert.equal(reconciling.status, WIPE_STATUSES.RECONCILING);
   assert.equal(reconciling.failure.code, "QUIESCE_NOT_PROVEN");
@@ -321,12 +406,17 @@ test("pending or delivered notifications fail negative verification", async () =
   let { state, effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
   state = await applyPending(state, effect, adapter);
   ({ state, effect } = requestNextWipeEffect(state));
-  const outcome = {
+  const outcome = createWipeEffectOutcome({
+    schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
     operationId: effect.operationId,
     phase: effect.phase,
     attempt: effect.attempt,
     protocolVersion: effect.protocolVersion,
     status: "APPLIED",
+    evidenceId: "notification-evidence",
+    verifierId: "test-caller-observer",
+    profileId: "test-observation-profile",
+    effectFingerprint: wipeEffectFingerprint(effect),
     observation: {
       gateClosed: true,
       writerRegistryRevision: HARNESS_WRITER_REGISTRY.revision,
@@ -337,7 +427,8 @@ test("pending or delivered notifications fail negative verification", async () =
       pendingNotifications: 1,
       deliveredNotifications: 0,
     },
-  };
+    errorCode: null,
+  });
   const reconciling = settleWipeEffect(state, outcome);
   assert.equal(reconciling.status, WIPE_STATUSES.RECONCILING);
   assert.equal(reconciling.failure.code, "QUIESCE_NOT_PROVEN");
@@ -405,15 +496,20 @@ test("reconciliation observes current state instead of replaying a cached receip
 
 test("UNKNOWN can reconcile to NOT_APPLIED and retry the same intent phase", async () => {
   let { state, effect } = beginConfirmedWipe(createWipeCoordinatorState(), INTENT);
-  state = settleWipeEffect(state, {
+  state = settleWipeEffect(state, createWipeEffectOutcome({
+    schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
     operationId: effect.operationId,
     phase: effect.phase,
     attempt: effect.attempt,
     protocolVersion: effect.protocolVersion,
     status: "UNKNOWN",
+    evidenceId: "lost-process-evidence",
+    verifierId: "test-caller-observer",
+    profileId: "test-observation-profile",
+    effectFingerprint: wipeEffectFingerprint(effect),
     observation: null,
     errorCode: "SIMULATED_LOST_PROCESS",
-  });
+  }));
   const adapter = createInMemoryWipeAdapter();
   ({ state, effect } = requestWipeReconciliation(state));
   state = await applyPending(state, effect, adapter);

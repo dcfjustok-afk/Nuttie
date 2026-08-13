@@ -1,5 +1,10 @@
+import { createHash } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
+
 const WIPE_PROTOCOL_VERSION = "wipe-intent-v1";
 const EXTERNAL_FILES_SCOPE = "OUT_OF_SCOPE";
+const OUTCOME_ASSERTION_BOUNDARY = "CALLER_ASSERTED_NOT_VERIFIED_BY_HARNESS";
+const OUTCOME_SCHEMA_VERSION = "WIPE_EFFECT_OUTCOME_V1";
 
 const HARNESS_WRITER_REGISTRY = Object.freeze({
   revision: "writer-registry-harness-v1",
@@ -147,6 +152,32 @@ function assertPlainRecord(value, field, code = "INVALID_RECORD") {
   if (prototype !== Object.prototype && prototype !== null) {
     fail(`${field} must be a plain object`, code, { field });
   }
+  if (Object.getOwnPropertySymbols(value).length > 0) {
+    fail(`${field} contains symbol properties`, code, { field });
+  }
+  for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
+    if (!descriptor.enumerable || descriptor.get || descriptor.set) {
+      fail(`${field} contains an unsupported property`, code, { field: `${field}.${key}` });
+    }
+  }
+  return value;
+}
+
+function assertDenseArray(value, field, code = "INVALID_RECORD") {
+  if (!Array.isArray(value) || Object.getPrototypeOf(value) !== Array.prototype
+    || Object.getOwnPropertySymbols(value).length > 0) {
+    fail(`${field} must be a plain array`, code, { field });
+  }
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  for (const [key, descriptor] of Object.entries(descriptors)) {
+    if (key !== "length" && (!descriptor.enumerable || descriptor.get || descriptor.set)) {
+      fail(`${field} contains an unsupported property`, code, { field: `${field}.${key}` });
+    }
+  }
+  const keys = Object.keys(value);
+  if (keys.length !== value.length || keys.some((key, index) => key !== String(index))) {
+    fail(`${field} must be dense and contain no extra properties`, code, { field });
+  }
   return value;
 }
 
@@ -174,6 +205,64 @@ function assertNonNegativeInteger(value, field, code = "INVALID_COUNT") {
 function assertBoolean(value, field, code = "INVALID_OBSERVATION") {
   if (typeof value !== "boolean") fail(`${field} must be boolean`, code, { field });
   return value;
+}
+
+function canonicalStringify(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalStringify).join(",")}]`;
+  return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalStringify(value[key])}`).join(",")}}`;
+}
+
+function fingerprint(value) {
+  return createHash("sha256").update(canonicalStringify(value)).digest("hex");
+}
+
+function wipeEffectFingerprint(effect) {
+  return fingerprint(effect);
+}
+
+function validatePassiveJson(
+  value,
+  field,
+  depth = 0,
+  budget = { keys: 0, items: 0 },
+  ancestors = new Set(),
+) {
+  if (depth > 8) fail(`${field} exceeds its depth budget`, "WIPE_OUTCOME_RESOURCE_LIMIT", { field });
+  if (value === null || typeof value === "boolean") return;
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) fail(`${field} contains a non-finite number`, "INVALID_WIPE_OUTCOME", { field });
+    return;
+  }
+  if (typeof value === "string") {
+    if (Buffer.byteLength(value, "utf8") > 1024) fail(`${field} exceeds its string budget`, "WIPE_OUTCOME_RESOURCE_LIMIT", { field });
+    return;
+  }
+  if (!value || typeof value !== "object" || ancestors.has(value)) {
+    fail(`${field} is not passive JSON`, "INVALID_WIPE_OUTCOME", { field });
+  }
+  ancestors.add(value);
+  if (Array.isArray(value)) {
+    assertDenseArray(value, field, "INVALID_WIPE_OUTCOME");
+    budget.items += value.length;
+    if (budget.items > 128) fail(`${field} exceeds its array budget`, "WIPE_OUTCOME_RESOURCE_LIMIT", { field });
+    value.forEach((child, index) => validatePassiveJson(
+      child,
+      `${field}[${index}]`,
+      depth + 1,
+      budget,
+      ancestors,
+    ));
+    ancestors.delete(value);
+    return;
+  }
+  assertPlainRecord(value, field, "INVALID_WIPE_OUTCOME");
+  budget.keys += Object.keys(value).length;
+  if (budget.keys > 128) fail(`${field} exceeds its object-key budget`, "WIPE_OUTCOME_RESOURCE_LIMIT", { field });
+  for (const [key, child] of Object.entries(value)) {
+    validatePassiveJson(child, `${field}.${key}`, depth + 1, budget, ancestors);
+  }
+  ancestors.delete(value);
 }
 
 function normalizeIntent(input) {
@@ -551,7 +640,7 @@ function requestWipeReconciliation(state) {
 }
 
 function normalizeStringSet(values, field) {
-  if (!Array.isArray(values)) fail(`${field} must be an array`, "INVALID_WIPE_OBSERVATION", { field });
+  assertDenseArray(values, field, "INVALID_WIPE_OBSERVATION");
   const normalized = values.map((value, index) => (
     assertIdentifier(value, `${field}[${index}]`, "INVALID_WIPE_OBSERVATION")
   ));
@@ -562,6 +651,7 @@ function normalizeStringSet(values, field) {
 }
 
 function validateAppliedObservation(effect, observation, expectedIntentFingerprint) {
+  validatePassiveJson(observation, "outcome.observation");
   const effectType = effect.type;
   switch (effectType) {
     case EFFECTS.PERSIST_INTENT:
@@ -668,8 +758,12 @@ function validateAppliedObservation(effect, observation, expectedIntentFingerpri
         "outcome.observation",
         "INVALID_WIPE_OBSERVATION",
       );
-      if (!Array.isArray(observation.unexpectedEntries)
-        || observation.unexpectedEntries.some((entry) => typeof entry !== "string")) {
+      assertDenseArray(
+        observation.unexpectedEntries,
+        "observation.unexpectedEntries",
+        "INVALID_WIPE_OBSERVATION",
+      );
+      if (observation.unexpectedEntries.some((entry) => typeof entry !== "string")) {
         fail("unexpectedEntries is invalid", "INVALID_WIPE_OBSERVATION");
       }
       const registry = effect.safetyContract.writerRegistry;
@@ -759,26 +853,130 @@ function validateAppliedObservation(effect, observation, expectedIntentFingerpri
   return immutable(observation);
 }
 
+function createWipeEffectOutcome(input) {
+  assertExactKeys(
+    input,
+    [
+      "attempt",
+      "evidenceId",
+      "effectFingerprint",
+      "errorCode",
+      "observation",
+      "operationId",
+      "phase",
+      "profileId",
+      "protocolVersion",
+      "schemaVersion",
+      "status",
+      "verifierId",
+    ],
+    "outcomeInput",
+    "INVALID_WIPE_OUTCOME",
+  );
+  if (input.schemaVersion !== "WIPE_EFFECT_OUTCOME_INPUT_V1"
+    || !["APPLIED", "NOT_APPLIED", "UNKNOWN"].includes(input.status)) {
+    fail("wipe outcome input is invalid", "INVALID_WIPE_OUTCOME");
+  }
+  assertIdentifier(input.operationId, "outcomeInput.operationId", "INVALID_WIPE_OUTCOME");
+  assertIdentifier(input.phase, "outcomeInput.phase", "INVALID_WIPE_OUTCOME");
+  assertIdentifier(input.protocolVersion, "outcomeInput.protocolVersion", "INVALID_WIPE_OUTCOME");
+  assertIdentifier(input.evidenceId, "outcomeInput.evidenceId", "INVALID_WIPE_OUTCOME");
+  assertIdentifier(input.verifierId, "outcomeInput.verifierId", "INVALID_WIPE_OUTCOME");
+  assertIdentifier(input.profileId, "outcomeInput.profileId", "INVALID_WIPE_OUTCOME");
+  if (!Number.isInteger(input.attempt) || input.attempt < 1
+    || typeof input.effectFingerprint !== "string"
+    || !/^[a-f0-9]{64}$/.test(input.effectFingerprint)) {
+    fail("wipe outcome identity is invalid", "INVALID_WIPE_OUTCOME");
+  }
+  if (input.observation !== null) validatePassiveJson(input.observation, "outcomeInput.observation");
+  const observation = input.observation === null ? null : clone(input.observation);
+  const errorCode = input.errorCode === null
+    ? null
+    : assertIdentifier(input.errorCode, "outcomeInput.errorCode", "INVALID_WIPE_OUTCOME");
+  if (input.status === "APPLIED" && observation === null) {
+    fail("applied wipe outcome requires an observation", "INVALID_WIPE_OUTCOME");
+  }
+  if ((input.status === "APPLIED") !== (errorCode === null)) {
+    fail("wipe outcome status and errorCode are inconsistent", "INVALID_WIPE_OUTCOME");
+  }
+  if (input.status === "UNKNOWN" && observation !== null) {
+    fail("unknown wipe outcome must not carry a trusted observation", "INVALID_WIPE_OUTCOME");
+  }
+  const observationFingerprint = observation === null ? null : fingerprint(observation);
+  const core = immutable({
+    schemaVersion: OUTCOME_SCHEMA_VERSION,
+    operationId: input.operationId,
+    phase: input.phase,
+    attempt: input.attempt,
+    protocolVersion: input.protocolVersion,
+    status: input.status,
+    evidenceId: input.evidenceId,
+    verifierId: input.verifierId,
+    profileId: input.profileId,
+    effectFingerprint: input.effectFingerprint,
+    observation,
+    observationFingerprint,
+    errorCode,
+    assertionBoundary: OUTCOME_ASSERTION_BOUNDARY,
+  });
+  return immutable({ ...core, outcomeFingerprint: fingerprint(core) });
+}
+
 function normalizeOutcome(outcome, pendingEffect) {
-  assertPlainRecord(outcome, "outcome", "INVALID_WIPE_OUTCOME");
+  assertExactKeys(
+    outcome,
+    [
+      "assertionBoundary",
+      "attempt",
+      "evidenceId",
+      "effectFingerprint",
+      "errorCode",
+      "observation",
+      "observationFingerprint",
+      "operationId",
+      "outcomeFingerprint",
+      "phase",
+      "profileId",
+      "protocolVersion",
+      "schemaVersion",
+      "status",
+      "verifierId",
+    ],
+    "outcome",
+    "INVALID_WIPE_OUTCOME",
+  );
+  const pendingFingerprint = wipeEffectFingerprint(pendingEffect);
   if (outcome.operationId !== pendingEffect.operationId
     || outcome.phase !== pendingEffect.phase
     || outcome.attempt !== pendingEffect.attempt
-    || outcome.protocolVersion !== pendingEffect.protocolVersion) {
+    || outcome.protocolVersion !== pendingEffect.protocolVersion
+    || outcome.effectFingerprint !== pendingFingerprint) {
     fail("wipe outcome is stale or belongs to another operation", "STALE_WIPE_OUTCOME");
   }
-  if (!["APPLIED", "NOT_APPLIED", "UNKNOWN"].includes(outcome.status)) {
-    fail("wipe outcome status is invalid", "INVALID_WIPE_OUTCOME");
+  if (outcome.schemaVersion !== OUTCOME_SCHEMA_VERSION
+    || outcome.assertionBoundary !== OUTCOME_ASSERTION_BOUNDARY
+    || typeof outcome.outcomeFingerprint !== "string"
+    || !/^[a-f0-9]{64}$/.test(outcome.outcomeFingerprint)) {
+    fail("wipe outcome boundary is invalid", "INVALID_WIPE_OUTCOME");
   }
-  return immutable({
+  const expected = createWipeEffectOutcome({
+    schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
     operationId: outcome.operationId,
     phase: outcome.phase,
     attempt: outcome.attempt,
     protocolVersion: outcome.protocolVersion,
     status: outcome.status,
-    observation: outcome.observation ?? null,
-    errorCode: typeof outcome.errorCode === "string" ? outcome.errorCode : null,
+    evidenceId: outcome.evidenceId,
+    verifierId: outcome.verifierId,
+    profileId: outcome.profileId,
+    effectFingerprint: outcome.effectFingerprint,
+    observation: outcome.observation,
+    errorCode: outcome.errorCode,
   });
+  if (!isDeepStrictEqual(outcome, expected)) {
+    fail("wipe outcome, observation, or fingerprint was changed", "INVALID_WIPE_OUTCOME");
+  }
+  return expected;
 }
 
 function settleWipeEffect(state, rawOutcome) {
@@ -1151,12 +1349,17 @@ function createInMemoryWipeAdapter({
   }
 
   function result(effect, status, observation = null, errorCode = null) {
-    return immutable({
+    return createWipeEffectOutcome({
+      schemaVersion: "WIPE_EFFECT_OUTCOME_INPUT_V1",
       operationId: effect.operationId,
       phase: effect.phase,
       attempt: effect.attempt,
       protocolVersion: effect.protocolVersion,
       status,
+      evidenceId: `${effect.operationId}.${effect.phase}.${effect.attempt}`,
+      verifierId: "in-memory-wipe-adapter",
+      profileId: "harness-observation-v1",
+      effectFingerprint: wipeEffectFingerprint(effect),
       observation,
       errorCode,
     });
@@ -1306,8 +1509,10 @@ export {
   WIPE_PHASES,
   WIPE_PROTOCOL_VERSION,
   WIPE_STATUSES,
+  OUTCOME_ASSERTION_BOUNDARY,
   beginConfirmedWipe,
   createInMemoryWipeAdapter,
+  createWipeEffectOutcome,
   createWipeCoordinatorState,
   executeWipeEffect,
   intentFingerprint,
@@ -1316,4 +1521,5 @@ export {
   requestNextWipeEffect,
   requestWipeReconciliation,
   settleWipeEffect,
+  wipeEffectFingerprint,
 };

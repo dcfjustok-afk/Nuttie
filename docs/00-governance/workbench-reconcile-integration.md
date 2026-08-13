@@ -29,19 +29,19 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 251 controlled instances
-ProjectOps validation: 106/106 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 252 controlled instances
+ProjectOps validation: 107/107 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 594/594 PASS
-Full repository suite: 719/719 PASS
-Repository source baseline: 134 events, 114 messages, 25 agents; the 2026-08-13 F19 restore-reconcile observation contract is the latest registered artifact. It proves only structured caller generation observations, generation/intent/snapshot fingerprint binding, write closure while an intent exists, observation-bound uncommitted action plans, and mandatory re-observation after external execution. It performs no cryptographic, filesystem, Keychain, cleanup, native, or persistence effects; D-027/D-030/D-035 remain pending. Earlier F03 data-pack, F09, F19 import, F03 lookup, F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
+Tool contract harnesses: 597/597 PASS
+Full repository suite: 723/723 PASS
+Repository source baseline: 135 events, 114 messages, 25 agents; the 2026-08-13 F18 wipe-outcome evidence contract is the latest registered artifact. It proves only strict passive JSON/resource bounds, evidence/verifier/profile identity, effect/observation/outcome fingerprint binding, status/error semantics, and cross-effect replay rejection. Outcomes remain caller assertions and do not prove native container enumeration, Keychain invalidation, notification removal, or external Files deletion. Earlier F19 restore/import, F03 data-pack/lookup, F09, F16, F01/F02, F18 access, prohibited-capability, and platform/language contracts retain their recorded boundaries.
 External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
-External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 134-event repository source
+External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 135-event repository source
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was not present for the restore-reconcile verification, so no current static copy
+workbench was not present for the wipe-outcome verification, so no current static copy
 or live/static parity result is claimed. The following supporting-script digest
 belongs to the prior historical run and cannot substitute for a current run:
 
