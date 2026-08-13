@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT",
+export const PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 129,
+    events: 130,
     messages: 114,
     resolvedResponses: 71,
     agents: 25,
@@ -97,7 +97,7 @@ export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
     "2026-08-06": 29,
     "2026-08-11": 5,
     "2026-08-12": 15,
-    "2026-08-13": 3,
+    "2026-08-13": 4,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -577,6 +577,39 @@ export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
     businessPayloadApproved: false,
     persistentRepositoryImplemented: false,
     systemClockRead: false,
+    realNetworkRequests: 0,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
+  barcodeLookupOrchestratorContract: Object.freeze({
+    eventId: "EVT-20260813-004",
+    subjectId: "barcode-lookup-orchestrator-contract",
+    contractStatus: "SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureId: "F03",
+    requirementId: "REQ-F03",
+    acceptanceId: "AT-F03",
+    topLevelTests: 20,
+    fullSuitePassed: 662,
+    exactGtinLengths: Object.freeze([8, 12, 13, 14]),
+    leadingZeroPreserved: true,
+    localExactLookupOnly: true,
+    trustedCatalogEvidenceBound: true,
+    singleCandidateRequiresExplicitSelection: true,
+    multipleSourceCandidatesRemainSeparate: true,
+    callerOwnedFoodReview: true,
+    callerOwnedManualCreation: true,
+    cameraPermissionHandling: "EXTERNAL_F21_ORCHESTRATOR",
+    fuzzyBarcodeRecognitionAuthorized: false,
+    coveragePromiseAuthorized: false,
+    catalogMutationAuthorized: false,
+    diaryMutationAuthorized: false,
+    aiFallbackAuthorized: false,
+    persistentRepositoryImplemented: false,
+    systemClockRead: false,
+    nativeApiCalls: 0,
     realNetworkRequests: 0,
     nativeImplementationAuthorized: false,
     formalImplementationAuthorized: false,
@@ -1135,7 +1168,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2346,6 +2379,57 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_GUIDANCE_REFERENCE_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-13.jsonl",
       "F16 合同只登记严格 opaque response、参考草稿边界、调用方定义、来源/edit 指纹、本地编辑和放弃清理；不得授权 UXD-04/UXD-11、D-033/D-053、医疗安全、高风险用途、业务字段、自动改日记/目标、持久化、系统时钟、网络、原生或正式实现",
+    );
+  }
+
+  const barcodeLookupEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.barcodeLookupOrchestratorContract.subjectId,
+  );
+  const barcodeLookupEvent = barcodeLookupEvents[0]?.value;
+  const barcodeLookupData = barcodeLookupEvent?.data ?? {};
+  const barcodeLookupBaseline = baseline.barcodeLookupOrchestratorContract;
+  const barcodeLookupScalarFields = [
+    "contractStatus",
+    "artifactState",
+    "featureId",
+    "requirementId",
+    "acceptanceId",
+    "topLevelTests",
+    "fullSuitePassed",
+    "leadingZeroPreserved",
+    "localExactLookupOnly",
+    "trustedCatalogEvidenceBound",
+    "singleCandidateRequiresExplicitSelection",
+    "multipleSourceCandidatesRemainSeparate",
+    "callerOwnedFoodReview",
+    "callerOwnedManualCreation",
+    "cameraPermissionHandling",
+    "fuzzyBarcodeRecognitionAuthorized",
+    "coveragePromiseAuthorized",
+    "catalogMutationAuthorized",
+    "diaryMutationAuthorized",
+    "aiFallbackAuthorized",
+    "persistentRepositoryImplemented",
+    "systemClockRead",
+    "nativeApiCalls",
+    "realNetworkRequests",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    barcodeLookupEvents.length !== 1 ||
+    barcodeLookupEvent?.eventId !== barcodeLookupBaseline.eventId ||
+    barcodeLookupEvent?.type !== "ARTIFACT_CREATED" ||
+    barcodeLookupEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(barcodeLookupData.exactGtinLengths) !== JSON.stringify(barcodeLookupBaseline.exactGtinLengths) ||
+    barcodeLookupScalarFields.some((field) => barcodeLookupData[field] !== barcodeLookupBaseline[field])
+  ) {
+    add(
+      "OPS_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-13.jsonl",
+      "F03 合同只登记完整 GTIN 本地精确查询、目录证据绑定、候选显式选择和调用方复核/建档交接；不得授权模糊识别、覆盖率承诺、相机权限、食品或日记写入、AI/网络回退、持久化 Repository、原生或正式实现",
     );
   }
 

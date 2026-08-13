@@ -10,7 +10,7 @@
 | --- | --- | --- | --- | --- |
 | F01 AI 拍照识餐 | `ai-policy`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | policy fail-closed、恶意响应预算、BYOK 生命周期、易失候选、显式 review、用户确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053、真实图片输入/transport/组件/抓包 | Application 确认事务已覆盖，产品/原生阻断 |
 | F02 AI 文字识餐 | 同 F01 | Provider 失败保留本地输入、严格候选、request/policy/candidate 绑定与明确保存前零写入 | 正式文字字段/映射、显式 Provider UI、真实 transport；D-033/D-053 | Application 确认事务已覆盖，产品/网络阻断 |
-| F03 条码 | `data-pack-contract`、`import-safety`、`local-food-catalog` | 离线来源隔离、GTIN 精确查询、未命中手工路径、无网络回退 | 数据包签名算法 D-026、许可 D-052、相机/组件/真机 | 数据合同已覆盖，原生阻断 |
+| F03 条码 | `data-pack-contract`、`import-safety`、`local-food-catalog`、`barcode-lookup-orchestrator` | 离线来源隔离、完整 GTIN 精确查询、前导零、单/多候选显式选择、目录证据绑定、未命中调用方建档、无网络/写入 | 数据包签名算法 D-026、许可 D-052、相机/复核/建档组件、真实 Repository/真机/样本统计 | Application 编排合同已覆盖，产品/原生阻断 |
 | F04 日热量账本 | `daily-energy-ledger`、`seven-day-energy-trend` | 指定日摄入/消耗精确事实、目标生效历史、缺失/零、来源反查 | Left 公式、缺失消耗、负值、舍入与 UI 待 D-040/Owner | 事实层已覆盖，公式阻断 |
 | F05 宏量目标 | `macro-target-history`、`domain-contract` | P/C/F 实际缺失语义、目标原值/单位定义/来源/用户编辑/历史 | 目标算法、grams/percent、比较、舍入、编辑与 UI 待 D-040/Owner | 事实层已覆盖，算法阻断 |
 | F06 餐次 | `meal-slot-grouping`、`meal-correction` | 显式版本化定义、顺序、空餐次、未分配/旧定义、移动事务底座 | 默认餐次数量/名称、自定义规则、组件/E2E | 读模型已覆盖，产品规则阻断 |

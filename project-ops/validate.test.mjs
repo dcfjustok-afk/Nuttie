@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT,
+  PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_13_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 246,
+    instancesValidated: 247,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 129);
+  assert.equal(report.counts.events, 130);
   assert.equal(report.counts.messages, 114);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
@@ -222,6 +222,26 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiGuidanceReferenceEvent.value.data.systemClockRead, false);
   assert.equal(aiGuidanceReferenceEvent.value.data.realNetworkRequests, 0);
   assert.equal(aiGuidanceReferenceEvent.value.data.formalImplementationAuthorized, false);
+  const barcodeLookupEvent = findEvent(VALID_MODEL, "EVT-20260813-004");
+  assert.equal(barcodeLookupEvent.value.subject.id, "barcode-lookup-orchestrator-contract");
+  assert.equal(barcodeLookupEvent.value.data.featureId, "F03");
+  assert.deepEqual(barcodeLookupEvent.value.data.exactGtinLengths, [8, 12, 13, 14]);
+  assert.equal(barcodeLookupEvent.value.data.leadingZeroPreserved, true);
+  assert.equal(barcodeLookupEvent.value.data.localExactLookupOnly, true);
+  assert.equal(barcodeLookupEvent.value.data.trustedCatalogEvidenceBound, true);
+  assert.equal(barcodeLookupEvent.value.data.singleCandidateRequiresExplicitSelection, true);
+  assert.equal(barcodeLookupEvent.value.data.multipleSourceCandidatesRemainSeparate, true);
+  assert.equal(barcodeLookupEvent.value.data.callerOwnedFoodReview, true);
+  assert.equal(barcodeLookupEvent.value.data.callerOwnedManualCreation, true);
+  assert.equal(barcodeLookupEvent.value.data.cameraPermissionHandling, "EXTERNAL_F21_ORCHESTRATOR");
+  assert.equal(barcodeLookupEvent.value.data.fuzzyBarcodeRecognitionAuthorized, false);
+  assert.equal(barcodeLookupEvent.value.data.coveragePromiseAuthorized, false);
+  assert.equal(barcodeLookupEvent.value.data.catalogMutationAuthorized, false);
+  assert.equal(barcodeLookupEvent.value.data.diaryMutationAuthorized, false);
+  assert.equal(barcodeLookupEvent.value.data.aiFallbackAuthorized, false);
+  assert.equal(barcodeLookupEvent.value.data.nativeApiCalls, 0);
+  assert.equal(barcodeLookupEvent.value.data.realNetworkRequests, 0);
+  assert.equal(barcodeLookupEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -267,7 +287,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 245);
+    assert.equal(report.schemaValidation.instancesValidated, 246);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -785,6 +805,39 @@ test("拒绝把 F16 参考草稿合同越级为自动写事实、医疗安全、
   assertDiagnostic(
     report,
     "OPS_AI_GUIDANCE_REFERENCE_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-13.jsonl",
+  );
+});
+
+test("拒绝把 F03 条码编排合同越级为模糊识别、覆盖承诺、自动选择、写库、AI 或原生实现", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260813-004");
+    event.value.data.exactGtinLengths = [1, 8, 12, 13, 14];
+    event.value.data.leadingZeroPreserved = false;
+    event.value.data.localExactLookupOnly = false;
+    event.value.data.trustedCatalogEvidenceBound = false;
+    event.value.data.singleCandidateRequiresExplicitSelection = false;
+    event.value.data.multipleSourceCandidatesRemainSeparate = false;
+    event.value.data.callerOwnedFoodReview = false;
+    event.value.data.callerOwnedManualCreation = false;
+    event.value.data.cameraPermissionHandling = "APP_OWNED_PREWARM";
+    event.value.data.fuzzyBarcodeRecognitionAuthorized = true;
+    event.value.data.coveragePromiseAuthorized = true;
+    event.value.data.catalogMutationAuthorized = true;
+    event.value.data.diaryMutationAuthorized = true;
+    event.value.data.aiFallbackAuthorized = true;
+    event.value.data.persistentRepositoryImplemented = true;
+    event.value.data.systemClockRead = true;
+    event.value.data.nativeApiCalls = 1;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_BARCODE_LOOKUP_ORCHESTRATOR_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-13.jsonl",
   );
 });

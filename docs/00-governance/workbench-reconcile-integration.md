@@ -29,25 +29,21 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 246 controlled instances
-ProjectOps validation: 101/101 PASS
+ProjectOps schema subset: 14/14 PASS; 5 schemas and 247 controlled instances
+ProjectOps validation: 102/102 PASS
 ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 521/521 PASS
-Full repository suite: 641/641 PASS
-Workbench source baseline: 129 events, 114 messages, 25 agents; the 2026-08-13 F16 AI guidance-reference contract is the latest registered artifact, following the F01/F02 AI candidate-confirmation and F18 local-data registry/consistent-read port contracts and the 2026-08-12 AI credential lifecycle, F04 daily-energy ledger, F05 macro-target history, F06 meal-slot grouping, F08 date-navigation, F10 body-weight, F11 seven-day energy, F12/F17 local-profile record, F13 manual-burn, F14 water-record, F15 local-reminder reconciliation, F18 local-data-access manifest, F21 media-permission orchestrator, F20/F23/F24 prohibited-capability audit, and F22 platform/language Release audit contracts. The F16 contract only proves an editable/discardable reference draft with non-medical and zero-business-effect boundaries; it does not authorize IA, persistence, high-risk use, D-033/D-053, a formal payload, real transport, or a Repository. The F01/F02 contract does not authorize product field mapping or automatic diary/target mutation; the F18 port does not claim a SQLCipher snapshot implementation. Both Release audit contracts remain BLOCKED because signed Archive, platform-shape decisions, and production evidence do not exist.
-Workbench static rebuild: PASS; 31 decisions, 129 events, 114 messages, 25 agents, 93 documents; ProjectOps reconcile CURRENT
-Workbench live/static smoke: PASS; live and generated state are deeply equal; OI-03/OI-02, D-039 and D-040 gates unchanged
+Tool contract harnesses: 541/541 PASS
+Full repository suite: 662/662 PASS
+Repository source baseline: 130 events, 114 messages, 25 agents; the 2026-08-13 F03 barcode lookup-orchestrator contract is the latest registered artifact. It proves only complete-GTIN local exact lookup, trusted-catalog evidence binding, explicit candidate selection, and caller-owned review/manual-creation handoff; it does not authorize camera access, fuzzy recognition, coverage claims, catalog/diary writes, AI/network fallback, persistence, native code, or formal implementation. Earlier F16, F01/F02, F18, prohibited-capability, and platform/language contracts retain their recorded boundaries.
+External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
+External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 130-event repository source
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was restored and rerun after the 2026-08-13 events. Its smoke no
-longer hard-codes historical event or document totals: events and messages are
-cross-checked against the read-only ProjectOps reconcile report, documents must
-be non-empty and path-unique, required governance documents must exist, and the
-generated static state must remain deeply equal to the live state. The local
-supporting smoke script is not part of the Nuttie Git repository; its verified
-SHA-256 value is:
+workbench was not present for the F03 verification, so no current static copy
+or live/static parity result is claimed. The following supporting-script digest
+belongs to the prior historical run and cannot substitute for a current run:
 
 ```text
 qa/smoke-test.mjs: 3E6EFD070556C3E8FC9B42A8A766F0AB7F722E7620D942392FB7F647F3D235B4
