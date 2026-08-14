@@ -35,9 +35,10 @@
     "check": "tsc --noEmit",
     "config": "expo config --type public",
     "doctor": "expo-doctor",
-    "export:android": "expo export --platform android --output-dir dist",
+    "export:android": "expo export --platform android --output-dir dist && node scripts/verify-android-js-export.mjs",
     "export:ios-js": "expo export --platform ios --output-dir dist-ios && node scripts/verify-ios-js-export.mjs",
     "verify:ios-export": "node scripts/verify-ios-js-export.mjs",
+    "verify:android-export": "node scripts/verify-android-js-export.mjs",
     "verify:contract": "node scripts/verify-contract.mjs && node scripts/verify-dependency-surface.mjs",
     "verify:surface": "node scripts/verify-dependency-surface.mjs"
   }
