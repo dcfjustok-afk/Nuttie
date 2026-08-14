@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE,
+  PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 274,
+    instancesValidated: 275,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 155);
+  assert.equal(report.counts.events, 156);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -543,6 +543,30 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(sdk57JsDependencySurfaceEvent.value.data.nativeApiCalls, 0);
   assert.equal(sdk57JsDependencySurfaceEvent.value.data.nativeRuntimeEvidence, false);
   assert.equal(sdk57JsDependencySurfaceEvent.value.data.decisionAccepted, false);
+  const sdk57IosJavaScriptExportEvent = findEvent(VALID_MODEL, "EVT-20260814-020");
+  assert.equal(sdk57IosJavaScriptExportEvent.value.subject.id, "sdk57-ios-javascript-export-verification");
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.dependencySurfaceEventId, "EVT-20260814-019");
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosPlatformConditionResolutionPassed, true);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosJavaScriptBundleEvidence, true);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosBundleModules, 1565);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosBundleSha256Scope, "RECORDED_EXPORT_RUN_ONLY");
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.repeatedExportRuns, 3);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.repeatedExportShapeStable, true);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.repeatedExportByteIdentical, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.observedIosBundleSha256Count, 3);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.repositoryFullSuitePassed, 780);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.projectOpsValidationTestsPassed, 119);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.nativeDirectoriesGenerated, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.prebuildRun, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.xcodeUsed, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.cocoaPodsUsed, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.nativeCompilationRun, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosSimulatorRun, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.iosDeviceRun, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.signedArchiveProduced, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.nativeIosEvidence, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.decisionAccepted, false);
+  assert.equal(sdk57IosJavaScriptExportEvent.value.data.ownerSecondActionStillRequired, true);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -588,7 +612,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 273);
+    assert.equal(report.schemaValidation.instancesValidated, 274);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1532,6 +1556,37 @@ test("拒绝把 SDK 57 JS 依赖表面解析越级为原生调用、运行证据
   assertDiagnostic(
     report,
     "OPS_SDK57_JS_DEPENDENCY_SURFACE_MISMATCH",
+    "project-ops/events/2026-08-14.jsonl",
+  );
+});
+
+test("拒绝把 Windows iOS JavaScript export 越级为原生编译、模拟器、真机或签名证据", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260814-020");
+    event.value.data.iosPlatformConditionResolutionPassed = false;
+    event.value.data.iosJavaScriptBundleEvidence = false;
+    event.value.data.iosBundleSha256Scope = "REPRODUCIBLE_BUILD_FINGERPRINT";
+    event.value.data.repeatedExportByteIdentical = true;
+    event.value.data.nativeDirectoriesGenerated = true;
+    event.value.data.prebuildRun = true;
+    event.value.data.xcodeUsed = true;
+    event.value.data.cocoaPodsUsed = true;
+    event.value.data.podInstallRun = true;
+    event.value.data.nativeCompilationRun = true;
+    event.value.data.iosSimulatorRun = true;
+    event.value.data.iosDeviceRun = true;
+    event.value.data.signedArchiveProduced = true;
+    event.value.data.nativeRuntimeEvidence = true;
+    event.value.data.nativeIosEvidence = true;
+    event.value.data.formalRootProjectAuthorized = true;
+    event.value.data.decisionAccepted = true;
+    event.value.data.ownerSecondActionStillRequired = false;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_SDK57_IOS_JAVASCRIPT_EXPORT_MISMATCH",
     "project-ops/events/2026-08-14.jsonl",
   );
 });

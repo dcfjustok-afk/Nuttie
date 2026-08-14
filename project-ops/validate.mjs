@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE = Object.freeze({
-  id: "PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE",
+export const PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT = Object.freeze({
+  id: "PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 155,
+    events: 156,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 19,
+    "2026-08-14": 20,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1169,6 +1169,54 @@ export const PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  sdk57IosJavaScriptExport: Object.freeze({
+    eventId: "EVT-20260814-020",
+    subjectId: "sdk57-ios-javascript-export-verification",
+    state: "completed",
+    workingTreeBase: "ad7b425bc745278f00b22e429597965421b3f7d9",
+    decisionId: "D-032",
+    decisionStatus: "CANDIDATE",
+    authorization: "SPIKE_AUTHORIZED",
+    scope: "SDK57_IOS_JAVASCRIPT_EXPORT",
+    hostOs: "WINDOWS",
+    nodeVersion: "22.13.0",
+    pnpmVersion: "11.18.0",
+    dependencySurfaceEventId: "EVT-20260814-019",
+    requiredPackageCount: 6,
+    iosPlatformConditionResolutionPassed: true,
+    iosJavaScriptBundleEvidence: true,
+    iosBundleModules: 1565,
+    iosBundleFiles: 25,
+    iosBundleBytes: 3597734,
+    iosHermesBundleBytes: 3572985,
+    iosBundleSha256: "c19e98e3a8701f43efbe7b437b555873ae04e81be0d04f8982f7a14fde89f1f7",
+    iosBundleSha256Scope: "RECORDED_EXPORT_RUN_ONLY",
+    repeatedExportRuns: 3,
+    repeatedExportShapeStable: true,
+    repeatedExportByteIdentical: false,
+    observedIosBundleSha256Count: 3,
+    lockfileSha256: "97fadee6f3f7d67c295f3fdab2319c67c7a98390a4e4f041ce0b4afc837798d3",
+    expoDoctorChecksPassed: 20,
+    expoDoctorChecksTotal: 20,
+    repositoryFullSuitePassed: 780,
+    projectOpsValidationTestsPassed: 119,
+    nativeDirectoriesGenerated: false,
+    prebuildRun: false,
+    xcodeUsed: false,
+    cocoaPodsUsed: false,
+    podInstallRun: false,
+    nativeCompilationRun: false,
+    iosSimulatorRun: false,
+    iosDeviceRun: false,
+    signedArchiveProduced: false,
+    nativeRuntimeEvidence: false,
+    nativeIosEvidence: false,
+    formalRootProjectAuthorized: false,
+    decisionAccepted: false,
+    ownerSecondActionStillRequired: true,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1721,7 +1769,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3740,6 +3788,32 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_SDK57_JS_DEPENDENCY_SURFACE_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "D-032 JS dependency surface must retain all six package symbols, four config plugins, exact type/Metro evidence and bundle fingerprint while keeping native calls, runtime evidence, Prebuild, formal root authorization, decision acceptance and gate changes false",
+    );
+  }
+
+  const sdk57IosJavaScriptExportEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sdk57IosJavaScriptExport.subjectId,
+  );
+  const sdk57IosJavaScriptExportEvent = sdk57IosJavaScriptExportEvents[0]?.value;
+  const sdk57IosJavaScriptExportData = sdk57IosJavaScriptExportEvent?.data ?? {};
+  const sdk57IosJavaScriptExportBaseline = baseline.sdk57IosJavaScriptExport;
+  const sdk57IosJavaScriptExportFields = Object.keys(sdk57IosJavaScriptExportBaseline)
+    .filter((field) => field !== "eventId" && field !== "subjectId")
+    .sort();
+  if (
+    sdk57IosJavaScriptExportEvents.length !== 1 ||
+    sdk57IosJavaScriptExportEvent?.eventId !== sdk57IosJavaScriptExportBaseline.eventId ||
+    sdk57IosJavaScriptExportEvent?.type !== "TASK_COMPLETED" ||
+    sdk57IosJavaScriptExportEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(Object.keys(sdk57IosJavaScriptExportData).sort()) !== JSON.stringify(sdk57IosJavaScriptExportFields) ||
+    sdk57IosJavaScriptExportFields.some(
+      (field) => sdk57IosJavaScriptExportData[field] !== sdk57IosJavaScriptExportBaseline[field],
+    )
+  ) {
+    add(
+      "OPS_SDK57_IOS_JAVASCRIPT_EXPORT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "D-032 iOS JavaScript export must retain exact Windows Metro/bundle evidence while keeping native directories, Prebuild, Xcode, CocoaPods, compilation, simulator/device, signing, native evidence, formal root authorization, decision acceptance and gate changes false",
     );
   }
 
