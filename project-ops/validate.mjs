@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT = Object.freeze({
-  id: "PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT",
+export const PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER = Object.freeze({
+  id: "PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 156,
+    events: 157,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 20,
+    "2026-08-14": 21,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1217,6 +1217,60 @@ export const PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  sdk57IosExportStructureVerifier: Object.freeze({
+    eventId: "EVT-20260814-021",
+    subjectId: "sdk57-ios-javascript-export-structure-verifier",
+    state: "completed",
+    workingTreeBase: "772033473f28e8ac449952825a0280d0c0ed87d2",
+    decisionId: "D-032",
+    decisionStatus: "CANDIDATE",
+    authorization: "SPIKE_AUTHORIZED",
+    scope: "SDK57_IOS_JAVASCRIPT_EXPORT_STRUCTURE_VERIFIER",
+    hostOs: "WINDOWS",
+    nodeVersion: "22.13.0",
+    pnpmVersion: "11.18.0",
+    previousExportEventId: "EVT-20260814-020",
+    exportCommandIntegrated: true,
+    exportCommandPassed: true,
+    verifierRanPostExport: true,
+    verifierUnitTestsPassed: 5,
+    iosOnlyMetadataRequired: true,
+    metroBundlerRequired: true,
+    metadataVersion: 0,
+    hermesBundleFiles: 1,
+    declaredAssetFiles: 23,
+    totalFiles: 25,
+    recordedRunBundleBytes: 3572986,
+    recordedRunTotalBytes: 3597735,
+    bundleBytesUsedAsGate: false,
+    bundleSha256UsedAsGate: false,
+    fingerprintPolicy: "RUN_SPECIFIC_NOT_REPRODUCIBILITY_GATE",
+    exactMetadataFileSetRequired: true,
+    additionalPlatformsRejected: true,
+    pathTraversalRejected: true,
+    undeclaredFilesRejected: true,
+    nativeDirectoriesRejected: true,
+    subsequentRunShapeMatchedPrevious: false,
+    subsequentRunTotalBytesDelta: 1,
+    repositoryFullSuitePassed: 786,
+    projectOpsValidationTestsPassed: 120,
+    nativeDirectoriesGenerated: false,
+    prebuildRun: false,
+    xcodeUsed: false,
+    cocoaPodsUsed: false,
+    nativeCompilationRun: false,
+    iosSimulatorRun: false,
+    iosDeviceRun: false,
+    signedArchiveProduced: false,
+    nativeRuntimeEvidence: false,
+    nativeIosEvidence: false,
+    reproducibleBuildEvidence: false,
+    formalRootProjectAuthorized: false,
+    decisionAccepted: false,
+    ownerSecondActionStillRequired: true,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1769,7 +1823,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_IOS_JAVASCRIPT_EXPORT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3814,6 +3868,32 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_SDK57_IOS_JAVASCRIPT_EXPORT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "D-032 iOS JavaScript export must retain exact Windows Metro/bundle evidence while keeping native directories, Prebuild, Xcode, CocoaPods, compilation, simulator/device, signing, native evidence, formal root authorization, decision acceptance and gate changes false",
+    );
+  }
+
+  const sdk57IosExportStructureVerifierEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sdk57IosExportStructureVerifier.subjectId,
+  );
+  const sdk57IosExportStructureVerifierEvent = sdk57IosExportStructureVerifierEvents[0]?.value;
+  const sdk57IosExportStructureVerifierData = sdk57IosExportStructureVerifierEvent?.data ?? {};
+  const sdk57IosExportStructureVerifierBaseline = baseline.sdk57IosExportStructureVerifier;
+  const sdk57IosExportStructureVerifierFields = Object.keys(sdk57IosExportStructureVerifierBaseline)
+    .filter((field) => field !== "eventId" && field !== "subjectId")
+    .sort();
+  if (
+    sdk57IosExportStructureVerifierEvents.length !== 1 ||
+    sdk57IosExportStructureVerifierEvent?.eventId !== sdk57IosExportStructureVerifierBaseline.eventId ||
+    sdk57IosExportStructureVerifierEvent?.type !== "TASK_COMPLETED" ||
+    sdk57IosExportStructureVerifierEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(Object.keys(sdk57IosExportStructureVerifierData).sort()) !== JSON.stringify(sdk57IosExportStructureVerifierFields) ||
+    sdk57IosExportStructureVerifierFields.some(
+      (field) => sdk57IosExportStructureVerifierData[field] !== sdk57IosExportStructureVerifierBaseline[field],
+    )
+  ) {
+    add(
+      "OPS_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "D-032 iOS JavaScript export verifier must retain exact iOS-only metadata/file-set/path/native-directory checks, keep byte size and SHA outside reproducibility gates, and keep all native, formal-root, decision and Owner state claims false",
     );
   }
 

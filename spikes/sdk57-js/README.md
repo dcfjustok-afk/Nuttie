@@ -42,6 +42,7 @@ pnpm run config
 pnpm run doctor
 pnpm run export:android
 pnpm run export:ios-js
+pnpm run verify:ios-export
 ```
 
 The evidence section is updated only with commands actually run in this
@@ -62,7 +63,8 @@ were not used as evidence.
 | `pnpm run config` | PASS; public Expo configuration resolved |
 | `pnpm run doctor` | PASS; 20/20 checks after directly locking required Router/Reanimated peers and `expo-doctor` |
 | `pnpm run export:android` | PASS; Metro bundled 1,652 modules into one Android Hermes bundle after the high-risk dependency surface entered the route graph |
-| `pnpm run export:ios-js` | PASS; Windows Metro bundled 1,565 modules under iOS platform conditions without generating a native project |
+| `pnpm run export:ios-js` | PASS; Windows Metro bundled 1,565 modules under iOS platform conditions, then automatically verified the exported structure without generating a native project |
+| `pnpm run verify:ios-export` | PASS; iOS-only Metro metadata, one Hermes bundle, 23 declared assets and an exact 25-file set; byte size and SHA-256 are explicitly excluded from reproducibility gates |
 
 Resolved headline versions were Expo `57.0.12`, Expo Router `57.0.12`, React
 Native `0.86.2`, and React `19.2.3`. The surface binds, without calling,
@@ -82,7 +84,14 @@ the two repeats produced
 `0d7373e814569222518bb29c3a0af387f53d1069e7b42edc53e5c48b5826d0f7`
 and `8cb658011877c2c4896cfc758724429cdcbe230b5fa1f420150f7a2cf4ea9cc7`.
 The matching shape but differing bytes make these run-specific fingerprints,
-not a reproducible-build claim.
+not a reproducible-build claim. A later export still produced 25 files, but its
+Hermes bundle grew from 3,572,985 to 3,572,986 bytes and its total grew from
+3,597,734 to 3,597,735 bytes. The post-export verifier therefore checks the
+metadata-declared platform and exact file set, path containment, one non-empty
+Hermes bundle, and absent native directories; it reports sizes but never uses
+size or SHA-256 as a pass condition. Its five unit tests cover the valid shape,
+an extra platform, path traversal, undeclared files, and generated native
+directories.
 
 No `ios/` or `android/` directory was generated and Prebuild was not run. This
 closes only the authorized Windows JavaScript dependency/config/type-check and

@@ -57,7 +57,7 @@ iOS native boundary
 | 层 | 当前方向 | 权威状态 | 尚需执行证据 |
 | --- | --- | --- | --- |
 | 包管理器 D-037 | pnpm 11.18.0 + hoisted linker + 唯一 `pnpm-lock.yaml` | `ACCEPTED` | 正式工程和 Mac/CocoaPods 路径仍待验证 |
-| 版本 D-032 | Expo SDK 57 / RN 0.86.2 隔离 Spike | `CANDIDATE + SPIKE_AUTHORIZED`；Windows JS 依赖表面、Android 与 iOS 平台条件 export 子范围 PASS | Prebuild、SQLCipher、SecureStore、相机、通知、Xcode/CocoaPods、原生编译/运行、Archive、真机后再由 Owner 冻结 |
+| 版本 D-032 | Expo SDK 57 / RN 0.86.2 隔离 Spike | `CANDIDATE + SPIKE_AUTHORIZED`；Windows JS 依赖表面、Android 与 iOS 平台条件 export 子范围 PASS；iOS export 结构已自动校验，字节数/SHA 不作可复现构建门禁 | Prebuild、SQLCipher、SecureStore、相机、通知、Xcode/CocoaPods、原生编译/运行、Archive、真机后再由 Owner 冻结 |
 | 产品外壳 D-038 | 日记、趋势、食品资料、设置 | `ACCEPTED` | 正式实现仍受 D-039 与根工程门禁约束 |
 | 导航 D-018 | Expo Router | `ACCEPTED` | 正式路由、返回、Modal 和 deep link 实现测试 |
 | UI 状态 D-019 | Zustand，仅 UI/session/草稿 | `ACCEPTED` | lint/目录边界和进程恢复测试 |

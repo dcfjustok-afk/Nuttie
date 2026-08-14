@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T23:14:15+08:00",
+  "generatedAt": "2026-08-14T23:24:33+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 156
+    "projectEvents": 157
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "SDK 57 iOS 平台 JS export 已验证；D-032 保持候选并继续等待 D-039 Owner 选择与原生证据",
+      "workPackage": "SDK 57 iOS 平台 JS export 结构校验已自动化；D-032 保持候选并继续等待 D-039 Owner 选择与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-032 iOS 平台 JavaScript export 已集成导出后自动结构校验：只接受 iOS-only Metro metadata、唯一 Hermes bundle、声明资产与实际文件精确一致，并拒绝额外平台、路径越界、未声明文件和原生目录；5 个单测与真实 export 通过。后续运行的 bundle 与总字节数各比前三次增加 1，所以字节数和 SHA-256 都明确不作可复现构建门禁；不构成原生 iOS 证据或 D-032 接受",
     "D-032 隔离 SDK 57 Spike 已在 Windows 完成 iOS 平台条件的 JavaScript export，Metro/Hermes 解析 1,565 模块且六包依赖表面继续通过；连续三次 export 的文件数和字节数一致但 SHA-256 不同，所以指纹仅代表单次运行、不构成可复现构建承诺；全程未生成原生目录、未运行 Prebuild/Xcode/CocoaPods、未编译原生模块、未运行模拟器或真机且未产出签名 Archive；该证据只关闭 JS 平台解析子范围，不构成 iOS 原生证据或 D-032 接受",
     "D-032 隔离 SDK 57 JS Spike 已把 expo-sqlite、expo-secure-store、expo-camera、expo-notifications、react-native-reanimated、react-native-worklets 的具体符号纳入 TypeScript 与 Metro 路径，Android export 从 1,232 增至 1,652 模块；静态检查固定原生 API/权限/数据库/Keychain/通知/worklet/网络调用均为 0，不构成原生运行证据或 D-032 接受",
     "D-032 已授权的隔离 SDK 57 Windows JS Spike 已完成基础链路：Node 22.13.0 / pnpm 11.18.0 冻结安装、静态边界、TypeScript、Expo public config、Doctor 20/20 与 Android Hermes export 通过；后续依赖表面事件已扩大 Metro 解析范围。始终未生成 ios/android、未运行 Prebuild，不构成 SQLCipher/Keychain/权限/原生 iOS/Archive/真机证据，D-032 继续 CANDIDATE 并等待第二次 Owner 动作",
