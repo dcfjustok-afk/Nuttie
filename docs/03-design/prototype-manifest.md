@@ -131,4 +131,4 @@ DesignOps 自测环境：
 
 ## 8. 门禁结果
 
-D-038 的原型、浏览器 QA、整批回读和 `DECISION_ACCEPTED` 已完成。接受方案 A 只冻结导航外壳；D-039 后续也已由 Owner 选择 A 并完成 PX-4 设计基线。两项决定均不授权正式 React Native 根工程；D-039 首次 PX-5 DoR 已评估为 `NOT_READY`，须关闭 7 个阻断项并形成后续通过事件后才能进入对应实现增量。
+D-038 的原型、浏览器 QA、整批回读和 `DECISION_ACCEPTED` 已完成。接受方案 A 只冻结导航外壳；D-039 后续也已由 Owner 选择 A 并完成 PX-4 设计基线。两项决定均不授权正式 React Native 根工程；D-039 首次 PX-5 DoR 为 `NOT_READY`，24 条正式验收矩阵已关闭 B01，B02~B07 仍须关闭并形成后续通过事件后才能进入对应实现增量。

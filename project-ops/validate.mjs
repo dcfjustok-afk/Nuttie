@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT = Object.freeze({
-  id: "PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT",
+export const PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX = Object.freeze({
+  id: "PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 163,
+    events: 164,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 5,
+    "2026-08-15": 6,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1537,6 +1537,54 @@ export const PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT = Object.freeze({
       ownerIntakeChanged: false,
       decisionStateChanged: false,
     }),
+    px5AcceptanceMatrix: Object.freeze({
+      eventId: "EVT-20260815-006",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D039-FORMAL-ACCEPTANCE-MATRIX-001",
+      subjectRole: "QualityArtifact",
+      correlationId: "d039-px5-b01-acceptance-matrix",
+      state: "completed",
+      decisionId: "D-039",
+      decisionState: "ACCEPTED",
+      selectedOption: "A",
+      designBaselineState: "PX-4_BASELINE_FROZEN",
+      px5Disposition: "NOT_READY",
+      from: "D039-PX5-B01_OPEN",
+      to: "D039-PX5-B01_CLOSED",
+      next: "D039-PX5-B02_REQUIRED",
+      acceptanceCaseCount: 24,
+      acceptanceCaseIds: Object.freeze(
+        Array.from({ length: 24 }, (_, index) => `D039-AC-${String(index + 1).padStart(3, "0")}`),
+      ),
+      prototypeFlowCount: 19,
+      selectedVariantOnly: true,
+      nonSelectedVariantsExcluded: true,
+      conditionalCasesMarked: true,
+      businessWriteAssertionsExplicit: true,
+      networkAssertionsExplicit: true,
+      accessibilityAssertionsExplicit: true,
+      formalAcceptanceMatrixComplete: true,
+      closedBlockerIds: Object.freeze(["D039-PX5-B01"]),
+      remainingOpenBlockerIds: Object.freeze([
+        "D039-PX5-B02", "D039-PX5-B03", "D039-PX5-B04",
+        "D039-PX5-B05", "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenBlockerCount: 6,
+      locallyCloseableBlockerIds: Object.freeze(["D039-PX5-B02"]),
+      ownerDependentBlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05", "D039-PX5-B06",
+      ]),
+      environmentDependentBlockerIds: Object.freeze(["D039-PX5-B07"]),
+      stableRouteAndTestIdsMapped: false,
+      returnDeepLinkContractComplete: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      decisionStateChanged: false,
+    }),
     findingsClosed: Object.freeze(
       Array.from(
         { length: 10 },
@@ -2104,7 +2152,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5087,6 +5135,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-039 PX-5 评估必须精确保留 1/3/3 要求结论、7 个阻断项和正式工程/原生/实现未授权边界",
+    );
+  }
+
+  const acceptanceMatrixSpec = baseline.d039.px5AcceptanceMatrix;
+  const acceptanceMatrixEvents = model.events.filter(
+    (record) => record.value?.eventId === acceptanceMatrixSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === acceptanceMatrixSpec.correlationId),
+  );
+  const acceptanceMatrixEvent = acceptanceMatrixEvents[0]?.value;
+  const acceptanceMatrixData = acceptanceMatrixEvent?.data ?? {};
+  const acceptanceMatrixFields = Object.keys(acceptanceMatrixSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    acceptanceMatrixEvents.length !== 1 ||
+    acceptanceMatrixEvent?.eventId !== acceptanceMatrixSpec.eventId ||
+    acceptanceMatrixEvent?.type !== "ARTIFACT_CREATED" ||
+    acceptanceMatrixEvent?.actor?.id !== acceptanceMatrixSpec.actorId ||
+    acceptanceMatrixEvent?.actor?.role !== acceptanceMatrixSpec.actorRole ||
+    acceptanceMatrixEvent?.subject?.id !== acceptanceMatrixSpec.subjectId ||
+    acceptanceMatrixEvent?.subject?.role !== acceptanceMatrixSpec.subjectRole ||
+    acceptanceMatrixEvent?.correlationId !== acceptanceMatrixSpec.correlationId ||
+    JSON.stringify(Object.keys(acceptanceMatrixData).sort()) !== JSON.stringify(acceptanceMatrixFields) ||
+    acceptanceMatrixFields.some(
+      (field) => JSON.stringify(acceptanceMatrixData[field]) !== JSON.stringify(acceptanceMatrixSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_PX5_B01_ACCEPTANCE_MATRIX_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-039 PX-5 B01 必须精确保留 24 条正式验收用例、B01 单独关闭、B02 至 B07 开放和全部实现授权位关闭",
     );
   }
 

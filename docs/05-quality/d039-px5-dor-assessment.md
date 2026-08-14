@@ -6,12 +6,12 @@
 | 决定 | `D-039 / ACCEPTED / A` |
 | 评估日期 | 2026-08-15（Asia/Shanghai） |
 | 当前设计状态 | `PX-4_BASELINE_FROZEN` |
-| PX-5 结论 | `NOT_READY / BLOCKER_CLOSURE_REQUIRED` |
+| PX-5 结论 | `NOT_READY / B01_CLOSED / 6_BLOCKERS_REMAIN` |
 | 实现授权 | `false`；正式根工程、原生 iOS 和 D-039 正式增量均未授权 |
 
 ## 1. 结论
 
-D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of Ready。七项 PX-5 要求中，1 项通过、3 项部分满足、3 项失败；当前共有 7 个未关闭阻断项。
+D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of Ready。首次评估时七项 PX-5 要求为 1 项通过、3 项部分满足、3 项失败并有 7 个阻断项；随后正式验收矩阵完成，`D039-PX5-B01` 已关闭，当前还剩 6 个阻断项。原始 1/3/3 评估统计保留为当时事实，不因后续关闭动作被改写。
 
 该结论不回退 Owner 已接受的 D-039=A，也不回退 PX-4。它只说明“接受后的设计”还不能被解释为“可以初始化正式工程或实现页面”。
 
@@ -33,7 +33,7 @@ D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of
 
 | 阻断 ID | 类别 | 关闭条件 | 当前责任边界 |
 | --- | --- | --- | --- |
-| `D039-PX5-B01` | 本地可先关闭 | 建立覆盖所有入口、空态、拒绝、失败、返回与零写入的正式验收矩阵 | PM / Product / QA 可在不写正式代码时完成 |
+| `D039-PX5-B01` | `CLOSED` | 已建立覆盖所有入口、空态、拒绝、失败、返回与零写入的 [24 条正式验收矩阵](d039-formal-acceptance-matrix.md) | 规格完成；自动化与真机证据仍按各 AC 的计划层补充 |
 | `D039-PX5-B02` | 本地可先关闭 | 固定 route/参数 schema、测试可观测性 ID、返回焦点和非法 deep-link 行为 | PM / Architecture / QA 可先形成规格；实现验证后续补证 |
 | `D039-PX5-B03` | 需 Owner 决定 | D-045 明确最近使用是否首版、与收藏的关系、保留与清除语义 | 先形成中立选择卡，再经 Owner 明确选择 |
 | `D039-PX5-B04` | 需 Owner 决定 | D-031 明确照片/媒体及 AI 内容是否、何时、以何种形式保留 | 不得从相机权限反推保留许可 |
@@ -55,8 +55,8 @@ OI-02 的 Bundle ID 仍未创建。它不阻断本地规格工作，但首次正
 
 ## 5. 推荐关闭顺序
 
-1. 先关闭 B01：把 PX-4 设计规则转换为逐状态、可自动化的验收矩阵。
-2. 再关闭 B02：形成正式 route/参数/testID/返回契约，但仍不创建 RN 页面。
+1. B01 已关闭：PX-4 设计规则已转换为 24 条逐状态、可自动化的验收矩阵。
+2. 当前先关闭 B02：形成正式 route/参数/testID/返回契约，但仍不创建 RN 页面。
 3. 为 D-045、D-031 和 AI 决定链分别准备小批中立选择卡；未通过独立复核前不展示给 Owner。
 4. 在具备 Mac/Xcode 后补 D-032 原生 Spike，回传证据并请求 Owner 第二次冻结。
 5. 只有 B01 至 B07 全部关闭且出现新的权威 PX-5 通过事件，才可请求对应正式实现授权。
@@ -68,7 +68,8 @@ D-039 decisionState: ACCEPTED
 selectedOption: A
 designBaselineState: PX-4_BASELINE_FROZEN
 px5Disposition: NOT_READY
-openBlockerCount: 7
+closedBlockerIds: [D039-PX5-B01]
+openBlockerCount: 6
 next: PX-5_BLOCKER_CLOSURE_REQUIRED
 d032SecondOwnerActionSatisfied: false
 formalRootProjectAuthorized: false
