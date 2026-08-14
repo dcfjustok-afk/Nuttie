@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER,
+  PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 276,
+    instancesValidated: 277,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 157);
+  assert.equal(report.counts.events, 158);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -595,6 +595,34 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(sdk57IosExportStructureVerifierEvent.value.data.reproducibleBuildEvidence, false);
   assert.equal(sdk57IosExportStructureVerifierEvent.value.data.decisionAccepted, false);
   assert.equal(sdk57IosExportStructureVerifierEvent.value.data.ownerSecondActionStillRequired, true);
+  const sdk57AndroidExportStructureVerifierEvent = findEvent(VALID_MODEL, "EVT-20260814-022");
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.subject.id, "sdk57-android-javascript-export-structure-verifier");
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.previousIosVerifierEventId, "EVT-20260814-021");
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.previousAndroidExportEventId, "EVT-20260814-019");
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.sharedPlatformVerifierCore, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.androidExportCommandIntegrated, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.androidExportCommandPassed, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.platformVerifierUnitTestsPassed, 10);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.androidVerifierUnitTestsPassed, 5);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.iosVerifierRegressionTestsPassed, 5);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.androidOnlyMetadataRequired, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.allowedAssetExtensions, "png,ttf,xml");
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.hermesBundleFiles, 1);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.declaredAssetFiles, 27);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.totalFiles, 29);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.bundleBytesUsedAsGate, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.bundleSha256UsedAsGate, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.assetPolicyViolationsRejected, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.pathTraversalSharedCore, true);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.recordedRunTotalBytesDelta, -2);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.repositoryFullSuitePassed, 792);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.projectOpsValidationTestsPassed, 121);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.nativeDirectoriesGenerated, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.nativeRuntimeEvidence, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.nativeAndroidEvidence, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.reproducibleBuildEvidence, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.decisionAccepted, false);
+  assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.ownerSecondActionStillRequired, true);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -640,7 +668,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 275);
+    assert.equal(report.schemaValidation.instancesValidated, 276);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1644,6 +1672,37 @@ test("拒绝弱化 iOS JavaScript export 结构校验或把漂移指纹冒充可
   assertDiagnostic(
     report,
     "OPS_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER_MISMATCH",
+    "project-ops/events/2026-08-14.jsonl",
+  );
+});
+
+test("拒绝绕过 Android JavaScript export 共用校验核心或把字节漂移冒充可复现构建", () => {
+  const report = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260814-022");
+    event.value.data.sharedPlatformVerifierCore = false;
+    event.value.data.androidOnlyMetadataRequired = false;
+    event.value.data.exactMetadataFileSetRequired = false;
+    event.value.data.additionalPlatformsRejected = false;
+    event.value.data.assetPolicyViolationsRejected = false;
+    event.value.data.pathTraversalSharedCore = false;
+    event.value.data.undeclaredFilesRejected = false;
+    event.value.data.nativeDirectoriesRejected = false;
+    event.value.data.bundleBytesUsedAsGate = true;
+    event.value.data.bundleSha256UsedAsGate = true;
+    event.value.data.fingerprintPolicy = "REPRODUCIBLE_BUILD_GATE";
+    event.value.data.reproducibleBuildEvidence = true;
+    event.value.data.nativeDirectoriesGenerated = true;
+    event.value.data.nativeRuntimeEvidence = true;
+    event.value.data.nativeAndroidEvidence = true;
+    event.value.data.formalRootProjectAuthorized = true;
+    event.value.data.decisionAccepted = true;
+    event.value.data.ownerSecondActionStillRequired = false;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    report,
+    "OPS_SDK57_ANDROID_EXPORT_STRUCTURE_VERIFIER_MISMATCH",
     "project-ops/events/2026-08-14.jsonl",
   );
 });

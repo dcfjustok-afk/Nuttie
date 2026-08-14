@@ -42,6 +42,7 @@ pnpm run config
 pnpm run doctor
 pnpm run export:android
 pnpm run export:ios-js
+pnpm run verify:android-export
 pnpm run verify:ios-export
 ```
 
@@ -62,8 +63,9 @@ were not used as evidence.
 | `pnpm run check` | PASS; TypeScript `--noEmit` |
 | `pnpm run config` | PASS; public Expo configuration resolved |
 | `pnpm run doctor` | PASS; 20/20 checks after directly locking required Router/Reanimated peers and `expo-doctor` |
-| `pnpm run export:android` | PASS; Metro bundled 1,652 modules into one Android Hermes bundle after the high-risk dependency surface entered the route graph |
+| `pnpm run export:android` | PASS; Metro bundled 1,652 modules, then automatically verified the Android-only export structure |
 | `pnpm run export:ios-js` | PASS; Windows Metro bundled 1,565 modules under iOS platform conditions, then automatically verified the exported structure without generating a native project |
+| `pnpm run verify:android-export` | PASS; Android-only Metro metadata, one Hermes bundle, explicit PNG/TTF/XML policy, 27 declared assets and an exact 29-file set |
 | `pnpm run verify:ios-export` | PASS; iOS-only Metro metadata, one Hermes bundle, 23 declared assets and an exact 25-file set; byte size and SHA-256 are explicitly excluded from reproducibility gates |
 
 Resolved headline versions were Expo `57.0.12`, Expo Router `57.0.12`, React
@@ -71,11 +73,15 @@ Native `0.86.2`, and React `19.2.3`. The surface binds, without calling,
 `expo-sqlite.openDatabaseAsync`, `expo-secure-store.getItemAsync`,
 `expo-camera.CameraView`, `expo-notifications.getPermissionsAsync`,
 `react-native-reanimated.Animated.View`, and
-`react-native-worklets.isWorkletFunction`. The ignored export contained 29
-files / 4,758,497 bytes. Its Hermes bundle SHA-256 was
+`react-native-worklets.isWorkletFunction`. The first recorded Android export
+contained 29 files / 4,758,497 bytes. Its run-specific Hermes bundle SHA-256 was
 `a48e69f982a0b2800a42c8feae765e6455a4d0eb94d11114995b01fe1c3863c0`; the
 verified lockfile SHA-256 was
 `97fadee6f3f7d67c295f3fdab2319c67c7a98390a4e4f041ce0b4afc837798d3`.
+The later verified Android export still produced 29 files but decreased to
+4,758,495 total bytes, with the Hermes bundle decreasing from 3,771,578 to
+3,771,576 bytes. Android therefore follows the same run-specific fingerprint
+policy as iOS.
 The ignored iOS-platform JavaScript export contained 25 files / 3,597,734
 bytes in each of three consecutive exports. The first recorded Hermes bundle
 SHA-256 was
@@ -89,14 +95,15 @@ Hermes bundle grew from 3,572,985 to 3,572,986 bytes and its total grew from
 3,597,734 to 3,597,735 bytes. The post-export verifier therefore checks the
 metadata-declared platform and exact file set, path containment, one non-empty
 Hermes bundle, and absent native directories; it reports sizes but never uses
-size or SHA-256 as a pass condition. Its five unit tests cover the valid shape,
-an extra platform, path traversal, undeclared files, and generated native
-directories.
+size or SHA-256 as a pass condition. The shared core now has ten wrapper-level
+tests: five iOS cases plus five Android cases covering its valid PNG/TTF/XML
+policy, an extra platform, an invalid asset extension, undeclared files, and a
+generated native directory.
 
 No `ios/` or `android/` directory was generated and Prebuild was not run. This
 closes only the authorized Windows JavaScript dependency/config/type-check and
-Android/iOS-condition Metro-export Spike. The iOS bundle is not an Xcode,
-simulator, device, native module, CocoaPods, signing, or runtime result. D-032
+Android/iOS-condition Metro-export Spike. These bundles are not emulator,
+simulator, device, native module, Xcode/CocoaPods, signing, or runtime results. D-032
 remains `CANDIDATE`; SQLCipher, Keychain, permissions,
 native linking, CocoaPods, Xcode, signed Archive, iPhone runtime, and Release
 evidence remain pending and require the second Owner action.

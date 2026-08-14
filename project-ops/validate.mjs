@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER = Object.freeze({
-  id: "PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER",
+export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
+  id: "PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 157,
+    events: 158,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER = Object.free
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 21,
+    "2026-08-14": 22,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1271,6 +1271,64 @@ export const PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER = Object.free
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  sdk57AndroidExportStructureVerifier: Object.freeze({
+    eventId: "EVT-20260814-022",
+    subjectId: "sdk57-android-javascript-export-structure-verifier",
+    state: "completed",
+    workingTreeBase: "890db04594603a4e174ef6fba8fa6106f9bd8cdc",
+    decisionId: "D-032",
+    decisionStatus: "CANDIDATE",
+    authorization: "SPIKE_AUTHORIZED",
+    scope: "SDK57_ANDROID_JAVASCRIPT_EXPORT_STRUCTURE_VERIFIER",
+    hostOs: "WINDOWS",
+    nodeVersion: "22.13.0",
+    pnpmVersion: "11.18.0",
+    previousIosVerifierEventId: "EVT-20260814-021",
+    previousAndroidExportEventId: "EVT-20260814-019",
+    sharedPlatformVerifierCore: true,
+    androidExportCommandIntegrated: true,
+    androidExportCommandPassed: true,
+    verifierRanPostExport: true,
+    platformVerifierUnitTestsPassed: 10,
+    androidVerifierUnitTestsPassed: 5,
+    iosVerifierRegressionTestsPassed: 5,
+    androidOnlyMetadataRequired: true,
+    metroBundlerRequired: true,
+    metadataVersion: 0,
+    allowedAssetExtensions: "png,ttf,xml",
+    hermesBundleFiles: 1,
+    declaredAssetFiles: 27,
+    totalFiles: 29,
+    recordedRunBundleBytes: 3771576,
+    recordedRunTotalBytes: 4758495,
+    bundleBytesUsedAsGate: false,
+    bundleSha256UsedAsGate: false,
+    fingerprintPolicy: "RUN_SPECIFIC_NOT_REPRODUCIBILITY_GATE",
+    exactMetadataFileSetRequired: true,
+    additionalPlatformsRejected: true,
+    assetPolicyViolationsRejected: true,
+    pathTraversalSharedCore: true,
+    undeclaredFilesRejected: true,
+    nativeDirectoriesRejected: true,
+    previousRecordedTotalBytes: 4758497,
+    recordedRunTotalBytesDelta: -2,
+    repositoryFullSuitePassed: 792,
+    projectOpsValidationTestsPassed: 121,
+    nativeDirectoriesGenerated: false,
+    prebuildRun: false,
+    nativeCompilationRun: false,
+    androidEmulatorRun: false,
+    androidDeviceRun: false,
+    signedArtifactProduced: false,
+    nativeRuntimeEvidence: false,
+    nativeAndroidEvidence: false,
+    reproducibleBuildEvidence: false,
+    formalRootProjectAuthorized: false,
+    decisionAccepted: false,
+    ownerSecondActionStillRequired: true,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1823,7 +1881,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3894,6 +3952,32 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_SDK57_IOS_EXPORT_STRUCTURE_VERIFIER_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "D-032 iOS JavaScript export verifier must retain exact iOS-only metadata/file-set/path/native-directory checks, keep byte size and SHA outside reproducibility gates, and keep all native, formal-root, decision and Owner state claims false",
+    );
+  }
+
+  const sdk57AndroidExportStructureVerifierEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sdk57AndroidExportStructureVerifier.subjectId,
+  );
+  const sdk57AndroidExportStructureVerifierEvent = sdk57AndroidExportStructureVerifierEvents[0]?.value;
+  const sdk57AndroidExportStructureVerifierData = sdk57AndroidExportStructureVerifierEvent?.data ?? {};
+  const sdk57AndroidExportStructureVerifierBaseline = baseline.sdk57AndroidExportStructureVerifier;
+  const sdk57AndroidExportStructureVerifierFields = Object.keys(sdk57AndroidExportStructureVerifierBaseline)
+    .filter((field) => field !== "eventId" && field !== "subjectId")
+    .sort();
+  if (
+    sdk57AndroidExportStructureVerifierEvents.length !== 1 ||
+    sdk57AndroidExportStructureVerifierEvent?.eventId !== sdk57AndroidExportStructureVerifierBaseline.eventId ||
+    sdk57AndroidExportStructureVerifierEvent?.type !== "TASK_COMPLETED" ||
+    sdk57AndroidExportStructureVerifierEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(Object.keys(sdk57AndroidExportStructureVerifierData).sort()) !== JSON.stringify(sdk57AndroidExportStructureVerifierFields) ||
+    sdk57AndroidExportStructureVerifierFields.some(
+      (field) => sdk57AndroidExportStructureVerifierData[field] !== sdk57AndroidExportStructureVerifierBaseline[field],
+    )
+  ) {
+    add(
+      "OPS_SDK57_ANDROID_EXPORT_STRUCTURE_VERIFIER_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "D-032 Android JavaScript export verifier must retain the shared platform core, Android-only metadata/asset/file/path/native-directory checks, keep byte size and SHA outside reproducibility gates, and keep native, formal-root, decision and Owner state claims false",
     );
   }
 
