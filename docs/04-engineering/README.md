@@ -23,7 +23,7 @@
 
 ## 2. 权威决策
 
-下表仅复述 Owner 于 2026-07-31 批准的 D-001 至 D-017。正式权威来源是 `docs/00-governance/decision-register.md` 和 `project-ops/decisions.json`；本目录不得自行改变其状态。
+下表保留 Owner 于 2026-07-31 批准的 D-001 至 D-017 原始工程边界。2026-08-14 首批回读后，D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-037/D-038/D-047/D-048 也已 `ACCEPTED`；D-032 保持 `CANDIDATE + SPIKE_AUTHORIZED`，D-052/D-053 保持 `CANDIDATE`。正式权威来源始终是 `docs/00-governance/decision-register.md` 和 `project-ops/decisions.json`；本目录不得自行改变其状态。
 
 | ID | 状态 | 已批准结论 | 工程影响 |
 | --- | --- | --- | --- |
@@ -91,14 +91,14 @@
 - [平台与语言 Release 审计合同](testing/platform-language-release-audit-harness.md)：F22 固定 D-011 iOS 17.0 与 D-016 简中，分离设备族/方向/Mac/Vision 四项未决维度，并要求签名 Archive 上 25 个发布证据面。
 - [Choice UI 宿主只读审计](choice-ui-host-audit-2026-08-14.md)：区分 0.1.0 elicitation 文字 fallback 与 0.3.0 MCP Apps 内联控件，记录当前未安装/未启用状态、静态安全边界、协议测试和浏览器宿主模拟；不替 Owner 选择或修改 Gate。
 - [ADR](adr/)：已批准架构决策的上下文与后果。
-- [技术决策候选](decisions/decision-candidates.md)：D-018 起的 Options / Trade-offs / Recommended，全部仍待 Owner 确认。
+- [技术决策原始候选档案](decisions/decision-candidates.md)：保留 D-018 起在 2026-07-31 提交的 Options / Trade-offs / Recommended；当前状态必须回查决定台账，不能沿用档案顶部的历史 proposed 语义。
 - [技术栈调研总览](technology-stack-research.md)：按已批准边界、候选库、原生能力和 Spike 证据解释 React Native 技术栈。
 
 ## 4. 进入实现前的门禁
 
 以下条件全部满足后，才允许初始化或修改 React Native 工程：
 
-1. D-018 起的首批库级候选完成 Owner 确认。
+1. 已接受的 D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-037 按决定台账实施；D-032 仍须原生证据与第二次 Owner 动作冻结最终矩阵，D-022 等尚未登记提案不得进入正式增量。
 2. Mac、受支持 Xcode、iOS 17 模拟器和至少一台真实 iPhone 可用。
 3. SQLCipher、Keychain、签名包和加密备份完成最小 Spike，失败路径有结果记录。
 4. 数据许可清单、署名模板和测试数据集经过产品与数据负责人复核。
@@ -111,7 +111,7 @@ G4 当前保持 `IN_PROGRESS / 初版`。独立 [安全终审](../05-quality/sec
 
 PM 于 2026-07-31 核验 Expo 官方 latest 页面：SDK 57.0.0 对应 React Native 0.86、React 19.2.3、Node 22.13.x；Expo 最低 iOS 16.4、Xcode 26.4。D-011 的 iOS 17+ 比 Expo 当前最低版本更严格，因此无冲突。
 
-这些数字只记录调研时点，不等于项目已冻结依赖。精确 Expo/RN/React/Node/Xcode 版本、lockfile 和 New Architecture 兼容矩阵必须经过原生 Spike，并由 D-032 确认。
+隔离 Windows JS Spike 已实际解析 Expo 57.0.12、React Native 0.86.2、React 19.2.3，并用 Node 22.13.0 / pnpm 11.18.0 通过 frozen install、TypeScript、Expo config、Doctor 20/20 与 Android Metro export。这只关闭已授权的 JS 子范围；Xcode/CocoaPods、Prebuild、SQLCipher/Keychain 原生链接、签名 Archive 和 iPhone 运行仍未验证，因此最终矩阵仍须 D-032 第二次 Owner 动作确认。
 
 参考：
 

@@ -1,14 +1,14 @@
 # Nuttie React Native 技术栈调研总览
 
-> 状态：`RESEARCH_BASELINE / OWNER_DECISIONS_PENDING`
+> 状态：`RESEARCH_BASELINE / OWNER_BATCH_CONFIRMED / D032_SPIKE_VERIFIED`
 >
-> 快照日期：2026-07-31
+> 调研快照日期：2026-07-31；决定状态复核：2026-08-14
 >
 > 适用边界：iOS 17+、React Native、本地优先、仅用户主动 AI 请求联网
 
 ## 1. 先区分“已批准”与“候选”
 
-已批准的技术边界只有：
+2026-07-31 已批准的基础技术边界包括：
 
 - D-003：每人配置 OpenAI-compatible Base URL、model 和 key。
 - D-004：AI Base URL 只允许 HTTPS。
@@ -18,17 +18,19 @@
 - D-012：离线数据随 App 发版或从 Files 导入签名包。
 - D-015：SQLCipher + Keychain 数据库密钥。
 
-下面出现的 Expo SDK 版本、包管理器、导航、状态、数据库访问层、表单、样式和测试工具全部仍是候选。任何 `Recommended` 都不能代替 Owner 的明确决定。
+2026-08-14 Owner 首批整批回读又接受了 Expo Router（D-018）、Zustand 仅 UI/session（D-019）、Drizzle + 受控 SQL（D-020）、React Hook Form + Zod（D-021）、Jest 单 runner（D-023）、本地 Maestro + XCTest/XCUITest（D-024）、StyleSheet semantic tokens（D-025）、pnpm 11.18.0 hoisted profile（D-037）、四入口产品外壳（D-038）、当前仅自用不加入 Apple Developer Program（D-047）和 iPhone 竖屏 profile（D-048）。
+
+D-032 只获得 `CANDIDATE + SPIKE_AUTHORIZED`：Windows JS Spike 已验证，但最终 Expo/RN/Node/Xcode/CocoaPods/New Architecture 矩阵仍待原生证据与第二次 Owner 动作。D-052/D-053 是另外两项权威候选；D-022、D-026 等未进入决定台账的内容仍只是提案。任何历史 `Recommended` 都不能替代当前权威状态。
 
 ## 2. 推荐分层
 
 ```text
 React Native UI / TypeScript strict
   |
-  +-- App shell and navigation ........ D-038 / D-018 candidate
-  +-- UI session state ................ D-019 candidate
-  +-- Forms and unknown validation .... D-021 candidate
-  +-- Typed design tokens ............. D-025 candidate
+  +-- App shell and navigation ........ D-038 / D-018 accepted
+  +-- UI session state ................ D-019 accepted
+  +-- Forms and unknown validation .... D-021 accepted
+  +-- Typed design tokens ............. D-025 accepted
   |
 Use cases and domain
   |
@@ -38,7 +40,7 @@ Use cases and domain
   |
 Ports and repositories
   |
-  +-- SQLCipher application database .. D-020 candidate access layer
+  +-- SQLCipher application database .. D-020 accepted access direction
   +-- Read-only signed food packs ...... D-026 candidate signature profile
   +-- Keychain SecretVault
   +-- Local notifications / media / Files
@@ -50,21 +52,21 @@ iOS native boundary
   +-- XCTest/XCUITest for Keychain, notifications and extensions
 ```
 
-## 3. 当前候选矩阵
+## 3. 技术矩阵的当前处置
 
-| 层 | 候选 A / 当前建议 | 备选 | 为什么不是既定事实 | 接受前证据 |
-| --- | --- | --- | --- | --- |
-| 包管理器 D-037 | pnpm + 唯一 `pnpm-lock.yaml` | npm / Yarn | Expo 支持入口不等于 Nuttie 已选 | Windows/Mac、Expo scripts、CocoaPods 验证 |
-| 版本 D-032 | Expo SDK 57 / RN 0.86 作为首个 Spike | 受支持前一稳定 SDK | current latest 会变化，高风险依赖可能未适配 | SQLCipher、SecureStore、相机、通知、Prebuild、Archive |
-| 产品外壳 D-038 | 日记、趋势、食品资料、设置 | 三目的地 / 单一日记中心 | 属于产品 IA，不由库默认值决定 | 低保真流程、320/375pt、VoiceOver 顺序 |
-| 导航 D-018 | Expo Router | React Navigation 直接配置 | 文件路由与集中路由各有维护成本 | 六条真实旅程、返回、Modal、deep link |
-| UI 状态 D-019 | Zustand，仅 UI/session/草稿 | Redux Toolkit / React context | SQLite 必须保持领域真源 | lint/目录边界、杀进程后无业务数据丢失 |
-| SQLite 访问 D-020 | Drizzle + 显式 SQL migrations + 受控直接 SQL | 全手写 SQL / Kysely | ORM 不能隐藏 SQLCipher pragma、FTS、备份和完整性 | 加密库 migration、回滚、损坏和分析查询 Spike |
-| 表单 D-021 | React Hook Form + Zod | Formik + Yup / 自研 | Domain 不能依赖表单 schema | 动态食材、单位、AI `unknown`、无障碍错误摘要 |
-| 图表 D-022 | Victory Native 与 Gifted Charts 对比后再选 | Swift Charts 包装 | 可访问性、原生依赖和大数据性能未知 | 7/30/365 天、最大字体、VoiceOver、旧设备性能 |
-| 单元/组件 D-023 | Jest + React Native Testing Library | Vitest 组合 | RN mock 与 runner 兼容需冻结 | 纯 Domain、hooks、组件和原生边界隔离 |
-| E2E D-024 | Maestro + XCTest/XCUITest | Detox + XCTest / 仅 XCUITest | 系统权限与 Keychain 不能只靠 RN E2E | 稳定性、失败诊断、CI/Mac 可重复性 |
-| 样式 D-025 | StyleSheet + typed tokens | NativeWind / Unistyles | 品牌与视觉方向仍需 Owner 选择 | Dynamic Type、深浅色、对比度、变体样板 |
+| 层 | 当前方向 | 权威状态 | 尚需执行证据 |
+| --- | --- | --- | --- |
+| 包管理器 D-037 | pnpm 11.18.0 + hoisted linker + 唯一 `pnpm-lock.yaml` | `ACCEPTED` | 正式工程和 Mac/CocoaPods 路径仍待验证 |
+| 版本 D-032 | Expo SDK 57 / RN 0.86.2 隔离 Spike | `CANDIDATE + SPIKE_AUTHORIZED`；Windows JS 子范围 PASS | Prebuild、SQLCipher、SecureStore、相机、通知、Xcode/CocoaPods、Archive、真机后再由 Owner 冻结 |
+| 产品外壳 D-038 | 日记、趋势、食品资料、设置 | `ACCEPTED` | 正式实现仍受 D-039 与根工程门禁约束 |
+| 导航 D-018 | Expo Router | `ACCEPTED` | 正式路由、返回、Modal 和 deep link 实现测试 |
+| UI 状态 D-019 | Zustand，仅 UI/session/草稿 | `ACCEPTED` | lint/目录边界和进程恢复测试 |
+| SQLite 访问 D-020 | Drizzle + 显式 SQL migrations + 受控直接 SQL | `ACCEPTED` | 加密库 migration、回滚、损坏和分析查询 Spike |
+| 表单 D-021 | React Hook Form + Zod；Domain 不依赖表单 schema | `ACCEPTED` | 动态食材、单位、AI `unknown`、无障碍错误摘要 |
+| 图表 D-022 | Victory Native 与 Gifted Charts 对比后再选 | `PROPOSED / NOT_REGISTERED` | 7/30/365 天、最大字体、VoiceOver、旧设备性能及 Owner 决定 |
+| 单元/组件 D-023 | Jest + React Native Testing Library 单 runner | `ACCEPTED` | 正式工程中的 Domain/hooks/组件/原生边界隔离 |
+| E2E D-024 | 本地 Maestro + XCTest/XCUITest | `ACCEPTED` | Mac/真机稳定性、失败诊断和可重复性 |
+| 样式 D-025 | StyleSheet + typed semantic tokens | `ACCEPTED` | Dynamic Type、深浅色、对比度和组件变体实现证据 |
 
 ## 4. Expo 与 SQLCipher 官方事实
 
