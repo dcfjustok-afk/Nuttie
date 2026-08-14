@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T22:17:51+08:00",
+  "generatedAt": "2026-08-14T22:34:27+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 153
+    "projectEvents": 154
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "AI 配置—策略预检已完成；首批 Owner 输入保持确认并继续推进 D-039 与隔离 SDK 57 JS Spike",
+      "workPackage": "隔离 SDK 57 Windows JS Spike 已验证；D-032 保持候选并继续推进 D-039 与原生证据准备",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-032 已授权的隔离 SDK 57 Windows JS Spike 已完成：Node 22.13.0 / pnpm 11.18.0 冻结安装、静态边界、TypeScript、Expo public config、Doctor 20/20 与 1,232 模块 Android Hermes export 通过；未生成 ios/android、未运行 Prebuild，不构成 SQLCipher/Keychain/权限/原生 iOS/Archive/真机证据，D-032 继续 CANDIDATE 并等待第二次 Owner 动作",
     "F01/F02 AI 配置—策略预检已登记：只从稳定 CONFIGURED 生命周期导出带指纹的非敏感配置证据，并与 AI_REQUEST_EVIDENCE_CONTEXT_V2 逐项比较 baseURL/origin/model；即使完全一致也因配置未绑定 providerId 及 D-033/D-034/D-036/D-053 未授权而固定 BLOCKED。合同不读取 key、不构造 Authorization/body、不创建 transport、不联网、不写业务状态，不改变 28/3 决定、Owner 确认或 Gate",
     "F01/F02 与 F16 已统一 AI_REQUEST_EVIDENCE_CONTEXT_V2：精确 policy subject、完整本地 profile、D-053 authorization evidence 和 policy-check 共同绑定，只接受 scope/有效期/风险/ALLOW 满足且唯一剩余阻断为 D053_NOT_AUTHORIZED 的上下文；边界固定 CALLER_SUPPLIED_UNTRUSTED_RESPONSE_FIXTURE / transport NOT_ESTABLISHED / send NOT_GRANTED。候选确认状态/记录链升 V3，F16 状态/来源链升 V2，旧松散上下文和旧消费者证据失败关闭；不证明真实 Provider 响应，不读取 key、不序列化敏感 body、不联网、不改变 Owner 或 Gate",
     "F01/F02 AI 候选确认完整响应证据链已升级 V2：规范化完整 responseFingerprint 随候选进入状态，编辑时保留，并同时绑定 review、确认记录 source evidence、幂等命令和回执；即使选中 candidate 不变，未选候选变化也会改变 review 指纹。状态/review/记录/source/command/receipt 均升级独立 V2，旧 V1 明确失败关闭；只持久化指纹与用户确认值，不持久化原始响应或候选正文，不授权自动改日记/目标、真实 Repository、网络、原生或正式实现",

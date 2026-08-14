@@ -16,7 +16,7 @@
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
 | G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过；首批 Owner 输入已确认，仍需冻结首个 MVP 增量与后期范围边界 |
 | G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-038 四入口导航已接受，D-039 已通过 PX-2 并待 PX-3 Owner 评审；D-040 保持后续候选且不阻断当前添加餐食评审 |
-| G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受，D-032 仅允许约定隔离目录的 SDK 57 JS Spike；合并后全库 777/777，ProjectOps 为 5 份 Schema/272 个实例。F01/F02/F16 共享 request subject/profile/D-053/check 证据、AI 配置—策略预检、不可信响应、完整候选指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他框架无关合同继续 fail closed，但不证明真实 Provider/schema/营养真值、transport 或发送许可；D-033/D-034/D-036/D-053、正式根工程、SQLCipher/Keychain、原生路径、Mac/真机和 Release 证据仍未关闭 |
+| G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受；D-032 隔离 SDK 57 Windows JS Spike 的冻结安装、类型检查、Expo 配置、Doctor 20/20 与 Android Metro export 已通过，但 D-032 仍为候选。合并后全库 778/778，ProjectOps 为 5 份 Schema/273 个实例。F01/F02/F16 共享 request subject/profile/D-053/check 证据、AI 配置—策略预检、不可信响应、完整候选指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他框架无关合同继续 fail closed，但不证明真实 Provider/schema/营养真值、transport 或发送许可；D-033/D-034/D-036/D-053、正式根工程、SQLCipher/Keychain、Prebuild、Mac/Xcode/CocoaPods、原生真机和 Release 证据仍未关闭 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
 | G7 | Release Ready | FAIL | 尚无候选构建、发布授权、回退和分发检查 |

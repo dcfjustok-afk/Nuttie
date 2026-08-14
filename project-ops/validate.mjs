@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT",
+export const PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION = Object.freeze({
+  id: "PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 153,
+    events: 154,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT = Obje
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 17,
+    "2026-08-14": 18,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1072,6 +1072,45 @@ export const PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT = Obje
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  sdk57JsSpikeVerification: Object.freeze({
+    eventId: "EVT-20260814-018",
+    subjectId: "sdk57-js-spike-verification",
+    state: "completed",
+    workingTreeBase: "8c49cf9a3318ca46ae6b731e9e64f9e24c18b557",
+    decisionId: "D-032",
+    decisionStatus: "CANDIDATE",
+    authorization: "SPIKE_AUTHORIZED",
+    scope: "ISOLATED_JS_SPIKE",
+    hostOs: "WINDOWS",
+    nodeVersion: "22.13.0",
+    pnpmVersion: "11.18.0",
+    lockfileFrozen: true,
+    lockfileSha256: "97fadee6f3f7d67c295f3fdab2319c67c7a98390a4e4f041ce0b4afc837798d3",
+    contractCheckPassed: true,
+    typecheckPassed: true,
+    expoConfigPassed: true,
+    expoDoctorChecksPassed: 20,
+    expoDoctorChecksTotal: 20,
+    androidExportPassed: true,
+    androidBundleModules: 1232,
+    androidBundleFiles: 29,
+    androidBundleBytes: 3632083,
+    androidBundleSha256: "98c8ec5c1c22e747f903010ea97bd889015eb8c4477e56ef85603593cd193fb2",
+    resolvedExpoVersion: "57.0.12",
+    resolvedExpoRouterVersion: "57.0.12",
+    resolvedReactNativeVersion: "0.86.2",
+    resolvedReactVersion: "19.2.3",
+    repositoryFullSuitePassed: 778,
+    projectOpsValidationTestsPassed: 117,
+    nativeDirectoriesGenerated: false,
+    prebuildRun: false,
+    nativeIosEvidence: false,
+    formalRootProjectAuthorized: false,
+    decisionAccepted: false,
+    ownerSecondActionStillRequired: true,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1624,7 +1663,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3591,6 +3630,32 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "F01/F02 AI configuration-policy preflight must retain stable non-sensitive configuration evidence, exact baseURL/origin/model comparison, absent provider identity binding, all D-033/D-034/D-036/D-053 blockers, and zero send side effects",
+    );
+  }
+
+  const sdk57JsSpikeVerificationEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sdk57JsSpikeVerification.subjectId,
+  );
+  const sdk57JsSpikeVerificationEvent = sdk57JsSpikeVerificationEvents[0]?.value;
+  const sdk57JsSpikeVerificationData = sdk57JsSpikeVerificationEvent?.data ?? {};
+  const sdk57JsSpikeVerificationBaseline = baseline.sdk57JsSpikeVerification;
+  const sdk57JsSpikeVerificationFields = Object.keys(sdk57JsSpikeVerificationBaseline)
+    .filter((field) => field !== "eventId" && field !== "subjectId")
+    .sort();
+  if (
+    sdk57JsSpikeVerificationEvents.length !== 1 ||
+    sdk57JsSpikeVerificationEvent?.eventId !== sdk57JsSpikeVerificationBaseline.eventId ||
+    sdk57JsSpikeVerificationEvent?.type !== "TASK_COMPLETED" ||
+    sdk57JsSpikeVerificationEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(Object.keys(sdk57JsSpikeVerificationData).sort()) !== JSON.stringify(sdk57JsSpikeVerificationFields) ||
+    sdk57JsSpikeVerificationFields.some(
+      (field) => sdk57JsSpikeVerificationData[field] !== sdk57JsSpikeVerificationBaseline[field],
+    )
+  ) {
+    add(
+      "OPS_SDK57_JS_SPIKE_VERIFICATION_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "D-032 verification must retain the exact Node/pnpm/lockfile and Windows JS check evidence while keeping native directories, Prebuild, iOS evidence, formal root authorization, decision acceptance and gate changes false",
     );
   }
 
