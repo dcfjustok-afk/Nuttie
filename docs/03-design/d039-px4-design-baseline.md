@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 决定 | `D-039 / ACCEPTED / A` |
-| 状态 | `PX-4_BASELINE_FROZEN / PX-5_DOR_EVALUATED_NOT_READY / BLOCKER_CLOSURE_REQUIRED` |
+| 状态 | `PX-4_BASELINE_FROZEN / PX-5_DOR_EVALUATED_NOT_READY / B01_B02_CLOSED` |
 | 冻结日期 | 2026-08-15（Asia/Shanghai） |
 | 选择 | 本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口 |
 | Owner 证据 | `EVT-20260815-001`，Owner 查看冻结原型后明确回复 `a` |
@@ -75,7 +75,7 @@ D-039 只冻结“从添加餐食进入具体录入方式前”的首层组织�
 
 进入对应实现增量前至少还需：
 
-1. 把稳定设计 ID 映射到经授权的正式页面、路由与测试可观测性 ID；
+1. 稳定设计 ID 已映射为[路由、测试可观测性和返回契约](d039-route-observability-contract.md)；正式页面与自动化证据仍须在授权后实现；
 2. 本地搜索、最近、扫码、AI、创建食品和统一保存的 [24 条正式验收矩阵](../05-quality/d039-formal-acceptance-matrix.md)已完成；实现自动化与真机证据仍待对应增量和环境；
 3. 关闭受影响的产品决定与安全门禁，尤其是最近使用具体保留/清除规则、媒体保留 D-031、AI 确认 D-033/D-034/D-036 和 Provider 准入 D-053；
 4. 获得正式根工程与对应实现增量的明确授权；

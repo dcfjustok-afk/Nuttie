@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX = Object.freeze({
-  id: "PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX",
+export const PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 164,
+    events: 165,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 6,
+    "2026-08-15": 7,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1585,6 +1585,76 @@ export const PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX = Object.freeze({
       ownerIntakeChanged: false,
       decisionStateChanged: false,
     }),
+    px5RouteContract: Object.freeze({
+      eventId: "EVT-20260815-007",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D039-ROUTE-OBSERVABILITY-CONTRACT-001",
+      subjectRole: "QualityArtifact",
+      correlationId: "d039-px5-b02-route-observability-contract",
+      state: "completed",
+      decisionId: "D-039",
+      decisionState: "ACCEPTED",
+      selectedOption: "A",
+      designBaselineState: "PX-4_BASELINE_FROZEN",
+      px5Disposition: "NOT_READY",
+      from: "D039-PX5-B02_OPEN",
+      to: "D039-PX5-B02_CLOSED",
+      next: "D039-PX5-OWNER_DEPENDENCIES_REQUIRED",
+      routeContractId: "D039-ROUTE-OBSERVABILITY-CONTRACT-001",
+      routeParamSchema: "D039RouteParamsV1",
+      returnDescriptorSchema: "D039ReturnDescriptorV1",
+      routeIds: Object.freeze([
+        "D039-RTE-ENTRY", "D039-RTE-SCAN", "D039-RTE-AI",
+        "D039-RTE-CREATE-FOOD", "D039-RTE-REVIEW-SAVE",
+      ]),
+      routePaths: Object.freeze([
+        "/journal/add-meal", "/journal/add-meal/scan", "/journal/add-meal/ai",
+        "/journal/add-meal/create-food", "/journal/add-meal/review-save",
+      ]),
+      routeCount: 5,
+      routeParamNames: Object.freeze(["ctx", "candidate"]),
+      routeParamsStrictUnknownRejection: true,
+      sensitiveBusinessDataInUrl: false,
+      externalDeepLinksSupported: false,
+      staticTestIdCount: 43,
+      dynamicTestIdPatterns: Object.freeze([
+        "d039.entry.localSearch.result.item-{n}",
+        "d039.entry.recent.item-{n}",
+      ]),
+      dynamicTestIdPatternCount: 2,
+      returnRecoveryCaseIds: Object.freeze([
+        "D039-RC-001", "D039-RC-002", "D039-RC-003",
+        "D039-RC-004", "D039-RC-005", "D039-RC-006",
+      ]),
+      returnRecoveryCaseCount: 6,
+      testProbeIds: Object.freeze([
+        "d039.probe.routeVisible", "d039.probe.focusRestored",
+        "d039.probe.businessWriteAttempt", "d039.probe.networkAttempt",
+        "d039.probe.permissionAttempt",
+      ]),
+      releaseProbeNoOpRequired: true,
+      formalAcceptanceMatrixComplete: true,
+      stableRouteAndTestIdsMapped: true,
+      returnDeepLinkContractComplete: true,
+      closedBlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenBlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenBlockerCount: 5,
+      locallyCloseableBlockerIds: Object.freeze([]),
+      ownerDependentBlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05", "D039-PX5-B06",
+      ]),
+      environmentDependentBlockerIds: Object.freeze(["D039-PX5-B07"]),
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      decisionStateChanged: false,
+    }),
     findingsClosed: Object.freeze(
       Array.from(
         { length: 10 },
@@ -2152,7 +2222,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5166,6 +5236,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D039_PX5_B01_ACCEPTANCE_MATRIX_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-039 PX-5 B01 必须精确保留 24 条正式验收用例、B01 单独关闭、B02 至 B07 开放和全部实现授权位关闭",
+    );
+  }
+
+  const routeContractSpec = baseline.d039.px5RouteContract;
+  const routeContractEvents = model.events.filter(
+    (record) => record.value?.eventId === routeContractSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === routeContractSpec.correlationId),
+  );
+  const routeContractEvent = routeContractEvents[0]?.value;
+  const routeContractData = routeContractEvent?.data ?? {};
+  const routeContractFields = Object.keys(routeContractSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    routeContractEvents.length !== 1 ||
+    routeContractEvent?.eventId !== routeContractSpec.eventId ||
+    routeContractEvent?.type !== "ARTIFACT_CREATED" ||
+    routeContractEvent?.actor?.id !== routeContractSpec.actorId ||
+    routeContractEvent?.actor?.role !== routeContractSpec.actorRole ||
+    routeContractEvent?.subject?.id !== routeContractSpec.subjectId ||
+    routeContractEvent?.subject?.role !== routeContractSpec.subjectRole ||
+    routeContractEvent?.correlationId !== routeContractSpec.correlationId ||
+    JSON.stringify(Object.keys(routeContractData).sort()) !== JSON.stringify(routeContractFields) ||
+    routeContractFields.some(
+      (field) => JSON.stringify(routeContractData[field]) !== JSON.stringify(routeContractSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-039 PX-5 B02 必须精确保留 5 个 route、严格参数、43 个静态 testID、失败关闭 deep link、B01/B02 关闭和全部实现授权位关闭",
     );
   }
 

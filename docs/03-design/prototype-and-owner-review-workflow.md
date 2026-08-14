@@ -5,7 +5,7 @@
 | 状态 | `CANDIDATE / PROCESS_DRAFT_FOR_OWNER_REVIEW` |
 | 基线日期 | 2026-07-31 |
 | 负责人 | Product Designer / DesignOps Lead |
-| 当前试点 | D-038 已接受；D-039 已完成 PX-4，PX-5 B01 已关闭、B02~B07 开放；D-040 首启资料与目标处于 PX-0 输入缺口 |
+| 当前试点 | D-038 已接受；D-039 已完成 PX-4，PX-5 B01/B02 已关闭、B03~B07 开放；D-040 首启资料与目标处于 PX-0 输入缺口 |
 | 原则 | 先形成可操作原型，再由 Owner 选择，最后进入实现 |
 
 ## 1. 目的与强制边界

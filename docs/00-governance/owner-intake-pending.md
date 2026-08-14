@@ -26,7 +26,7 @@ Owner 后续于 2026-08-15 查看冻结 D-039 原型后明确回复 `a`，单独
 | D-023 | A，Jest 单 runner | `CONFIRMED_ACCEPTED` |
 | D-024 | A，本地 Maestro + XCTest/XCUITest | `CONFIRMED_ACCEPTED` |
 | D-047 | 首次点击 A，随后明确回正为 C：当前暂不加入、只自用 | A 已被澄清取代；C 为 `CONFIRMED_ACCEPTED` |
-| D-039 | A，本地搜索和最近使用优先；扫描与 AI 并列 | 后续单独回复；`CONFIRMED_ACCEPTED / PX-4_BASELINE_FROZEN`；PX-5 B01 已关闭，B02~B07 共 6 项开放 |
+| D-039 | A，本地搜索和最近使用优先；扫描与 AI 并列 | 后续单独回复；`CONFIRMED_ACCEPTED / PX-4_BASELINE_FROZEN`；PX-5 B01/B02 已关闭，B03~B07 共 5 项开放 |
 
 ## 2. 已确认事实与冲突
 

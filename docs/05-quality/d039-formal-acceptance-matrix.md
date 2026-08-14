@@ -7,11 +7,11 @@
 | 设计基线 | `PX-4_BASELINE_FROZEN` |
 | 规格状态 | `SPEC_COMPLETE / IMPLEMENTATION_NOT_AUTHORIZED` |
 | 关闭阻断 | `D039-PX5-B01` |
-| 仍开放 | `D039-PX5-B02` 至 `D039-PX5-B07` |
+| 后续进展 | B02 路由与可观测性契约已关闭；`D039-PX5-B03` 至 `D039-PX5-B07` 仍开放 |
 
 ## 1. 验收口径
 
-本矩阵把 D-039=A 的冻结设计转换为 24 条正式、实现无关的验收用例。它只使用 PX-4 的稳定设计 ID，不预先指定 React Native route、组件名或 `testID`；这些属于仍开放的 B02。
+本矩阵把 D-039=A 的冻结设计转换为 24 条正式、实现无关的验收用例。矩阵创建时只使用 PX-4 的稳定设计 ID；随后 B02 已在[路由、可观测性与返回契约](../03-design/d039-route-observability-contract.md)中冻结具体 route、`testID` 和失败关闭规则。
 
 状态含义：
 
@@ -47,7 +47,7 @@
 | `D039-AC-020` | AI 文字输入为空或仅空白并提交 | 原文保留；字段关联错误；焦点到首个错误；不进入发送态 | 请求 0、候选 0、写入 0 | `DEPENDENCY_BLOCKED`；组件 + E2E |
 | `D039-AC-021` | 创建/统一检查字段无效或保存返回 `NOT_COMMITTED` | 草稿、日期、餐次和已输入值保留；聚焦首个错误或提供同命令重试 | 业务库保持原值；不乐观增加汇总 | `READY_AFTER_IMPLEMENTATION`；组件 + 应用合同 + E2E |
 | `D039-AC-022` | 保存结果为 `UNKNOWN` | 禁止换命令/重新编辑；只允许原命令对账或重试；成功回读后恰好一次 | 不产生第二条记录；网络 0 | `READY_AFTER_IMPLEMENTATION`；应用合同 + E2E |
-| `D039-AC-023` | 从搜索、最近、扫描、AI、创建食品返回或按 Escape | 恢复原触发控件；触发控件消失时回 `D039-ENTRY` 标题；根返回到原日记日期/餐次 | 返回不保存、不发送、不记偏好 | `READY_AFTER_IMPLEMENTATION`；组件 + E2E；B02 固定标识 |
+| `D039-AC-023` | 从搜索、最近、扫描、AI、创建食品返回或按 Escape | 按 `D039ReturnDescriptorV1` 恢复原触发 `testID`；触发控件消失时回 route 标题；根返回到原日记上下文 | 返回不保存、不发送、不记偏好 | `READY_AFTER_IMPLEMENTATION`；组件 + E2E；B02 标识已冻结 |
 | `D039-AC-024` | 320/375/430 pt、最大 Dynamic Type、VoiceOver、Reduce Motion 下遍历全页 | 无根级横向溢出；入口不裁切；逻辑顺序符合 PX-4；目标 ≥44pt；错误/状态非仅颜色；初始焦点为标题 | 非主动 AI 场景全进程业务网络 0 | `NATIVE_EVIDENCE_REQUIRED`；组件 + 截图 + 真机 |
 
 ## 3. 覆盖反查
@@ -76,10 +76,10 @@
 D039-PX5-B01: CLOSED
 formalAcceptanceMatrixComplete: true
 acceptanceCaseCount: 24
-D039-PX5-B02: OPEN
-stableRouteAndTestIdsMapped: false
-returnDeepLinkContractComplete: false
-remainingOpenBlockerCount: 6
+D039-PX5-B02: CLOSED
+stableRouteAndTestIdsMapped: true
+returnDeepLinkContractComplete: true
+remainingOpenBlockerCount: 5
 formalRootProjectAuthorized: false
 nativeIosWorkAuthorized: false
 formalImplementationAuthorized: false

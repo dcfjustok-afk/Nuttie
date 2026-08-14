@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX,
+  PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX5_B01_ACCEPTANCE_MATRIX.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 283,
+    instancesValidated: 284,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 164);
+  assert.equal(report.counts.events, 165);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -672,6 +672,21 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039AcceptanceMatrixEvent.value.data.remainingOpenBlockerCount, 6);
   assert.equal(d039AcceptanceMatrixEvent.value.data.stableRouteAndTestIdsMapped, false);
   assert.equal(d039AcceptanceMatrixEvent.value.data.formalImplementationAuthorized, false);
+  const d039RouteContractEvent = findEvent(VALID_MODEL, "EVT-20260815-007");
+  assert.equal(d039RouteContractEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d039RouteContractEvent.value.subject.id, "D039-ROUTE-OBSERVABILITY-CONTRACT-001");
+  assert.equal(d039RouteContractEvent.value.data.to, "D039-PX5-B02_CLOSED");
+  assert.equal(d039RouteContractEvent.value.data.next, "D039-PX5-OWNER_DEPENDENCIES_REQUIRED");
+  assert.equal(d039RouteContractEvent.value.data.routeCount, 5);
+  assert.equal(d039RouteContractEvent.value.data.staticTestIdCount, 43);
+  assert.equal(d039RouteContractEvent.value.data.dynamicTestIdPatternCount, 2);
+  assert.equal(d039RouteContractEvent.value.data.returnRecoveryCaseCount, 6);
+  assert.equal(d039RouteContractEvent.value.data.externalDeepLinksSupported, false);
+  assert.deepEqual(d039RouteContractEvent.value.data.closedBlockerIds, ["D039-PX5-B01", "D039-PX5-B02"]);
+  assert.equal(d039RouteContractEvent.value.data.remainingOpenBlockerCount, 5);
+  assert.equal(d039RouteContractEvent.value.data.stableRouteAndTestIdsMapped, true);
+  assert.equal(d039RouteContractEvent.value.data.returnDeepLinkContractComplete, true);
+  assert.equal(d039RouteContractEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -740,7 +755,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 282);
+    assert.equal(report.schemaValidation.instancesValidated, 283);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2207,6 +2222,34 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       findEvent(model, "EVT-20260815-006").value.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_PX5_B01_ACCEPTANCE_MATRIX_MISMATCH");
+  });
+
+  await t.test("PX-5 B02 路由契约事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260815-007");
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
+  });
+
+  await t.test("PX-5 B02 route/path 集合漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-007").value.data.routePaths[0] = "/add-meal";
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
+  });
+
+  await t.test("PX-5 B02 错误支持外部 deep link", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-007").value.data.externalDeepLinksSupported = true;
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
+  });
+
+  await t.test("PX-5 B02 越级授权正式实现", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-007").value.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
   });
 });
 

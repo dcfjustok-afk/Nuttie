@@ -205,4 +205,4 @@ node D:\github\Nuttie\prototypes\d039-add-meal-entry\qa-smoke.mjs http://127.0.0
 
 1. PX-3 已完成：Owner 查看同一冻结原型后明确回复 `a`，D-039=A 已记录为 `ACCEPTED`；页面切换控件没有参与决定写入。
 2. PX-4 已完成：接受方案、首层层级、返回、状态、无障碍顺序和四类复核已冻结在 [D-039 PX-4 设计基线](d039-px4-design-baseline.md)。
-3. PX-5 DoR 已完成首次评估，结论为 `NOT_READY / BLOCKER_CLOSURE_REQUIRED`。正式页面/路由、真实相机/相册、AI transport、数据库、原生与发布工作继续未授权；精确阻断项见 [PX-5 实现就绪评估](../05-quality/d039-px5-dor-assessment.md)。
+3. PX-5 DoR 已完成首次评估，结论为 `NOT_READY`；B01 验收矩阵与 B02 路由/可观测性规格已关闭，B03~B07 仍开放。正式页面、真实相机/相册、AI transport、数据库、原生与发布工作继续未授权；精确阻断项见 [PX-5 实现就绪评估](../05-quality/d039-px5-dor-assessment.md)。

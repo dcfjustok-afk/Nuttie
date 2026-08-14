@@ -55,7 +55,10 @@ function latestD039DorAssessment(model) {
 
 function latestD039DorProgress(model) {
   return model.events
-    .filter((record) => record.value?.subject?.id === "D039-FORMAL-ACCEPTANCE-MATRIX-001")
+    .filter((record) => [
+      "D039-FORMAL-ACCEPTANCE-MATRIX-001",
+      "D039-ROUTE-OBSERVABILITY-CONTRACT-001",
+    ].includes(record.value?.subject?.id))
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
     .at(-1)?.value ?? null;
 }
@@ -258,6 +261,8 @@ export function reconcileProjectOps(model) {
     closedBlockerIds: d039DorProgress?.data?.closedBlockerIds ?? [],
     openBlockerCount: d039DorProgress?.data?.remainingOpenBlockerCount ?? d039DorAssessment?.data?.openBlockerCount ?? null,
     formalAcceptanceMatrixComplete: d039DorProgress?.data?.formalAcceptanceMatrixComplete ?? false,
+    stableRouteAndTestIdsMapped: d039DorProgress?.data?.stableRouteAndTestIdsMapped ?? false,
+    returnDeepLinkContractComplete: d039DorProgress?.data?.returnDeepLinkContractComplete ?? false,
     decisionState: d039Decision?.status ?? null,
     choiceKey: d039Decision?.choiceKey ?? null,
     ownerChoiceRecorded: d039DecisionEvent?.data?.ownerChoiceRecorded ?? null,
@@ -273,10 +278,12 @@ export function reconcileProjectOps(model) {
     d039.px4Next === "PX-5_DOR_REQUIRED" &&
     d039.dorDisposition === "NOT_READY" &&
     d039.dorState === "PX-5_DOR_NOT_READY" &&
-    d039.next === "D039-PX5-B02_REQUIRED" &&
-    JSON.stringify(d039.closedBlockerIds) === JSON.stringify(["D039-PX5-B01"]) &&
-    d039.openBlockerCount === 6 &&
+    d039.next === "D039-PX5-OWNER_DEPENDENCIES_REQUIRED" &&
+    JSON.stringify(d039.closedBlockerIds) === JSON.stringify(["D039-PX5-B01", "D039-PX5-B02"]) &&
+    d039.openBlockerCount === 5 &&
     d039.formalAcceptanceMatrixComplete === true &&
+    d039.stableRouteAndTestIdsMapped === true &&
+    d039.returnDeepLinkContractComplete === true &&
     d039.decisionState === "ACCEPTED" &&
     d039.choiceKey === "local-search-recent-first" &&
     d039.ownerChoiceRecorded === true &&
@@ -285,7 +292,7 @@ export function reconcileProjectOps(model) {
     d039.px3FormalImplementationAuthorized === false &&
     d039.formalImplementationAuthorized === false
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01 验收矩阵关闭/B02 待办和正式实现未授权状态", d039);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、Owner 依赖待办和正式实现未授权状态", d039);
   }
 
   const d040Record = latestD040Record(model);

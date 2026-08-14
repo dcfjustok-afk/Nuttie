@@ -6,12 +6,12 @@
 | 决定 | `D-039 / ACCEPTED / A` |
 | 评估日期 | 2026-08-15（Asia/Shanghai） |
 | 当前设计状态 | `PX-4_BASELINE_FROZEN` |
-| PX-5 结论 | `NOT_READY / B01_CLOSED / 6_BLOCKERS_REMAIN` |
+| PX-5 结论 | `NOT_READY / B01_B02_CLOSED / 5_BLOCKERS_REMAIN` |
 | 实现授权 | `false`；正式根工程、原生 iOS 和 D-039 正式增量均未授权 |
 
 ## 1. 结论
 
-D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of Ready。首次评估时七项 PX-5 要求为 1 项通过、3 项部分满足、3 项失败并有 7 个阻断项；随后正式验收矩阵完成，`D039-PX5-B01` 已关闭，当前还剩 6 个阻断项。原始 1/3/3 评估统计保留为当时事实，不因后续关闭动作被改写。
+D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of Ready。首次评估时七项 PX-5 要求为 1 项通过、3 项部分满足、3 项失败并有 7 个阻断项；随后正式验收矩阵和路由/可观测性契约完成，`D039-PX5-B01`、`D039-PX5-B02` 已关闭，当前还剩 5 个阻断项。原始 1/3/3 评估统计保留为当时事实，不因后续关闭动作被改写。
 
 该结论不回退 Owner 已接受的 D-039=A，也不回退 PX-4。它只说明“接受后的设计”还不能被解释为“可以初始化正式工程或实现页面”。
 
@@ -34,7 +34,7 @@ D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of
 | 阻断 ID | 类别 | 关闭条件 | 当前责任边界 |
 | --- | --- | --- | --- |
 | `D039-PX5-B01` | `CLOSED` | 已建立覆盖所有入口、空态、拒绝、失败、返回与零写入的 [24 条正式验收矩阵](d039-formal-acceptance-matrix.md) | 规格完成；自动化与真机证据仍按各 AC 的计划层补充 |
-| `D039-PX5-B02` | 本地可先关闭 | 固定 route/参数 schema、测试可观测性 ID、返回焦点和非法 deep-link 行为 | PM / Architecture / QA 可先形成规格；实现验证后续补证 |
+| `D039-PX5-B02` | `CLOSED` | 已冻结 [5 个 route、严格参数、43 个静态 testID、2 个动态模式、返回焦点和 6 类非法 deep-link 恢复](../03-design/d039-route-observability-contract.md) | 规格完成；正式 Router、组件、E2E 与真机证据仍待授权后补充 |
 | `D039-PX5-B03` | 需 Owner 决定 | D-045 明确最近使用是否首版、与收藏的关系、保留与清除语义 | 先形成中立选择卡，再经 Owner 明确选择 |
 | `D039-PX5-B04` | 需 Owner 决定 | D-031 明确照片/媒体及 AI 内容是否、何时、以何种形式保留 | 不得从相机权限反推保留许可 |
 | `D039-PX5-B05` | 需 Owner 决定与证据 | D-033/D-034/D-036/D-053 分别关闭发送确认、资源预算、transport profile 和 Provider 数据用途准入 | 任一未知时 AI 入口只能失败关闭，不得发送 |
@@ -47,17 +47,17 @@ OI-02 的 Bundle ID 仍未创建。它不阻断本地规格工作，但首次正
 
 | 未来增量 | 范围 | 至少依赖 |
 | --- | --- | --- |
-| `D039-I1-LOCAL` | 添加餐食壳、本地搜索、最近、创建食品、统一检查保存 | B01、B02、B03、B06；正式数据 adapter 仍须自身验收 |
-| `D039-I2-SCAN` | 条码扫描、权限拒绝/受限、手工条码与系统媒体降级 | B01、B02、B04、B06、B07 |
-| `D039-I3-AI` | AI 图片/相册/文字分支与逐次发送 | B01、B02、B04、B05、B06、B07 |
+| `D039-I1-LOCAL` | 添加餐食壳、本地搜索、最近、创建食品、统一检查保存 | B03、B06；正式数据 adapter 和 B01/B02 自动化仍须自身验收 |
+| `D039-I2-SCAN` | 条码扫描、权限拒绝/受限、手工条码与系统媒体降级 | B04、B06、B07；B01/B02 自动化仍须补证 |
+| `D039-I3-AI` | AI 图片/相册/文字分支与逐次发送 | B04、B05、B06、B07；B01/B02 自动化仍须补证 |
 
 分段用于缩小未来增量，不改变首层层级，也不允许在 B06 未关闭时创建正式页面。AI 分段未就绪不代表可以隐藏本地失败关闭规则；正式产品若显示入口，必须准确表达当前不可用原因并保留本地出口。
 
 ## 5. 推荐关闭顺序
 
 1. B01 已关闭：PX-4 设计规则已转换为 24 条逐状态、可自动化的验收矩阵。
-2. 当前先关闭 B02：形成正式 route/参数/testID/返回契约，但仍不创建 RN 页面。
-3. 为 D-045、D-031 和 AI 决定链分别准备小批中立选择卡；未通过独立复核前不展示给 Owner。
+2. B02 已关闭：正式 route/参数/testID/返回契约已形成，未创建 RN 页面。
+3. 当前转向 D-045、D-031 和 AI 决定链的 Owner 依赖；只准备通过独立复核的小批中立选择卡。
 4. 在具备 Mac/Xcode 后补 D-032 原生 Spike，回传证据并请求 Owner 第二次冻结。
 5. 只有 B01 至 B07 全部关闭且出现新的权威 PX-5 通过事件，才可请求对应正式实现授权。
 
@@ -68,9 +68,9 @@ D-039 decisionState: ACCEPTED
 selectedOption: A
 designBaselineState: PX-4_BASELINE_FROZEN
 px5Disposition: NOT_READY
-closedBlockerIds: [D039-PX5-B01]
-openBlockerCount: 6
-next: PX-5_BLOCKER_CLOSURE_REQUIRED
+closedBlockerIds: [D039-PX5-B01, D039-PX5-B02]
+openBlockerCount: 5
+next: D039-PX5-OWNER_DEPENDENCIES_REQUIRED
 d032SecondOwnerActionSatisfied: false
 formalRootProjectAuthorized: false
 nativeIosWorkAuthorized: false
