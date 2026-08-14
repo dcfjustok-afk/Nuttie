@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT,
+  PHASE0_2026_08_15_D045_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D045_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 284,
+    instancesValidated: 285,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 165);
+  assert.equal(report.counts.events, 166);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -687,6 +687,21 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039RouteContractEvent.value.data.stableRouteAndTestIdsMapped, true);
   assert.equal(d039RouteContractEvent.value.data.returnDeepLinkContractComplete, true);
   assert.equal(d039RouteContractEvent.value.data.formalImplementationAuthorized, false);
+  const d045CardEvent = findEvent(VALID_MODEL, "EVT-20260815-008");
+  assert.equal(d045CardEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d045CardEvent.value.subject.id, "D045-RECENT-FAVORITES-CARD-001");
+  assert.equal(d045CardEvent.value.data.next, "D045_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d045CardEvent.value.data.optionIds, [
+    "recent_only_derived",
+    "recent_and_favorites_separate",
+    "defer_both_reopen_d039",
+  ]);
+  assert.equal(d045CardEvent.value.data.recentCandidateLimit, 20);
+  assert.equal(d045CardEvent.value.data.recentCopiesFoodOrNutritionPayload, false);
+  assert.equal(d045CardEvent.value.data.independentReviewPassed, false);
+  assert.equal(d045CardEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d045CardEvent.value.data.d039BlockerState, "OPEN");
+  assert.equal(d045CardEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -755,7 +770,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 283);
+    assert.equal(report.schemaValidation.instancesValidated, 284);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2250,6 +2265,39 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       findEvent(model, "EVT-20260815-007").value.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
+  });
+
+  await t.test("D-045 选择卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260815-008");
+    });
+    assertDiagnostic(report, "OPS_D045_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-045 选择卡稳定选项漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-008").value.data.optionIds[0] = "recent_cached_copy";
+    });
+    assertDiagnostic(report, "OPS_D045_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-045 选择卡伪造独立复核通过", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-008").value.data.independentReviewPassed = true;
+    });
+    assertDiagnostic(report, "OPS_D045_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-045 在独立复核前进入决定台账", () => {
+    const report = validateMutation((model) => {
+      const candidate = structuredClone(
+        model.decisionRegister.decisions.find((decision) => decision.id === "D-052"),
+      );
+      candidate.id = "D-045";
+      candidate.title = "最近使用与收藏";
+      model.decisionRegister.decisions.push(candidate);
+    });
+    assertDiagnostic(report, "OPS_D045_CARD_SPEC_MISMATCH");
   });
 });
 

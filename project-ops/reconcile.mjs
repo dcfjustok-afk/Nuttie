@@ -63,6 +63,13 @@ function latestD039DorProgress(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD045Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D045-RECENT-FAVORITES-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -295,6 +302,47 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、Owner 依赖待办和正式实现未授权状态", d039);
   }
 
+  const d045Record = latestD045Record(model);
+  const d045 = {
+    eventId: d045Record?.eventId ?? null,
+    decisionState: d045Record?.data?.decisionState ?? null,
+    blockerState: d045Record?.data?.d039BlockerState ?? null,
+    cardState: d045Record?.data?.cardState ?? null,
+    next: d045Record?.data?.next ?? null,
+    optionCount: d045Record?.data?.optionCount ?? null,
+    recommendedOptionId: d045Record?.data?.recommendedOptionId ?? null,
+    selfReviewPassed: [
+      d045Record?.data?.productSelfReviewPassed,
+      d045Record?.data?.privacySelfReviewPassed,
+      d045Record?.data?.dataIntegritySelfReviewPassed,
+      d045Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d045Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d045Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d045Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d045Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-045"),
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-045").length,
+  };
+  if (!(
+    d045.eventId === "EVT-20260815-008" &&
+    d045.decisionState === "CANDIDATE" &&
+    d045.blockerState === "OPEN" &&
+    d045.cardState === "DRAFT_COMPLETE" &&
+    d045.next === "D045_INDEPENDENT_REVIEW_REQUIRED" &&
+    d045.optionCount === 3 &&
+    d045.recommendedOptionId === "recent_only_derived" &&
+    d045.selfReviewPassed === true &&
+    d045.independentReviewPassed === false &&
+    d045.ownerCardScheduled === false &&
+    d045.ownerReviewAuthorized === false &&
+    d045.formalImplementationAuthorized === false &&
+    d045.registeredInDecisionLedger === false &&
+    d045.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D045_GATE", "D-045", "D-045 未保持三包内部卡自审完成、独立复核/Owner/B03/实现待办和未进入权威台账状态", d045);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -354,6 +402,7 @@ export function reconcileProjectOps(model) {
     },
     ownerGate,
     d039,
+    d045,
     d040,
     diagnostics,
   };

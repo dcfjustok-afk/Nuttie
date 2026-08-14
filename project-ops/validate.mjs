@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT",
+export const PHASE0_2026_08_15_D045_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_15_D045_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 165,
+    events: 166,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 7,
+    "2026-08-15": 8,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1662,6 +1662,67 @@ export const PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT = Object.freeze({
       ),
     ),
   }),
+  d045: Object.freeze({
+    cardSpec: Object.freeze({
+      eventId: "EVT-20260815-008",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D045-RECENT-FAVORITES-CARD-001",
+      subjectRole: "CandidateProductArtifact",
+      correlationId: "d045-recent-favorites-card-spec",
+      state: "completed",
+      decisionId: "D-045",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B03",
+      d039BlockerState: "OPEN",
+      from: "D045_CARD_SPEC_REQUIRED",
+      next: "D045_INDEPENDENT_REVIEW_REQUIRED",
+      cardState: "DRAFT_COMPLETE",
+      questionId: "d045_recent_favorites_scope",
+      optionIds: Object.freeze([
+        "recent_only_derived",
+        "recent_and_favorites_separate",
+        "defer_both_reopen_d039",
+      ]),
+      optionCount: 3,
+      recommendedOptionId: "recent_only_derived",
+      allOptionsMutuallyExclusive: true,
+      completePolicyPackages: true,
+      recentCandidateLimit: 20,
+      recentDerivedFromCommittedMeals: true,
+      recentCopiesFoodOrNutritionPayload: false,
+      clearWatermarkUsesJournalRevision: true,
+      clearRecentDeletesDiary: false,
+      recentAndFavoritesSeparated: true,
+      fullDataDeletionCoversAuxiliaryState: true,
+      deletedObjectsCannotBeResurrected: true,
+      d039ReopenImpactExplicit: true,
+      otherRequiresNormalization: true,
+      productSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d045RegisteredInDecisionLedger: false,
+      d045RecordedInOwnerIntake: false,
+      closedD039BlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenD039BlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenD039BlockerCount: 5,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      d039DecisionStateChanged: false,
+    }),
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -2222,7 +2283,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_B02_ROUTE_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D045_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5267,6 +5328,41 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-039 PX-5 B02 必须精确保留 5 个 route、严格参数、43 个静态 testID、失败关闭 deep link、B01/B02 关闭和全部实现授权位关闭",
+    );
+  }
+
+  const d045CardSpec = baseline.d045.cardSpec;
+  const d045CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d045CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d045CardSpec.correlationId),
+  );
+  const d045CardEvent = d045CardEvents[0]?.value;
+  const d045CardData = d045CardEvent?.data ?? {};
+  const d045CardFields = Object.keys(d045CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  const d045Registered = model.decisionRegister.decisions.some((decision) => decision.id === "D-045");
+  const d045OwnerResponses = model.ownerIntake.responses.filter((response) => response.decisionId === "D-045");
+  if (
+    d045CardEvents.length !== 1 ||
+    d045CardEvent?.eventId !== d045CardSpec.eventId ||
+    d045CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d045CardEvent?.actor?.id !== d045CardSpec.actorId ||
+    d045CardEvent?.actor?.role !== d045CardSpec.actorRole ||
+    d045CardEvent?.subject?.id !== d045CardSpec.subjectId ||
+    d045CardEvent?.subject?.role !== d045CardSpec.subjectRole ||
+    d045CardEvent?.correlationId !== d045CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d045CardData).sort()) !== JSON.stringify(d045CardFields) ||
+    d045CardFields.some(
+      (field) => JSON.stringify(d045CardData[field]) !== JSON.stringify(d045CardSpec[field]),
+    ) ||
+    d045Registered ||
+    d045OwnerResponses.length !== 0
+  ) {
+    add(
+      "OPS_D045_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-045 必须精确保留三套完整政策包、四域自审、独立复核/Owner/B03/实现未授权，并且不得提前进入决定台账或 Owner intake",
     );
   }
 

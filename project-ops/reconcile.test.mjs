@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 165,
+    events: 166,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -64,6 +64,16 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039.choiceKey, "local-search-recent-first");
   assert.equal(report.d039.selectedOption, "A");
   assert.equal(report.d039.designBaselineFrozen, true);
+  assert.equal(report.d045.eventId, "EVT-20260815-008");
+  assert.equal(report.d045.decisionState, "CANDIDATE");
+  assert.equal(report.d045.blockerState, "OPEN");
+  assert.equal(report.d045.next, "D045_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d045.optionCount, 3);
+  assert.equal(report.d045.selfReviewPassed, true);
+  assert.equal(report.d045.independentReviewPassed, false);
+  assert.equal(report.d045.ownerCardScheduled, false);
+  assert.equal(report.d045.registeredInDecisionLedger, false);
+  assert.equal(report.d045.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
