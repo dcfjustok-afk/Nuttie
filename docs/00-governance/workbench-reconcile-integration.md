@@ -2,7 +2,7 @@
 
 Status: verified handoff record
 Historical integration date: 2026-08-06 (Asia/Shanghai)
-Current verification date: 2026-08-13 (Asia/Shanghai)
+Current verification date: 2026-08-14 (Asia/Shanghai)
 Current ProjectOps snapshot date: 2026-08-13 (Asia/Shanghai)
 
 ## Scope
