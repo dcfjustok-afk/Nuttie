@@ -58,16 +58,16 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT",
+export const PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
-    acceptedDecisions: 17,
-    candidateDecisions: 14,
-    events: 130,
-    messages: 115,
-    resolvedResponses: 71,
+    acceptedDecisions: 28,
+    candidateDecisions: 3,
+    events: 142,
+    messages: 116,
+    resolvedResponses: 72,
     agents: 25,
     activeAgents: 1,
     evidenceItems: 66,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 3,
-    "2026-08-14": 1,
+    "2026-08-14": 13,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -109,11 +109,54 @@ export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
   ]),
   ownerIntake: Object.freeze({
     channel: "CODEX_REQUEST_USER_INPUT",
-    status: "AWAITING_BATCH_READBACK",
-    acceptanceStateChanged: false,
-    responseState: "PENDING_BATCH_READBACK",
-    nextQuestionId: "phase0_owner_batch_readback_confirmation",
+    status: "CONFIRMED",
+    acceptanceStateChanged: true,
+    nextQuestionId: "d039_add_meal_entry",
     nextQuestionTool: "request_user_input",
+    batchConfirmationEventId: "EVT-20260814-013",
+    batchConfirmationQuestionId: "phase0_owner_batch_readback_confirmation",
+    acceptedDecisionIds: Object.freeze([
+      "D-018",
+      "D-019",
+      "D-020",
+      "D-021",
+      "D-023",
+      "D-024",
+      "D-025",
+      "D-037",
+      "D-038",
+      "D-047",
+      "D-048",
+    ]),
+    acceptedChoiceKeys: Object.freeze({
+      "D-018": "expo-router",
+      "D-019": "zustand-ui-only",
+      "D-020": "drizzle-controlled-sql",
+      "D-021": "react-hook-form-zod",
+      "D-023": "jest-single-runner",
+      "D-024": "local-maestro-xctest",
+      "D-025": "stylesheet-semantic-tokens",
+      "D-037": "pnpm-11-hoisted",
+      "D-038": "four-destinations-contextual-add",
+      "D-047": "no-developer-program-self-use",
+      "D-048": "iphone-portrait",
+    }),
+    responseStates: Object.freeze({
+      d038_navigation_shell: "CONFIRMED_ACCEPTED",
+      d032_spike_baseline: "CONFIRMED_SPIKE_AUTHORIZED",
+      d037_package_manager: "CONFIRMED_ACCEPTED",
+      d048_device_profile: "CONFIRMED_ACCEPTED",
+      d018_navigation_implementation: "CONFIRMED_ACCEPTED",
+      d020_sqlite_access: "CONFIRMED_ACCEPTED",
+      d019_ui_state: "CONFIRMED_ACCEPTED",
+      d021_forms_validation: "CONFIRMED_ACCEPTED",
+      d025_styling_tokens: "CONFIRMED_ACCEPTED",
+      d023_unit_component_tests: "CONFIRMED_ACCEPTED",
+      d024_e2e_native_tests: "CONFIRMED_ACCEPTED",
+      d047_apple_identity: "SUPERSEDED_BY_OWNER_CLARIFICATION",
+      d047_scope_clarification: "CONFIRMED_ACCEPTED",
+    }),
+    d032ChoiceKey: "sdk-57-spike-authorized",
     oi02EventId: "EVT-20260814-001",
     oi02Fact: Object.freeze({
       inputId: "OI-02",
@@ -129,7 +172,7 @@ export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
       appIdStatus: "NOT_CREATED",
       appStoreConnectRecordStatus: "NOT_CREATED",
       specificBundleIdRequiredBy: "FIRST_SELF_USE_DEVICE_SIGNING_CONFIGURATION",
-      state: "PENDING_BATCH_READBACK",
+      state: "CONFIRMED",
     }),
     oi03EventId: "EVT-20260811-001",
     oi03Fact: Object.freeze({
@@ -146,7 +189,7 @@ export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
       canConnectToMac: "N/A_NO_MAC",
       profileCompleteness: "COMPLETE_FOR_CURRENT_AVAILABILITY",
       nativeIosWorkAuthorized: false,
-      state: "PENDING_BATCH_READBACK",
+      state: "CONFIRMED",
     }),
     d047InitialOption: "A",
     d047LatestQuestionId: "d047_scope_clarification",
@@ -1153,7 +1196,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -1609,18 +1652,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       { expected: baseline.ownerIntake.decisionIds, actual: [...ownerDecisionIds].sort() },
     );
   }
-  const decisionStatusById = new Map(
-    decisions.map((decision) => [decision?.id, decision?.status]),
-  );
-  const nonCandidateOwnerDecisionIds = [...ownerDecisionIds].filter(
-    (decisionId) => decisionStatusById.get(decisionId) !== "CANDIDATE",
-  );
-  if (nonCandidateOwnerDecisionIds.length > 0) {
+  const decisionById = new Map(decisions.map((decision) => [decision?.id, decision]));
+  const acceptedDecisionMismatches = baseline.ownerIntake.acceptedDecisionIds
+    .map((decisionId) => {
+      const decision = decisionById.get(decisionId);
+      const expectedChoiceKey = baseline.ownerIntake.acceptedChoiceKeys[decisionId];
+      return decision?.status === "ACCEPTED" &&
+        decision?.acceptedOn === "2026-08-14" &&
+        decision?.choiceKey === expectedChoiceKey
+        ? null
+        : {
+            decisionId,
+            expectedStatus: "ACCEPTED",
+            expectedAcceptedOn: "2026-08-14",
+            expectedChoiceKey,
+            actual: decision ?? null,
+          };
+    })
+    .filter(Boolean);
+  if (acceptedDecisionMismatches.length > 0) {
     add(
-      "OPS_OWNER_DECISION_NOT_CANDIDATE",
-      "project-ops/owner-intake.json.responses.decisionId",
-      "Owner 当前批次的每个决定都必须仍在权威台账中保持 CANDIDATE",
-      { nonCandidateOwnerDecisionIds },
+      "OPS_OWNER_ACCEPTED_DECISION_MISMATCH",
+      "project-ops/decisions.json.decisions",
+      "整批回读确认的 11 项决定必须保持精确的 ACCEPTED 状态和 choiceKey",
+      { mismatches: acceptedDecisionMismatches },
+    );
+  }
+  const d032Decision = decisionById.get("D-032");
+  if (
+    d032Decision?.status !== "CANDIDATE" ||
+    d032Decision?.acceptedOn !== null ||
+    d032Decision?.choiceKey !== baseline.ownerIntake.d032ChoiceKey
+  ) {
+    add(
+      "OPS_OWNER_D032_SPIKE_AUTHORIZATION_MISMATCH",
+      "project-ops/decisions.json.decisions",
+      "D-032 必须保持 CANDIDATE + SDK 57 SPIKE_AUTHORIZED，不能提前转为 ACCEPTED",
+      { actual: d032Decision ?? null },
     );
   }
   if (ownerIntake.channel !== baseline.ownerIntake.channel) {
@@ -1633,9 +1701,9 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
   }
   if (ownerIntake.status !== baseline.ownerIntake.status) {
     add(
-      "OPS_OWNER_BATCH_PREMATURELY_CLOSED",
+      "OPS_OWNER_BATCH_STATUS_CHANGED",
       "project-ops/owner-intake.json.status",
-      "Owner 批次尚未完成最终回读",
+      "Owner 首批整批回读必须保持 CONFIRMED",
       { expected: baseline.ownerIntake.status, actual: ownerIntake.status },
     );
   }
@@ -1643,16 +1711,17 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_ACCEPTANCE_STATE_CHANGED",
       "project-ops/owner-intake.json.acceptanceStateChanged",
-      "Owner 尚未授权改变 accepted 状态",
+      "Owner 整批确认已改变 accepted 状态，标记不得回退",
     );
   }
   ownerResponses.forEach((response, index) => {
-    if (response?.state !== baseline.ownerIntake.responseState) {
+    const expectedState = baseline.ownerIntake.responseStates[response?.questionId];
+    if (response?.state !== expectedState) {
       add(
-        "OPS_OWNER_RESPONSE_FINALIZED",
+        "OPS_OWNER_RESPONSE_STATE_MISMATCH",
         `project-ops/owner-intake.json.responses[${index}].state`,
-        "Owner response 在整批回读前必须保持待确认",
-        { questionId: response?.questionId, actual: response?.state },
+        "Owner response 必须保持整批确认后的精确终态",
+        { questionId: response?.questionId, expected: expectedState, actual: response?.state },
       );
     }
   });
@@ -1673,7 +1742,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANGED",
       "project-ops/owner-intake.json.nextQuestion.id",
-      "OI-02 完成后下一题必须保持首批规范化回读确认",
+      "首批整批确认后下一题必须保持 D-039 PX-3 Owner 选择",
       { expected: baseline.ownerIntake.nextQuestionId, actual: ownerIntake.nextQuestion?.id },
     );
   }
@@ -1681,7 +1750,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.nextQuestion",
-      "首批规范化回读必须通过 Codex 宿主原生 request_user_input",
+      "D-039 PX-3 必须通过 Codex 宿主原生 request_user_input",
       {
         expectedTool: baseline.ownerIntake.nextQuestionTool,
         actualTool: ownerIntake.nextQuestion?.tool,
@@ -1804,6 +1873,56 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_OWNER_OI02_EVENT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "OI-02 权威事件必须与原生 Owner 事实一致且保持决定、正式工程和原生 iOS 未授权",
+    );
+  }
+
+  const batchConfirmationRecords = model.events.filter(
+    (record) => record.value?.eventId === baseline.ownerIntake.batchConfirmationEventId,
+  );
+  const batchConfirmationEvent = batchConfirmationRecords[0]?.value;
+  const batchAcceptedIds = batchConfirmationEvent?.data?.acceptedDecisionIds ?? [];
+  const batchRemainingCandidateIds = batchConfirmationEvent?.data?.remainingCandidateDecisionIds ?? [];
+  if (
+    batchConfirmationRecords.length !== 1 ||
+    batchConfirmationEvent?.type !== "GATE_CHANGED" ||
+    batchConfirmationEvent?.actor?.id !== "owner" ||
+    batchConfirmationEvent?.data?.from !== "AWAITING_BATCH_READBACK" ||
+    batchConfirmationEvent?.data?.to !== "CONFIRMED" ||
+    batchConfirmationEvent?.data?.questionId !== baseline.ownerIntake.batchConfirmationQuestionId ||
+    batchConfirmationEvent?.data?.captureTool !== "request_user_input" ||
+    !arraysEqualAsSets(batchAcceptedIds, baseline.ownerIntake.acceptedDecisionIds) ||
+    !arraysEqualAsSets(batchConfirmationEvent?.data?.spikeAuthorizedDecisionIds ?? [], ["D-032"]) ||
+    !arraysEqualAsSets(batchRemainingCandidateIds, ["D-032", "D-052", "D-053"]) ||
+    batchConfirmationEvent?.data?.nextQuestionId !== baseline.ownerIntake.nextQuestionId ||
+    batchConfirmationEvent?.data?.acceptanceStateChanged !== true ||
+    batchConfirmationEvent?.data?.d008Superseded !== false ||
+    batchConfirmationEvent?.data?.readyForJsSpike !== true ||
+    batchConfirmationEvent?.data?.nativeIosWorkAuthorized !== false ||
+    batchConfirmationEvent?.data?.formalRootProjectAuthorized !== false
+  ) {
+    add(
+      "OPS_OWNER_BATCH_CONFIRMATION_EVENT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "整批确认事件必须精确记录 11 项 ACCEPTED、D-032 隔离 JS Spike 与剩余安全门禁",
+    );
+  }
+
+  const acceptedEvents = model.events
+    .map((record) => record.value)
+    .filter((event) => event?.type === "DECISION_ACCEPTED" && event?.correlationId === "phase0-owner-batch-readback");
+  const acceptedEventIds = acceptedEvents.map((event) => event?.data?.decisionId);
+  const acceptedEventChoiceMismatch = acceptedEvents.some(
+    (event) => baseline.ownerIntake.acceptedChoiceKeys[event?.data?.decisionId] !== event?.data?.choiceKey,
+  );
+  if (
+    acceptedEvents.length !== baseline.ownerIntake.acceptedDecisionIds.length ||
+    !arraysEqualAsSets(acceptedEventIds, baseline.ownerIntake.acceptedDecisionIds) ||
+    acceptedEventChoiceMismatch
+  ) {
+    add(
+      "OPS_OWNER_ACCEPTED_EVENTS_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "每项整批接受决定必须恰好对应一条 choiceKey 一致的 DECISION_ACCEPTED 事件",
     );
   }
 

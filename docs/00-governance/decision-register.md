@@ -5,7 +5,7 @@
 - 权威状态：`ACCEPTED`、`SUPERSEDED`、`CANDIDATE`、`REJECTED`。
 - 只有 Owner 的明确回复可以把 `CANDIDATE` 改为 `ACCEPTED`。
 - 已接受决定不可被实现便利、库默认值或 Agent 建议隐式覆盖；变更必须创建新决定并引用被替代项。
-- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-07-31。
+- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-08-14。
 - 机器可读副本位于 [`project-ops/decisions.json`](../../project-ops/decisions.json)。
 
 ## 已接受决定
@@ -29,6 +29,17 @@
 | D-015 | 本地数据库加密等级 | SQLCipher + Keychain 数据库密钥 | ACCEPTED |
 | D-016 | 首发语言范围 | 仅简体中文 | ACCEPTED |
 | D-017 | 功能对标交付方式 | 完整对标范围不删减，分阶段交付 | ACCEPTED |
+| D-018 | 导航实现 | Expo Router；深链参数运行时校验 | ACCEPTED |
+| D-019 | UI 状态管理 | Zustand 仅管理 UI/session/草稿；SQLite 为领域唯一真源 | ACCEPTED |
+| D-020 | SQLite 访问层 | Drizzle 管理常规 schema/query，关键路径保留受控 SQL | ACCEPTED |
+| D-021 | 表单与运行时校验 | React Hook Form + Zod；领域不变量独立 | ACCEPTED |
+| D-023 | 单元与组件测试 | `jest-expo` + Jest + RNTL 单 runner | ACCEPTED |
+| D-024 | E2E 与原生测试 | 本地 Maestro + XCTest/XCUITest；不启用云测试 | ACCEPTED |
+| D-025 | 样式与设计 Token | React Native StyleSheet + TypeScript semantic tokens + 可访问组件层 | ACCEPTED |
+| D-037 | 包管理器 | pnpm 11.18.0 hoisted profile + 唯一 `pnpm-lock.yaml` | ACCEPTED |
+| D-038 | 产品导航外壳 | 日记、趋势、食品资料、设置四个稳定入口 + 情境新增 | ACCEPTED |
+| D-047 | Apple 分发身份 | 当前暂不加入 Apple Developer Program；只供 Owner 自用 | ACCEPTED |
+| D-048 | 设备与方向 profile | iPhone 竖屏；关闭 Mac/Vision compatibility availability | ACCEPTED |
 
 ## 决定详情
 
@@ -132,28 +143,49 @@
 - 后果：每项已证实功能和本地替代项都必须分配版本/阶段、状态与验收标准；延期不能等同删除。
 - 限制：公开缺口只有在被验证或作为 Nuttie 自有需求获批后，才能进入确定实现范围。
 
+### D-018~D-025：工程基础选择
+
+- D-018：使用 Expo Router；不依赖 beta typed routes，深链参数必须做运行时校验。
+- D-019：Zustand 只保存 UI、session 和草稿状态，领域数据不复制成第二真源。
+- D-020：Drizzle 管理常规 schema/query；加密、事务和性能关键路径允许 repository 持有受控 SQL。
+- D-021：表单采用 React Hook Form + Zod；领域不变量继续由领域层独立验证。
+- D-023：`jest-expo` + Jest + React Native Testing Library 使用单 runner。
+- D-024：E2E 使用本地 Maestro，原生边界使用 XCTest/XCUITest；当前不启用云测试。
+- D-025：使用 React Native StyleSheet、TypeScript semantic tokens 和可访问组件层。
+- 限制：这些决定批准技术方向，不代表正式根工程、原生 iOS、网络、发布或尚未定义的业务规则已经获批。
+
+### D-037：包管理器
+
+- 决定：pnpm 11.18.0 + `node-linker=hoisted` + 唯一 `pnpm-lock.yaml` + frozen install。
+- 后果：隔离 Spike 与后续正式工程都不得并存 npm/Yarn lockfile；依赖变更必须与 lockfile 同提交。
+
+### D-038：产品导航外壳
+
+- 决定：日记、趋势、食品资料、设置作为四个稳定目的地，新增动作由当前情境进入。
+- 后果：首个 MVP 保持清晰的四入口信息架构；这不决定 D-039 添加餐食首层体验。
+
+### D-047：Apple 分发身份
+
+- 决定：当前不加入 Apple Developer Program，只开发和安装给 Owner 自己使用。
+- 审计：最初的 A“个人会员”已由 Owner 后续 C 明确回正；原始输入保留但不生效。
+- 限制：该决定不永久取消未来朋友分发，也不 supersede D-008；任何付费、注册、TestFlight 或外部发布仍需新的明确授权。
+
+### D-048：设备与方向 profile
+
+- 决定：iPhone 竖屏，`supportsTablet=false`，关闭 Mac/Vision compatibility availability。
+- 限制：当前只有 iPhone 16 Pro Max / iOS 26.5 且无 Mac；该设备事实不授权 Prebuild、签名、Archive 或原生工作。
+
 ## 已登记但未接受的候选
 
 | ID | 主题 | Owner 待选 | 状态 | 历史编号 |
 | --- | --- | --- | --- | --- |
-| D-018 | 导航实现 | A Expo Router 初始实现；B React Navigation 直接配置初始实现 | CANDIDATE | - |
-| D-019 | UI 状态管理 | A Zustand 仅管 UI/session/草稿；B Redux Toolkit；C React state/context | CANDIDATE | - |
-| D-020 | SQLite 访问层 | A Drizzle stable + Nuttie DatabaseSession；B `expo-sqlite` + repository-owned SQL；C Kysely + 明确 Expo adapter | CANDIDATE | - |
-| D-021 | 表单与运行时校验 | A React Hook Form + Zod；B Formik + Yup；C 自研 reducer + 手写校验 | CANDIDATE | - |
-| D-023 | 单元与组件测试 | A `jest-expo` + Jest + RNTL 单 runner；B Vitest Domain + Jest/RNTL RN 双 runner | CANDIDATE | - |
-| D-024 | E2E 与原生测试 | A 本地 Maestro + XCTest/XCUITest；B Detox + XCTest/XCUITest；C 仅 XCTest/XCUITest | CANDIDATE | - |
-| D-025 | 样式与设计 Token | A StyleSheet + typed tokens；B NativeWind profile；C Unistyles profile | CANDIDATE | - |
-| D-032 | Expo/RN/Node/Xcode 版本矩阵 | A 授权隔离 SDK 57 Spike；B 授权隔离 SDK 56 Spike；C 暂不授权工程/Spike | CANDIDATE | - |
-| D-037 | 包管理器 | A pnpm 11.18.0 hoisted；B npm 11.19.0；C Yarn 4.18.0 node-modules；每项唯一 lockfile | CANDIDATE | - |
-| D-038 | 产品导航外壳 | A 四个稳定目的地 + 情境新增；B 三个稳定目的地 + 集中新增；C 单一日记中心 + 更多菜单 | CANDIDATE | `UXD-01` |
-| D-047 | Apple 分发身份 | A 个人会员；B 合格组织会员；C 暂不加入 | CANDIDATE | `REL-DEC-B` |
-| D-048 | 设备与方向 profile | A iPhone 竖屏；B iPhone 全方向（不含倒置）；C Universal 完整方向；三项均先关闭 Mac/Vision availability | CANDIDATE | `REL-DEC-C` |
+| D-032 | Expo/RN/Node/Xcode 版本矩阵 | 已授权隔离 SDK 57 / RN 0.86.2 candidate Spike；等待证据后的第二次 Owner 动作冻结最终矩阵 | CANDIDATE + SPIKE_AUTHORIZED | - |
 | D-052 | USDA 数据面向美国境外朋友的再分发口径 | A 获得 USDA/NAL 书面确认前境外构建仅含台湾合规包；B 明确接受残余风险并保持来源分包 | CANDIDATE | `DLR-C01` |
 | D-053 | 第三方 AI Provider 数据用途准入 | A 证据证明用途相容才允许，未知即阻断；B 每个 Provider 单独复核并由 Owner 接受可接受残余风险；C 仅凭用户同意放行（不推荐，且不能覆盖 Apple 禁项） | CANDIDATE | - |
 
-D-018、D-019、D-020、D-021、D-023、D-024、D-025、D-032、D-037、D-038、D-047 与 D-048 构成当前可回复的第 1 批。精确选项、版本快照、失败处理和 OI-01~OI-03 事实字段见 [Owner 分批决策包](../02-product/owner-decision-packs.md)。登记为 `CANDIDATE` 只消除草案与机器台账的双重真源，不表示 Owner 已选择。
+D-032、D-052 与 D-053 是当前仅余的三项权威候选。首批其他 11 项已于 2026-08-14 经宿主原生 `request_user_input` 整批回读确认并转为 `ACCEPTED`。
 
-D-032 采用两次 Owner 动作：第一次选择 A/B 只可形成 `CANDIDATE + SPIKE_AUTHORIZED` 的执行记录，不得改成 `ACCEPTED`；隔离 Spike 证据返回并经 Owner 第二次确认后，才能冻结最终精确矩阵。选择 C 则继续禁止工程与 Spike。
+D-032 采用两次 Owner 动作：第一次动作已选择 A，形成 `CANDIDATE + SPIKE_AUTHORIZED`，只允许约定隔离目录中的 SDK 57 / RN 0.86.2 JS Spike，不得改成 `ACCEPTED` 或创建正式 Nuttie 根工程；隔离 Spike 证据返回并经 Owner 第二次确认后，才能冻结最终精确矩阵。当前无 Mac，Prebuild、Xcode、CocoaPods、签名、Archive 与原生真机证据继续阻断。
 
 D-052 的 A 为团队推荐和当前 fail-closed 执行边界，不是 Owner 已接受的决定。Owner 未明确回复前，USDA 原始或转换数据只可用于本地研发，不得进入面向美国境外朋友的 TestFlight/IPA。详细证据和选项见 [食品数据许可与来源合规审查](../05-quality/data-license-review.md) 与 [Owner 分批决策包](../02-product/owner-decision-packs.md)。
 

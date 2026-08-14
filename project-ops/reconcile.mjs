@@ -68,6 +68,7 @@ export function reconcileProjectOps(model) {
   const ownerFacts = Array.isArray(ownerIntake.facts) ? ownerIntake.facts : [];
   const oi02Fact = ownerFacts.find((fact) => fact?.inputId === "OI-02") ?? null;
   const oi03Fact = ownerFacts.find((fact) => fact?.inputId === "OI-03") ?? null;
+  const d032Decision = decisions.find((decision) => decision?.id === "D-032") ?? null;
   const latestEvent = maxTimestamp(model.events, "recordedAt");
   const latestMessage = maxTimestamp(model.messages, "sentAt");
   const latestSource = [latestEvent, latestMessage]
@@ -181,17 +182,28 @@ export function reconcileProjectOps(model) {
       iosVersion: oi03Fact?.iosVersion ?? null,
       nativeIosWorkAuthorized: oi03Fact?.nativeIosWorkAuthorized ?? null,
     },
+    jsSpikeAuthorization: {
+      decisionId: "D-032",
+      decisionState: d032Decision?.status ?? null,
+      choiceKey: d032Decision?.choiceKey ?? null,
+      authorized:
+        d032Decision?.status === "CANDIDATE" &&
+        d032Decision?.choiceKey === "sdk-57-spike-authorized",
+    },
     nativeSelectionGate: {
       expectedTool: "request_user_input",
-      expectedQuestionId: "phase0_owner_batch_readback_confirmation",
+      expectedQuestionId: "d039_add_meal_entry",
       passed:
         ownerIntake.channel === "CODEX_REQUEST_USER_INPUT" &&
-        ownerIntake.nextQuestion?.id === "phase0_owner_batch_readback_confirmation" &&
+        ownerIntake.nextQuestion?.id === "d039_add_meal_entry" &&
         ownerIntake.nextQuestion?.tool === "request_user_input",
     },
   };
   if (!ownerGate.nativeSelectionGate.passed) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持宿主原生首批规范化回读门禁", ownerGate.nativeSelectionGate);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持宿主原生 D-039 PX-3 门禁", ownerGate.nativeSelectionGate);
+  }
+  if (!ownerGate.jsSpikeAuthorization.authorized) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_JS_SPIKE_AUTHORIZATION", "D-032", "D-032 未保持 SDK 57 隔离 JS Spike 授权边界", ownerGate.jsSpikeAuthorization);
   }
 
   const d039Gate = latestD039Gate(model);

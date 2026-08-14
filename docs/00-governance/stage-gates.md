@@ -12,11 +12,11 @@
 
 | Gate | 名称 | 状态 | 2026-08-14 证据/缺口 |
 | --- | --- | --- | --- |
-| G0 | 项目立项 | PASS | 章程、本地硬边界、角色模型、D-001~D-017 已接受 |
+| G0 | 项目立项 | PASS | 章程、本地硬边界、角色模型、28 项 Owner 决定已接受 |
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
-| G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过；OI-02/OI-03 事实已齐备，仍待 Owner 整批回读确认和后续范围/体验候选 |
-| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-039 已通过 PX-2 并待 PX-3 Owner 评审，D-040 质量问题已关闭但仍处于 PX-0 输入缺口；导航、首启、评分等关键候选仍待 Owner |
-| G4 | Build Ready | IN_PROGRESS | 架构/ADR/威胁模型/测试初版与安全终审已形成；框架无关契约与治理检查全套 644 项测试通过，含 ProjectOps 5 份 Schema/248 个实例校验、OI-02 原生输入、AI 凭据、F01/F02 候选确认、F16 参考草稿、F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F18/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；F16 仍缺 Owner 对 IA/保存/高风险/D-033/D-053 的选择、正式 payload/真实 transport/UI，F01/F02 仍缺正式字段/Repository，F18 仍缺真实 adapter/SQLCipher snapshot transaction；两项 Release 审计因无签名 Archive、平台形态决定和生产证据保持 `BLOCKED`，Owner 整批确认、正式实现、Mac/真机和 Release 证据仍阻断 |
+| G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过；首批 Owner 输入已确认，仍需冻结首个 MVP 增量与后期范围边界 |
+| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-038 四入口导航已接受，D-039 已通过 PX-2 并待 PX-3 Owner 评审；D-040 保持后续候选且不阻断当前添加餐食评审 |
+| G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受，D-032 已允许约定隔离目录的 SDK 57 JS Spike；ProjectOps 为 5 份 Schema/261 个实例且对账通过。正式根工程仍未授权，原生路径继续受无 Mac/Xcode/CocoaPods 阻断；D-052/D-053 对境外数据分发和第三方 AI 保持 fail closed |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
 | G7 | Release Ready | FAIL | 尚无候选构建、发布授权、回退和分发检查 |
@@ -59,7 +59,7 @@
 - 产品、设计、架构、安全、QA 完成跨角色审查。
 - 任何影响范围的候选决定已由 Owner 处理。
 
-当前状态：`IN_PROGRESS`。能力、需求和验收主键已经 24/24 对齐，F13 已明确区分 confirmed 的 Burned/近 7 日消耗与 cross-source 的运动/步数。[五项追踪整改最终复验](../05-quality/traceability-review.md) 已通过；当前阻断来自尚未处理的 Owner 范围/体验候选，而不是追踪集合缺失。
+当前状态：`IN_PROGRESS`。能力、需求和验收主键已经 24/24 对齐，F13 已明确区分 confirmed 的 Burned/近 7 日消耗与 cross-source 的运动/步数。[五项追踪整改最终复验](../05-quality/traceability-review.md) 已通过；首批 Owner 输入已经整批确认。当前只需冻结首个 MVP 增量与后期范围边界，不再等待 D-052/D-053 关闭本地自用、无第三方 AI 的开发路径。
 
 ## G3：体验基线
 
@@ -72,7 +72,7 @@
 - 产品、架构、安全与 QA 审查完成。
 - 视觉方向和关键交互若存在多种实质方案，已提交 Owner 决定。
 
-当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，并达到 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`，但 PX-2 不代表 Owner 已选择 A/B/C。D-040 首启资料与目标原型的首轮 2 项 P1、4 项 P2 和 1 项 P3 已由 delta 复测关闭，但最小字段、目标公式、适用范围和特殊人群停止规则未关闭，因此保持 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`。产品导航、首启资料、健康评分顺序、餐次和趋势等体验选择仍待 Owner，视觉方向尚未形成可供选择的正式方案。
+当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-038 四入口导航已经接受。D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，并达到 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`，下一步只需 Owner 选择 A/B/C。D-040 仍为 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`，保留到后续增量，不阻断当前 D-039 评审。
 
 ## G4：Build Ready
 

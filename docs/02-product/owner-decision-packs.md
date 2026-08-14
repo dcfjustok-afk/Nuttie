@@ -1,15 +1,15 @@
 # Nuttie Owner 分批决策包
 
-> 状态：`READY_FOR_OWNER_REVIEW`
+> 状态：`BATCH_1_CONFIRMED / REFERENCE`
 >
 > 快照日期：2026-07-31
 >
-> 规则：本文件中的所有选项都是 `CANDIDATE`。只有 Owner 的明确回复和治理台账更新，才能把候选改为 `ACCEPTED`。团队推荐不等于批准，也不授权初始化工程、注册 Apple 资源、上传 TestFlight 或发布。
+> 规则：本文件保留提交给 Owner 的原始选项。第 1 批已于 2026-08-14 完成整批回读：D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-037/D-038/D-047/D-048 已接受，D-032 为 `CANDIDATE + SPIKE_AUTHORIZED`。本文中的历史候选文案不能覆盖权威决定台账；后续批次仍是候选。
 
 ## 1. 使用方式
 
-- D-001 至 D-017 已接受，不在本文件重复询问。
-- 当前第 1 批由 PM 在主 Codex 聊天中通过宿主原生 `request_user_input` 逐题询问，每轮只提交一个稳定问题；Owner 点击选项后，PM 才进入下一题。不要求 Owner 输入字母，也不允许用网页表单或复制模板替代。
+- D-001 至 D-025 中已进入权威台账的决定不在本文件重复询问。
+- 第 1 批原生 `request_user_input` 与整批回读已经完成；下一题是独立的 D-039 PX-3，不得重新询问本批。
 - 后续批次只用于展示完整决策队列，不因出现在本文而自动进入实现。
 - `Owner 输入` 是账号、设备或标识的事实，不是架构决定；缺失时保持阻断，不伪造占位值。
 - `Spike 后再定` 表示可以先做受控实验，但在 Owner 接受结果前不能写入 Release 基线。
@@ -216,15 +216,15 @@ D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-
 
 ## 8. 当前聊天决策流程
 
-12 项 D 编号问题已通过原生选择卡取得待回读输入，详见 [Owner 待回读输入](../00-governance/owner-intake-pending.md) 与 `project-ops/owner-intake.json`；它们尚未接受，不得重复询问或写入决定台账。D-047 最新输入已由 Owner 回正为 C：当前不付费、只自用、不做 TestFlight、暂不考虑朋友；D-008 是否未来恢复或正式 supersede 仍留到后续决定。
+12 项 D 编号问题已通过原生选择卡和整批回读确认，详见 [Owner 第 1 批确认归档](../00-governance/owner-intake-pending.md) 与 `project-ops/owner-intake.json`；不得重复询问。D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-037/D-038/D-047/D-048 已写入决定台账，D-032 保持 `CANDIDATE + SPIKE_AUTHORIZED`。D-047 已由 Owner 回正为 C：当前不付费、只自用、不做 TestFlight、暂不考虑朋友；D-008 是否未来恢复或正式 supersede 仍留到后续决定。
 
-OI-02 已通过宿主原生 `request_user_input` 记录为 Bundle ID 尚未创建，具体值为空，App ID 与 App Store Connect record 均未创建，SKU=`N/A`；具体 Bundle ID 最迟在首次自用真机签名配置前另行确认。OI-03 已记录为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。当前下一张卡是首批规范化整批回读确认。
+OI-02 已确认 Bundle ID 尚未创建，具体值为空，App ID 与 App Store Connect record 均未创建，SKU=`N/A`；具体 Bundle ID 最迟在首次自用真机签名配置前另行确认。OI-03 已确认当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。当前下一张宿主原生卡是 D-039 添加餐食首层体验。
 
-逐题点击期间，所有选择只作为待回读输入。首批完成后，项目经理必须回传一份规范化解析：逐项列出状态是 `ACCEPTED`、`CANDIDATE + SPIKE_AUTHORIZED` 还是 `DEFERRED`，并复述 OI 事实值，再通过原生选择卡请求整批最终确认。Owner 点击确认前不追加 `DECISION_ACCEPTED`。D-032 的 A/B 只有“隔离 Spike 授权”含义，不能直接记为最终接受；后续验证失败必须提交新决定，不允许团队自动切换选项。
+D-032 的 A 只有“隔离 SDK 57 JS Spike 授权”含义，不能直接记为最终接受；后续验证失败必须提交证据并触发第二次 Owner 动作，不允许团队自动切换选项。D-039 必须使用真实 `request_user_input` 返回，不得从原型默认状态或 PX-2 PASS 推导。
 
-## 9. 未收到回复时的执行边界
+## 9. 当前执行边界
 
-- 不创建正式 Nuttie 根工程、正式 `package.json`、lockfile 或 `ios/`。只有 Owner 对 D-032 选择 A/B、对 D-037 给出完整 profile，并明确 OI-03 后，才允许在约定的隔离 `spikes/` 边界创建候选工件；是否可执行 iOS 原生部分取决于实际 Mac/Xcode。
+- 不创建正式 Nuttie 根工程、正式根 `package.json`、lockfile 或 `ios/`。允许在约定的隔离 `spikes/` 边界创建 SDK 57 JS candidate 工件；无 Mac/Xcode/CocoaPods 时不得执行 Prebuild 或原生部分。
 - 不注册 Bundle ID、App ID、App Store Connect record，不付费，不上传 TestFlight。
 - 可以继续完善文档、低保真原型、测试设计、许可证据和不依赖具体技术选型的工作台。
 - G2、G3、G4 保持 `IN_PROGRESS`；G5 至 G8 维持未达到门禁的 `FAIL`。

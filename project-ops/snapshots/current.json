@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T16:55:34+08:00",
+  "generatedAt": "2026-08-14T17:22:29+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -8,8 +8,8 @@
     "status": "BASELINES_IN_PROGRESS"
   },
   "metrics": {
-    "acceptedDecisions": 17,
-    "candidateDecisions": 14,
+    "acceptedDecisions": 28,
+    "candidateDecisions": 3,
     "competitorCapabilityGroups": 24,
     "evidenceItems": 66,
     "confirmedIosItems": 37,
@@ -18,8 +18,8 @@
     "gapThemeCount": 9,
     "agentRosterSize": 25,
     "activeAgents": 1,
-    "agentMessages": 115,
-    "projectEvents": 130
+    "agentMessages": 116,
+    "projectEvents": 142
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "OI-02 已规范化为 Bundle ID 尚未创建；等待首批 Owner 输入整批回读确认",
+      "workPackage": "首批 Owner 输入已确认；推进 D-039 与隔离 SDK 57 JS Spike 门禁",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -253,7 +253,7 @@
     "F11 近七日摄入/消耗框架无关读模型已登记：连续七个本地日历日、缺失与显式零分离、精确 kcal/kJ 聚合、摄入/消耗来源分流、revision 反查和文字语义摘要通过自动化；不授权消耗公式、目标/剩余/净值、平均/更长周期、AI、HealthKit、原生或正式工程",
     "F10 体重记录框架无关事务合同已登记：原始 kg/lb、精确换算、同日多记录、增删改 revision CAS、幂等回放与完整趋势证据通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权 BMI/目标/异常/显示精度/按日合并、HealthKit、原生或正式工程",
     "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
-    "Owner intake 已进入 AWAITING_BATCH_READBACK：13 条响应、12 个唯一决定保持待回读；OI-02 已通过 request_user_input 记录为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；下一步是首批规范化整批确认",
+    "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；下一步是 D-039 PX-3 Owner 选择",
     "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
     "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT,
+  PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,17 +81,17 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 248,
+    instancesValidated: 261,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 130);
-  assert.equal(report.counts.messages, 115);
-  assert.equal(report.counts.resolvedResponses, 71);
+  assert.equal(report.counts.events, 142);
+  assert.equal(report.counts.messages, 116);
+  assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
   assert.equal(report.counts.agents, 25);
@@ -267,7 +267,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 247);
+    assert.equal(report.schemaValidation.instancesValidated, 260);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -915,36 +915,36 @@ test("拒绝快照计数漂移与活跃角色集合漂移", async (t) => {
   });
 });
 
-test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
-  await t.test("批次误关闭", () => {
+test("拒绝 Owner 整批确认被回退、篡改或扩大授权", async (t) => {
+  await t.test("批次回退为待确认", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.status = "CONFIRMED";
+      model.ownerIntake.status = "AWAITING_BATCH_READBACK";
     });
-    assertDiagnostic(report, "OPS_OWNER_BATCH_PREMATURELY_CLOSED");
+    assertDiagnostic(report, "OPS_OWNER_BATCH_STATUS_CHANGED");
   });
 
-  await t.test("accepted 状态提前改变", () => {
+  await t.test("accepted 状态变化标记被回退", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.acceptanceStateChanged = true;
+      model.ownerIntake.acceptanceStateChanged = false;
     });
     assertDiagnostic(report, "OPS_OWNER_ACCEPTANCE_STATE_CHANGED");
   });
 
-  await t.test("单项 response 提前终态", () => {
+  await t.test("单项 response 回退为待确认", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.responses[0].state = "ACCEPTED";
+      model.ownerIntake.responses[0].state = "PENDING_BATCH_READBACK";
     });
-    assertDiagnostic(report, "OPS_OWNER_RESPONSE_FINALIZED");
+    assertDiagnostic(report, "OPS_OWNER_RESPONSE_STATE_MISMATCH");
   });
 
-  await t.test("OI-02 完成后下一题偏离整批回读", () => {
+  await t.test("整批确认后下一题偏离 D-039", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.id = "oi04_other";
     });
     assertDiagnostic(report, "OPS_OWNER_NEXT_QUESTION_CHANGED");
   });
 
-  await t.test("整批回读不再使用宿主原生 request_user_input", () => {
+  await t.test("D-039 不再使用宿主原生 request_user_input", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.tool = "static_web_form";
     });
@@ -1030,7 +1030,29 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
       response.decisionId = "D-999";
     });
     assertDiagnostic(report, "OPS_OWNER_DECISION_SET_MISMATCH");
-    assertDiagnostic(report, "OPS_OWNER_DECISION_NOT_CANDIDATE");
+  });
+
+  await t.test("D-032 被越级转为 ACCEPTED", () => {
+    const report = validateMutation((model) => {
+      const decision = model.decisionRegister.decisions.find((candidate) => candidate.id === "D-032");
+      decision.status = "ACCEPTED";
+      decision.acceptedOn = "2026-08-14";
+    });
+    assertDiagnostic(report, "OPS_OWNER_D032_SPIKE_AUTHORIZATION_MISMATCH");
+  });
+
+  await t.test("整批确认事件扩大为正式根工程授权", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-013").value.data.formalRootProjectAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OWNER_BATCH_CONFIRMATION_EVENT_MISMATCH");
+  });
+
+  await t.test("D-038 接受事件的 choiceKey 被改写", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-010").value.data.choiceKey = "other";
+    });
+    assertDiagnostic(report, "OPS_OWNER_ACCEPTED_EVENTS_MISMATCH");
   });
 
   await t.test("D-047 A 到 C 的审计顺序被改写", () => {

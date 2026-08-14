@@ -2,23 +2,23 @@
   "schemaVersion": 1,
   "batchId": "phase0-owner-batch-1",
   "channel": "CODEX_REQUEST_USER_INPUT",
-  "status": "AWAITING_BATCH_READBACK",
-  "updatedAt": "2026-08-14T16:55:34+08:00",
-  "acceptanceStateChanged": false,
+  "status": "CONFIRMED",
+  "updatedAt": "2026-08-14T17:22:29+08:00",
+  "acceptanceStateChanged": true,
   "responses": [
     {
       "questionId": "d038_navigation_shell",
       "decisionId": "D-038",
       "optionKey": "A",
       "optionLabel": "四个固定入口：日记、趋势、食品资料、设置；情境新增",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d032_spike_baseline",
       "decisionId": "D-032",
       "optionKey": "A",
       "optionLabel": "授权隔离 Expo SDK 57 / RN 0.86.2 candidate Spike",
-      "state": "PENDING_BATCH_READBACK",
+      "state": "CONFIRMED_SPIKE_AUTHORIZED",
       "semantics": "选择若经最终批次回读确认，只能成为 CANDIDATE + SPIKE_AUTHORIZED；不是最终 ACCEPTED"
     },
     {
@@ -26,70 +26,70 @@
       "decisionId": "D-037",
       "optionKey": "A",
       "optionLabel": "pnpm 11.18.0 + node-linker=hoisted + pnpm-lock.yaml + frozen install",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d048_device_profile",
       "decisionId": "D-048",
       "optionKey": "A",
       "optionLabel": "iPhone 竖屏；supportsTablet=false；Mac/Vision compatibility availability 关闭",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d018_navigation_implementation",
       "decisionId": "D-018",
       "optionKey": "A",
       "optionLabel": "Expo Router；不依赖 beta typed routes；深链参数运行时校验",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d020_sqlite_access",
       "decisionId": "D-020",
       "optionKey": "A",
       "optionLabel": "Drizzle 管理常规 schema/query，关键路径保留受控 SQL",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d019_ui_state",
       "decisionId": "D-019",
       "optionKey": "A",
       "optionLabel": "Zustand 仅管理 UI/session/草稿；SQLite 为领域唯一真源",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d021_forms_validation",
       "decisionId": "D-021",
       "optionKey": "A",
       "optionLabel": "React Hook Form + Zod；领域不变量独立",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d025_styling_tokens",
       "decisionId": "D-025",
       "optionKey": "A",
       "optionLabel": "React Native StyleSheet + TypeScript semantic tokens + 可访问组件层",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d023_unit_component_tests",
       "decisionId": "D-023",
       "optionKey": "A",
       "optionLabel": "jest-expo + Jest + React Native Testing Library 单 runner",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d024_e2e_native_tests",
       "decisionId": "D-024",
       "optionKey": "A",
       "optionLabel": "本地 Maestro + XCTest/XCUITest；不启用云测试",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED_ACCEPTED"
     },
     {
       "questionId": "d047_apple_identity",
       "decisionId": "D-047",
       "optionKey": "A",
       "optionLabel": "个人 Apple Developer Program 会员",
-      "state": "PENDING_BATCH_READBACK",
+      "state": "SUPERSEDED_BY_OWNER_CLARIFICATION",
       "semantics": "原始卡片点击；已被 Owner 随后的明确当前范围说明回正，但仍保留用于审计"
     },
     {
@@ -97,7 +97,7 @@
       "decisionId": "D-047",
       "optionKey": "C",
       "optionLabel": "当前暂不加入 Apple Developer Program；只开发和安装给 Owner 自己使用",
-      "state": "PENDING_BATCH_READBACK",
+      "state": "CONFIRMED_ACCEPTED",
       "semantics": "Owner 明确不付费、不做 TestFlight、当前不考虑朋友分发；以此作为 D-047 的待回读最新输入"
     }
   ],
@@ -111,7 +111,7 @@
         "teamId": "N/A",
         "duns": "N/A"
       },
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED"
     },
     {
       "inputId": "OI-02",
@@ -127,13 +127,13 @@
       "appIdStatus": "NOT_CREATED",
       "appStoreConnectRecordStatus": "NOT_CREATED",
       "specificBundleIdRequiredBy": "FIRST_SELF_USE_DEVICE_SIGNING_CONFIGURATION",
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED"
     },
     {
       "inputId": "DISTRIBUTION_INTENT",
       "questionId": "distribution_intent_clarification",
       "value": "当前只开发和安装给 Owner 自己使用；不付 Apple Developer Program 年费，不做 TestFlight，暂不考虑朋友分发",
-      "state": "PENDING_BATCH_READBACK",
+      "state": "CONFIRMED",
       "d008Treatment": "D-008 既有 TestFlight 方向不在当前阶段执行；是否未来恢复或正式 supersede 留待后续 Owner 决定"
     },
     {
@@ -151,7 +151,7 @@
       "canConnectToMac": "N/A_NO_MAC",
       "profileCompleteness": "COMPLETE_FOR_CURRENT_AVAILABILITY",
       "nativeIosWorkAuthorized": false,
-      "state": "PENDING_BATCH_READBACK"
+      "state": "CONFIRMED"
     }
   ],
   "conflicts": [
@@ -159,13 +159,13 @@
       "conflictId": "OWNER-INTAKE-CONFLICT-001",
       "relatedDecisions": ["D-047", "D-008"],
       "summary": "D-047 首次点击 A 个人会员，后由 Owner 明确回正为当前不付费、只自用、D-047=C。",
-      "state": "OWNER_CLARIFIED_PENDING_BATCH_READBACK",
-      "mustNotInfer": "该说明不自动永久取消未来朋友分发，也不自动 supersede 已接受的 D-008；最终语义仍需整批回读确认。"
+      "state": "RESOLVED_CONFIRMED",
+      "mustNotInfer": "该说明不自动永久取消未来朋友分发，也不 supersede 已接受的 D-008。"
     }
   ],
   "nextQuestion": {
-    "id": "phase0_owner_batch_readback_confirmation",
-    "title": "确认 Nuttie 首批 Owner 输入规范化回读",
+    "id": "d039_add_meal_entry",
+    "title": "选择添加餐食首层体验",
     "tool": "request_user_input"
   }
 }

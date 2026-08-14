@@ -93,7 +93,7 @@ Because the failures occurred before a Figma response, no node IDs are claimed f
 - Screen source: `D:\github\Nuttie\prototypes\nuttie-visual-kit\index.html`
 - Target mobile frame: `390 x 844`
 - RN owner reference: `D-038`
-- Design status remains `CANDIDATE / OWNER_DECISION_PENDING`
+- This evidence captures the historical `CANDIDATE / OWNER_DECISION_PENDING` review state; D-038 option A was later accepted through the 2026-08-14 Owner batch confirmation.
 - AI behavior remains optional and explicitly not configured/manual fallback in the prototype
 - This artifact does not authorize a React Native implementation, navigation choice, provider choice, or production brand lock
 

@@ -29,7 +29,7 @@
       ]
     },
     "updatedAt": { "type": "string", "format": "date-time" },
-    "acceptanceStateChanged": { "const": false },
+    "acceptanceStateChanged": { "type": "boolean" },
     "responses": {
       "type": "array",
       "items": {
@@ -40,7 +40,14 @@
           "decisionId": { "type": "string", "pattern": "^D-[0-9]{3}$" },
           "optionKey": { "type": "string" },
           "optionLabel": { "type": "string" },
-          "state": { "const": "PENDING_BATCH_READBACK" },
+          "state": {
+            "enum": [
+              "PENDING_BATCH_READBACK",
+              "CONFIRMED_ACCEPTED",
+              "CONFIRMED_SPIKE_AUTHORIZED",
+              "SUPERSEDED_BY_OWNER_CLARIFICATION"
+            ]
+          },
           "semantics": { "type": "string" }
         },
         "additionalProperties": false
