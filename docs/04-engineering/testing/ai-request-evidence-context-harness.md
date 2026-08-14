@@ -39,6 +39,8 @@ networkRequests    = 0
 
 因此完整 policy 证据不是发送许可。当前 D-053 仍是 `CANDIDATE / NOT_AUTHORIZED`；本合同不读取 Keychain、不组装 Authorization/body、不联网、不持久化业务数据，也不把本地 policy 声明冒充 Provider 运营真值。
 
+[AI 配置与策略预检](./ai-configuration-policy-preflight-harness.md)会把本上下文与稳定非敏感配置证据共同绑定，并比较 baseURL/origin/model。即使三项完全一致，配置仍没有 `providerId` 身份，因此预检保持 `BLOCKED`，且 D-033/D-034/D-036/D-053 均继续独立阻断。
+
 ## 当前自动化证据
 
 7 项 Node 测试覆盖完整证据/指纹绑定、未授权边界、旧版和异常对象拒绝、嵌套篡改、scope/有效期/ALLOW 前置条件、请求/subject 差异检测，以及零网络/持久化/凭据/系统时钟副作用源码审计。

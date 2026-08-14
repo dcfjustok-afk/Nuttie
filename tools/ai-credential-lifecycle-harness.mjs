@@ -1,5 +1,7 @@
 import { isDeepStrictEqual } from "node:util";
 
+import { createHash } from "node:crypto";
+
 const PROTOCOL_VERSION = "ai-credential-intent-v1";
 const OPERATION_KINDS = Object.freeze(["SAVE", "REMOVE"]);
 const STATUSES = Object.freeze({
@@ -160,6 +162,10 @@ function canonicalStringify(value) {
   return `{${Object.keys(value).sort().map((key) => (
     `${JSON.stringify(key)}:${canonicalStringify(value[key])}`
   )).join(",")}}`;
+}
+
+function sha256Fingerprint(value) {
+  return createHash("sha256").update(canonicalStringify(value)).digest("hex");
 }
 
 function normalizeModel(value) {
@@ -742,6 +748,90 @@ function createInitialCredentialState({ installationGeneration }) {
     connectionStatePresent: false,
     completedOperationIds: [],
   });
+}
+
+function createActiveAIConfigurationEvidence(state) {
+  assertState(state);
+  if (state.status !== STATUSES.CONFIGURED || state.activeConfig === null) {
+    fail("active AI configuration evidence requires a stable configured state", "AI_CONFIGURATION_NOT_STABLE");
+  }
+  const activeConfig = normalizeConfig(state.activeConfig, "state.activeConfig");
+  const secretSlot = normalizeSecretSlot(state.secretSlots[0], "state.secretSlots[0]");
+  const core = immutable({
+    schemaVersion: "AI_ACTIVE_CONFIGURATION_EVIDENCE_V1",
+    lifecycleStatus: STATUSES.CONFIGURED,
+    installationGeneration: state.installationGeneration,
+    configurationRevision: state.revision,
+    activeConfig,
+    secretSlot,
+    boundary: "NON_SENSITIVE_METADATA_ONLY_NOT_SEND_AUTHORIZATION",
+  });
+  return immutable({ ...core, evidenceFingerprint: sha256Fingerprint(core) });
+}
+
+function normalizeActiveAIConfigurationEvidence(input, field = "configurationEvidence") {
+  const containsUnsupportedProperties = (value) => !value || typeof value !== "object" || Array.isArray(value)
+    || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)
+    || Object.getOwnPropertySymbols(value).length > 0
+    || Object.values(Object.getOwnPropertyDescriptors(value)).some(
+      (descriptor) => !descriptor.enumerable || descriptor.get || descriptor.set,
+    );
+  if (
+    containsUnsupportedProperties(input) ||
+    containsUnsupportedProperties(input.activeConfig) ||
+    containsUnsupportedProperties(input.secretSlot)
+  ) {
+    fail("active AI configuration evidence must contain only enumerable data properties", "INVALID_AI_ACTIVE_CONFIGURATION_EVIDENCE", { field });
+  }
+  assertExactKeys(
+    input,
+    [
+      "schemaVersion",
+      "lifecycleStatus",
+      "installationGeneration",
+      "configurationRevision",
+      "activeConfig",
+      "secretSlot",
+      "boundary",
+      "evidenceFingerprint",
+    ],
+    [],
+    field,
+    "INVALID_AI_ACTIVE_CONFIGURATION_EVIDENCE",
+  );
+  if (
+    input.schemaVersion !== "AI_ACTIVE_CONFIGURATION_EVIDENCE_V1" ||
+    input.lifecycleStatus !== STATUSES.CONFIGURED ||
+    input.boundary !== "NON_SENSITIVE_METADATA_ONLY_NOT_SEND_AUTHORIZATION" ||
+    typeof input.evidenceFingerprint !== "string" ||
+    !/^[a-f0-9]{64}$/.test(input.evidenceFingerprint)
+  ) fail("active AI configuration evidence boundary is invalid", "INVALID_AI_ACTIVE_CONFIGURATION_EVIDENCE", { field });
+  const activeConfig = normalizeConfig(input.activeConfig, `${field}.activeConfig`);
+  const secretSlot = normalizeSecretSlot(input.secretSlot, `${field}.secretSlot`);
+  const installationGeneration = assertIdentifier(
+    input.installationGeneration,
+    `${field}.installationGeneration`,
+    INSTALLATION_GENERATION,
+    "INVALID_AI_ACTIVE_CONFIGURATION_EVIDENCE",
+  );
+  const configurationRevision = assertRevision(input.configurationRevision, `${field}.configurationRevision`);
+  const core = immutable({
+    schemaVersion: "AI_ACTIVE_CONFIGURATION_EVIDENCE_V1",
+    lifecycleStatus: STATUSES.CONFIGURED,
+    installationGeneration,
+    configurationRevision,
+    activeConfig,
+    secretSlot,
+    boundary: "NON_SENSITIVE_METADATA_ONLY_NOT_SEND_AUTHORIZATION",
+  });
+  if (
+    configurationRevision < 1 ||
+    activeConfig.revision !== configurationRevision ||
+    secretSlot.installationGeneration !== installationGeneration ||
+    secretSlot.credentialRef !== activeConfig.credentialRef ||
+    input.evidenceFingerprint !== sha256Fingerprint(core)
+  ) fail("active AI configuration evidence is inconsistent", "INVALID_AI_ACTIVE_CONFIGURATION_EVIDENCE", { field });
+  return immutable({ ...core, evidenceFingerprint: input.evidenceFingerprint });
 }
 
 function beginSaveAIProviderConfiguration(state, input) {
@@ -1720,11 +1810,13 @@ export {
   beginRemoveAIProviderCredentials,
   beginSaveAIProviderConfiguration,
   canonicalStringify,
+  createActiveAIConfigurationEvidence,
   createInMemoryAICredentialAdapter,
   createInitialCredentialState,
   discardTransientCredentialSecrets,
   executeCredentialEffect,
   loadAndReconcileCredentialState,
+  normalizeActiveAIConfigurationEvidence,
   normalizeCredentialBaseUrl,
   providePendingCredentialSecret,
   requestCredentialReconciliation,

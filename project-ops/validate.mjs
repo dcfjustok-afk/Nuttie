@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT",
+export const PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 152,
+    events: 153,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 16,
+    "2026-08-14": 17,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1030,6 +1030,48 @@ export const PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  aiConfigurationPolicyPreflightContract: Object.freeze({
+    eventId: "EVT-20260814-017",
+    subjectId: "ai-configuration-policy-preflight-contract",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    artifactState: "WORKING_TREE_UNCOMMITTED",
+    featureIds: Object.freeze(["F01", "F02"]),
+    requirementIds: Object.freeze(["REQ-F01", "REQ-F02"]),
+    acceptanceIds: Object.freeze(["AT-F01", "AT-F02"]),
+    topLevelTests: 8,
+    fullSuitePassed: 777,
+    configurationEvidenceSchemaVersion: "AI_ACTIVE_CONFIGURATION_EVIDENCE_V1",
+    preflightResultSchemaVersion: "AI_CONFIGURATION_POLICY_PREFLIGHT_RESULT_V1",
+    preflightBoundarySchemaVersion: "AI_CONFIGURATION_POLICY_PREFLIGHT_BOUNDARY_V1",
+    stableConfiguredStateRequired: true,
+    nonSensitiveConfigurationEvidenceOnly: true,
+    configurationEvidenceFingerprintBound: true,
+    requestContextFingerprintBound: true,
+    policyEvidenceFingerprintsBound: true,
+    baseUrlOriginModelCompared: true,
+    exactConfigurationMatchAuthorizesSend: false,
+    providerIdentityBoundToConfiguration: false,
+    disposition: "BLOCKED",
+    requiredBlockers: Object.freeze([
+      "PROVIDER_IDENTITY_NOT_BOUND_TO_CONFIGURATION",
+      "D033_CONFIRMATION_SCOPE_NOT_EVALUATED",
+      "D034_RESOURCE_PROFILE_NOT_AUTHORIZED",
+      "D036_TRANSPORT_PROFILE_NOT_AUTHORIZED",
+      "D053_NOT_AUTHORIZED",
+    ]),
+    sendAuthorization: "NOT_GRANTED",
+    credentialMaterialReads: 0,
+    authorizationHeadersBuilt: 0,
+    sensitiveBodySerializations: 0,
+    transportsCreated: 0,
+    realNetworkRequests: 0,
+    businessWrites: 0,
+    systemClockRead: false,
+    nativeImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1582,7 +1624,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3493,6 +3535,62 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "F01/F02/F16 AI request evidence context must retain exact subject/profile/D-053/check evidence, D053_NOT_AUTHORIZED, no transport claim, no send authorization, and no native or formal implementation authorization",
+    );
+  }
+
+  const aiConfigurationPolicyPreflightEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.aiConfigurationPolicyPreflightContract.subjectId,
+  );
+  const aiConfigurationPolicyPreflightEvent = aiConfigurationPolicyPreflightEvents[0]?.value;
+  const aiConfigurationPolicyPreflightData = aiConfigurationPolicyPreflightEvent?.data ?? {};
+  const aiConfigurationPolicyPreflightBaseline = baseline.aiConfigurationPolicyPreflightContract;
+  const aiConfigurationPolicyPreflightFields = [
+    "contractStatus",
+    "artifactState",
+    "topLevelTests",
+    "fullSuitePassed",
+    "configurationEvidenceSchemaVersion",
+    "preflightResultSchemaVersion",
+    "preflightBoundarySchemaVersion",
+    "stableConfiguredStateRequired",
+    "nonSensitiveConfigurationEvidenceOnly",
+    "configurationEvidenceFingerprintBound",
+    "requestContextFingerprintBound",
+    "policyEvidenceFingerprintsBound",
+    "baseUrlOriginModelCompared",
+    "exactConfigurationMatchAuthorizesSend",
+    "providerIdentityBoundToConfiguration",
+    "disposition",
+    "sendAuthorization",
+    "credentialMaterialReads",
+    "authorizationHeadersBuilt",
+    "sensitiveBodySerializations",
+    "transportsCreated",
+    "realNetworkRequests",
+    "businessWrites",
+    "systemClockRead",
+    "nativeImplementationAuthorized",
+    "formalImplementationAuthorized",
+    "gateStatesChanged",
+    "ownerIntakeChanged",
+  ];
+  if (
+    aiConfigurationPolicyPreflightEvents.length !== 1 ||
+    aiConfigurationPolicyPreflightEvent?.eventId !== aiConfigurationPolicyPreflightBaseline.eventId ||
+    aiConfigurationPolicyPreflightEvent?.type !== "ARTIFACT_CREATED" ||
+    aiConfigurationPolicyPreflightEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(aiConfigurationPolicyPreflightData.featureIds) !== JSON.stringify(aiConfigurationPolicyPreflightBaseline.featureIds) ||
+    JSON.stringify(aiConfigurationPolicyPreflightData.requirementIds) !== JSON.stringify(aiConfigurationPolicyPreflightBaseline.requirementIds) ||
+    JSON.stringify(aiConfigurationPolicyPreflightData.acceptanceIds) !== JSON.stringify(aiConfigurationPolicyPreflightBaseline.acceptanceIds) ||
+    JSON.stringify(aiConfigurationPolicyPreflightData.requiredBlockers) !== JSON.stringify(aiConfigurationPolicyPreflightBaseline.requiredBlockers) ||
+    aiConfigurationPolicyPreflightFields.some(
+      (field) => aiConfigurationPolicyPreflightData[field] !== aiConfigurationPolicyPreflightBaseline[field],
+    )
+  ) {
+    add(
+      "OPS_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "F01/F02 AI configuration-policy preflight must retain stable non-sensitive configuration evidence, exact baseURL/origin/model comparison, absent provider identity binding, all D-033/D-034/D-036/D-053 blockers, and zero send side effects",
     );
   }
 

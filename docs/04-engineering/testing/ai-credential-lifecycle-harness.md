@@ -24,6 +24,8 @@
 
 可持久化状态只包含安装代、配置修订、非敏感 Provider 配置、opaque `credentialRef`、密钥槽元数据、durable intent、重试计数和恢复状态。公共记录采用精确字段集合，拒绝未知扩展字段、特殊对象和值。
 
+稳定 `CONFIGURED` 状态可额外导出 `AI_ACTIVE_CONFIGURATION_EVIDENCE_V1`，供[配置与策略预检](./ai-configuration-policy-preflight-harness.md)绑定 installation generation、configuration revision、baseURL/origin/model、opaque `credentialRef` 和密钥槽元数据。该证据不含也不读取 key，并固定声明 `NON_SENSITIVE_METADATA_ONLY_NOT_SEND_AUTHORIZATION`；配置格式当前不含 `providerId`，因此不能仅凭 endpoint/model 一致推导 Provider 身份或发送许可。
+
 API key 保存在模块内的临时内存槽中，并只在 `WRITE_NEW_SECRET` 时作为第二个参数传给适配器。成功写入或确认该写入已经生效后，临时引用立即丢弃；进程丢失且 durable intent 已存在、但目标 key 尚未写入时，状态进入 `KEY_REENTRY_REQUIRED`。
 
 JavaScript 运行时不能保证字符串内存被确定擦除。生产实现必须缩短 key 在 JS 中的寿命，禁止日志、错误回显、持久化、备份和跨任务缓存；是否进一步采用原生安全输入/存储桥接，要由原生 Spike 证明。

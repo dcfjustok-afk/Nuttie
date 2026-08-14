@@ -8,8 +8,8 @@
 
 | Feature | 当前自动化合同 | 已证明的边界 | 未完成/权威门禁 | 审计结论 |
 | --- | --- | --- | --- | --- |
-| F01 AI 拍照识餐 | `ai-policy`、`ai-request-evidence-context`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | 完整本地 Provider profile/证据/风险/有效期/地区，精确 request subject/profile/D-053/check 共享 V2 上下文，Apple 禁项与 candidate/not-authorized 强制阻断；不可信响应拒绝重复键、尾随数据、空候选、危险标签/数值和资源超限；完整 response 指纹贯穿 V3 状态/review/确认记录/命令/回执，未选候选变化可检测、旧 V1/V2 失败关闭、正文不持久化；BYOK 生命周期、用户确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053 Owner 接受、正式 Provider schema/复核、正式迁移策略、图片 transport/组件/抓包 | 发送前、响应解析与 Application 确认事务覆盖，Owner/原生阻断 |
-| F02 AI 文字识餐 | 同 F01 | Provider/profile/request/D-053/check 精确绑定与失败保留本地输入；共享上下文固定不证明 transport、不授予发送；裸 ALLOW/伪造授权失败关闭；响应失败不回显正文，空候选不进入编辑，V3 完整响应证据链不保存候选正文，候选仍未经确认且保存前零写入 | 正式文字字段/映射、正式 Provider schema、显式 Provider UI、真实 transport 与迁移策略；D-033/D-053 | 发送前、响应解析与确认事务覆盖，Owner/网络阻断 |
+| F01 AI 拍照识餐 | `ai-policy`、`ai-request-evidence-context`、`ai-configuration-policy-preflight`、`ai-response-contract`、`ai-credential-lifecycle`、`ai-candidate-confirmation` | 完整本地 Provider profile/证据/风险/有效期/地区，精确 request subject/profile/D-053/check 共享 V2 上下文；稳定非敏感配置与 subject 的 baseURL/origin/model 逐项比较，即使完全一致也因配置未绑定 providerId 及 D-033/D-034/D-036/D-053 保持阻断；不可信响应拒绝重复键、尾随数据、空候选、危险标签/数值和资源超限；完整 response 指纹贯穿 V3 状态/review/确认记录/命令/回执，未选候选变化可检测、旧 V1/V2 失败关闭、正文不持久化；BYOK 生命周期、用户确认值幂等保存与零真实网络 | D-031/D-033/D-034/D-036/D-053 Owner 接受、正式 Provider 配置身份/schema/复核、正式迁移策略、图片 transport/组件/抓包 | 发送前配置/策略预检、响应解析与 Application 确认事务覆盖，Owner/原生阻断 |
+| F02 AI 文字识餐 | 同 F01 | Provider/profile/request/D-053/check 精确绑定与失败保留本地输入；配置/subject 三字段一致仍不等于 Provider 身份绑定或发送许可；裸 ALLOW/伪造授权失败关闭；响应失败不回显正文，空候选不进入编辑，V3 完整响应证据链不保存候选正文，候选仍未经确认且保存前零写入 | 正式文字字段/映射、正式 Provider 配置身份/schema、显式 Provider UI、真实 transport 与迁移策略；D-033/D-034/D-036/D-053 | 发送前配置/策略预检、响应解析与确认事务覆盖，Owner/网络阻断 |
 | F03 条码 | `data-pack-contract`、`import-safety`、`local-food-catalog`、`barcode-lookup-orchestrator` | 离线来源隔离、只收紧的预授权资源预算、严格 manifest/普通文件/来源/转换一致性、subject/调用方验证声明绑定、完整 GTIN 精确查询、前导零、单/多候选显式选择、目录证据绑定、未命中调用方建档、无网络/写入 | 数据包真实验签与信任根 D-026、许可 D-052、激活/回滚、相机/复核/建档组件、真实 Repository/真机/样本统计 | 预授权与 Application 编排合同已覆盖，密码学/产品/原生阻断 |
 | F04 日热量账本 | `daily-energy-ledger`、`seven-day-energy-trend` | 指定日摄入/消耗精确事实、目标生效历史、缺失/零、来源反查 | Left 公式、缺失消耗、负值、舍入与 UI 待 D-040/Owner | 事实层已覆盖，公式阻断 |
 | F05 宏量目标 | `macro-target-history`、`domain-contract` | P/C/F 实际缺失语义、目标原值/单位定义/来源/用户编辑/历史 | 目标算法、grams/percent、比较、舍入、编辑与 UI 待 D-040/Owner | 事实层已覆盖，算法阻断 |
@@ -51,6 +51,8 @@ F18 已从“缺清单合同”继续推进到注册与一致性端口门禁：`
 随后补上 F16 的参考草稿 Application 缺口：`ai-guidance-reference` 将严格解析后的 opaque 内容固定为 `REFERENCE_ONLY / NOT_MEDICAL_ADVICE`，绑定调用方内容/免责声明定义、生成时间、request/policy/source 指纹，支持 revision CAS 本地编辑和放弃后易失内容清理，且所有 effect 恒为零。它不执行医疗安全分类，不授权高风险用途、UXD-04 IA、UXD-11 保存策略、D-033/D-053、正式 payload、业务 Repository、网络或原生实现。
 
 随后统一 AI 响应消费者的请求来源证据：`ai-request-evidence-context` 以唯一 V2 定义绑定完整 policy subject/profile、D-053 authorization evidence 和重新计算的 policy-check，且只接受 scope/有效期/风险/ALLOW 均满足、唯一剩余阻断为 `D053_NOT_AUTHORIZED` 的本地证据。F01/F02 候选确认迁移到 V3 状态/记录链，F16 迁移到 V2 状态/来源链；两者都固定 `transportOccurrence=NOT_ESTABLISHED / sendAuthorization=NOT_GRANTED`，不把测试响应冒充真实 Provider 响应或发送许可。
+
+随后补齐 F01/F02 的配置—策略接缝：`ai-credential-lifecycle` 只从稳定 `CONFIGURED` 状态导出带指纹的非敏感配置证据，`ai-configuration-policy-preflight` 将其与共享请求上下文共同规范化并比较 baseURL/origin/model。配置格式没有 `providerId`，因此即使三项完全一致也固定 `BLOCKED`，继续保留 Provider 身份、D-033、D-034、D-036 和 D-053 五道阻断；不读取 key、不构造 header/body、不创建 transport、不联网、不写业务状态。
 
 随后完成 F21 的应用编排缺口：`media-permission-orchestrator` 将相机、系统用户选择媒体和手工输入分离，只在当前用户任务且权限未决定时经过任务说明产生窄相机 effect；拒绝、受限、撤权、取消和迟到回执都保持手工路径。照片全库、视频、定位、媒体保留/持久化、真实原生调用和 AI 上传继续未授权；下一步仍需权限文案、D-031、正式 adapter、Info.plist 和真机证据。
 

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT,
+  PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 271,
+    instancesValidated: 272,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 152);
+  assert.equal(report.counts.events, 153);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -489,6 +489,25 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiRequestEvidenceContextV2Event.value.data.realNetworkRequests, 0);
   assert.equal(aiRequestEvidenceContextV2Event.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiRequestEvidenceContextV2Event.value.data.formalImplementationAuthorized, false);
+  const aiConfigurationPolicyPreflightEvent = findEvent(VALID_MODEL, "EVT-20260814-017");
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.subject.id, "ai-configuration-policy-preflight-contract");
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.topLevelTests, 8);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.fullSuitePassed, 777);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.configurationEvidenceSchemaVersion, "AI_ACTIVE_CONFIGURATION_EVIDENCE_V1");
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.baseUrlOriginModelCompared, true);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.exactConfigurationMatchAuthorizesSend, false);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.providerIdentityBoundToConfiguration, false);
+  assert.deepEqual(aiConfigurationPolicyPreflightEvent.value.data.requiredBlockers, [
+    "PROVIDER_IDENTITY_NOT_BOUND_TO_CONFIGURATION",
+    "D033_CONFIRMATION_SCOPE_NOT_EVALUATED",
+    "D034_RESOURCE_PROFILE_NOT_AUTHORIZED",
+    "D036_TRANSPORT_PROFILE_NOT_AUTHORIZED",
+    "D053_NOT_AUTHORIZED",
+  ]);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.sendAuthorization, "NOT_GRANTED");
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.credentialMaterialReads, 0);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.realNetworkRequests, 0);
+  assert.equal(aiConfigurationPolicyPreflightEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -534,7 +553,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 270);
+    assert.equal(report.schemaValidation.instancesValidated, 271);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1394,6 +1413,33 @@ test("拒绝把候选确认 V2 完整响应证据降级、改回 V1 或越级持
   assertDiagnostic(
     contextReport,
     "OPS_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT_MISMATCH",
+    "project-ops/events/2026-08-14.jsonl",
+  );
+  const preflightReport = validateMutation((model) => {
+    const event = findEvent(model, "EVT-20260814-017");
+    event.value.data.stableConfiguredStateRequired = false;
+    event.value.data.nonSensitiveConfigurationEvidenceOnly = false;
+    event.value.data.baseUrlOriginModelCompared = false;
+    event.value.data.exactConfigurationMatchAuthorizesSend = true;
+    event.value.data.providerIdentityBoundToConfiguration = true;
+    event.value.data.disposition = "ALLOWED";
+    event.value.data.requiredBlockers = [];
+    event.value.data.sendAuthorization = "GRANTED";
+    event.value.data.credentialMaterialReads = 1;
+    event.value.data.authorizationHeadersBuilt = 1;
+    event.value.data.sensitiveBodySerializations = 1;
+    event.value.data.transportsCreated = 1;
+    event.value.data.realNetworkRequests = 1;
+    event.value.data.businessWrites = 1;
+    event.value.data.systemClockRead = true;
+    event.value.data.nativeImplementationAuthorized = true;
+    event.value.data.formalImplementationAuthorized = true;
+    event.value.data.gateStatesChanged = true;
+    event.value.data.ownerIntakeChanged = true;
+  });
+  assertDiagnostic(
+    preflightReport,
+    "OPS_AI_CONFIGURATION_POLICY_PREFLIGHT_CONTRACT_MISMATCH",
     "project-ops/events/2026-08-14.jsonl",
   );
 });

@@ -16,7 +16,7 @@
 
 `project-ops/decisions.json` 生成于 `2026-08-14T17:22:29+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 28 项 `ACCEPTED` 和 3 项 `CANDIDATE`。
 
-`project-ops/snapshots/current.json` 已按 `2026-08-14T17:22:29+08:00` 最新权威来源完成分支归并，当前记录 28 项 accepted、3 项 candidate、152 个事件、116 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。Owner 已通过宿主原生 `request_user_input` 确认首批整批回读：11 项决定转为 accepted，D-032 仅获得隔离 SDK 57 JS Spike 授权；OI-02 为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。合并同时保留本机 F01/F02/F16 共享 `AI_REQUEST_EVIDENCE_CONTEXT_V2`、不可信响应、完整候选证据链及此前 F18/F19/F03/F09 等非生产合同；这些合同继续固定不证明 transport、不授予发送或正式实现。D-039 保持 PX-2 并成为下一张选择卡，D-040 仍保留在 PX-0 后续队列。
+`project-ops/snapshots/current.json` 已按 `2026-08-14T22:17:51+08:00` 最新权威来源完成分支归并，当前记录 28 项 accepted、3 项 candidate、153 个事件、116 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。Owner 已通过宿主原生 `request_user_input` 确认首批整批回读：11 项决定转为 accepted，D-032 仅获得隔离 SDK 57 JS Spike 授权；OI-02 为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。合并同时保留本机 F01/F02/F16 共享 `AI_REQUEST_EVIDENCE_CONTEXT_V2`、AI 配置—策略预检、不可信响应、完整候选证据链及此前 F18/F19/F03/F09 等非生产合同；这些合同继续固定不证明 transport、不授予发送或正式实现。D-039 保持 PX-2 并成为下一张选择卡，D-040 仍保留在 PX-0 后续队列。
 
 门禁状态以 [阶段门禁](stage-gates.md) 为准：G0/G1 已通过；G2/G3/G4 仍在形成证据；G5~G8 因尚无经批准实现、构建、Beta 或发布证据而保持 `FAIL`。这里的 `FAIL` 表示退出条件尚不存在，不表示项目异常。
 
@@ -93,12 +93,12 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 
 1. **D-039 已通过 PX-2，但尚未通过 PX-3 Owner Gate。** D039-QA-001 至 QA-010 已全部关闭，原型可提交 Owner 评审；在 Owner 明确选择 A/B/C 前，不得把某个添加餐食首层方案写成正式体验基线。
 2. **D-040 保留在后续队列。** A/B/C 流程、恢复、无目标和失败零写入已形成原型，但最小字段、目标公式、适用范围和特殊人群停止规则未关闭；不得把固定测试夹具当作产品目标。它不再阻断当前 D-039 选择与隔离 JS Spike。
-3. **G4 仍未通过，但纯 JS Spike 已获授权。** 工程基础选择已接受，现有框架无关合同继续提供本地事实、事务、AI fail-closed 与禁止能力边界。合并后的 ProjectOps 有 5 份 Schema/271 个实例；F01/F02/F16 共享请求证据只接受唯一剩余 policy blocker 为 `D053_NOT_AUTHORIZED` 的本地上下文，且固定不证明 transport、不授予发送。完整 response 指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他合同均不等于真实 SQLCipher、Keychain、网络、原生或 Release 证据。D-032 只允许约定隔离目录的 SDK 57 JS Spike；正式根工程和 Prebuild 继续关闭。
+3. **G4 仍未通过，但纯 JS Spike 已获授权。** 工程基础选择已接受，现有框架无关合同继续提供本地事实、事务、AI fail-closed 与禁止能力边界。合并后的 ProjectOps 有 5 份 Schema/272 个实例；F01/F02/F16 共享请求证据只接受唯一剩余 policy blocker 为 `D053_NOT_AUTHORIZED` 的本地上下文，AI 配置—策略预检还会精确绑定非敏感配置证据并固定阻断 D-033/D-034/D-036/D-053，且二者均不证明 transport、不授予发送。完整 response 指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他合同均不等于真实 SQLCipher、Keychain、网络、原生或 Release 证据。D-032 只允许约定隔离目录的 SDK 57 JS Spike；正式根工程和 Prebuild 继续关闭。
 4. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 5. **Apple 原生链路仍阻断。** 已记录 iPhone 16 Pro Max / iOS 26.5 与 Bundle ID 尚未创建，但当前无可用 Mac、macOS、Xcode、CocoaPods、具体 Bundle ID、签名链、App Store Connect record 或 TestFlight build；只有 iPhone 不构成原生构建能力。
 6. **Choice UI 宿主阻塞已关闭。** 当前任务已真实暴露宿主原生 `request_user_input`，OI-02 与首批整批确认均已返回并登记；旧 MCP 候选无需安装。下一门禁是 D-039，完整迁移记录见 [Choice UI 宿主只读审计](../04-engineering/choice-ui-host-audit-2026-08-14.md)。
 
-当前合并基线全库 769/769、工具合同 634/634、ProjectOps 验证 116/116、Schema 子集 14/14、只读对账 5/5；包含 5 个 Schema、`271` 个受控实例、`31` 条决定、1 份 Owner intake、`152` 个事件、`116` 条消息和 25 个角色。事件/消息 ID 唯一且所有 `responseTo` 可解析；验证器同时锁定 11 项接受事件、D-032 Spike 边界、OI-02/OI-03 精确事实、D-039 下一门禁及本机新增非生产合同。`project-ops/reconcile.mjs` 对账 28/3 决定状态、D-032 隔离 JS Spike、D-039 PX-2 和 D-040 PX-0 授权位。隔离 SDK 57 Spike 的静态合同检查通过，但安装、类型检查、Expo doctor/export 证据仍按其 README 保持 pending。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`；Windows 主机继续阻断原生路径。
+当前合并基线全库 777/777、工具合同 642/642、ProjectOps 验证 116/116、Schema 子集 14/14、只读对账 5/5；包含 5 个 Schema、`272` 个受控实例、`31` 条决定、1 份 Owner intake、`153` 个事件、`116` 条消息和 25 个角色。事件/消息 ID 唯一且所有 `responseTo` 可解析；验证器同时锁定 11 项接受事件、D-032 Spike 边界、OI-02/OI-03 精确事实、D-039 下一门禁及本机新增非生产合同。`project-ops/reconcile.mjs` 对账 28/3 决定状态、D-032 隔离 JS Spike、D-039 PX-2 和 D-040 PX-0 授权位。隔离 SDK 57 Spike 的静态合同检查通过，但安装、类型检查、Expo doctor/export 证据仍按其 README 保持 pending。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`；Windows 主机继续阻断原生路径。
 
 ## 7. 下一步 Owner 互动
 
@@ -154,4 +154,4 @@ node (Join-Path $repoRoot 'prototypes\d040-onboarding-goals\qa-smoke.mjs') http:
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 28/3；事件/消息/角色是 152/116/25 且仅 `root` 活跃；Owner 首批状态为 `CONFIRMED`，D-032 是 `CANDIDATE + SPIKE_AUTHORIZED`，下一题是宿主原生 `request_user_input` 的 `d039_add_meal_entry`；OI-02 精确为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac；共享 AI 请求证据、不可信响应、候选完整指纹及其他非生产合同不得冒充 Provider/schema/营养真值、发送许可、真实持久化、网络、原生或 Release 证据；D-052/D-053 继续 fail closed；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；根目录正式工程仍未授权，隔离 `spikes/sdk57-js` 不等于正式根 scaffold、Apple 资源、签名 Archive 或 TestFlight 产物。
+恢复后至少重新确认：决定是 28/3；事件/消息/角色是 153/116/25 且仅 `root` 活跃；Owner 首批状态为 `CONFIRMED`，D-032 是 `CANDIDATE + SPIKE_AUTHORIZED`，下一题是宿主原生 `request_user_input` 的 `d039_add_meal_entry`；OI-02 精确为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac；共享 AI 请求证据、AI 配置—策略预检、不可信响应、候选完整指纹及其他非生产合同不得冒充 Provider/schema/营养真值、发送许可、真实持久化、网络、原生或 Release 证据；D-052/D-053 继续 fail closed；D-039 是 `CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`；D-040 是 `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`；根目录正式工程仍未授权，隔离 `spikes/sdk57-js` 不等于正式根 scaffold、Apple 资源、签名 Archive 或 TestFlight 产物。

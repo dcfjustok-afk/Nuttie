@@ -66,6 +66,7 @@
 - [F01/F02 不可信 AI 响应合同](testing/ai-response-contract-harness.md)：重复键/尾随数据/空候选/危险标签/资源预算失败关闭，规范化候选语义指纹、被动状态快照与零副作用边界。
 - [AI Provider policy 与 D-053 门禁](testing/ai-policy-harness.md)：完整本地 policy profile、证据/风险/有效期/地区、精确 request subject 和 D-053 candidate/not-authorized 指纹绑定；零 key/body/network/write。
 - [AI 请求证据共享上下文](testing/ai-request-evidence-context-harness.md)：以唯一 V2 上下文绑定精确 subject、完整 profile、D-053 evidence 和 policy-check；固定不证明 transport、不授予发送，供 F01/F02 与 F16 共同核验。
+- [AI 配置与策略预检合同](testing/ai-configuration-policy-preflight-harness.md)：绑定稳定非敏感配置证据与共享请求上下文，精确比较 baseURL/origin/model；即使一致也因 providerId 未绑定和 D-033/D-034/D-036/D-053 保持阻断。
 - [AI 凭据生命周期合同](testing/ai-credential-lifecycle-harness.md)：BYOK 配置/替换/移除、Keychain 类密钥槽、durable intent、未知结果对账与 fail-closed 网络门。
 - [体重记录事务合同](testing/body-weight-record-harness.md)：F10 手工 kg/lb 原始输入、精确换算、同日多记录、revision CAS、幂等写入与完整趋势回执。
 - [近七日摄入/消耗事实读模型](testing/seven-day-energy-trend-harness.md)：F11 七日本地日历窗口、摄入/消耗分流、缺失语义、精确能量聚合、来源反查与文字摘要。
