@@ -2,11 +2,13 @@
 
 > 状态：`CONFIRMED`
 >
-> 更新时间：2026-08-14T17:22:29+08:00
+> 更新时间：2026-08-15T00:03:31+08:00
 >
 > 交互通道：Codex 宿主原生 `request_user_input`
 
 本文件归档 Owner 首批输入和整批规范化回读结果。权威决定见 [Owner 决策台账](decision-register.md)，机器可读批次见 `project-ops/owner-intake.json`。本次确认产生 11 项 `DECISION_ACCEPTED`，并将 D-032 记为 `CANDIDATE + SPIKE_AUTHORIZED`；它仍不授权正式 Nuttie 根工程、Apple 注册、付费、TestFlight、发布或原生 iOS 工作。
+
+Owner 后续于 2026-08-15 查看冻结 D-039 原型后明确回复 `a`，单独接受 D-039 方案 A。该响应不属于首批整批确认，但已追加到同一 Owner intake 审计链；它只通过 PX-3 并要求进入 PX-4，不授权正式实现。
 
 ## 1. 已确认选择
 
@@ -24,6 +26,7 @@
 | D-023 | A，Jest 单 runner | `CONFIRMED_ACCEPTED` |
 | D-024 | A，本地 Maestro + XCTest/XCUITest | `CONFIRMED_ACCEPTED` |
 | D-047 | 首次点击 A，随后明确回正为 C：当前暂不加入、只自用 | A 已被澄清取代；C 为 `CONFIRMED_ACCEPTED` |
+| D-039 | A，本地搜索和最近使用优先；扫描与 AI 并列 | 后续单独回复；`CONFIRMED_ACCEPTED`，PX-4 待完成 |
 
 ## 2. 已确认事实与冲突
 
@@ -36,4 +39,4 @@
 
 ## 3. 后续门禁
 
-OI-01 至 OI-03 和 12 项输入已完成整批确认。下一张宿主原生 `request_user_input` 为 `d039_add_meal_entry`，用于选择添加餐食首层体验。D-032 已允许隔离 JS Spike，但 OI-02 仍不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。
+OI-01 至 OI-03 和首批 12 项输入已完成整批确认，D-039 后续已单独接受 A。计划中的下一张宿主原生 `request_user_input` 为 `d040_onboarding_goals`，但只有 D-040 的 PX-0/PX-1/PX-2 前置评审完成后才能真正提交 Owner；当前仍保持 `FORMULA_REVIEW_REQUIRED`。D-032 已允许隔离 JS Spike，但 OI-02 与 D-039 均不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。

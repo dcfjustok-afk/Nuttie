@@ -3,7 +3,7 @@
   "batchId": "phase0-owner-batch-1",
   "channel": "CODEX_REQUEST_USER_INPUT",
   "status": "CONFIRMED",
-  "updatedAt": "2026-08-14T17:22:29+08:00",
+  "updatedAt": "2026-08-15T00:03:31+08:00",
   "acceptanceStateChanged": true,
   "responses": [
     {
@@ -99,6 +99,14 @@
       "optionLabel": "当前暂不加入 Apple Developer Program；只开发和安装给 Owner 自己使用",
       "state": "CONFIRMED_ACCEPTED",
       "semantics": "Owner 明确不付费、不做 TestFlight、当前不考虑朋友分发；以此作为 D-047 的待回读最新输入"
+    },
+    {
+      "questionId": "d039_add_meal_entry",
+      "decisionId": "D-039",
+      "optionKey": "A",
+      "optionLabel": "本地搜索和最近使用优先；扫描与 AI 并列",
+      "state": "CONFIRMED_ACCEPTED",
+      "semantics": "Owner 查看冻结的应用内浏览器原型后在主 Codex 任务明确回复 a；该回复只通过 PX-3 并进入 PX-4，不授权正式工程或原生实现"
     }
   ],
   "facts": [
@@ -164,8 +172,8 @@
     }
   ],
   "nextQuestion": {
-    "id": "d039_add_meal_entry",
-    "title": "选择添加餐食首层体验",
+    "id": "d040_onboarding_goals",
+    "title": "D-040 前置评审完成后选择首启资料与目标流程",
     "tool": "request_user_input"
   }
 }

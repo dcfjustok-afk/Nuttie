@@ -8,7 +8,7 @@ const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const DEFAULT_WORKSPACE_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 
 const REQUIRED_NEXT_OWNER_GATE = Object.freeze({
-  questionId: "d039_add_meal_entry",
+  questionId: "d040_onboarding_goals",
   channel: "CODEX_REQUEST_USER_INPUT",
   tool: "request_user_input",
 });

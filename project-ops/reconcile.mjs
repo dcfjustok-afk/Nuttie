@@ -32,6 +32,13 @@ function latestD039Gate(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD039DecisionEvent(model) {
+  return model.events
+    .filter((record) => record.value?.type === "DECISION_ACCEPTED" && record.value?.subject?.id === "D-039")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -69,6 +76,7 @@ export function reconcileProjectOps(model) {
   const oi02Fact = ownerFacts.find((fact) => fact?.inputId === "OI-02") ?? null;
   const oi03Fact = ownerFacts.find((fact) => fact?.inputId === "OI-03") ?? null;
   const d032Decision = decisions.find((decision) => decision?.id === "D-032") ?? null;
+  const d039Decision = decisions.find((decision) => decision?.id === "D-039") ?? null;
   const latestEvent = maxTimestamp(model.events, "recordedAt");
   const latestMessage = maxTimestamp(model.messages, "sentAt");
   const latestSource = [latestEvent, latestMessage]
@@ -192,31 +200,43 @@ export function reconcileProjectOps(model) {
     },
     nativeSelectionGate: {
       expectedTool: "request_user_input",
-      expectedQuestionId: "d039_add_meal_entry",
+      expectedQuestionId: "d040_onboarding_goals",
       passed:
         ownerIntake.channel === "CODEX_REQUEST_USER_INPUT" &&
-        ownerIntake.nextQuestion?.id === "d039_add_meal_entry" &&
+        ownerIntake.nextQuestion?.id === "d040_onboarding_goals" &&
         ownerIntake.nextQuestion?.tool === "request_user_input",
     },
   };
   if (!ownerGate.nativeSelectionGate.passed) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持宿主原生 D-039 PX-3 门禁", ownerGate.nativeSelectionGate);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "D-039 PX-3 通过后，计划中的下一张 Owner 卡必须转为 D-040 并保留原生 request_user_input", ownerGate.nativeSelectionGate);
   }
   if (!ownerGate.jsSpikeAuthorization.authorized) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_JS_SPIKE_AUTHORIZATION", "D-032", "D-032 未保持 SDK 57 隔离 JS Spike 授权边界", ownerGate.jsSpikeAuthorization);
   }
 
   const d039Gate = latestD039Gate(model);
+  const d039DecisionEvent = latestD039DecisionEvent(model);
   const d039 = {
-    eventId: d039Gate?.eventId ?? null,
-    state: d039Gate?.data?.to ?? null,
-    next: d039Gate?.data?.next ?? null,
-    decisionState: d039Gate?.data?.decisionState ?? null,
-    ownerChoiceRecorded: d039Gate?.data?.ownerChoiceRecorded ?? null,
-    formalImplementationAuthorized: d039Gate?.data?.formalImplementationAuthorized ?? null,
+    px2EventId: d039Gate?.eventId ?? null,
+    px2State: d039Gate?.data?.to ?? null,
+    decisionEventId: d039DecisionEvent?.eventId ?? null,
+    state: d039DecisionEvent?.data?.px3OwnerGatePassed === true ? "PX-3_PASS" : null,
+    next: d039DecisionEvent?.data?.next ?? null,
+    decisionState: d039Decision?.status ?? null,
+    choiceKey: d039Decision?.choiceKey ?? null,
+    ownerChoiceRecorded: d039DecisionEvent?.data?.ownerChoiceRecorded ?? null,
+    formalImplementationAuthorized: d039DecisionEvent?.data?.formalImplementationAuthorized ?? null,
   };
-  if (!(d039.state === "PX-2_PASS" && d039.next === "READY_FOR_OWNER_REVIEW" && d039.decisionState === "CANDIDATE" && d039.ownerChoiceRecorded === false && d039.formalImplementationAuthorized === false)) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-2 通过、等待 Owner 评审且未授权实现状态", d039);
+  if (!(
+    d039.px2State === "PX-2_PASS" &&
+    d039.state === "PX-3_PASS" &&
+    d039.next === "PX-4_BASELINE_REQUIRED" &&
+    d039.decisionState === "ACCEPTED" &&
+    d039.choiceKey === "local-search-recent-first" &&
+    d039.ownerChoiceRecorded === true &&
+    d039.formalImplementationAuthorized === false
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持历史 PX-2 通过、Owner A 已接受、PX-4 待办且正式实现未授权状态", d039);
   }
 
   const d040Record = latestD040Record(model);

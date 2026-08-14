@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS,
+  PHASE0_2026_08_15_D039_OWNER_CHOICE,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D039_OWNER_CHOICE.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 277,
+    instancesValidated: 278,
   });
   assert.equal(report.counts.schemas, 5);
-  assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 158);
+  assert.equal(report.counts.decisions, 32);
+  assert.equal(report.counts.events, 159);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -623,6 +623,18 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.reproducibleBuildEvidence, false);
   assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.decisionAccepted, false);
   assert.equal(sdk57AndroidExportStructureVerifierEvent.value.data.ownerSecondActionStillRequired, true);
+  const d039AcceptanceEvent = findEvent(VALID_MODEL, "EVT-20260815-001");
+  assert.equal(d039AcceptanceEvent.value.type, "DECISION_ACCEPTED");
+  assert.equal(d039AcceptanceEvent.value.subject.id, "D-039");
+  assert.equal(d039AcceptanceEvent.value.data.optionKey, "A");
+  assert.equal(d039AcceptanceEvent.value.data.choiceKey, "local-search-recent-first");
+  assert.equal(d039AcceptanceEvent.value.data.captureChannel, "CODEX_TEXT_REPLY");
+  assert.equal(d039AcceptanceEvent.value.data.px3OwnerGatePassed, true);
+  assert.equal(d039AcceptanceEvent.value.data.next, "PX-4_BASELINE_REQUIRED");
+  assert.equal(d039AcceptanceEvent.value.data.formalImplementationAuthorized, false);
+  assert.equal(d039AcceptanceEvent.value.data.px5ImplementationDorSatisfied, false);
+  assert.equal(d039AcceptanceEvent.value.data.d032SecondOwnerActionSatisfied, false);
+  assert.equal(d039AcceptanceEvent.value.data.d053AuthorizationChanged, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -668,7 +680,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 276);
+    assert.equal(report.schemaValidation.instancesValidated, 277);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1855,14 +1867,14 @@ test("拒绝 Owner 整批确认被回退、篡改或扩大授权", async (t) => 
     assertDiagnostic(report, "OPS_OWNER_RESPONSE_STATE_MISMATCH");
   });
 
-  await t.test("整批确认后下一题偏离 D-039", () => {
+  await t.test("D-039 接受后下一题偏离计划中的 D-040", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.id = "oi04_other";
     });
     assertDiagnostic(report, "OPS_OWNER_NEXT_QUESTION_CHANGED");
   });
 
-  await t.test("D-039 不再使用宿主原生 request_user_input", () => {
+  await t.test("计划中的 D-040 不再使用宿主原生 request_user_input", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.tool = "static_web_form";
     });
@@ -1984,36 +1996,54 @@ test("拒绝 Owner 整批确认被回退、篡改或扩大授权", async (t) => 
   });
 });
 
-test("拒绝 D-039 在 PX-3 Owner 选择前越级", async (t) => {
-  await t.test("提前记录 Owner 选择", () => {
+test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async (t) => {
+  await t.test("事后改写历史 PX-2 为已记录选择", () => {
     const report = validateMutation((model) => {
       findD039Gate(model).value.data.ownerChoiceRecorded = true;
     });
     assertDiagnostic(report, "OPS_D039_OWNER_CHOICE_PREMATURE");
   });
 
-  await t.test("提前授权正式实现", () => {
+  await t.test("事后改写历史 PX-2 为正式实现已授权", () => {
     const report = validateMutation((model) => {
       findD039Gate(model).value.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_IMPLEMENTATION_PREMATURE");
   });
 
-  await t.test("门禁状态越级", () => {
+  await t.test("改写历史 PX-2 门禁状态", () => {
     const report = validateMutation((model) => {
       findD039Gate(model).value.data.next = "IMPLEMENTATION_READY";
     });
     assertDiagnostic(report, "OPS_D039_GATE_ESCALATED");
   });
 
-  await t.test("提前进入决定台账", () => {
+  await t.test("D-039 接受 choiceKey 漂移", () => {
     const report = validateMutation((model) => {
-      model.decisionRegister.decisions.push({
-        id: "D-039",
-        status: "CANDIDATE",
-      });
+      model.decisionRegister.decisions.find((decision) => decision.id === "D-039").choiceKey = "remember-last-method";
     });
-    assertDiagnostic(report, "OPS_D039_DECISION_REGISTERED_PREMATURELY");
+    assertDiagnostic(report, "OPS_D039_ACCEPTED_DECISION_MISMATCH");
+  });
+
+  await t.test("Owner A 响应漂移", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.responses.find((response) => response.decisionId === "D-039").optionKey = "B";
+    });
+    assertDiagnostic(report, "OPS_D039_OWNER_RESPONSE_MISMATCH");
+  });
+
+  await t.test("接受事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260815-001");
+    });
+    assertDiagnostic(report, "OPS_D039_ACCEPTANCE_EVENT_MISMATCH");
+  });
+
+  await t.test("接受事件越级授权正式实现", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-001").value.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D039_ACCEPTANCE_EVENT_MISMATCH");
   });
 
   await t.test("权威门禁事件缺失", () => {

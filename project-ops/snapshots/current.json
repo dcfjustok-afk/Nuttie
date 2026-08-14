@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T23:38:39+08:00",
+  "generatedAt": "2026-08-15T00:03:31+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -8,7 +8,7 @@
     "status": "BASELINES_IN_PROGRESS"
   },
   "metrics": {
-    "acceptedDecisions": 28,
+    "acceptedDecisions": 29,
     "candidateDecisions": 3,
     "competitorCapabilityGroups": 24,
     "evidenceItems": 66,
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 158
+    "projectEvents": 159
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "SDK 57 Android/iOS 平台 JS export 结构校验已统一；D-032 保持候选并继续等待 D-039 Owner 选择与原生证据",
+      "workPackage": "D-039 方案 A 已由 Owner 明确接受并等待 PX-4 设计基线；D-032 继续等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,12 +236,13 @@
     }
   ],
   "currentWork": [
+    "Owner 于 2026-08-15 查看冻结 D-039 原型后明确回复 A；D-039 已进入决定台账并通过 PX-3，选择本地搜索/最近使用优先、扫描与 AI 并列。下一步为 PX-4 设计基线；PX-5、正式 RN/原生实现、D-032 第二次动作和 D-053 均未获授权",
     "D-032 Android 平台 JavaScript export 已复用与 iOS 同一结构校验核心：自动固定 Android-only Metro metadata、唯一 Hermes bundle、png/ttf/xml 资产策略、声明/实际文件集精确一致、路径越界和原生目录拒绝；Android/iOS 合计 10 个单测与真实 1,652 模块 export 通过。本次 Android bundle/总字节数比旧记录各少 2，进一步证明字节数和 SHA 不得作可复现构建门禁；不构成 Android 原生运行、签名产物或 D-032 接受",
     "D-032 iOS 平台 JavaScript export 已集成导出后自动结构校验：只接受 iOS-only Metro metadata、唯一 Hermes bundle、声明资产与实际文件精确一致，并拒绝额外平台、路径越界、未声明文件和原生目录；5 个单测与真实 export 通过。后续运行的 bundle 与总字节数各比前三次增加 1，所以字节数和 SHA-256 都明确不作可复现构建门禁；不构成原生 iOS 证据或 D-032 接受",
     "D-032 隔离 SDK 57 Spike 已在 Windows 完成 iOS 平台条件的 JavaScript export，Metro/Hermes 解析 1,565 模块且六包依赖表面继续通过；连续三次 export 的文件数和字节数一致但 SHA-256 不同，所以指纹仅代表单次运行、不构成可复现构建承诺；全程未生成原生目录、未运行 Prebuild/Xcode/CocoaPods、未编译原生模块、未运行模拟器或真机且未产出签名 Archive；该证据只关闭 JS 平台解析子范围，不构成 iOS 原生证据或 D-032 接受",
     "D-032 隔离 SDK 57 JS Spike 已把 expo-sqlite、expo-secure-store、expo-camera、expo-notifications、react-native-reanimated、react-native-worklets 的具体符号纳入 TypeScript 与 Metro 路径，Android export 从 1,232 增至 1,652 模块；静态检查固定原生 API/权限/数据库/Keychain/通知/worklet/网络调用均为 0，不构成原生运行证据或 D-032 接受",
     "D-032 已授权的隔离 SDK 57 Windows JS Spike 已完成基础链路：Node 22.13.0 / pnpm 11.18.0 冻结安装、静态边界、TypeScript、Expo public config、Doctor 20/20 与 Android Hermes export 通过；后续依赖表面事件已扩大 Metro 解析范围。始终未生成 ios/android、未运行 Prebuild，不构成 SQLCipher/Keychain/权限/原生 iOS/Archive/真机证据，D-032 继续 CANDIDATE 并等待第二次 Owner 动作",
-    "F01/F02 AI 配置—策略预检已登记：只从稳定 CONFIGURED 生命周期导出带指纹的非敏感配置证据，并与 AI_REQUEST_EVIDENCE_CONTEXT_V2 逐项比较 baseURL/origin/model；即使完全一致也因配置未绑定 providerId 及 D-033/D-034/D-036/D-053 未授权而固定 BLOCKED。合同不读取 key、不构造 Authorization/body、不创建 transport、不联网、不写业务状态，不改变 28/3 决定、Owner 确认或 Gate",
+    "F01/F02 AI 配置—策略预检已登记：只从稳定 CONFIGURED 生命周期导出带指纹的非敏感配置证据，并与 AI_REQUEST_EVIDENCE_CONTEXT_V2 逐项比较 baseURL/origin/model；即使完全一致也因配置未绑定 providerId 及 D-033/D-034/D-036/D-053 未授权而固定 BLOCKED。合同不读取 key、不构造 Authorization/body、不创建 transport、不联网、不写业务状态，不改变 29/3 决定、Owner 确认或 Gate",
     "F01/F02 与 F16 已统一 AI_REQUEST_EVIDENCE_CONTEXT_V2：精确 policy subject、完整本地 profile、D-053 authorization evidence 和 policy-check 共同绑定，只接受 scope/有效期/风险/ALLOW 满足且唯一剩余阻断为 D053_NOT_AUTHORIZED 的上下文；边界固定 CALLER_SUPPLIED_UNTRUSTED_RESPONSE_FIXTURE / transport NOT_ESTABLISHED / send NOT_GRANTED。候选确认状态/记录链升 V3，F16 状态/来源链升 V2，旧松散上下文和旧消费者证据失败关闭；不证明真实 Provider 响应，不读取 key、不序列化敏感 body、不联网、不改变 Owner 或 Gate",
     "F01/F02 AI 候选确认完整响应证据链已升级 V2：规范化完整 responseFingerprint 随候选进入状态，编辑时保留，并同时绑定 review、确认记录 source evidence、幂等命令和回执；即使选中 candidate 不变，未选候选变化也会改变 review 指纹。状态/review/记录/source/command/receipt 均升级独立 V2，旧 V1 明确失败关闭；只持久化指纹与用户确认值，不持久化原始响应或候选正文，不授权自动改日记/目标、真实 Repository、网络、原生或正式实现",
     "F01/F02 不可信 AI 响应框架无关合同已加固：严格预解析拒绝解码后重复 key、尾随数据、空候选、未知字段、危险 Unicode 标签、非有限/负零/越界数值和超预算输入；规范化候选绑定语义 responseFingerprint，validation 只复制严格被动状态且错误不回显原响应。候选仍为 UNCONFIRMED_EDITABLE_REFERENCE_ONLY，schema 只是 TEST_CONTRACT_NOT_FORMAL_PROVIDER_API，不读取 key、不序列化敏感 body、不联网、不写业务状态、不授权 Provider policy、原生或正式实现",
@@ -269,8 +270,8 @@
     "F11 近七日摄入/消耗框架无关读模型已登记：连续七个本地日历日、缺失与显式零分离、精确 kcal/kJ 聚合、摄入/消耗来源分流、revision 反查和文字语义摘要通过自动化；不授权消耗公式、目标/剩余/净值、平均/更长周期、AI、HealthKit、原生或正式工程",
     "F10 体重记录框架无关事务合同已登记：原始 kg/lb、精确换算、同日多记录、增删改 revision CAS、幂等回放与完整趋势证据通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权 BMI/目标/异常/显示精度/按日合并、HealthKit、原生或正式工程",
     "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
-    "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；下一步是 D-039 PX-3 Owner 选择",
-    "D039-QA-001 至 QA-010 已关闭；D-039 原型为 CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW，下一门禁是 PX-3 Owner 评审，尚无 A/B/C 选择或正式实现授权",
+    "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；后续 D-039 已由 Owner 单独明确选择 A",
+    "D039-QA-001 至 QA-010 已关闭；D-039 方案 A 已通过 PX-3 Owner Gate 并等待 PX-4 设计基线，正式实现与 PX-5 仍未授权",
     "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入研究包已完成，公式证据审查 0/2/1→0/0/0，治理安全审查 0/4/1→0/4/0→0/0/0；17 个未来原生选择卡草案未分配 D-###、未进入 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；新研究工件仍为 CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED，未进入决定台账或 Owner intake",

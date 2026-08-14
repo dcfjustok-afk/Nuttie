@@ -29,10 +29,10 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-Merged repository source baseline: 31 decisions (28 accepted / 3 candidate), 158 events, 116 messages, 25 agents and 277 controlled ProjectOps instances. The verified SDK 57 Android/iOS JavaScript export structure verifiers are the latest source timestamp; the Owner batch remains confirmed, D-032 is `CANDIDATE + SPIKE_AUTHORIZED`, D-039 is the next native Owner card, and D-052/D-053 remain fail closed. The merged branch also retains the local contract sequence for F01/F02/F16 request evidence, untrusted response handling and complete candidate provenance plus all previously recorded non-production contracts.
-Repository validation: ProjectOps schema subset 14/14, ProjectOps validation 121/121, read-only reconcile 5/5, tool contract harnesses 642/642, full repository suite 792/792; isolated SDK 57 frozen install, six-package JS/type surface, static contract, Expo config, Doctor 20/20, verified 1,652-module Android and 1,565-module iOS-platform Metro/Hermes exports PASS with zero native calls. The shared export core enforces platform-only metadata, exact declared file sets, explicit asset policies, path containment and absent native directories while excluding byte size and SHA-256 from reproducibility gates. Windows exports remain JavaScript evidence only, not emulator/simulator, device, native module, signing, Archive or native-runtime evidence.
+Merged repository source baseline: 32 decisions (29 accepted / 3 candidate), 159 events, 116 messages, 25 agents and 278 controlled ProjectOps instances. D-039=A is accepted after the Owner viewed the frozen prototype; its state is `PX-3_PASS / PX-4_BASELINE_REQUIRED` with formal implementation still false. D-032 is `CANDIDATE + SPIKE_AUTHORIZED`, the planned next Owner card is D-040 after its prerequisite reviews, and D-052/D-053 remain fail closed. The merged branch also retains the verified SDK 57 Android/iOS JavaScript export structure evidence and all previously recorded non-production contracts.
+Repository validation: ProjectOps schema subset 14/14, ProjectOps validation 124/124, read-only reconcile 5/5, tool contract harnesses 642/642, full repository suite 795/795; isolated SDK 57 frozen install, six-package JS/type surface, static contract, Expo config, Doctor 20/20, verified 1,652-module Android and 1,565-module iOS-platform Metro/Hermes exports PASS with zero native calls. The shared export core enforces platform-only metadata, exact declared file sets, explicit asset policies, path containment and absent native directories while excluding byte size and SHA-256 from reproducibility gates. Windows exports remain JavaScript evidence only, not emulator/simulator, device, native module, signing, Archive or native-runtime evidence.
 Remote-machine historical workbench rebuild: PASS at 31 decisions, 142 events, 116 messages, 25 agents and 94 documents; live/static state and the 12/12 Owner archive rows matched at that source revision.
-Current merged workbench parity: NOT RUN for the 158-event source; the historical 142-event PASS cannot prove current live/static equality.
+Current merged workbench parity: NOT RUN for the 159-event source; the historical 142-event PASS cannot prove current live/static equality.
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
@@ -59,9 +59,9 @@ changed data-render timing and table wording but did not change layout or CSS.
 ## Continuation boundary
 
 `OI-02` is recorded as `Bundle ID NOT_CREATED / SKU N/A`; `OI-03` remains
-`iPhone 16 Pro Max / iOS 26.5 / no available Mac`. The next Owner input is the
-host-native D-039 choice. The Owner batch is confirmed, D-039 remains
-`CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`, and D-040 remains `CANDIDATE /
-PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`. D-032 authorizes only the isolated
+`iPhone 16 Pro Max / iOS 26.5 / no available Mac`. D-039=A is now accepted and
+awaits PX-4 design-baseline work; the planned next Owner card is D-040, which
+remains `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED` and is not yet
+ready for Owner review. D-032 authorizes only the isolated
 SDK 57 JS Spike; no formal React Native root scaffold, Apple resource, or native
 iOS implementation authorization is implied by this workbench integration.

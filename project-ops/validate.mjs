@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
-  id: "PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS",
+export const PHASE0_2026_08_15_D039_OWNER_CHOICE = Object.freeze({
+  id: "PHASE0_2026_08_15_D039_OWNER_CHOICE",
   counts: Object.freeze({
     schemas: 5,
-    decisions: 31,
-    acceptedDecisions: 28,
+    decisions: 32,
+    acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 158,
+    events: 159,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -75,8 +75,8 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
     crossSourceEvidence: 24,
     pendingEvidence: 5,
     gapThemes: 9,
-    ownerResponses: 13,
-    ownerDecisionIds: 12,
+    ownerResponses: 14,
+    ownerDecisionIds: 13,
   }),
   gateStates: Object.freeze({
     G0: "PASS",
@@ -99,6 +99,7 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
+    "2026-08-15": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -111,8 +112,9 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
     channel: "CODEX_REQUEST_USER_INPUT",
     status: "CONFIRMED",
     acceptanceStateChanged: true,
-    nextQuestionId: "d039_add_meal_entry",
+    nextQuestionId: "d040_onboarding_goals",
     nextQuestionTool: "request_user_input",
+    batchNextQuestionId: "d039_add_meal_entry",
     batchConfirmationEventId: "EVT-20260814-013",
     batchConfirmationQuestionId: "phase0_owner_batch_readback_confirmation",
     acceptedDecisionIds: Object.freeze([
@@ -155,6 +157,7 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
       d024_e2e_native_tests: "CONFIRMED_ACCEPTED",
       d047_apple_identity: "SUPERSEDED_BY_OWNER_CLARIFICATION",
       d047_scope_clarification: "CONFIRMED_ACCEPTED",
+      d039_add_meal_entry: "CONFIRMED_ACCEPTED",
     }),
     d032ChoiceKey: "sdk-57-spike-authorized",
     oi02EventId: "EVT-20260814-001",
@@ -205,6 +208,7 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
       "D-032",
       "D-037",
       "D-038",
+      "D-039",
       "D-047",
       "D-048",
     ]),
@@ -1427,6 +1431,28 @@ export const PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS = Object.freeze({
     decisionState: "CANDIDATE",
     ownerChoiceRecorded: false,
     formalImplementationAuthorized: false,
+    accepted: Object.freeze({
+      eventId: "EVT-20260815-001",
+      subjectId: "D-039",
+      correlationId: "d039-owner-choice",
+      decisionId: "D-039",
+      questionId: "d039_add_meal_entry",
+      optionKey: "A",
+      choiceKey: "local-search-recent-first",
+      acceptedOn: "2026-08-15",
+      status: "ACCEPTED",
+      captureChannel: "CODEX_TEXT_REPLY",
+      prototypeState: "PX-2_PASS",
+      px3OwnerGatePassed: true,
+      ownerChoiceRecorded: true,
+      next: "PX-4_BASELINE_REQUIRED",
+      formalImplementationAuthorized: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      d032SecondOwnerActionSatisfied: false,
+      d053AuthorizationChanged: false,
+    }),
     findingsClosed: Object.freeze(
       Array.from(
         { length: 10 },
@@ -1881,7 +1907,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_PLATFORM_EXPORT_VERIFIERS) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_OWNER_CHOICE) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -2333,7 +2359,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_DECISION_SET_MISMATCH",
       "project-ops/owner-intake.json.responses.decisionId",
-      "Owner 当前批次必须保持精确的 12 项候选集合",
+      "Owner response 集合必须保留首批 12 项决定与后续 D-039 单独选择",
       { expected: baseline.ownerIntake.decisionIds, actual: [...ownerDecisionIds].sort() },
     );
   }
@@ -2427,7 +2453,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANGED",
       "project-ops/owner-intake.json.nextQuestion.id",
-      "首批整批确认后下一题必须保持 D-039 PX-3 Owner 选择",
+      "D-039 PX-3 通过后，下一张计划中的 Owner 卡必须转为 D-040",
       { expected: baseline.ownerIntake.nextQuestionId, actual: ownerIntake.nextQuestion?.id },
     );
   }
@@ -2435,7 +2461,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.nextQuestion",
-      "D-039 PX-3 必须通过 Codex 宿主原生 request_user_input",
+      "计划中的 D-040 Owner 卡必须继续使用 Codex 宿主原生 request_user_input",
       {
         expectedTool: baseline.ownerIntake.nextQuestionTool,
         actualTool: ownerIntake.nextQuestion?.tool,
@@ -2578,7 +2604,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     !arraysEqualAsSets(batchAcceptedIds, baseline.ownerIntake.acceptedDecisionIds) ||
     !arraysEqualAsSets(batchConfirmationEvent?.data?.spikeAuthorizedDecisionIds ?? [], ["D-032"]) ||
     !arraysEqualAsSets(batchRemainingCandidateIds, ["D-032", "D-052", "D-053"]) ||
-    batchConfirmationEvent?.data?.nextQuestionId !== baseline.ownerIntake.nextQuestionId ||
+    batchConfirmationEvent?.data?.nextQuestionId !== baseline.ownerIntake.batchNextQuestionId ||
     batchConfirmationEvent?.data?.acceptanceStateChanged !== true ||
     batchConfirmationEvent?.data?.d008Superseded !== false ||
     batchConfirmationEvent?.data?.readyForJsSpike !== true ||
@@ -4172,7 +4198,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       add(
         "OPS_D039_GATE_ESCALATED",
         recordPath,
-        "D-039 必须保持 PX-2 PASS、等待 Owner 评审的候选状态",
+        "D-039 的历史 PX-2 事件必须保持当时通过、等待 Owner 评审的候选状态",
         {
           expected: baseline.d039,
           actual: {
@@ -4189,14 +4215,14 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       add(
         "OPS_D039_OWNER_CHOICE_PREMATURE",
         `${recordPath}.data.ownerChoiceRecorded`,
-        "D-039 尚未记录 Owner A/B/C 选择",
+        "D-039 历史 PX-2 事件不得被事后改写为已记录 Owner 选择",
       );
     }
     if (data.formalImplementationAuthorized !== baseline.d039.formalImplementationAuthorized) {
       add(
         "OPS_D039_IMPLEMENTATION_PREMATURE",
         `${recordPath}.data.formalImplementationAuthorized`,
-        "D-039 尚未授权正式实现",
+        "D-039 历史 PX-2 事件不得被事后改写为正式实现授权",
       );
     }
     const actualFindings = Array.isArray(data.findingsClosed) ? data.findingsClosed : [];
@@ -4210,11 +4236,61 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     }
   }
 
-  if (decisions.some((decision) => decision?.id === "D-039")) {
+  const d039Accepted = baseline.d039.accepted;
+  const d039Decision = decisionById.get(d039Accepted.decisionId);
+  if (
+    d039Decision?.status !== "ACCEPTED" ||
+    d039Decision?.acceptedOn !== d039Accepted.acceptedOn ||
+    d039Decision?.choiceKey !== d039Accepted.choiceKey
+  ) {
     add(
-      "OPS_D039_DECISION_REGISTERED_PREMATURELY",
+      "OPS_D039_ACCEPTED_DECISION_MISMATCH",
       "project-ops/decisions.json.decisions",
-      "D-039 在 PX-3 Owner 选择前不得进入决定台账",
+      "D-039 必须精确保留 Owner 选择 A 后的 ACCEPTED 日期与 choiceKey",
+      { expected: d039Accepted, actual: d039Decision ?? null },
+    );
+  }
+
+  const d039OwnerResponses = ownerResponses.filter(
+    (response) => response?.questionId === d039Accepted.questionId || response?.decisionId === d039Accepted.decisionId,
+  );
+  if (
+    d039OwnerResponses.length !== 1 ||
+    d039OwnerResponses[0]?.decisionId !== d039Accepted.decisionId ||
+    d039OwnerResponses[0]?.optionKey !== d039Accepted.optionKey ||
+    d039OwnerResponses[0]?.state !== "CONFIRMED_ACCEPTED"
+  ) {
+    add(
+      "OPS_D039_OWNER_RESPONSE_MISMATCH",
+      "project-ops/owner-intake.json.responses",
+      "D-039 必须保留唯一且明确的 Owner A 选择响应",
+      { expected: d039Accepted, actual: d039OwnerResponses },
+    );
+  }
+
+  const d039AcceptanceRecords = model.events.filter(
+    (record) => record.value?.eventId === d039Accepted.eventId ||
+      (record.value?.type === "DECISION_ACCEPTED" && record.value?.subject?.id === d039Accepted.subjectId),
+  );
+  const d039AcceptanceEvent = d039AcceptanceRecords[0]?.value;
+  const d039AcceptanceData = d039AcceptanceEvent?.data ?? {};
+  const d039AcceptanceDataFields = Object.keys(d039Accepted)
+    .filter((field) => !["eventId", "subjectId", "correlationId", "acceptedOn"].includes(field))
+    .sort();
+  if (
+    d039AcceptanceRecords.length !== 1 ||
+    d039AcceptanceEvent?.eventId !== d039Accepted.eventId ||
+    d039AcceptanceEvent?.type !== "DECISION_ACCEPTED" ||
+    d039AcceptanceEvent?.actor?.id !== "owner" ||
+    d039AcceptanceEvent?.subject?.id !== d039Accepted.subjectId ||
+    d039AcceptanceEvent?.correlationId !== d039Accepted.correlationId ||
+    JSON.stringify(Object.keys(d039AcceptanceData).sort()) !== JSON.stringify(d039AcceptanceDataFields) ||
+    d039AcceptanceDataFields.some((field) => d039AcceptanceData[field] !== d039Accepted[field])
+  ) {
+    add(
+      "OPS_D039_ACCEPTANCE_EVENT_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-039 接受事件必须精确记录 Owner A、PX-3 通过、PX-4 待办，并保持正式工程、原生、PX-5、D-032 与 D-053 授权关闭",
     );
   }
 

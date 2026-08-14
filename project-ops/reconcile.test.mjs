@@ -15,14 +15,14 @@ function validModel() {
   return loadProjectOps(WORKSPACE_ROOT);
 }
 
-test("当前 ProjectOps 源、快照与首批确认/D-039 门禁一致", () => {
+test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   const report = reconcileProjectOps(validModel());
   assert.equal(report.ok, true);
   assert.deepEqual(report.counts, {
-    decisions: 31,
-    acceptedDecisions: 28,
+    decisions: 32,
+    acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 158,
+    events: 159,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -31,8 +31,8 @@ test("当前 ProjectOps 源、快照与首批确认/D-039 门禁一致", () => {
     crossSourceEvidence: 24,
     pendingEvidence: 5,
     gapThemes: 9,
-    ownerResponses: 13,
-    ownerDecisionIds: 12,
+    ownerResponses: 14,
+    ownerDecisionIds: 13,
   });
   assert.equal(report.snapshot.freshness, "CURRENT");
   assert.equal(report.ownerGate.nativeSelectionGate.passed, true);
@@ -48,7 +48,11 @@ test("当前 ProjectOps 源、快照与首批确认/D-039 门禁一致", () => {
   assert.equal(report.ownerGate.deviceAvailability.iphoneModel, "iPhone 16 Pro Max");
   assert.equal(report.ownerGate.deviceAvailability.iosVersion, "26.5");
   assert.equal(report.ownerGate.deviceAvailability.nativeIosWorkAuthorized, false);
-  assert.equal(report.d039.state, "PX-2_PASS");
+  assert.equal(report.d039.px2State, "PX-2_PASS");
+  assert.equal(report.d039.state, "PX-3_PASS");
+  assert.equal(report.d039.next, "PX-4_BASELINE_REQUIRED");
+  assert.equal(report.d039.decisionState, "ACCEPTED");
+  assert.equal(report.d039.choiceKey, "local-search-recent-first");
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
 });
 
@@ -62,7 +66,7 @@ test("快照计数漂移是错误，且不写回任何文件", () => {
   assert.equal(JSON.stringify(model.snapshot), JSON.stringify({ ...JSON.parse(before), metrics: { ...JSON.parse(before).metrics, projectEvents: JSON.parse(before).metrics.projectEvents - 1 } }));
 });
 
-test("Owner 下一题偏离原生 D-039 时失败关闭", () => {
+test("D-039 接受后计划中的 D-040 Owner 卡偏离原生渠道时失败关闭", () => {
   const model = validModel();
   model.ownerIntake.nextQuestion.tool = "static-workbench";
   const report = reconcileProjectOps(model);
@@ -70,9 +74,9 @@ test("Owner 下一题偏离原生 D-039 时失败关闭", () => {
   assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_OWNER_INPUT_GATE"));
 });
 
-test("D-039 或 D-040 越过未授权门禁时失败关闭", () => {
+test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d039Model = validModel();
-  d039Model.events.find((record) => record.value.eventId === "EVT-20260805-005").value.data.formalImplementationAuthorized = true;
+  d039Model.events.find((record) => record.value.eventId === "EVT-20260815-001").value.data.formalImplementationAuthorized = true;
   const d039Report = reconcileProjectOps(d039Model);
   assert.equal(d039Report.ok, false);
   assert.ok(d039Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D039_GATE"));

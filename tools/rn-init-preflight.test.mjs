@@ -19,7 +19,7 @@ test("current workspace allows the authorized JS Spike but blocks native iOS ini
   assert.equal(report.readyForNativeIosSpike, false);
   assert.equal(report.reconcile.ok, true);
   assert.equal(report.owner.passed, true);
-  assert.equal(report.owner.selectionMechanismConfigured, true, "the native D-039 mechanism must remain correctly configured");
+  assert.equal(report.owner.selectionMechanismConfigured, true, "the planned native D-040 mechanism must remain correctly configured after D-039 acceptance");
   assert.equal(report.owner.batchConfirmed, true);
   assert.equal(report.owner.deviceFactRecorded, true);
   assert.equal(report.owner.macAvailable, false);

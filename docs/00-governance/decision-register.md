@@ -5,7 +5,7 @@
 - 权威状态：`ACCEPTED`、`SUPERSEDED`、`CANDIDATE`、`REJECTED`。
 - 只有 Owner 的明确回复可以把 `CANDIDATE` 改为 `ACCEPTED`。
 - 已接受决定不可被实现便利、库默认值或 Agent 建议隐式覆盖；变更必须创建新决定并引用被替代项。
-- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-08-14。
+- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-08-15。
 - 机器可读副本位于 [`project-ops/decisions.json`](../../project-ops/decisions.json)。
 
 ## 已接受决定
@@ -38,6 +38,7 @@
 | D-025 | 样式与设计 Token | React Native StyleSheet + TypeScript semantic tokens + 可访问组件层 | ACCEPTED |
 | D-037 | 包管理器 | pnpm 11.18.0 hoisted profile + 唯一 `pnpm-lock.yaml` | ACCEPTED |
 | D-038 | 产品导航外壳 | 日记、趋势、食品资料、设置四个稳定入口 + 情境新增 | ACCEPTED |
+| D-039 | 添加餐食首层体验 | 本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口 | ACCEPTED |
 | D-047 | Apple 分发身份 | 当前暂不加入 Apple Developer Program；只供 Owner 自用 | ACCEPTED |
 | D-048 | 设备与方向 profile | iPhone 竖屏；关闭 Mac/Vision compatibility availability | ACCEPTED |
 
@@ -163,6 +164,12 @@
 
 - 决定：日记、趋势、食品资料、设置作为四个稳定目的地，新增动作由当前情境进入。
 - 后果：首个 MVP 保持清晰的四入口信息架构；这不决定 D-039 添加餐食首层体验。
+
+### D-039：添加餐食首层体验
+
+- 决定：采用方案 A，本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口。
+- 依据：Owner 于 2026-08-15 查看冻结 D-039 A/B/C 原型后明确回复 `a`；D039-QA-001 至 D039-QA-010 已在 PX-2 全部关闭。
+- 限制：该决定只通过 PX-3 并要求进入 PX-4 设计基线；不授权正式 React Native 页面、路由、真实相机/相册、AI transport、SQLCipher、原生工程或发布工作，PX-5 实现 DoR 仍须单独满足。
 
 ### D-047：Apple 分发身份
 

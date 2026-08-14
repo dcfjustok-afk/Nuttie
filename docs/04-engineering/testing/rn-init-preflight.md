@@ -7,7 +7,7 @@ Phase 0 planning into an isolated React Native/iOS Spike.
 
 - ProjectOps reconcile status and current source counts.
 - The confirmed `OI-02` identifier status and `OI-03` device fact, the D-032
-  isolated SDK 57 JS Spike authorization, and the next native D-039 Owner gate:
+  isolated SDK 57 JS Spike authorization, and the planned next native D-040 Owner gate after D-039=A was accepted:
   `CODEX_REQUEST_USER_INPUT` + `request_user_input`.
 - Presence of formal artifacts that must not exist before authorization:
   `package.json`, `pnpm-lock.yaml`, and `ios/`.

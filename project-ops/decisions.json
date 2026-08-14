@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-14T17:22:29+08:00",
+  "generatedAt": "2026-08-15T00:03:31+08:00",
   "authoritativeMarkdown": "docs/00-governance/decision-register.md",
   "decisions": [
     {
@@ -271,6 +271,16 @@
       "choiceKey": "four-destinations-contextual-add",
       "choice": "日记、趋势、食品资料、设置四个稳定入口 + 情境新增",
       "source": "Owner batch readback confirmation via request_user_input, 2026-08-14; UXD-01 alias",
+      "supersedes": null
+    },
+    {
+      "id": "D-039",
+      "title": "添加餐食首层体验",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-08-15",
+      "choiceKey": "local-search-recent-first",
+      "choice": "本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口",
+      "source": "Owner explicit text reply after frozen D-039 prototype preview, 2026-08-15; UXD-02 alias",
       "supersedes": null
     },
     {
