@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 162,
+    events: 163,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -51,7 +51,11 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039.px2State, "PX-2_PASS");
   assert.equal(report.d039.px3State, "PX-3_PASS");
   assert.equal(report.d039.state, "PX-4_BASELINE_FROZEN");
-  assert.equal(report.d039.next, "PX-5_DOR_REQUIRED");
+  assert.equal(report.d039.px4Next, "PX-5_DOR_REQUIRED");
+  assert.equal(report.d039.dorDisposition, "NOT_READY");
+  assert.equal(report.d039.dorState, "PX-5_DOR_NOT_READY");
+  assert.equal(report.d039.next, "PX-5_BLOCKER_CLOSURE_REQUIRED");
+  assert.equal(report.d039.openBlockerCount, 7);
   assert.equal(report.d039.decisionState, "ACCEPTED");
   assert.equal(report.d039.choiceKey, "local-search-recent-first");
   assert.equal(report.d039.selectedOption, "A");

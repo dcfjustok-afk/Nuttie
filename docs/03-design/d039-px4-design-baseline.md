@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 决定 | `D-039 / ACCEPTED / A` |
-| 状态 | `PX-4_BASELINE_FROZEN / PX-5_DOR_REQUIRED` |
+| 状态 | `PX-4_BASELINE_FROZEN / PX-5_DOR_EVALUATED_NOT_READY / BLOCKER_CLOSURE_REQUIRED` |
 | 冻结日期 | 2026-08-15（Asia/Shanghai） |
 | 选择 | 本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口 |
 | Owner 证据 | `EVT-20260815-001`，Owner 查看冻结原型后明确回复 `a` |
@@ -69,7 +69,9 @@ D-039 只冻结“从添加餐食进入具体录入方式前”的首层组织�
 
 复核 `PASS` 只表示接受的方案已被写成一致的设计基线。它不证明正式实现、真实相机/相册、Provider、数据库、原生运行、真机、签名或发布可用。
 
-## 6. PX-5 仍缺失
+## 6. PX-5 评估结果
+
+2026-08-15 的[PX-5 实现就绪评估](../05-quality/d039-px5-dor-assessment.md)结论为 `NOT_READY`：七项要求中 1 项通过、3 项部分满足、3 项失败，共 7 个阻断项。该评估不回退本 PX-4 基线，也不产生实现授权。
 
 进入对应实现增量前至少还需：
 

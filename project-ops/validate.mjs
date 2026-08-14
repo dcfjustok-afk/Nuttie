@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC",
+export const PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT = Object.freeze({
+  id: "PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 162,
+    events: 163,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 4,
+    "2026-08-15": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1481,6 +1481,62 @@ export const PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC = Object.freeze({
       d032SecondOwnerActionSatisfied: false,
       d053AuthorizationChanged: false,
     }),
+    px5Assessment: Object.freeze({
+      eventId: "EVT-20260815-005",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D-039-PX-5",
+      subjectRole: "PrototypeGate",
+      correlationId: "d039-px5-dor-assessment",
+      state: "completed",
+      disposition: "NOT_READY",
+      decisionId: "D-039",
+      selectedOption: "A",
+      choiceKey: "local-search-recent-first",
+      designBaselineState: "PX-4_BASELINE_FROZEN",
+      from: "PX-5_DOR_REQUIRED",
+      to: "PX-5_DOR_NOT_READY",
+      next: "PX-5_BLOCKER_CLOSURE_REQUIRED",
+      requirementsCount: 7,
+      passedCount: 1,
+      partialCount: 3,
+      failedCount: 3,
+      openBlockerIds: Object.freeze([
+        "D039-PX5-B01", "D039-PX5-B02", "D039-PX5-B03", "D039-PX5-B04",
+        "D039-PX5-B05", "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      openBlockerCount: 7,
+      locallyCloseableBlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      ownerDependentBlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05", "D039-PX5-B06",
+      ]),
+      environmentDependentBlockerIds: Object.freeze(["D039-PX5-B07"]),
+      acceptedPrerequisiteDecisionIds: Object.freeze([
+        "D-018", "D-019", "D-020", "D-021", "D-023",
+        "D-024", "D-025", "D-037", "D-038", "D-039",
+      ]),
+      unresolvedDependencyDecisionIds: Object.freeze([
+        "D-031", "D-032", "D-033", "D-034", "D-036", "D-045", "D-053",
+      ]),
+      formalAcceptanceMatrixComplete: false,
+      stableRouteAndTestIdsMapped: false,
+      returnDeepLinkContractComplete: false,
+      recentRetentionPolicyResolved: false,
+      mediaRetentionPolicyResolved: false,
+      aiPayloadConfirmationResolved: false,
+      aiResourceBudgetResolved: false,
+      aiTransportProfileResolved: false,
+      providerAdmissionResolved: false,
+      macAvailable: false,
+      nativeIntegrationEvidenceComplete: false,
+      d032SecondOwnerActionSatisfied: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      decisionStateChanged: false,
+    }),
     findingsClosed: Object.freeze(
       Array.from(
         { length: 10 },
@@ -2048,7 +2104,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5002,6 +5058,35 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-040 第一批四张选择卡必须精确保留稳定 ID、互斥选项、失败关闭依赖、自审结果和 Owner 未授权边界",
+    );
+  }
+
+  const px5Spec = baseline.d039.px5Assessment;
+  const px5Events = model.events.filter(
+    (record) => record.value?.eventId === px5Spec.eventId ||
+      (record.value?.type === "REVIEW_FEEDBACK" && record.value?.correlationId === px5Spec.correlationId),
+  );
+  const px5Event = px5Events[0]?.value;
+  const px5Data = px5Event?.data ?? {};
+  const px5DataFields = Object.keys(px5Spec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    px5Events.length !== 1 ||
+    px5Event?.eventId !== px5Spec.eventId ||
+    px5Event?.type !== "REVIEW_FEEDBACK" ||
+    px5Event?.actor?.id !== px5Spec.actorId ||
+    px5Event?.actor?.role !== px5Spec.actorRole ||
+    px5Event?.subject?.id !== px5Spec.subjectId ||
+    px5Event?.subject?.role !== px5Spec.subjectRole ||
+    px5Event?.correlationId !== px5Spec.correlationId ||
+    JSON.stringify(Object.keys(px5Data).sort()) !== JSON.stringify(px5DataFields) ||
+    px5DataFields.some((field) => JSON.stringify(px5Data[field]) !== JSON.stringify(px5Spec[field]))
+  ) {
+    add(
+      "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-039 PX-5 评估必须精确保留 1/3/3 要求结论、7 个阻断项和正式工程/原生/实现未授权边界",
     );
   }
 

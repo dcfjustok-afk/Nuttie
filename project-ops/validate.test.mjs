@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC,
+  PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX5_DOR_ASSESSMENT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 281,
+    instancesValidated: 282,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 162);
+  assert.equal(report.counts.events, 163);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -645,6 +645,20 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039Px4Event.value.data.designBaselineFrozen, true);
   assert.equal(d039Px4Event.value.data.formalImplementationAuthorized, false);
   assert.equal(d039Px4Event.value.data.px5ImplementationDorSatisfied, false);
+  const d039Px5AssessmentEvent = findEvent(VALID_MODEL, "EVT-20260815-005");
+  assert.equal(d039Px5AssessmentEvent.value.type, "REVIEW_FEEDBACK");
+  assert.equal(d039Px5AssessmentEvent.value.subject.id, "D-039-PX-5");
+  assert.equal(d039Px5AssessmentEvent.value.data.disposition, "NOT_READY");
+  assert.equal(d039Px5AssessmentEvent.value.data.next, "PX-5_BLOCKER_CLOSURE_REQUIRED");
+  assert.deepEqual(
+    [d039Px5AssessmentEvent.value.data.passedCount, d039Px5AssessmentEvent.value.data.partialCount, d039Px5AssessmentEvent.value.data.failedCount],
+    [1, 3, 3],
+  );
+  assert.equal(d039Px5AssessmentEvent.value.data.openBlockerCount, 7);
+  assert.deepEqual(d039Px5AssessmentEvent.value.data.locallyCloseableBlockerIds, ["D039-PX5-B01", "D039-PX5-B02"]);
+  assert.equal(d039Px5AssessmentEvent.value.data.formalRootProjectAuthorized, false);
+  assert.equal(d039Px5AssessmentEvent.value.data.nativeIosWorkAuthorized, false);
+  assert.equal(d039Px5AssessmentEvent.value.data.px5ImplementationDorSatisfied, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -713,7 +727,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 280);
+    assert.equal(report.schemaValidation.instancesValidated, 281);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2125,6 +2139,34 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
     });
     assertDiagnostic(report, "OPS_D039_FINDINGS_SET_MISMATCH");
   });
+
+  await t.test("PX-5 首次 DoR 评估事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260815-005");
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH");
+  });
+
+  await t.test("PX-5 阻断集合被静默缩小", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-005").value.data.openBlockerIds.pop();
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH");
+  });
+
+  await t.test("PX-5 未就绪评估越级授权正式根工程", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-005").value.data.formalRootProjectAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH");
+  });
+
+  await t.test("PX-5 未就绪评估被改写为已满足", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-005").value.data.px5ImplementationDorSatisfied = true;
+    });
+    assertDiagnostic(report, "OPS_D039_PX5_DOR_ASSESSMENT_MISMATCH");
+  });
 });
 
 test("拒绝 D-040 在 PX-0 输入关闭前越级或改写审计事实", async (t) => {
@@ -2406,6 +2448,7 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
     });
     assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
   });
+
 });
 
 test("CLI 对通过、一致性失败和 JSONL 解析失败使用稳定退出码", () => {

@@ -22,6 +22,7 @@
 | [prototype-manifest.md](prototype-manifest.md) | D-038 A/B/C 交互原型的同源路径、范围、哈希、自测证据和已知限制 |
 | [d039-prototype-manifest.md](d039-prototype-manifest.md) | D-039 添加餐食首层 A/B/C 冻结原型、PX-2 证据和历史选择边界 |
 | [d039-px4-design-baseline.md](d039-px4-design-baseline.md) | D-039=A 的首层层级、返回、状态、无障碍和 PX-5 阻断基线 |
+| [D-039 PX-5 实现就绪评估](../05-quality/d039-px5-dor-assessment.md) | 首次 DoR 的 1/3/3 结论、7 个阻断项及分段关闭顺序 |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |
