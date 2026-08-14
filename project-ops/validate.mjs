@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D039_OWNER_CHOICE = Object.freeze({
-  id: "PHASE0_2026_08_15_D039_OWNER_CHOICE",
+export const PHASE0_2026_08_15_D039_PX4_BASELINE = Object.freeze({
+  id: "PHASE0_2026_08_15_D039_PX4_BASELINE",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 159,
+    events: 160,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D039_OWNER_CHOICE = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 1,
+    "2026-08-15": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1453,6 +1453,34 @@ export const PHASE0_2026_08_15_D039_OWNER_CHOICE = Object.freeze({
       d032SecondOwnerActionSatisfied: false,
       d053AuthorizationChanged: false,
     }),
+    px4: Object.freeze({
+      eventId: "EVT-20260815-002",
+      subjectId: "D-039-PX-4",
+      correlationId: "d039-design-baseline",
+      from: "PX-4_BASELINE_REQUIRED",
+      to: "PX-4_BASELINE_FROZEN",
+      next: "PX-5_DOR_REQUIRED",
+      decisionId: "D-039",
+      choiceKey: "local-search-recent-first",
+      selectedOption: "A",
+      ownerChoiceEventId: "EVT-20260815-001",
+      px2EventId: "EVT-20260805-005",
+      designBaselineRef: "docs/03-design/d039-px4-design-baseline.md",
+      firstLayerPrimary: Object.freeze(["LOCAL_SEARCH", "RECENT"]),
+      firstLayerAuxiliary: Object.freeze(["BARCODE_SCAN", "AI_ASSISTED"]),
+      explicitFallback: "CREATE_USER_FOOD",
+      productReviewPassed: true,
+      architectureReviewPassed: true,
+      securityReviewPassed: true,
+      qaReviewPassed: true,
+      designBaselineFrozen: true,
+      px5ImplementationDorSatisfied: false,
+      formalImplementationAuthorized: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      d032SecondOwnerActionSatisfied: false,
+      d053AuthorizationChanged: false,
+    }),
     findingsClosed: Object.freeze(
       Array.from(
         { length: 10 },
@@ -1907,7 +1935,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_OWNER_CHOICE) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX4_BASELINE) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -4291,6 +4319,35 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D039_ACCEPTANCE_EVENT_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-039 接受事件必须精确记录 Owner A、PX-3 通过、PX-4 待办，并保持正式工程、原生、PX-5、D-032 与 D-053 授权关闭",
+    );
+  }
+
+  const d039Px4 = baseline.d039.px4;
+  const d039Px4Records = model.events.filter(
+    (record) => record.value?.eventId === d039Px4.eventId ||
+      (record.value?.type === "GATE_CHANGED" && record.value?.subject?.id === d039Px4.subjectId),
+  );
+  const d039Px4Event = d039Px4Records[0]?.value;
+  const d039Px4Data = d039Px4Event?.data ?? {};
+  const d039Px4DataFields = Object.keys(d039Px4)
+    .filter((field) => !["eventId", "subjectId", "correlationId"].includes(field))
+    .sort();
+  if (
+    d039Px4Records.length !== 1 ||
+    d039Px4Event?.eventId !== d039Px4.eventId ||
+    d039Px4Event?.type !== "GATE_CHANGED" ||
+    d039Px4Event?.actor?.id !== "project-manager" ||
+    d039Px4Event?.subject?.id !== d039Px4.subjectId ||
+    d039Px4Event?.correlationId !== d039Px4.correlationId ||
+    JSON.stringify(Object.keys(d039Px4Data).sort()) !== JSON.stringify(d039Px4DataFields) ||
+    d039Px4DataFields.some(
+      (field) => JSON.stringify(d039Px4Data[field]) !== JSON.stringify(d039Px4[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_PX4_BASELINE_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-039 PX-4 事件必须精确冻结方案 A、首层层级、四域复核和 PX-5/正式实现未授权边界",
     );
   }
 

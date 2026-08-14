@@ -105,6 +105,8 @@ sending -> inFlightCancelled | timeout | authFailed | rateLimited | invalidRespo
 
 标题和按钮是内容候选，须在原型可用性审查后定稿。
 
+D-039 已冻结添加餐食首层的状态落点：`ST-EMPTY-05`、`ST-EMPTY-06`、`ST-EMPTY-07` 分别属于本地搜索、扫描和 AI 分支；任何空态或拒绝态都必须保留本地搜索或创建食品路径，不能把 AI 变成唯一恢复动作。完整顺序见 [D-039 PX-4 设计基线](d039-px4-design-baseline.md)。
+
 ## 6. 错误与恢复矩阵
 
 | Error ID | 场景 | 核心文案结构 | 恢复动作 | 保持不变的数据 |
@@ -181,6 +183,8 @@ sending -> inFlightCancelled | timeout | authFailed | rateLimited | invalidRespo
 | 权限与错误 | 系统拒绝后焦点回到解释与替代动作；错误公布但不反复打断 | 相机、相册、通知、数据库恢复 |
 | 认知负担 | 一屏只保留一个明确主动作；专业术语就地解释 | AI 配置和备份恢复不要求用户记忆上一屏信息 |
 | 触觉/声音 | 仅作辅助反馈，遵守系统设置，不能代替文字和状态 | 扫码成功、保存、错误 |
+
+D-039 的 `D039-ENTRY` 读序固定为标题/上下文 → 本地搜索 → 最近使用或其空态 → 同级扫描与 AI → 创建用户食品；返回时优先恢复原触发控件。该顺序是设计基线，不等于 VoiceOver 真机证据。
 
 ## 9. 响应式与稳定布局约束
 

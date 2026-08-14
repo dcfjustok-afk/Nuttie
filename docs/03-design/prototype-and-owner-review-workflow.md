@@ -5,7 +5,7 @@
 | 状态 | `CANDIDATE / PROCESS_DRAFT_FOR_OWNER_REVIEW` |
 | 基线日期 | 2026-07-31 |
 | 负责人 | Product Designer / DesignOps Lead |
-| 当前试点 | D-038/D-039 已完成各自内部门禁；D-040 首启资料与目标处于 PX-0 输入缺口 |
+| 当前试点 | D-038 已接受；D-039 已完成 PX-4 设计基线、等待 PX-5 DoR；D-040 首启资料与目标处于 PX-0 输入缺口 |
 | 原则 | 先形成可操作原型，再由 Owner 选择，最后进入实现 |
 
 ## 1. 目的与强制边界
@@ -114,6 +114,8 @@ Owner 应在同一原型中按 A、B、C 分别执行：
 5. Product、Architecture、Security 和 QA 对受影响基线完成复核。
 
 若 Owner 选择“暂缓”，D-038 保持 `CANDIDATE/DECISION_REQUIRED`；低保真研究可继续，但正式导航外壳和路由目录保持阻断。
+
+D-039 于 2026-08-15 满足上述 PX-4 条件：Owner 明确选择 A，权威决定与事件已登记，首层层级、返回、状态和无障碍顺序已冻结，Product/Architecture/Security/QA 复核为 PASS。该结果只进入 [D-039 PX-4 设计基线](d039-px4-design-baseline.md)，PX-5 与正式实现仍保持关闭。
 
 ### PX-5：实现 Definition of Ready
 

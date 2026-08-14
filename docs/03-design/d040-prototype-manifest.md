@@ -151,7 +151,7 @@ node D:\study\Nuttie-D040-Prototype-Lab\qa-smoke.mjs http://127.0.0.1:4177/ D:\s
 ## 10. 限制与下一门禁
 
 - 下一步不是实现 React Native，而是把“字段、公式、适用范围和特殊人群停止规则”形成一组中立 Owner 选择卡；当前聊天处于 Default 模式时不能用文字或网页替代原生选择卡。
-- 该原型于 2026-08-06 登记时，OI-03 是 Owner intake 的下一张卡，D-040 不得抢占或改写该顺序。OI-03 与 OI-02 后续均已完成事实采集，当前下一张宿主原生卡是首批整批回读确认；D-040 仍不得抢占，D-039 的 PX-3 也仍未完成。
+- 该原型于 2026-08-06 登记时，OI-03 是 Owner intake 的下一张卡，D-040 不得抢占或改写该历史顺序。OI-03、OI-02、首批整批回读和 D-039 PX-3/PX-4 后续均已完成；计划中的下一张宿主原生卡现为 D-040，但在 `PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED` 关闭前仍不得提交 Owner。
 - 输入关闭后重新做 PX-0/PX-1 审查；若具体公式改变预览数据或字段，必须更新原型、哈希、QA 与独立复测。
 - 只有 D-040 经单独原生选择卡明确处理、PX-2/PX-3/PX-4 完成，并形成正式规格后，才可申请对应实现 DoR。
 - 本原型不修改 `project-ops/decisions.json`、Owner intake 或任何 `DECISION_ACCEPTED` 状态，也不授权正式 React Native 工程、Apple 资源、TestFlight 或发布。

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D039_OWNER_CHOICE,
+  PHASE0_2026_08_15_D039_PX4_BASELINE,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D039_OWNER_CHOICE.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX4_BASELINE.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 278,
+    instancesValidated: 279,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 159);
+  assert.equal(report.counts.events, 160);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -635,6 +635,16 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039AcceptanceEvent.value.data.px5ImplementationDorSatisfied, false);
   assert.equal(d039AcceptanceEvent.value.data.d032SecondOwnerActionSatisfied, false);
   assert.equal(d039AcceptanceEvent.value.data.d053AuthorizationChanged, false);
+  const d039Px4Event = findEvent(VALID_MODEL, "EVT-20260815-002");
+  assert.equal(d039Px4Event.value.type, "GATE_CHANGED");
+  assert.equal(d039Px4Event.value.subject.id, "D-039-PX-4");
+  assert.equal(d039Px4Event.value.data.to, "PX-4_BASELINE_FROZEN");
+  assert.equal(d039Px4Event.value.data.next, "PX-5_DOR_REQUIRED");
+  assert.deepEqual(d039Px4Event.value.data.firstLayerPrimary, ["LOCAL_SEARCH", "RECENT"]);
+  assert.deepEqual(d039Px4Event.value.data.firstLayerAuxiliary, ["BARCODE_SCAN", "AI_ASSISTED"]);
+  assert.equal(d039Px4Event.value.data.designBaselineFrozen, true);
+  assert.equal(d039Px4Event.value.data.formalImplementationAuthorized, false);
+  assert.equal(d039Px4Event.value.data.px5ImplementationDorSatisfied, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -680,7 +690,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 277);
+    assert.equal(report.schemaValidation.instancesValidated, 278);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2044,6 +2054,27 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       findEvent(model, "EVT-20260815-001").value.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_ACCEPTANCE_EVENT_MISMATCH");
+  });
+
+  await t.test("缺少 PX-4 设计基线事件时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260815-002");
+    });
+    assertDiagnostic(report, "OPS_D039_PX4_BASELINE_MISMATCH");
+  });
+
+  await t.test("PX-4 首层辅助入口漂移时失败关闭", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-002").value.data.firstLayerAuxiliary.reverse();
+    });
+    assertDiagnostic(report, "OPS_D039_PX4_BASELINE_MISMATCH");
+  });
+
+  await t.test("PX-4 越级授权正式实现时失败关闭", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-002").value.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D039_PX4_BASELINE_MISMATCH");
   });
 
   await t.test("权威门禁事件缺失", () => {

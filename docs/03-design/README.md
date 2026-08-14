@@ -17,10 +17,11 @@
 | [information-architecture.md](information-architecture.md) | 与界面框架无关的完整逻辑信息架构和 24 类能力覆盖 |
 | [key-user-journeys.md](key-user-journeys.md) | 首启、记录、AI、洞察、提醒、导入导出和清除等关键旅程 |
 | [states-content-accessibility.md](states-content-accessibility.md) | 离线、AI、权限、空态、错误态、简中文案和无障碍基线 |
-| [open-decisions.md](open-decisions.md) | 尚待 Owner 明确确认的体验选项；当前均未接受 |
+| [open-decisions.md](open-decisions.md) | 体验选项总表；D-038/D-039 已接受，其余仍须 Owner 明确确认 |
 | [prototype-and-owner-review-workflow.md](prototype-and-owner-review-workflow.md) | “先原型、跨角色评审、Owner 明确选择、再实现”的 PX-0~PX-5 门禁 |
 | [prototype-manifest.md](prototype-manifest.md) | D-038 A/B/C 交互原型的同源路径、范围、哈希、自测证据和已知限制 |
-| [d039-prototype-manifest.md](d039-prototype-manifest.md) | D-039 添加餐食首层 A/B/C 原型、PX-2 证据与 Owner 防越级边界 |
+| [d039-prototype-manifest.md](d039-prototype-manifest.md) | D-039 添加餐食首层 A/B/C 冻结原型、PX-2 证据和历史选择边界 |
+| [d039-px4-design-baseline.md](d039-px4-design-baseline.md) | D-039=A 的首层层级、返回、状态、无障碍和 PX-5 阻断基线 |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |
@@ -62,7 +63,7 @@ G3 只有在以下证据齐备后才能申请 `PASS`：
 
 ## 5. 连续性与 Owner Gate
 
-- [当前交接](../00-governance/current-handoff.md)：恢复当前 28/3 决策状态、D-032 两阶段、D-039 下一门禁、阻断项和本地命令。
+- [当前交接](../00-governance/current-handoff.md)：恢复当前 29/3 决策状态、D-032 两阶段、D-039 PX-4/PX-5 边界、阻断项和本地命令。
 - [Codex 连续性运行手册](../00-governance/codex-continuity-runbook.md)：新实例读取顺序、事实优先级、跨角色协作与每轮持久化规则。
 - [Owner 启动门禁独立审查](../00-governance/owner-startup-gate-independent-review.md)：首批工程候选的独立治理审查、门槛分层和 D-032 循环分析；其中历史计数应以当前交接和权威决定副本为准。
 - [原型与 Owner 评审流程](prototype-and-owner-review-workflow.md)：候选同等完整、跨角色任务评审和 Owner 决定记录规则。

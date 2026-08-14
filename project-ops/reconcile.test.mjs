@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 159,
+    events: 160,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -49,10 +49,13 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.ownerGate.deviceAvailability.iosVersion, "26.5");
   assert.equal(report.ownerGate.deviceAvailability.nativeIosWorkAuthorized, false);
   assert.equal(report.d039.px2State, "PX-2_PASS");
-  assert.equal(report.d039.state, "PX-3_PASS");
-  assert.equal(report.d039.next, "PX-4_BASELINE_REQUIRED");
+  assert.equal(report.d039.px3State, "PX-3_PASS");
+  assert.equal(report.d039.state, "PX-4_BASELINE_FROZEN");
+  assert.equal(report.d039.next, "PX-5_DOR_REQUIRED");
   assert.equal(report.d039.decisionState, "ACCEPTED");
   assert.equal(report.d039.choiceKey, "local-search-recent-first");
+  assert.equal(report.d039.selectedOption, "A");
+  assert.equal(report.d039.designBaselineFrozen, true);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
 });
 

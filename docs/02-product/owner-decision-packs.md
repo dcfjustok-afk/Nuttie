@@ -1,6 +1,6 @@
 # Nuttie Owner 分批决策包
 
-> 状态：`BATCH_1_CONFIRMED / REFERENCE`
+> 状态：`BATCH_1_CONFIRMED / D039_CONFIRMED / REFERENCE`
 >
 > 快照日期：2026-07-31
 >
@@ -9,7 +9,7 @@
 ## 1. 使用方式
 
 - D-001 至 D-025 中已进入权威台账的决定不在本文件重复询问。
-- 第 1 批原生 `request_user_input` 与整批回读已经完成；下一题是独立的 D-039 PX-3，不得重新询问本批。
+- 第 1 批原生 `request_user_input` 与整批回读已经完成；D-039 后续由 Owner 明确选择 A 并完成 PX-4，不得重复询问。计划中的下一题为 D-040，但只能在其 PX-0/PX-1/PX-2 前置评审完成后提交。
 - 后续批次只用于展示完整决策队列，不因出现在本文而自动进入实现。
 - `Owner 输入` 是账号、设备或标识的事实，不是架构决定；缺失时保持阻断，不伪造占位值。
 - `Spike 后再定` 表示可以先做受控实验，但在 Owner 接受结果前不能写入 Release 基线。
@@ -161,7 +161,7 @@ Spike 必须覆盖 SQLCipher、Keychain、通知、相机、Prebuild diff、Debu
 
 | ID | 题目 | 选项摘要 | 当前建议 | 决定前置 |
 | --- | --- | --- | --- | --- |
-| D-039 | 添加餐食首层方式 | A 本地搜索/最近优先，扫描和 AI 并列；B 记住上次；C 全方式平铺 | A | 新增餐食原型 |
+| D-039 | 添加餐食首层方式 | A 本地搜索/最近优先，扫描和 AI 并列；B 记住上次；C 全方式平铺 | `A / ACCEPTED / PX-4_BASELINE_FROZEN` | PX-5 DoR 尚未满足 |
 | D-040 | 首启资料与目标 | A 最小资料 + 可解释公式候选 + 用户确认；B 只手工；C 强制完整问卷 | A | 目标公式与健康文案评审 |
 | D-042 | 健康评分顺序 | A 先营养解释、评分后续；B 本地公开确定性评分；C AI 每次评分 | A；C 不推荐 | 营养安全评审 |
 | D-031 | 照片与 AI 内容保留 | A 只保存用户明确附加的压缩本地照片，临时副本/原始响应即删，AI 结果默认不保存；B 不保留任何照片；C 允许逐项原图/历史 | A | 媒体模型、备份体积与删除测试 |
@@ -218,9 +218,9 @@ D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-
 
 12 项 D 编号问题已通过原生选择卡和整批回读确认，详见 [Owner 第 1 批确认归档](../00-governance/owner-intake-pending.md) 与 `project-ops/owner-intake.json`；不得重复询问。D-018/D-019/D-020/D-021/D-023/D-024/D-025/D-037/D-038/D-047/D-048 已写入决定台账，D-032 保持 `CANDIDATE + SPIKE_AUTHORIZED`。D-047 已由 Owner 回正为 C：当前不付费、只自用、不做 TestFlight、暂不考虑朋友；D-008 是否未来恢复或正式 supersede 仍留到后续决定。
 
-OI-02 已确认 Bundle ID 尚未创建，具体值为空，App ID 与 App Store Connect record 均未创建，SKU=`N/A`；具体 Bundle ID 最迟在首次自用真机签名配置前另行确认。OI-03 已确认当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。当前下一张宿主原生卡是 D-039 添加餐食首层体验。
+OI-02 已确认 Bundle ID 尚未创建，具体值为空，App ID 与 App Store Connect record 均未创建，SKU=`N/A`；具体 Bundle ID 最迟在首次自用真机签名配置前另行确认。OI-03 已确认当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。D-039 已由 Owner 选择 A 并完成 PX-4；计划中的下一张宿主原生卡是 D-040，但当前仍处于 `PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`，不得提前展示。
 
-D-032 的 A 只有“隔离 SDK 57 JS Spike 授权”含义，不能直接记为最终接受；后续验证失败必须提交证据并触发第二次 Owner 动作，不允许团队自动切换选项。D-039 必须使用真实 `request_user_input` 返回，不得从原型默认状态或 PX-2 PASS 推导。
+D-032 的 A 只有“隔离 SDK 57 JS Spike 授权”含义，不能直接记为最终接受；后续验证失败必须提交证据并触发第二次 Owner 动作，不允许团队自动切换选项。D-039 的接受依据是 Owner 查看冻结原型后的明确文字回复 `a` 和权威事件，不是原型默认状态或 PX-2 PASS；PX-4 完成仍不构成实现授权。
 
 ## 9. 当前执行边界
 
