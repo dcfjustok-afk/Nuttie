@@ -25,6 +25,7 @@
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |
+| [d040-question-allocation.md](d040-question-allocation.md) | D-040 的 20 个独立决定轴、D-054~D-072 候选 ID 预留、依赖顺序和固定安全不变量 |
 | [nuttie-visual-direction.md](nuttie-visual-direction.md) | Nuttie 原创卡通栗子视觉方向、状态映射与 Figma 导入合同 |
 | [nuttie-design-system.md](nuttie-design-system.md) | Nuttie 视觉令牌、组件、五个本地优先功能画面、九种状态模式、候选边界与自动验证合同 |
 | [../04-engineering/testing/visual-kit-check.md](../04-engineering/testing/visual-kit-check.md) | 本地视觉原型的源码合同、负向变异测试与浏览器验收边界 |

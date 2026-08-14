@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D039_PX4_BASELINE = Object.freeze({
-  id: "PHASE0_2026_08_15_D039_PX4_BASELINE",
+export const PHASE0_2026_08_15_D040_QUESTION_ALLOCATION = Object.freeze({
+  id: "PHASE0_2026_08_15_D040_QUESTION_ALLOCATION",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 160,
+    events: 161,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D039_PX4_BASELINE = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 2,
+    "2026-08-15": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1636,6 +1636,65 @@ export const PHASE0_2026_08_15_D039_PX4_BASELINE = Object.freeze({
         formalImplementationAuthorized: false,
       }),
     }),
+    allocation: Object.freeze({
+      eventId: "EVT-20260815-003",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-QUESTION-ALLOCATION-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-question-allocation",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "FORMULA_REVIEW_REQUIRED",
+      next: "DECISION_CARD_SPEC_REVIEW_REQUIRED",
+      sourceDraftQuestionCount: 17,
+      resolvedDecisionAxisCount: 20,
+      newlyReservedIdCount: 19,
+      newlyReservedDecisionIds: Object.freeze([
+        "D-054", "D-055", "D-056", "D-057", "D-058", "D-059", "D-060",
+        "D-061", "D-062", "D-063", "D-064", "D-065", "D-066", "D-067",
+        "D-068", "D-069", "D-070", "D-071", "D-072",
+      ]),
+      finalStructureDecisionId: "D-040",
+      sourceToDecisionMap: Object.freeze({
+        "01": "D-054",
+        "02": "D-055",
+        "03": "D-056",
+        "04": "D-057",
+        "05": "D-058",
+        "06": "D-059",
+        "07": "D-060",
+        "08": "D-061",
+        "09": "D-062",
+        "10": "D-063",
+        "11": "D-064",
+        "12": "D-065",
+        "13": "D-066",
+        "14": "D-067",
+        "15": "D-068",
+        "16": "D-069",
+        "17": "D-040",
+        "MACRO-02": "D-070",
+        "MACRO-03": "D-071",
+        "MACRO-04": "D-072",
+      }),
+      macroQuestion10ExpandedTo: Object.freeze(["D-063", "D-070", "D-071", "D-072"]),
+      parentChildSchemaRequired: false,
+      formulaEvidenceReviewComplete: true,
+      formulaChoiceResolved: false,
+      chinaMacroStandardStillGap: true,
+      chinaSupportCopyReviewStillRequired: true,
+      healthReviewGovernanceStillRequired: true,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -1935,7 +1994,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D039_PX4_BASELINE) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D040_QUESTION_ALLOCATION) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -4789,6 +4848,61 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
         add("OPS_D040_MACRO_AUTHORIZATION_PREMATURE", "project-ops/events/2026-08-06.jsonl", `宏量证据工件 ${field} 必须保持 false`);
       }
     }
+  }
+
+  const allocationSpec = baseline.d040Research.allocation;
+  const allocationEvents = model.events.filter(
+    (record) => record.value?.eventId === allocationSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === allocationSpec.correlationId),
+  );
+  const allocationEvent = allocationEvents[0]?.value;
+  const allocationData = allocationEvent?.data ?? {};
+  const allocationDataFields = Object.keys(allocationSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    allocationEvents.length !== 1 ||
+    allocationEvent?.eventId !== allocationSpec.eventId ||
+    allocationEvent?.type !== "ARTIFACT_CREATED" ||
+    allocationEvent?.actor?.id !== allocationSpec.actorId ||
+    allocationEvent?.actor?.role !== allocationSpec.actorRole ||
+    allocationEvent?.subject?.id !== allocationSpec.subjectId ||
+    allocationEvent?.subject?.role !== allocationSpec.subjectRole ||
+    allocationEvent?.correlationId !== allocationSpec.correlationId ||
+    JSON.stringify(Object.keys(allocationData).sort()) !== JSON.stringify(allocationDataFields) ||
+    allocationDataFields.some(
+      (field) => JSON.stringify(allocationData[field]) !== JSON.stringify(allocationSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_QUESTION_ALLOCATION_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-040 问题分解必须精确保留 20 个决定轴、D-054 至 D-072 预留、PX-0 输入缺口和全部授权关闭",
+    );
+  }
+
+  const prematurelyRegisteredAllocationIds = decisions
+    .filter((decision) => allocationSpec.newlyReservedDecisionIds.includes(decision?.id))
+    .map((decision) => decision.id);
+  if (prematurelyRegisteredAllocationIds.length > 0) {
+    add(
+      "OPS_D040_ALLOCATED_DECISION_REGISTERED_PREMATURELY",
+      "project-ops/decisions.json.decisions",
+      "D-054 至 D-072 当前只是预留候选 ID，选择卡规格与 Owner 选择前不得进入决定台账",
+      { decisionIds: prematurelyRegisteredAllocationIds },
+    );
+  }
+
+  const prematurelyRecordedAllocationResponses = ownerResponses
+    .filter((response) => allocationSpec.newlyReservedDecisionIds.includes(response?.decisionId))
+    .map((response) => response.decisionId);
+  if (prematurelyRecordedAllocationResponses.length > 0) {
+    add(
+      "OPS_D040_ALLOCATED_OWNER_RESPONSE_PREMATURELY_RECORDED",
+      "project-ops/owner-intake.json.responses",
+      "D-054 至 D-072 尚未排入 Owner 评审，不得伪造或提前记录响应",
+      { decisionIds: prematurelyRecordedAllocationResponses },
+    );
   }
 
   if (decisions.some((decision) => decision?.id === "D-040")) {

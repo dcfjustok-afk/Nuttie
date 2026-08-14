@@ -4,7 +4,7 @@
 | --- | --- |
 | Artifact ID | `PROTO-D040-001` |
 | 题目 | D-040（原 UXD-03）“首启资料与目标设置”的 A/B/C 低保真对比 |
-| 状态 | `CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED` |
+| 状态 | `CANDIDATE / PX-0_INPUT_GAP / DECISION_CARD_SPEC_REVIEW_REQUIRED` |
 | 快照日期 | 2026-08-06（Asia/Shanghai） |
 | 负责人 | PM 接管原型编排与交付；Product / 健康文案输入仍待关闭 |
 | 保真度 | 可交互低保真；不锁定正式字段、公式、视觉、组件库、导航或工程实现 |
@@ -150,8 +150,8 @@ node D:\study\Nuttie-D040-Prototype-Lab\qa-smoke.mjs http://127.0.0.1:4177/ D:\s
 
 ## 10. 限制与下一门禁
 
-- 下一步不是实现 React Native，而是把“字段、公式、适用范围和特殊人群停止规则”形成一组中立 Owner 选择卡；当前聊天处于 Default 模式时不能用文字或网页替代原生选择卡。
-- 该原型于 2026-08-06 登记时，OI-03 是 Owner intake 的下一张卡，D-040 不得抢占或改写该历史顺序。OI-03、OI-02、首批整批回读和 D-039 PX-3/PX-4 后续均已完成；计划中的下一张宿主原生卡现为 D-040，但在 `PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED` 关闭前仍不得提交 Owner。
-- 输入关闭后重新做 PX-0/PX-1 审查；若具体公式改变预览数据或字段，必须更新原型、哈希、QA 与独立复测。
+- 下一步不是实现 React Native。字段、公式、适用范围、数据生命周期和宏量轴已在 [D-040 问题分解与全局 ID 预留](d040-question-allocation.md) 拆成 20 个独立决定轴；现在必须先为第一小批编写中立选择卡规格并完成跨域复核，不能用网页或未审查的文字问题代替宿主原生选择卡。
+- 该原型于 2026-08-06 登记时，OI-03 是 Owner intake 的下一张卡，D-040 不得抢占或改写该历史顺序。OI-03、OI-02、首批整批回读和 D-039 PX-3/PX-4 后续均已完成；计划中的宿主原生队列占位现为 D-040，但在 `PX-0_INPUT_GAP / DECISION_CARD_SPEC_REVIEW_REQUIRED` 关闭前仍不得提交 Owner。
+- ID 分配不关闭 PX-0。选择卡规格和剩余中国支持文案/健康评审治理输入关闭后重新做 PX-0/PX-1 审查；若具体公式改变预览数据或字段，必须更新原型、哈希、QA 与独立复测。
 - 只有 D-040 经单独原生选择卡明确处理、PX-2/PX-3/PX-4 完成，并形成正式规格后，才可申请对应实现 DoR。
 - 本原型不修改 `project-ops/decisions.json`、Owner intake 或任何 `DECISION_ACCEPTED` 状态，也不授权正式 React Native 工程、Apple 资源、TestFlight 或发布。

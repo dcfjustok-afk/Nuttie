@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D039_PX4_BASELINE,
+  PHASE0_2026_08_15_D040_QUESTION_ALLOCATION,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D039_PX4_BASELINE.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D040_QUESTION_ALLOCATION.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 279,
+    instancesValidated: 280,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 160);
+  assert.equal(report.counts.events, 161);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -645,6 +645,17 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039Px4Event.value.data.designBaselineFrozen, true);
   assert.equal(d039Px4Event.value.data.formalImplementationAuthorized, false);
   assert.equal(d039Px4Event.value.data.px5ImplementationDorSatisfied, false);
+  const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
+  assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
+  assert.equal(d040AllocationEvent.value.data.next, "DECISION_CARD_SPEC_REVIEW_REQUIRED");
+  assert.equal(d040AllocationEvent.value.data.resolvedDecisionAxisCount, 20);
+  assert.equal(d040AllocationEvent.value.data.newlyReservedIdCount, 19);
+  assert.deepEqual(d040AllocationEvent.value.data.macroQuestion10ExpandedTo, ["D-063", "D-070", "D-071", "D-072"]);
+  assert.equal(d040AllocationEvent.value.data.formulaEvidenceReviewComplete, true);
+  assert.equal(d040AllocationEvent.value.data.formulaChoiceResolved, false);
+  assert.equal(d040AllocationEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d040AllocationEvent.value.data.ownerReviewAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -690,7 +701,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 278);
+    assert.equal(report.schemaValidation.instancesValidated, 279);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2305,6 +2316,53 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       model.events.push(duplicate);
     });
     assertDiagnostic(report, "OPS_D040_RESEARCH_ARTIFACT_DUPLICATE");
+  });
+
+  await t.test("问题分解事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260815-003",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_QUESTION_ALLOCATION_MISMATCH");
+  });
+
+  await t.test("预留 ID 集合漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-003").value.data.newlyReservedDecisionIds[0] = "D-099";
+    });
+    assertDiagnostic(report, "OPS_D040_QUESTION_ALLOCATION_MISMATCH");
+  });
+
+  await t.test("问题分解越级授权 Owner 评审", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-003").value.data.ownerReviewAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_QUESTION_ALLOCATION_MISMATCH");
+  });
+
+  await t.test("预留 ID 提前进入决定台账", () => {
+    const report = validateMutation((model) => {
+      const candidate = structuredClone(
+        model.decisionRegister.decisions.find((decision) => decision.id === "D-052"),
+      );
+      candidate.id = "D-054";
+      candidate.title = "自动公式适用年龄";
+      model.decisionRegister.decisions.push(candidate);
+    });
+    assertDiagnostic(report, "OPS_D040_ALLOCATED_DECISION_REGISTERED_PREMATURELY");
+  });
+
+  await t.test("预留 ID 提前写入 Owner 响应", () => {
+    const report = validateMutation((model) => {
+      const response = structuredClone(
+        model.ownerIntake.responses.find((item) => item.decisionId === "D-039"),
+      );
+      response.questionId = "d054_formula_age";
+      response.decisionId = "D-054";
+      model.ownerIntake.responses.push(response);
+    });
+    assertDiagnostic(report, "OPS_D040_ALLOCATED_OWNER_RESPONSE_PREMATURELY_RECORDED");
   });
 });
 

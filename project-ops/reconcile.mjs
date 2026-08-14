@@ -51,7 +51,9 @@ function latestD040Record(model) {
     .filter((record) => {
       const subjectId = record.value?.subject?.id;
       const correlationId = record.value?.correlationId;
-      return subjectId === "D040-RESEARCH-002" || correlationId === "d040-macronutrient-governance-audit";
+      return subjectId === "D040-RESEARCH-002" ||
+        subjectId === "D040-QUESTION-ALLOCATION-001" ||
+        correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
     .at(-1)?.value ?? null;
@@ -262,7 +264,11 @@ export function reconcileProjectOps(model) {
     decisionState: d040Record?.data?.decisionState ?? null,
     authoritativeState: d040Record?.data?.authoritativeState ?? null,
     next: d040Record?.data?.next ?? null,
-    oi03WasNextAtRecord: d040Record?.data?.oi03RemainsNext ?? null,
+    sourceDraftQuestionCount: d040Record?.data?.sourceDraftQuestionCount ?? null,
+    resolvedDecisionAxisCount: d040Record?.data?.resolvedDecisionAxisCount ?? null,
+    newlyReservedIdCount: d040Record?.data?.newlyReservedIdCount ?? null,
+    formulaEvidenceReviewComplete: d040Record?.data?.formulaEvidenceReviewComplete ?? null,
+    ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
     authorization: {
       px1Authorized: d040Record?.data?.px1Authorized ?? null,
       px2Authorized: d040Record?.data?.px2Authorized ?? null,
@@ -273,8 +279,18 @@ export function reconcileProjectOps(model) {
     },
   };
   const d040AuthorizationClosed = Object.values(d040.authorization).every((value) => value === false);
-  if (!(d040.decisionState === "CANDIDATE" && d040.authoritativeState === "PX-0_INPUT_GAP" && d040.next === "FORMULA_REVIEW_REQUIRED" && d040AuthorizationClosed)) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 PX-0 输入缺口和六项授权位关闭状态", d040);
+  if (!(
+    d040.decisionState === "CANDIDATE" &&
+    d040.authoritativeState === "PX-0_INPUT_GAP" &&
+    d040.next === "DECISION_CARD_SPEC_REVIEW_REQUIRED" &&
+    d040.sourceDraftQuestionCount === 17 &&
+    d040.resolvedDecisionAxisCount === 20 &&
+    d040.newlyReservedIdCount === 19 &&
+    d040.formulaEvidenceReviewComplete === true &&
+    d040.ownerCardScheduled === false &&
+    d040AuthorizationClosed
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、选择卡规格待审、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {
