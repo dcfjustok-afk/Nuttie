@@ -12,9 +12,9 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G0 项目立项`：PASS
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
-- 应用工程：正式根工程尚未初始化；D-032 仅授权的隔离 SDK 57 Windows JS Spike 已通过冻结安装、类型检查、Doctor 20/20 与 Android Metro export，原生 iOS 证据仍未形成
+- 应用工程：正式根工程尚未初始化；D-032 仅授权的隔离 SDK 57 Windows JS Spike 已通过冻结安装、类型检查、Doctor 20/20 与 Android Metro export，六个高风险依赖符号已进入 JS/类型解析路径且原生调用为零；原生 iOS 证据仍未形成
 - Owner 首批输入：11 项新决定已接受，D-032 为 `CANDIDATE + SPIKE_AUTHORIZED`，D-052/D-053 继续 fail closed；下一门禁为 D-039 添加餐食体验
-- 框架无关契约与治理检查：合并后全库 778/778，通过 ProjectOps 5 份 Schema/273 个实例、F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同；所有相关边界继续 fail closed。这些证据和 Windows JS Spike 不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：合并后全库 779/779，通过 ProjectOps 5 份 Schema/274 个实例、F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同；所有相关边界继续 fail closed。这些证据和 Windows JS 依赖解析不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 

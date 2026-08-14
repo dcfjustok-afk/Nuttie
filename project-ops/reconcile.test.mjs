@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、快照与首批确认/D-039 门禁一致", () => {
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 154,
+    events: 155,
     messages: 116,
     agents: 25,
     activeAgents: 1,

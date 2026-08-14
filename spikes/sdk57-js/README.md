@@ -56,15 +56,20 @@ were not used as evidence.
 | --- | --- |
 | `pnpm install --frozen-lockfile` | PASS; lockfile unchanged |
 | `pnpm run verify:contract` | PASS; isolated JS scope, no native directories, no Bundle ID |
+| `pnpm run verify:surface` | PASS; six high-risk packages and four config plugins bind exact JS symbols, with zero native calls |
 | `pnpm run check` | PASS; TypeScript `--noEmit` |
 | `pnpm run config` | PASS; public Expo configuration resolved |
 | `pnpm run doctor` | PASS; 20/20 checks after directly locking required Router/Reanimated peers and `expo-doctor` |
-| `pnpm run export:android` | PASS; Metro bundled 1,232 modules into one Android Hermes bundle |
+| `pnpm run export:android` | PASS; Metro bundled 1,652 modules into one Android Hermes bundle after the high-risk dependency surface entered the route graph |
 
 Resolved headline versions were Expo `57.0.12`, Expo Router `57.0.12`, React
-Native `0.86.2`, and React `19.2.3`. The ignored export contained 29 files /
-3,632,083 bytes. Its Hermes bundle SHA-256 was
-`98c8ec5c1c22e747f903010ea97bd889015eb8c4477e56ef85603593cd193fb2`; the
+Native `0.86.2`, and React `19.2.3`. The surface binds, without calling,
+`expo-sqlite.openDatabaseAsync`, `expo-secure-store.getItemAsync`,
+`expo-camera.CameraView`, `expo-notifications.getPermissionsAsync`,
+`react-native-reanimated.Animated.View`, and
+`react-native-worklets.isWorkletFunction`. The ignored export contained 29
+files / 4,758,497 bytes. Its Hermes bundle SHA-256 was
+`a48e69f982a0b2800a42c8feae765e6455a4d0eb94d11114995b01fe1c3863c0`; the
 verified lockfile SHA-256 was
 `97fadee6f3f7d67c295f3fdab2319c67c7a98390a4e4f041ce0b4afc837798d3`.
 

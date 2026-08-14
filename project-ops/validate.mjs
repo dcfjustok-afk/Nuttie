@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION = Object.freeze({
-  id: "PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION",
+export const PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE = Object.freeze({
+  id: "PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 28,
     candidateDecisions: 3,
-    events: 154,
+    events: 155,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -98,7 +98,7 @@ export const PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 10,
-    "2026-08-14": 18,
+    "2026-08-14": 19,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1111,6 +1111,64 @@ export const PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION = Object.freeze({
     gateStatesChanged: false,
     ownerIntakeChanged: false,
   }),
+  sdk57JsDependencySurface: Object.freeze({
+    eventId: "EVT-20260814-019",
+    subjectId: "sdk57-js-dependency-surface-verification",
+    state: "completed",
+    workingTreeBase: "0669509959eeeba458080f658f80ca0f14f1339e",
+    decisionId: "D-032",
+    decisionStatus: "CANDIDATE",
+    authorization: "SPIKE_AUTHORIZED",
+    scope: "SDK57_JS_DEPENDENCY_SURFACE",
+    requiredPackages: Object.freeze([
+      "expo-sqlite",
+      "expo-secure-store",
+      "expo-camera",
+      "expo-notifications",
+      "react-native-reanimated",
+      "react-native-worklets",
+    ]),
+    requiredPlugins: Object.freeze([
+      "expo-sqlite",
+      "expo-secure-store",
+      "expo-camera",
+      "expo-notifications",
+    ]),
+    runtimeSymbols: Object.freeze([
+      "expo-sqlite:openDatabaseAsync",
+      "expo-secure-store:getItemAsync",
+      "expo-camera:CameraView",
+      "expo-notifications:getPermissionsAsync",
+      "react-native-reanimated:Animated.View",
+      "react-native-worklets:isWorkletFunction",
+    ]),
+    typescriptResolutionPassed: true,
+    metroResolutionPassed: true,
+    expoDoctorChecksPassed: 20,
+    expoDoctorChecksTotal: 20,
+    androidBundleModules: 1652,
+    androidBundleFiles: 29,
+    androidBundleBytes: 4758497,
+    androidBundleSha256: "a48e69f982a0b2800a42c8feae765e6455a4d0eb94d11114995b01fe1c3863c0",
+    lockfileSha256: "97fadee6f3f7d67c295f3fdab2319c67c7a98390a4e4f041ce0b4afc837798d3",
+    repositoryFullSuitePassed: 779,
+    projectOpsValidationTestsPassed: 118,
+    nativeApiCalls: 0,
+    permissionRequests: 0,
+    databaseOpens: 0,
+    keychainReads: 0,
+    notificationCalls: 0,
+    workletExecutions: 0,
+    networkRequests: 0,
+    nativeRuntimeEvidence: false,
+    nativeDirectoriesGenerated: false,
+    prebuildRun: false,
+    formalRootProjectAuthorized: false,
+    decisionAccepted: false,
+    ownerSecondActionStillRequired: true,
+    gateStatesChanged: false,
+    ownerIntakeChanged: false,
+  }),
   mediaPermissionOrchestratorContract: Object.freeze({
     eventId: "EVT-20260812-013",
     subjectId: "media-permission-orchestrator-contract",
@@ -1663,7 +1721,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -3656,6 +3714,32 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_SDK57_JS_SPIKE_VERIFICATION_MISMATCH",
       "project-ops/events/2026-08-14.jsonl",
       "D-032 verification must retain the exact Node/pnpm/lockfile and Windows JS check evidence while keeping native directories, Prebuild, iOS evidence, formal root authorization, decision acceptance and gate changes false",
+    );
+  }
+
+  const sdk57JsDependencySurfaceEvents = model.events.filter(
+    (record) => record.value?.subject?.id === baseline.sdk57JsDependencySurface.subjectId,
+  );
+  const sdk57JsDependencySurfaceEvent = sdk57JsDependencySurfaceEvents[0]?.value;
+  const sdk57JsDependencySurfaceData = sdk57JsDependencySurfaceEvent?.data ?? {};
+  const sdk57JsDependencySurfaceBaseline = baseline.sdk57JsDependencySurface;
+  const sdk57JsDependencySurfaceFields = Object.keys(sdk57JsDependencySurfaceBaseline)
+    .filter((field) => field !== "eventId" && field !== "subjectId")
+    .sort();
+  if (
+    sdk57JsDependencySurfaceEvents.length !== 1 ||
+    sdk57JsDependencySurfaceEvent?.eventId !== sdk57JsDependencySurfaceBaseline.eventId ||
+    sdk57JsDependencySurfaceEvent?.type !== "TASK_COMPLETED" ||
+    sdk57JsDependencySurfaceEvent?.actor?.id !== "project-manager" ||
+    JSON.stringify(Object.keys(sdk57JsDependencySurfaceData).sort()) !== JSON.stringify(sdk57JsDependencySurfaceFields) ||
+    sdk57JsDependencySurfaceFields.some(
+      (field) => JSON.stringify(sdk57JsDependencySurfaceData[field]) !== JSON.stringify(sdk57JsDependencySurfaceBaseline[field]),
+    )
+  ) {
+    add(
+      "OPS_SDK57_JS_DEPENDENCY_SURFACE_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "D-032 JS dependency surface must retain all six package symbols, four config plugins, exact type/Metro evidence and bundle fingerprint while keeping native calls, runtime evidence, Prebuild, formal root authorization, decision acceptance and gate changes false",
     );
   }
 

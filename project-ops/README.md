@@ -47,11 +47,11 @@ node project-ops/reconcile.mjs
 node --test project-ops/reconcile.test.mjs
 ```
 
-`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_14_SDK57_JS_SPIKE_VERIFICATION` 基线并检查：
+`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_14_SDK57_JS_DEPENDENCY_SURFACE` 基线并检查：
 
-- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 273 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
+- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 274 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
 - JSON/JSONL 解析、决定/事件/消息/证据 ID 唯一性。
-- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/10/18` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
+- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/10/19` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
 - Agent 消息 `responseTo`、证据状态与五条 pending 集合。
 - 决定、事件、消息、角色、证据和 gap theme 的源计数、快照计数与版本化基线。
 - Agent ID 唯一性与唯一 active 角色 `root`；Owner intake 精确保留 12 项输入、11 项 accepted、D-032 Spike 授权、D-047 A→C 审计链、唯一 OI-02/OI-03 事实和宿主原生 `request_user_input` D-039 入口。
@@ -82,12 +82,13 @@ node --test project-ops/reconcile.test.mjs
 - F01/F02/F16 AI 请求证据共享上下文保持 `SPIKE / LOCAL_ONLY / NON_PRODUCTION`：唯一 `AI_REQUEST_EVIDENCE_CONTEXT_V2` 绑定精确 subject、完整 profile、D-053 authorization evidence 和 policy-check，只接受 scope/有效期/风险/ALLOW 均满足且唯一剩余阻断为 `D053_NOT_AUTHORIZED`；候选确认升 V3、F16 升 V2，旧松散上下文和旧消费者证据失败关闭；上下文固定不证明 transport、不授予发送，不得授权读取 key、序列化敏感 body、联网、自动业务写入、原生或正式实现。
 - F01/F02 AI 配置—策略预检保持 `SPIKE / LOCAL_ONLY / NON_PRODUCTION`：只从稳定 `CONFIGURED` 生命周期导出带指纹的非敏感配置证据，并与共享请求上下文比较 baseURL/origin/model；即使精确一致也因配置未绑定 providerId 及 D-033/D-034/D-036/D-053 固定 `BLOCKED`，不得读取 key、构造 header/body、创建 transport、联网、写业务状态或授权正式实现。
 - D-032 隔离 SDK 57 Windows JS Spike 已用 Node 22.13.0 / pnpm 11.18.0 完成冻结安装、静态边界、TypeScript、Expo public config、Doctor 20/20 与 Android Hermes export；精确 lock/bundle 指纹已登记，但未生成原生目录、未运行 Prebuild、没有 iOS/SQLCipher/Keychain/Archive/真机证据，D-032 保持 `CANDIDATE` 并继续等待第二次 Owner 动作。
+- D-032 高风险 JS 依赖表面进一步绑定 SQLite、SecureStore、Camera、Notifications、Reanimated、Worklets 的六个具体符号与四个 config plugin，TypeScript/Metro 解析后 Android bundle 为 1,652 模块；原生 API、权限、数据库、Keychain、通知、worklet 和网络调用仍为 0，不得冒充原生运行证据或 D-032 接受。
 - F21 媒体权限编排合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记当前任务说明后的窄相机权限 effect、系统用户媒体选择零照片全库权限，以及拒绝/受限/撤权/取消和迟到回执的手工降级；不得授权权限文案、D-031 媒体保留、视频、定位、持久化、真实原生 API、网络或正式实现。
 - F20/F23/F24 禁止能力审计合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION / BLOCKED`：正式签名 Release Archive 和 27 面报告均不存在，生产工件扫描、Release 网络捕获与定位权限捕获均未执行；不得把当前工作区零发现冒充 PASS、宣称证据真实或关闭发布门禁。
 - F22 平台/语言 Release 审计保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION / BLOCKED`：只固定 D-011 iOS 17.0 与 D-016 首发简中；设备族、方向、Mac、Vision availability 四项决定未形成，无签名 Archive 和 25 面生产证据；不得从 D-038、当前设备或工具默认值推导，不得宣称决定/报告真实或关闭发布门禁。
 
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。完成 D-039 PX-3、记录 MVP 范围、关闭后续门禁，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
-内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 273 个受控实例通过校验”。
+内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 274 个受控实例通过校验”。
 
-`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已确认的 OI-02 标识状态与 OI-03 设备事实、D-032 隔离 JS Spike 授权、Owner 原生 D-039 门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 SDK 57 Windows JS Spike 验证事件，同时保留 Owner 整批确认并与最新来源时间一致。
+`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已确认的 OI-02 标识状态与 OI-03 设备事实、D-032 隔离 JS Spike 授权、Owner 原生 D-039 门禁，以及 D-039/D-040 当前授权位。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 SDK 57 高风险 JS 依赖表面验证事件，同时保留 Owner 整批确认并与最新来源时间一致。

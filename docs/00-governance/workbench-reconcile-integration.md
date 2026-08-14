@@ -29,10 +29,10 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-Merged repository source baseline: 31 decisions (28 accepted / 3 candidate), 154 events, 116 messages, 25 agents and 273 controlled ProjectOps instances. The verified Windows SDK 57 JS Spike is the latest source timestamp; the Owner batch remains confirmed, D-032 is `CANDIDATE + SPIKE_AUTHORIZED`, D-039 is the next native Owner card, and D-052/D-053 remain fail closed. The merged branch also retains the local contract sequence for F01/F02/F16 request evidence, untrusted response handling and complete candidate provenance plus all previously recorded non-production contracts.
-Repository validation: ProjectOps schema subset 14/14, ProjectOps validation 117/117, read-only reconcile 5/5, tool contract harnesses 642/642, full repository suite 778/778; isolated SDK 57 frozen install, static contract, type-check, Expo config, Doctor 20/20 and Android Metro export PASS.
+Merged repository source baseline: 31 decisions (28 accepted / 3 candidate), 155 events, 116 messages, 25 agents and 274 controlled ProjectOps instances. The verified SDK 57 high-risk JS dependency surface is the latest source timestamp; the Owner batch remains confirmed, D-032 is `CANDIDATE + SPIKE_AUTHORIZED`, D-039 is the next native Owner card, and D-052/D-053 remain fail closed. The merged branch also retains the local contract sequence for F01/F02/F16 request evidence, untrusted response handling and complete candidate provenance plus all previously recorded non-production contracts.
+Repository validation: ProjectOps schema subset 14/14, ProjectOps validation 118/118, read-only reconcile 5/5, tool contract harnesses 642/642, full repository suite 779/779; isolated SDK 57 frozen install, six-package JS/type surface, static contract, Expo config, Doctor 20/20 and 1,652-module Android Metro export PASS with zero native calls.
 Remote-machine historical workbench rebuild: PASS at 31 decisions, 142 events, 116 messages, 25 agents and 94 documents; live/static state and the 12/12 Owner archive rows matched at that source revision.
-Current merged workbench parity: NOT RUN for the 154-event source; the historical 142-event PASS cannot prove current live/static equality.
+Current merged workbench parity: NOT RUN for the 155-event source; the historical 142-event PASS cannot prove current live/static equality.
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
