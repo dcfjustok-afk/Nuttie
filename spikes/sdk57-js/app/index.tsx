@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { sdk57DependencySurface } from './dependency-surface';
 
 const matrix = [
   ['Expo', '57.0.x'],
@@ -53,6 +54,16 @@ export default function SpikeScreen() {
         <Text style={styles.boundaryTitle}>当前边界</Text>
         <Text style={styles.boundaryText}>纯 JS · iPhone 竖屏 · 无 Bundle ID</Text>
         <Text style={styles.boundaryText}>无 Prebuild · 无签名 · 无网络业务调用</Text>
+      </View>
+
+      <View style={styles.dependencies}>
+        <Text style={styles.boundaryTitle}>依赖表面</Text>
+        {sdk57DependencySurface.map(({ packageName, symbolName }) => (
+          <View key={packageName} style={styles.dependencyRow}>
+            <Text style={styles.dependencyPackage}>{packageName}</Text>
+            <Text style={styles.dependencySymbol}>{symbolName} · NOT CALLED</Text>
+          </View>
+        ))}
       </View>
 
       <Pressable
@@ -173,6 +184,28 @@ const styles = StyleSheet.create({
     color: '#61716B',
     fontSize: 13,
     lineHeight: 21,
+  },
+  dependencies: {
+    marginTop: 28,
+    borderTopWidth: 1,
+    borderTopColor: '#CAD5D1',
+    paddingTop: 20,
+  },
+  dependencyRow: {
+    minHeight: 48,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DFE7E4',
+  },
+  dependencyPackage: {
+    color: '#17231F',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  dependencySymbol: {
+    marginTop: 3,
+    color: '#61716B',
+    fontSize: 11,
   },
   button: {
     minHeight: 52,

@@ -36,6 +36,7 @@
     "config": "expo config --type public",
     "doctor": "expo-doctor",
     "export:android": "expo export --platform android --output-dir dist",
-    "verify:contract": "node scripts/verify-contract.mjs"
+    "verify:contract": "node scripts/verify-contract.mjs && node scripts/verify-dependency-surface.mjs",
+    "verify:surface": "node scripts/verify-dependency-surface.mjs"
   }
 }
