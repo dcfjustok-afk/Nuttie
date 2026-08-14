@@ -22,7 +22,7 @@ Owner choice recorded: false
 Formal implementation authorized: false
 ```
 
-后续门禁事实：OI-03 已于 2026-08-11 记录为 `iPhone 16 Pro Max / iOS 26.5 / 无可用 Mac`，当前下一张原生 choice-ui 是 OI-02 Bundle ID 状态。该顺序变化不改变 D-040 的上述状态或任何授权位。
+后续门禁事实：OI-03 已于 2026-08-11 记录为 `iPhone 16 Pro Max / iOS 26.5 / 无可用 Mac`，OI-02 已于 2026-08-14 记录为 Bundle ID 尚未创建、SKU=`N/A`；当前下一张宿主原生卡是首批整批回读确认。该顺序变化不改变 D-040 的上述状态或任何授权位。
 
 研究结论分为七点：
 

@@ -8,9 +8,9 @@ const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const DEFAULT_WORKSPACE_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 
 const REQUIRED_NEXT_OWNER_GATE = Object.freeze({
-  questionId: "oi02_identifier_status",
-  channel: "CODEX_CHOICE_UI",
-  tool: "mcp__choice_ui__ask_choice",
+  questionId: "phase0_owner_batch_readback_confirmation",
+  channel: "CODEX_REQUEST_USER_INPUT",
+  tool: "request_user_input",
 });
 
 const TOOL_NAMES = Object.freeze(["node", "pnpm", "expo", "xcodebuild", "pod"]);

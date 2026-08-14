@@ -66,6 +66,7 @@ export function reconcileProjectOps(model) {
   const ownerIntake = model.ownerIntake ?? {};
   const ownerResponses = Array.isArray(ownerIntake.responses) ? ownerIntake.responses : [];
   const ownerFacts = Array.isArray(ownerIntake.facts) ? ownerIntake.facts : [];
+  const oi02Fact = ownerFacts.find((fact) => fact?.inputId === "OI-02") ?? null;
   const oi03Fact = ownerFacts.find((fact) => fact?.inputId === "OI-03") ?? null;
   const latestEvent = maxTimestamp(model.events, "recordedAt");
   const latestMessage = maxTimestamp(model.messages, "sentAt");
@@ -161,6 +162,15 @@ export function reconcileProjectOps(model) {
     responseCount: ownerResponses.length,
     uniqueDecisionCount: new Set(ownerResponses.map((response) => response?.decisionId).filter(Boolean)).size,
     nextQuestion: ownerIntake.nextQuestion ?? null,
+    identifierStatus: {
+      state: oi02Fact?.state ?? "MISSING",
+      selectedOptionId: oi02Fact?.selectedOptionId ?? null,
+      normalizedValue: oi02Fact?.normalizedValue ?? null,
+      bundleId: oi02Fact?.bundleId ?? null,
+      sku: oi02Fact?.sku ?? null,
+      appIdStatus: oi02Fact?.appIdStatus ?? null,
+      appStoreConnectRecordStatus: oi02Fact?.appStoreConnectRecordStatus ?? null,
+    },
     deviceAvailability: {
       state: oi03Fact?.state ?? "MISSING",
       selectedOptionId: oi03Fact?.selectedOptionId ?? null,
@@ -172,16 +182,16 @@ export function reconcileProjectOps(model) {
       nativeIosWorkAuthorized: oi03Fact?.nativeIosWorkAuthorized ?? null,
     },
     nativeSelectionGate: {
-      expectedTool: "mcp__choice_ui__ask_choice",
-      expectedQuestionId: "oi02_identifier_status",
+      expectedTool: "request_user_input",
+      expectedQuestionId: "phase0_owner_batch_readback_confirmation",
       passed:
-        ownerIntake.channel === "CODEX_CHOICE_UI" &&
-        ownerIntake.nextQuestion?.id === "oi02_identifier_status" &&
-        ownerIntake.nextQuestion?.tool === "mcp__choice_ui__ask_choice",
+        ownerIntake.channel === "CODEX_REQUEST_USER_INPUT" &&
+        ownerIntake.nextQuestion?.id === "phase0_owner_batch_readback_confirmation" &&
+        ownerIntake.nextQuestion?.tool === "request_user_input",
     },
   };
   if (!ownerGate.nativeSelectionGate.passed) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持聊天内原生 OI-02 choice-ui 门禁", ownerGate.nativeSelectionGate);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持宿主原生首批规范化回读门禁", ownerGate.nativeSelectionGate);
   }
 
   const d039Gate = latestD039Gate(model);

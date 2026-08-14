@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "batchId": "phase0-owner-batch-1",
-  "channel": "CODEX_CHOICE_UI",
-  "status": "IN_PROGRESS",
-  "updatedAt": "2026-08-11T17:41:03+08:00",
+  "channel": "CODEX_REQUEST_USER_INPUT",
+  "status": "AWAITING_BATCH_READBACK",
+  "updatedAt": "2026-08-14T16:55:34+08:00",
   "acceptanceStateChanged": false,
   "responses": [
     {
@@ -116,9 +116,18 @@
     {
       "inputId": "OI-02",
       "questionId": "oi02_identifier_status",
-      "rawOwnerAnswer": "我不太懂这些东西，但我希望是最简单的方式，因为我也不会上架，只是自己用一用，朋友用一用",
-      "normalizedValue": "UNRESOLVED",
-      "state": "REQUIRES_CLARIFICATION"
+      "captureChannel": "CODEX_REQUEST_USER_INPUT",
+      "captureTool": "request_user_input",
+      "rawOwnerAnswer": "尚未创建 (Recommended)",
+      "selectedOptionId": "not_created",
+      "selectedOptionLabel": "尚未创建",
+      "normalizedValue": "NOT_CREATED",
+      "bundleId": null,
+      "sku": "N/A",
+      "appIdStatus": "NOT_CREATED",
+      "appStoreConnectRecordStatus": "NOT_CREATED",
+      "specificBundleIdRequiredBy": "FIRST_SELF_USE_DEVICE_SIGNING_CONFIGURATION",
+      "state": "PENDING_BATCH_READBACK"
     },
     {
       "inputId": "DISTRIBUTION_INTENT",
@@ -155,8 +164,8 @@
     }
   ],
   "nextQuestion": {
-    "id": "oi02_identifier_status",
-    "title": "确认 Nuttie 自用安装的 Bundle ID 状态",
-    "tool": "mcp__choice_ui__ask_choice"
+    "id": "phase0_owner_batch_readback_confirmation",
+    "title": "确认 Nuttie 首批 Owner 输入规范化回读",
+    "tool": "request_user_input"
   }
 }

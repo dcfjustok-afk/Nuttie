@@ -58,15 +58,15 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
-  id: "PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT",
+export const PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT = Object.freeze({
+  id: "PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 31,
     acceptedDecisions: 17,
     candidateDecisions: 14,
-    events: 129,
-    messages: 114,
+    events: 130,
+    messages: 115,
     resolvedResponses: 71,
     agents: 25,
     activeAgents: 1,
@@ -98,6 +98,7 @@ export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
     "2026-08-11": 5,
     "2026-08-12": 15,
     "2026-08-13": 3,
+    "2026-08-14": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -107,12 +108,29 @@ export const PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT = Object.freeze({
     "DATA-08",
   ]),
   ownerIntake: Object.freeze({
-    channel: "CODEX_CHOICE_UI",
-    status: "IN_PROGRESS",
+    channel: "CODEX_REQUEST_USER_INPUT",
+    status: "AWAITING_BATCH_READBACK",
     acceptanceStateChanged: false,
     responseState: "PENDING_BATCH_READBACK",
-    nextQuestionId: "oi02_identifier_status",
-    nextQuestionTool: "mcp__choice_ui__ask_choice",
+    nextQuestionId: "phase0_owner_batch_readback_confirmation",
+    nextQuestionTool: "request_user_input",
+    oi02EventId: "EVT-20260814-001",
+    oi02Fact: Object.freeze({
+      inputId: "OI-02",
+      questionId: "oi02_identifier_status",
+      captureChannel: "CODEX_REQUEST_USER_INPUT",
+      captureTool: "request_user_input",
+      rawOwnerAnswer: "尚未创建 (Recommended)",
+      selectedOptionId: "not_created",
+      selectedOptionLabel: "尚未创建",
+      normalizedValue: "NOT_CREATED",
+      bundleId: null,
+      sku: "N/A",
+      appIdStatus: "NOT_CREATED",
+      appStoreConnectRecordStatus: "NOT_CREATED",
+      specificBundleIdRequiredBy: "FIRST_SELF_USE_DEVICE_SIGNING_CONFIGURATION",
+      state: "PENDING_BATCH_READBACK",
+    }),
     oi03EventId: "EVT-20260811-001",
     oi03Fact: Object.freeze({
       inputId: "OI-03",
@@ -1135,7 +1153,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -1609,7 +1627,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.channel",
-      "Owner 决策渠道必须保持聊天内原生 choice-ui",
+      "Owner 决策渠道必须保持 Codex 宿主原生 request_user_input",
       { expected: baseline.ownerIntake.channel, actual: ownerIntake.channel },
     );
   }
@@ -1655,7 +1673,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANGED",
       "project-ops/owner-intake.json.nextQuestion.id",
-      "OI-03 完成后下一题必须保持 OI-02",
+      "OI-02 完成后下一题必须保持首批规范化回读确认",
       { expected: baseline.ownerIntake.nextQuestionId, actual: ownerIntake.nextQuestion?.id },
     );
   }
@@ -1663,7 +1681,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
     add(
       "OPS_OWNER_NEXT_QUESTION_CHANNEL_CHANGED",
       "project-ops/owner-intake.json.nextQuestion",
-      "OI-02 必须通过聊天内原生 choice-ui 选择卡",
+      "首批规范化回读必须通过 Codex 宿主原生 request_user_input",
       {
         expectedTool: baseline.ownerIntake.nextQuestionTool,
         actualTool: ownerIntake.nextQuestion?.tool,
@@ -1725,6 +1743,67 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_OWNER_OI03_EVENT_MISMATCH",
       "project-ops/events/2026-08-11.jsonl",
       "OI-03 权威事件必须与 Owner 事实一致且保持原生 iOS 未授权",
+    );
+  }
+
+  const oi02Facts = ownerFacts.filter(
+    (fact) => fact?.inputId === "OI-02" || fact?.questionId === "oi02_identifier_status",
+  );
+  if (oi02Facts.length === 0) {
+    add(
+      "OPS_OWNER_OI02_FACT_MISSING",
+      "project-ops/owner-intake.json.facts",
+      "必须保留 Owner 通过原生 request_user_input 回答的唯一 OI-02 事实",
+    );
+  } else if (oi02Facts.length > 1) {
+    add(
+      "OPS_OWNER_OI02_FACT_DUPLICATE",
+      "project-ops/owner-intake.json.facts",
+      "OI-02 事实只能存在一条",
+      { count: oi02Facts.length },
+    );
+  }
+  const oi02Fact = oi02Facts[0];
+  const oi02Mismatch = Object.entries(baseline.ownerIntake.oi02Fact)
+    .filter(([key, expected]) => oi02Fact?.[key] !== expected)
+    .map(([key, expected]) => ({ key, expected, actual: oi02Fact?.[key] }));
+  if (oi02Fact && oi02Mismatch.length > 0) {
+    add(
+      "OPS_OWNER_OI02_FACT_MISMATCH",
+      "project-ops/owner-intake.json.facts",
+      "OI-02 必须精确保持 Bundle ID 尚未创建、SKU=N/A 且仍未授权实现的事实",
+      { mismatches: oi02Mismatch },
+    );
+  }
+  if (ownerResponses.some((response) => response?.questionId === "oi02_identifier_status")) {
+    add(
+      "OPS_OWNER_OI02_RECORDED_AS_DECISION",
+      "project-ops/owner-intake.json.responses",
+      "OI-02 是事实输入，不能进入决定 response 集合",
+    );
+  }
+  const oi02Events = model.events.filter(
+    (record) => record.value?.eventId === baseline.ownerIntake.oi02EventId,
+  );
+  const oi02Event = oi02Events[0]?.value;
+  if (
+    oi02Events.length !== 1 ||
+    oi02Event?.type !== "GATE_CHANGED" ||
+    oi02Event?.actor?.id !== "owner" ||
+    oi02Event?.data?.inputId !== "OI-02" ||
+    oi02Event?.data?.captureTool !== baseline.ownerIntake.oi02Fact.captureTool ||
+    oi02Event?.data?.selectedOptionId !== baseline.ownerIntake.oi02Fact.selectedOptionId ||
+    oi02Event?.data?.normalizedValue !== baseline.ownerIntake.oi02Fact.normalizedValue ||
+    oi02Event?.data?.bundleId !== null ||
+    oi02Event?.data?.sku !== baseline.ownerIntake.oi02Fact.sku ||
+    oi02Event?.data?.acceptanceStateChanged !== false ||
+    oi02Event?.data?.nativeIosWorkAuthorized !== false ||
+    oi02Event?.data?.formalImplementationAuthorized !== false
+  ) {
+    add(
+      "OPS_OWNER_OI02_EVENT_MISMATCH",
+      "project-ops/events/2026-08-14.jsonl",
+      "OI-02 权威事件必须与原生 Owner 事实一致且保持决定、正式工程和原生 iOS 未授权",
     );
   }
 

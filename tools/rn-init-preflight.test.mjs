@@ -11,7 +11,7 @@ test("findCommand only reports executables visible on PATH", () => {
   assert.equal(findCommand("definitely-not-a-real-nuttie-command"), null);
 });
 
-test("current workspace records OI-03 but remains blocked before batch confirmation and native iOS initialization", () => {
+test("current workspace records OI-02/OI-03 but remains blocked before batch confirmation and native iOS initialization", () => {
   const report = runPreflight(process.cwd());
   assert.equal(report.ok, false);
   assert.equal(report.readyForInitialization, false);
@@ -19,7 +19,7 @@ test("current workspace records OI-03 but remains blocked before batch confirmat
   assert.equal(report.readyForNativeIosSpike, false);
   assert.equal(report.reconcile.ok, true);
   assert.equal(report.owner.passed, false);
-  assert.equal(report.owner.selectionMechanismConfigured, true, "the OI-02 choice-ui mechanism must remain correctly configured");
+  assert.equal(report.owner.selectionMechanismConfigured, true, "the native batch readback mechanism must remain correctly configured");
   assert.equal(report.owner.batchConfirmed, false);
   assert.equal(report.owner.deviceFactRecorded, true);
   assert.equal(report.owner.macAvailable, false);

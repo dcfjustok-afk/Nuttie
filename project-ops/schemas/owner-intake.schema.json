@@ -18,7 +18,7 @@
   "properties": {
     "schemaVersion": { "const": 1 },
     "batchId": { "type": "string", "minLength": 1 },
-    "channel": { "const": "CODEX_CHOICE_UI" },
+    "channel": { "const": "CODEX_REQUEST_USER_INPUT" },
     "status": {
       "enum": [
         "IN_PROGRESS",
@@ -54,7 +54,7 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "title": { "type": "string", "minLength": 1 },
-        "tool": { "const": "mcp__choice_ui__ask_choice" }
+        "tool": { "const": "request_user_input" }
       },
       "additionalProperties": false
     }

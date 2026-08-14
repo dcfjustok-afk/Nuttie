@@ -1,6 +1,10 @@
 # Choice UI 宿主只读审计（2026-08-14）
 
-状态：`VERIFIED_CANDIDATE / NOT_INSTALLED / OWNER_GATE_UNCHANGED`
+历史审计状态：`VERIFIED_CANDIDATE / NOT_INSTALLED / OWNER_GATE_UNCHANGED`
+
+当前状态：`SUPERSEDED_BY_HOST_NATIVE_REQUEST_USER_INPUT / OI02_RECORDED`
+
+> 第 1 至第 6 节保留 2026-08-14 早先对旧 Choice UI MCP 候选的只读审计事实；第 7 节记录同日稍后新插件能力被当前任务真实发现后的迁移结果。
 
 ## 1. 审计目的与边界
 
@@ -106,3 +110,11 @@ codex mcp get choice-ui
 完成安装后必须新建 Codex 任务，让技能和 MCP 工具重新发现；旧任务不得声称热加载成功。新任务必须先确认 `mcp__choice_ui__ask_choice` 确实暴露且控件能在对话内渲染，再弹出 OI-02。
 
 上述命令在本次审计中均未执行。当前 Owner intake、D-039、D-040、G0–G8、正式工程和原生授权状态全部保持不变。
+
+## 7. 宿主原生能力迁移结果
+
+同日稍后，Owner 安装了 `interactive-questions` 插件并在新任务中继续。当前任务真实暴露 Codex host-native `request_user_input`；该能力不定义 MCP server、MCP App 或 `ask_choice` 工具，也不需要 `enable_mcp_apps`。PM 已完整读取插件 skill，并通过 `request_user_input` 提交唯一问题 `oi02_identifier_status`，宿主返回真实答案“尚未创建 (Recommended)”。
+
+该返回已规范化为 Bundle ID `NOT_CREATED`、具体值为空、App ID 与 App Store Connect record 均未创建、SKU=`N/A`，状态为 `PENDING_BATCH_READBACK`。ProjectOps 当前渠道迁移为 `CODEX_REQUEST_USER_INPUT`，下一题迁移为 `phase0_owner_batch_readback_confirmation`。旧 Choice UI MCP 候选无需安装，第 6 节命令不再是 Nuttie 当前执行路径。
+
+本次迁移只关闭 OI-02 的交互宿主阻塞，不产生 `DECISION_ACCEPTED`，不改变 17/14 决定计数，不授权具体 Bundle ID 注册、Apple 资源、正式工程、Prebuild、签名、Archive 或原生 iOS 工作。D-039 仍须等待首批整批确认完成后再使用单独的宿主原生 A/B/C 选择卡。

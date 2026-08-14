@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT,
+  PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,16 +81,16 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_13_AI_GUIDANCE_REFERENCE_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_OWNER_IDENTIFIER_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 246,
+    instancesValidated: 248,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 129);
-  assert.equal(report.counts.messages, 114);
+  assert.equal(report.counts.events, 130);
+  assert.equal(report.counts.messages, 115);
   assert.equal(report.counts.resolvedResponses, 71);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
@@ -267,7 +267,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 245);
+    assert.equal(report.schemaValidation.instancesValidated, 247);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -937,14 +937,14 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
     assertDiagnostic(report, "OPS_OWNER_RESPONSE_FINALIZED");
   });
 
-  await t.test("OI-03 完成后下一题偏离 OI-02", () => {
+  await t.test("OI-02 完成后下一题偏离整批回读", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.id = "oi04_other";
     });
     assertDiagnostic(report, "OPS_OWNER_NEXT_QUESTION_CHANGED");
   });
 
-  await t.test("OI-02 不再使用原生 choice-ui", () => {
+  await t.test("整批回读不再使用宿主原生 request_user_input", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.tool = "static_web_form";
     });
@@ -995,6 +995,31 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
       });
     });
     assertDiagnostic(report, "OPS_OWNER_OI03_RECORDED_AS_DECISION");
+  });
+
+  await t.test("OI-02 事实缺失", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.facts = model.ownerIntake.facts.filter(
+        (fact) => fact.inputId !== "OI-02",
+      );
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_FACT_MISSING");
+  });
+
+  await t.test("OI-02 被伪造为已有 Bundle ID", () => {
+    const report = validateMutation((model) => {
+      const fact = model.ownerIntake.facts.find((candidate) => candidate.inputId === "OI-02");
+      fact.normalizedValue = "EXISTS";
+      fact.bundleId = "com.example.nuttie";
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_FACT_MISMATCH");
+  });
+
+  await t.test("OI-02 权威事件提前授权正式实现", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-001").value.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_EVENT_MISMATCH");
   });
 
   await t.test("12 项候选中的 D-038 被 D-999 替换", () => {

@@ -9,7 +9,7 @@
 ## 1. 使用方式
 
 - D-001 至 D-017 已接受，不在本文件重复询问。
-- 当前第 1 批由 PM 在主 Codex 聊天中通过原生 `choice-ui` 选择卡逐题询问，每轮只提交一个稳定问题；Owner 点击选项后，PM 才进入下一题。不要求 Owner 输入字母，也不允许用网页表单或复制模板替代。
+- 当前第 1 批由 PM 在主 Codex 聊天中通过宿主原生 `request_user_input` 逐题询问，每轮只提交一个稳定问题；Owner 点击选项后，PM 才进入下一题。不要求 Owner 输入字母，也不允许用网页表单或复制模板替代。
 - 后续批次只用于展示完整决策队列，不因出现在本文而自动进入实现。
 - `Owner 输入` 是账号、设备或标识的事实，不是架构决定；缺失时保持阻断，不伪造占位值。
 - `Spike 后再定` 表示可以先做受控实验，但在 Owner 接受结果前不能写入 Release 基线。
@@ -218,7 +218,7 @@ D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-
 
 12 项 D 编号问题已通过原生选择卡取得待回读输入，详见 [Owner 待回读输入](../00-governance/owner-intake-pending.md) 与 `project-ops/owner-intake.json`；它们尚未接受，不得重复询问或写入决定台账。D-047 最新输入已由 Owner 回正为 C：当前不付费、只自用、不做 TestFlight、暂不考虑朋友；D-008 是否未来恢复或正式 supersede 仍留到后续决定。
 
-OI-03 已记录为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。当前下一张卡是 `OI-02 Bundle ID 状态`：SKU 因当前不使用 App Store Connect 可记 `N/A`，Bundle ID 最迟在首次自用真机签名配置前用具体候选卡确认。事实输入没有值时可选 `N/A`、`无`、`申请中`、`尚未创建` 或 `UNKNOWN`。
+OI-02 已通过宿主原生 `request_user_input` 记录为 Bundle ID 尚未创建，具体值为空，App ID 与 App Store Connect record 均未创建，SKU=`N/A`；具体 Bundle ID 最迟在首次自用真机签名配置前另行确认。OI-03 已记录为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。当前下一张卡是首批规范化整批回读确认。
 
 逐题点击期间，所有选择只作为待回读输入。首批完成后，项目经理必须回传一份规范化解析：逐项列出状态是 `ACCEPTED`、`CANDIDATE + SPIKE_AUTHORIZED` 还是 `DEFERRED`，并复述 OI 事实值，再通过原生选择卡请求整批最终确认。Owner 点击确认前不追加 `DECISION_ACCEPTED`。D-032 的 A/B 只有“隔离 Spike 授权”含义，不能直接记为最终接受；后续验证失败必须提交新决定，不允许团队自动切换选项。
 
