@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 161,
+    events: 162,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -57,10 +57,12 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039.selectedOption, "A");
   assert.equal(report.d039.designBaselineFrozen, true);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.next, "DECISION_CARD_SPEC_REVIEW_REQUIRED");
+  assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.newlyReservedIdCount, 19);
   assert.equal(report.d040.formulaEvidenceReviewComplete, true);
+  assert.equal(report.d040.firstBatchCardCount, 4);
+  assert.equal(report.d040.firstBatchSelfReviewPassed, true);
   assert.equal(report.d040.ownerCardScheduled, false);
 });
 
@@ -90,7 +92,7 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(d039Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D039_GATE"));
 
   const d040Model = validModel();
-  d040Model.events.find((record) => record.value.eventId === "EVT-20260815-003").value.data.ownerReviewAuthorized = true;
+  d040Model.events.find((record) => record.value.eventId === "EVT-20260815-004").value.data.ownerReviewAuthorized = true;
   const d040Report = reconcileProjectOps(d040Model);
   assert.equal(d040Report.ok, false);
   assert.ok(d040Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));

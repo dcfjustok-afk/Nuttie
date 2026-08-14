@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 工件 ID | `D040-QUESTION-ALLOCATION-001` |
-| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / PX-0_INPUT_GAP / DECISION_CARD_SPEC_REVIEW_REQUIRED` |
+| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_BATCH_SPEC_COMPLETE / PX-0_INPUT_GAP / FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED` |
 | 日期 | 2026-08-15（Asia/Shanghai） |
 | 输入 | `D040-RESEARCH-001` 的 17 个草案问题；`D040-RESEARCH-002` 的 4 个宏量轴 |
 | 结果 | 保留 D-040 作为最终首启结构；预留 D-054 至 D-072，共 19 个新的候选 ID |
@@ -70,16 +70,20 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 依赖关系不是默认答案。前一项被拒绝或选择“停用自动公式”时，后续不适用卡应跳过并记录 `NOT_APPLICABLE`，不得强迫 Owner 选择无意义选项。
 
-## 5. 下一门禁
+## 5. 第一小批结果与下一门禁
 
-下一步是为第一小批 D-054/D-055/D-056/D-058 编写宿主原生选择卡规格，并进行 Product、健康安全、隐私和 QA 的只读复核。满足前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
+第一小批 D-054/D-055/D-056/D-058 已形成[选择卡规格](d040-first-batch-card-spec.md)，完成 Product、健康安全、隐私和 QA 四域自审。规格移除了当前没有模型定义和验证证据的“18 岁专用模型”占位选项，固定了稳定问题/选项 ID、互斥选项、`NOT_APPLICABLE` 条件和 `Other` 规范化路径。
+
+该工件仍只是一份内部草案。下一步是独立复核第一小批卡片；复核关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner，也不得开始第二批 Owner 评审。
 
 当前继续保持：
 
 ```text
 D-040 decisionState: CANDIDATE
 authoritativeState: PX-0_INPUT_GAP
-next: DECISION_CARD_SPEC_REVIEW_REQUIRED
+firstBatchCardCount: 4
+firstBatchSelfReviewPassed: true
+next: FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED
 formulaEvidenceReviewComplete: true
 formulaChoiceResolved: false
 px1Authorized: false

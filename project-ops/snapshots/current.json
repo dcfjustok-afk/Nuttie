@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-15T00:28:25+08:00",
+  "generatedAt": "2026-08-15T00:39:52+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 161
+    "projectEvents": 162
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 方案 A 已由 Owner 明确接受并冻结 PX-4 设计基线，等待 PX-5 DoR；D-032 继续等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-040 第一批四张内部选择卡规格及四域自审已完成，等待独立复核；D-039 等待 PX-5 DoR，D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -272,7 +272,7 @@
     "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
     "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；后续 D-039 已由 Owner 单独明确选择 A",
     "D039-QA-001 至 QA-010 已关闭；D-039 方案 A 已通过 PX-3 Owner Gate 并冻结 PX-4 设计基线，下一门禁为 PX-5_DOR_REQUIRED，正式实现仍未授权",
-    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入与宏量研究的公式/治理复审均归零。17 个原草案问题和宏量补充轴现已规范为 20 个独立决定轴：D-040 保留最终结构，D-054 至 D-072 只完成候选 ID 预留；未进入决定台账或 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / DECISION_CARD_SPEC_REVIEW_REQUIRED，PX-1、PX-2、Owner 评审、决定接受和正式实现均未授权",
+    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入与宏量研究复审归零，20 个决定轴及 D-054 至 D-072 候选 ID 预留保持不变。D-054/D-055/D-056/D-058 第一批四张内部选择卡已完成单轴互斥规格和 Product/健康安全/隐私/QA 自审，并移除无证据的 18 岁专用模型占位；未进入决定台账或 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED，全部授权位关闭",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；原第 10 题已拆为 D-063/D-070/D-071/D-072 四个互斥轴，中国宏量标准证据、支持文案和健康评审治理仍是 PX-0 缺口",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"

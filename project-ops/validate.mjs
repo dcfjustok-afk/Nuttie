@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D040_QUESTION_ALLOCATION = Object.freeze({
-  id: "PHASE0_2026_08_15_D040_QUESTION_ALLOCATION",
+export const PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 161,
+    events: 162,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -99,7 +99,7 @@ export const PHASE0_2026_08_15_D040_QUESTION_ALLOCATION = Object.freeze({
     "2026-08-12": 15,
     "2026-08-13": 10,
     "2026-08-14": 22,
-    "2026-08-15": 3,
+    "2026-08-15": 4,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1695,6 +1695,60 @@ export const PHASE0_2026_08_15_D040_QUESTION_ALLOCATION = Object.freeze({
       decisionAcceptedRecorded: false,
       formalImplementationAuthorized: false,
     }),
+    firstBatchCards: Object.freeze({
+      eventId: "EVT-20260815-004",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-FIRST-BATCH-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-first-batch-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "DECISION_CARD_SPEC_REVIEW_REQUIRED",
+      next: "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED",
+      cardDecisionIds: Object.freeze(["D-054", "D-055", "D-056", "D-058"]),
+      cardQuestionIds: Object.freeze([
+        "d054_formula_age_scope",
+        "d055_age_source_retention",
+        "d056_formula_age_representation",
+        "d058_formula_branch_policy",
+      ]),
+      cardCount: 4,
+      optionsPerCard: Object.freeze({ "D-054": 2, "D-055": 3, "D-056": 2, "D-058": 2 }),
+      stableOptionIds: Object.freeze({
+        "D-054": Object.freeze(["adult_19_plus", "manual_only_all_ages"]),
+        "D-055": Object.freeze([
+          "ephemeral_age_per_calculation",
+          "stored_age_with_recorded_date",
+          "stored_date_of_birth",
+        ]),
+        "D-056": Object.freeze(["completed_years_integer", "decimal_year_one_place"]),
+        "D-058": Object.freeze(["explicit_branch_with_skip", "disable_branch_dependent_formulas"]),
+      }),
+      allOptionsMutuallyExclusive: true,
+      allCardsHostNativeOnly: true,
+      otherRequiresNormalization: true,
+      conditionalNotApplicableDefined: true,
+      undefinedEighteenYearModelRemoved: true,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      formulaEvidenceReviewComplete: true,
+      formulaChoiceResolved: false,
+      chinaMacroStandardStillGap: true,
+      chinaSupportCopyReviewStillRequired: true,
+      healthReviewGovernanceStillRequired: true,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -1994,7 +2048,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D040_QUESTION_ALLOCATION) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -4917,6 +4971,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D040_OWNER_RESPONSE_PREMATURELY_RECORDED",
       "project-ops/owner-intake.json.responses",
       "D-040 不得抢占当前 Owner intake 或伪造 Owner 响应",
+    );
+  }
+
+  const firstBatchSpec = baseline.d040Research.firstBatchCards;
+  const firstBatchEvents = model.events.filter(
+    (record) => record.value?.eventId === firstBatchSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === firstBatchSpec.correlationId),
+  );
+  const firstBatchEvent = firstBatchEvents[0]?.value;
+  const firstBatchData = firstBatchEvent?.data ?? {};
+  const firstBatchDataFields = Object.keys(firstBatchSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    firstBatchEvents.length !== 1 ||
+    firstBatchEvent?.eventId !== firstBatchSpec.eventId ||
+    firstBatchEvent?.type !== "ARTIFACT_CREATED" ||
+    firstBatchEvent?.actor?.id !== firstBatchSpec.actorId ||
+    firstBatchEvent?.actor?.role !== firstBatchSpec.actorRole ||
+    firstBatchEvent?.subject?.id !== firstBatchSpec.subjectId ||
+    firstBatchEvent?.subject?.role !== firstBatchSpec.subjectRole ||
+    firstBatchEvent?.correlationId !== firstBatchSpec.correlationId ||
+    JSON.stringify(Object.keys(firstBatchData).sort()) !== JSON.stringify(firstBatchDataFields) ||
+    firstBatchDataFields.some(
+      (field) => JSON.stringify(firstBatchData[field]) !== JSON.stringify(firstBatchSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-15.jsonl",
+      "D-040 第一批四张选择卡必须精确保留稳定 ID、互斥选项、失败关闭依赖、自审结果和 Owner 未授权边界",
     );
   }
 

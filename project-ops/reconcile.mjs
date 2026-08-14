@@ -53,6 +53,7 @@ function latestD040Record(model) {
       const correlationId = record.value?.correlationId;
       return subjectId === "D040-RESEARCH-002" ||
         subjectId === "D040-QUESTION-ALLOCATION-001" ||
+        subjectId === "D040-FIRST-BATCH-CARD-SPEC-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -259,14 +260,24 @@ export function reconcileProjectOps(model) {
   }
 
   const d040Record = latestD040Record(model);
+  const d040AllocationRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260815-003",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
     authoritativeState: d040Record?.data?.authoritativeState ?? null,
     next: d040Record?.data?.next ?? null,
-    sourceDraftQuestionCount: d040Record?.data?.sourceDraftQuestionCount ?? null,
-    resolvedDecisionAxisCount: d040Record?.data?.resolvedDecisionAxisCount ?? null,
-    newlyReservedIdCount: d040Record?.data?.newlyReservedIdCount ?? null,
+    sourceDraftQuestionCount: d040AllocationRecord?.data?.sourceDraftQuestionCount ?? null,
+    resolvedDecisionAxisCount: d040AllocationRecord?.data?.resolvedDecisionAxisCount ?? null,
+    newlyReservedIdCount: d040AllocationRecord?.data?.newlyReservedIdCount ?? null,
+    firstBatchCardCount: d040Record?.data?.cardCount ?? null,
+    firstBatchSelfReviewPassed: [
+      d040Record?.data?.productSelfReviewPassed,
+      d040Record?.data?.healthEvidenceSelfReviewPassed,
+      d040Record?.data?.privacySelfReviewPassed,
+      d040Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
     formulaEvidenceReviewComplete: d040Record?.data?.formulaEvidenceReviewComplete ?? null,
     ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
     authorization: {
@@ -282,15 +293,17 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.next === "DECISION_CARD_SPEC_REVIEW_REQUIRED" &&
+    d040.next === "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
     d040.newlyReservedIdCount === 19 &&
+    d040.firstBatchCardCount === 4 &&
+    d040.firstBatchSelfReviewPassed === true &&
     d040.formulaEvidenceReviewComplete === true &&
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、选择卡规格待审、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、第一批四卡自审完成/独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

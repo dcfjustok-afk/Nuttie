@@ -14,7 +14,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：正式根工程尚未初始化；D-032 仅授权的隔离 SDK 57 Windows JS Spike 已通过冻结安装、类型检查、Doctor 20/20 与 Android/iOS 平台 Metro export，两个 export 已共用平台限定 metadata、精确文件集、资产策略、路径和原生目录自动校验，六个高风险依赖符号已进入 JS/类型解析路径且原生调用为零；Windows 平台 JS export 不是原生运行或可复现构建证据
 - Owner 决定：首批 11 项新决定和后续 D-039 方案 A 已接受；D-032 为 `CANDIDATE + SPIKE_AUTHORIZED`，D-052/D-053 继续 fail closed；D-039 已冻结 PX-4 设计基线并等待 PX-5 DoR，未授权正式实现
-- 框架无关契约与治理检查：合并后全库 803/803，通过 ProjectOps 5 份 Schema/280 个实例；D-040 已把 17 个草案问题与宏量补充轴分解为 20 个决定轴，D-054~D-072 只预留候选 ID，选择卡与 Owner 评审仍关闭。F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同继续 fail closed；这些证据和 Windows JS 依赖/平台解析不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：合并后全库 807/807，通过 ProjectOps 5 份 Schema/281 个实例；D-040 已分解为 20 个决定轴，D-054~D-072 仍只预留候选 ID。D-054/D-055/D-056/D-058 第一批内部选择卡完成四域自审，等待独立复核，尚未进入 Owner 评审。F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同继续 fail closed；这些证据和 Windows JS 依赖/平台解析不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 
@@ -36,6 +36,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [D-038 导航原型清单](docs/03-design/prototype-manifest.md)
 - [D-039 添加餐食原型清单](docs/03-design/d039-prototype-manifest.md)
 - [D-040 首启资料与目标原型清单](docs/03-design/d040-prototype-manifest.md)
+- [D-040 第一小批选择卡规格](docs/03-design/d040-first-batch-card-spec.md)
 - [Nuttie 视觉方向与 Figma 导入合同](docs/03-design/nuttie-visual-direction.md)
 - [视觉资产契约检查](tools/visual-kit-check.mjs)
 - [React Native / Expo 独立复核](docs/05-quality/rn-stack-independent-review.md)

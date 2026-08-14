@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_15_D040_QUESTION_ALLOCATION,
+  PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_15_D040_QUESTION_ALLOCATION.id);
+  assert.equal(report.baseline, PHASE0_2026_08_15_D040_FIRST_BATCH_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 280,
+    instancesValidated: 281,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 161);
+  assert.equal(report.counts.events, 162);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -656,6 +656,18 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040AllocationEvent.value.data.formulaChoiceResolved, false);
   assert.equal(d040AllocationEvent.value.data.ownerCardScheduled, false);
   assert.equal(d040AllocationEvent.value.data.ownerReviewAuthorized, false);
+  const d040FirstBatchEvent = findEvent(VALID_MODEL, "EVT-20260815-004");
+  assert.equal(d040FirstBatchEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040FirstBatchEvent.value.subject.id, "D040-FIRST-BATCH-CARD-SPEC-001");
+  assert.equal(d040FirstBatchEvent.value.data.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d040FirstBatchEvent.value.data.cardDecisionIds, ["D-054", "D-055", "D-056", "D-058"]);
+  assert.equal(d040FirstBatchEvent.value.data.cardCount, 4);
+  assert.equal(d040FirstBatchEvent.value.data.optionsPerCard["D-055"], 3);
+  assert.deepEqual(d040FirstBatchEvent.value.data.stableOptionIds["D-058"], ["explicit_branch_with_skip", "disable_branch_dependent_formulas"]);
+  assert.equal(d040FirstBatchEvent.value.data.undefinedEighteenYearModelRemoved, true);
+  assert.equal(d040FirstBatchEvent.value.data.conditionalNotApplicableDefined, true);
+  assert.equal(d040FirstBatchEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d040FirstBatchEvent.value.data.ownerReviewAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -701,7 +713,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 279);
+    assert.equal(report.schemaValidation.instancesValidated, 280);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2363,6 +2375,36 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       model.ownerIntake.responses.push(response);
     });
     assertDiagnostic(report, "OPS_D040_ALLOCATED_OWNER_RESPONSE_PREMATURELY_RECORDED");
+  });
+
+  await t.test("第一批选择卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260815-004",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第一批选择卡稳定选项 ID 漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-004").value.data.stableOptionIds["D-054"][0] = "adult_18_plus";
+    });
+    assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第一批选择卡恢复未定义的 18 岁模型", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-004").value.data.undefinedEighteenYearModelRemoved = false;
+    });
+    assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第一批选择卡越级授权 Owner 评审", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260815-004").value.data.ownerReviewAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
   });
 });
 
