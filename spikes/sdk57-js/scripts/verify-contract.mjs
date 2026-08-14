@@ -19,6 +19,7 @@ assert.equal(packageJson.dependencies['react-native-safe-area-context'], '~5.7.0
 assert.equal(packageJson.dependencies['react-native-worklets'], '0.10.1');
 assert.equal(packageJson.devDependencies['expo-doctor'], '1.20.1');
 assert.equal(packageJson.main, 'expo-router/entry');
+assert.equal(packageJson.scripts['export:ios-js'], 'expo export --platform ios --output-dir dist-ios');
 assert.equal(appJson.expo.orientation, 'portrait');
 assert.equal(appJson.expo.ios.supportsTablet, false);
 assert.equal(appJson.expo.ios.bundleIdentifier, undefined);
@@ -35,6 +36,7 @@ console.log(JSON.stringify({
   expo: packageJson.dependencies.expo,
   reactNative: packageJson.dependencies['react-native'],
   react: packageJson.dependencies.react,
+  iosJavaScriptExportScript: true,
   nativeDirectories: false,
   bundleIdentifier: null,
 }, null, 2));
