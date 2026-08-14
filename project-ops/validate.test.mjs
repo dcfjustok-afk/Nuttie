@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT,
+  PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,17 +81,17 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_14_AI_REQUEST_EVIDENCE_CONTEXT_V2_CONTRACT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_14_OWNER_BATCH_CONFIRMED_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 256,
+    instancesValidated: 271,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 31);
-  assert.equal(report.counts.events, 139);
-  assert.equal(report.counts.messages, 114);
-  assert.equal(report.counts.resolvedResponses, 71);
+  assert.equal(report.counts.events, 152);
+  assert.equal(report.counts.messages, 116);
+  assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
   assert.deepEqual(report.counts.activeAgentIds, ["root"]);
   assert.equal(report.counts.agents, 25);
@@ -409,7 +409,7 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiPolicyEvent.value.data.systemClockRead, false);
   assert.equal(aiPolicyEvent.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiPolicyEvent.value.data.formalImplementationAuthorized, false);
-  const aiResponseEvent = findEvent(VALID_MODEL, "EVT-20260814-001");
+  const aiResponseEvent = findEvent(VALID_MODEL, "EVT-20260814-014");
   assert.equal(aiResponseEvent.value.subject.id, "ai-response-contract");
   assert.deepEqual(aiResponseEvent.value.data.featureIds, ["F01", "F02"]);
   assert.equal(aiResponseEvent.value.data.topLevelTests, 16);
@@ -437,7 +437,7 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiResponseEvent.value.data.systemClockRead, false);
   assert.equal(aiResponseEvent.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiResponseEvent.value.data.formalImplementationAuthorized, false);
-  const aiCandidateResponseV2Event = findEvent(VALID_MODEL, "EVT-20260814-002");
+  const aiCandidateResponseV2Event = findEvent(VALID_MODEL, "EVT-20260814-015");
   assert.equal(aiCandidateResponseV2Event.value.subject.id, "ai-candidate-response-evidence-v2-contract");
   assert.deepEqual(aiCandidateResponseV2Event.value.data.featureIds, ["F01", "F02"]);
   assert.equal(aiCandidateResponseV2Event.value.data.topLevelTests, 22);
@@ -463,7 +463,7 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(aiCandidateResponseV2Event.value.data.realNetworkRequests, 0);
   assert.equal(aiCandidateResponseV2Event.value.data.nativeImplementationAuthorized, false);
   assert.equal(aiCandidateResponseV2Event.value.data.formalImplementationAuthorized, false);
-  const aiRequestEvidenceContextV2Event = findEvent(VALID_MODEL, "EVT-20260814-003");
+  const aiRequestEvidenceContextV2Event = findEvent(VALID_MODEL, "EVT-20260814-016");
   assert.equal(aiRequestEvidenceContextV2Event.value.subject.id, "ai-request-evidence-context-v2-contract");
   assert.deepEqual(aiRequestEvidenceContextV2Event.value.data.featureIds, ["F01", "F02", "F16"]);
   assert.equal(aiRequestEvidenceContextV2Event.value.data.sharedContextTopLevelTests, 7);
@@ -534,7 +534,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 255);
+    assert.equal(report.schemaValidation.instancesValidated, 270);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -1311,7 +1311,7 @@ test("拒绝把本地 ALLOW profile 或伪造 D-053 接受证据越级为可发�
 
 test("拒绝把严格 AI 响应合同越级为 Provider 真值、已确认候选、已授权网络或正式实现", () => {
   const report = validateMutation((model) => {
-    const event = findEvent(model, "EVT-20260814-001");
+    const event = findEvent(model, "EVT-20260814-014");
     event.value.data.untrustedResponseBoundary = false;
     event.value.data.duplicateJsonKeysRejected = false;
     event.value.data.trailingDataRejected = false;
@@ -1343,7 +1343,7 @@ test("拒绝把严格 AI 响应合同越级为 Provider 真值、已确认候选
 
 test("拒绝把候选确认 V2 完整响应证据降级、改回 V1 或越级持久化候选正文和正式实现", () => {
   const report = validateMutation((model) => {
-    const event = findEvent(model, "EVT-20260814-002");
+    const event = findEvent(model, "EVT-20260814-015");
     event.value.data.stateSchemaVersion = "AI_CANDIDATE_CONFIRMATION_STATE_V1";
     event.value.data.reviewEvidenceSchemaVersion = "AI_CANDIDATE_REVIEW_EVIDENCE_V1";
     event.value.data.confirmedRecordSchemaVersion = "AI_CONFIRMED_RECORD_V1";
@@ -1374,7 +1374,7 @@ test("拒绝把候选确认 V2 完整响应证据降级、改回 V1 或越级持
     "project-ops/events/2026-08-14.jsonl",
   );
   const contextReport = validateMutation((model) => {
-    const event = findEvent(model, "EVT-20260814-003");
+    const event = findEvent(model, "EVT-20260814-016");
     event.value.data.contextSchemaVersion = "AI_REQUEST_CONTEXT_V1";
     event.value.data.candidateStateSchemaVersion = "AI_CANDIDATE_CONFIRMATION_STATE_V2";
     event.value.data.guidanceStateSchemaVersion = "AI_GUIDANCE_REFERENCE_STATE_V1";
@@ -1524,36 +1524,36 @@ test("拒绝快照计数漂移与活跃角色集合漂移", async (t) => {
   });
 });
 
-test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
-  await t.test("批次误关闭", () => {
+test("拒绝 Owner 整批确认被回退、篡改或扩大授权", async (t) => {
+  await t.test("批次回退为待确认", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.status = "CONFIRMED";
+      model.ownerIntake.status = "AWAITING_BATCH_READBACK";
     });
-    assertDiagnostic(report, "OPS_OWNER_BATCH_PREMATURELY_CLOSED");
+    assertDiagnostic(report, "OPS_OWNER_BATCH_STATUS_CHANGED");
   });
 
-  await t.test("accepted 状态提前改变", () => {
+  await t.test("accepted 状态变化标记被回退", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.acceptanceStateChanged = true;
+      model.ownerIntake.acceptanceStateChanged = false;
     });
     assertDiagnostic(report, "OPS_OWNER_ACCEPTANCE_STATE_CHANGED");
   });
 
-  await t.test("单项 response 提前终态", () => {
+  await t.test("单项 response 回退为待确认", () => {
     const report = validateMutation((model) => {
-      model.ownerIntake.responses[0].state = "ACCEPTED";
+      model.ownerIntake.responses[0].state = "PENDING_BATCH_READBACK";
     });
-    assertDiagnostic(report, "OPS_OWNER_RESPONSE_FINALIZED");
+    assertDiagnostic(report, "OPS_OWNER_RESPONSE_STATE_MISMATCH");
   });
 
-  await t.test("OI-03 完成后下一题偏离 OI-02", () => {
+  await t.test("整批确认后下一题偏离 D-039", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.id = "oi04_other";
     });
     assertDiagnostic(report, "OPS_OWNER_NEXT_QUESTION_CHANGED");
   });
 
-  await t.test("OI-02 不再使用原生 choice-ui", () => {
+  await t.test("D-039 不再使用宿主原生 request_user_input", () => {
     const report = validateMutation((model) => {
       model.ownerIntake.nextQuestion.tool = "static_web_form";
     });
@@ -1606,6 +1606,31 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
     assertDiagnostic(report, "OPS_OWNER_OI03_RECORDED_AS_DECISION");
   });
 
+  await t.test("OI-02 事实缺失", () => {
+    const report = validateMutation((model) => {
+      model.ownerIntake.facts = model.ownerIntake.facts.filter(
+        (fact) => fact.inputId !== "OI-02",
+      );
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_FACT_MISSING");
+  });
+
+  await t.test("OI-02 被伪造为已有 Bundle ID", () => {
+    const report = validateMutation((model) => {
+      const fact = model.ownerIntake.facts.find((candidate) => candidate.inputId === "OI-02");
+      fact.normalizedValue = "EXISTS";
+      fact.bundleId = "com.example.nuttie";
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_FACT_MISMATCH");
+  });
+
+  await t.test("OI-02 权威事件提前授权正式实现", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-001").value.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OWNER_OI02_EVENT_MISMATCH");
+  });
+
   await t.test("12 项候选中的 D-038 被 D-999 替换", () => {
     const report = validateMutation((model) => {
       const response = model.ownerIntake.responses.find(
@@ -1614,7 +1639,29 @@ test("拒绝 Owner intake 被提前关闭或改换选择渠道", async (t) => {
       response.decisionId = "D-999";
     });
     assertDiagnostic(report, "OPS_OWNER_DECISION_SET_MISMATCH");
-    assertDiagnostic(report, "OPS_OWNER_DECISION_NOT_CANDIDATE");
+  });
+
+  await t.test("D-032 被越级转为 ACCEPTED", () => {
+    const report = validateMutation((model) => {
+      const decision = model.decisionRegister.decisions.find((candidate) => candidate.id === "D-032");
+      decision.status = "ACCEPTED";
+      decision.acceptedOn = "2026-08-14";
+    });
+    assertDiagnostic(report, "OPS_OWNER_D032_SPIKE_AUTHORIZATION_MISMATCH");
+  });
+
+  await t.test("整批确认事件扩大为正式根工程授权", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-013").value.data.formalRootProjectAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OWNER_BATCH_CONFIRMATION_EVENT_MISMATCH");
+  });
+
+  await t.test("D-038 接受事件的 choiceKey 被改写", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260814-010").value.data.choiceKey = "other";
+    });
+    assertDiagnostic(report, "OPS_OWNER_ACCEPTED_EVENTS_MISMATCH");
   });
 
   await t.test("D-047 A 到 C 的审计顺序被改写", () => {

@@ -11,28 +11,29 @@ test("findCommand only reports executables visible on PATH", () => {
   assert.equal(findCommand("definitely-not-a-real-nuttie-command"), null);
 });
 
-test("current workspace records OI-03 but remains blocked before batch confirmation and native iOS initialization", () => {
+test("current workspace allows the authorized JS Spike but blocks native iOS initialization", () => {
   const report = runPreflight(process.cwd());
   assert.equal(report.ok, false);
   assert.equal(report.readyForInitialization, false);
-  assert.equal(report.readyForJsSpike, false);
+  assert.equal(report.readyForJsSpike, true);
   assert.equal(report.readyForNativeIosSpike, false);
   assert.equal(report.reconcile.ok, true);
-  assert.equal(report.owner.passed, false);
-  assert.equal(report.owner.selectionMechanismConfigured, true, "the OI-02 choice-ui mechanism must remain correctly configured");
-  assert.equal(report.owner.batchConfirmed, false);
+  assert.equal(report.owner.passed, true);
+  assert.equal(report.owner.selectionMechanismConfigured, true, "the native D-039 mechanism must remain correctly configured");
+  assert.equal(report.owner.batchConfirmed, true);
   assert.equal(report.owner.deviceFactRecorded, true);
   assert.equal(report.owner.macAvailable, false);
   assert.equal(report.owner.deviceAvailability.iphoneModel, "iPhone 16 Pro Max");
   assert.equal(report.owner.deviceAvailability.iosVersion, "26.5");
-  assert.equal(report.owner.acceptanceStateChanged, false);
+  assert.equal(report.owner.acceptanceStateChanged, true);
+  assert.equal(report.owner.jsSpikeAuthorization.authorized, true);
   assert.equal(report.artifacts["package.json"].present, false);
   assert.equal(report.artifacts["pnpm-lock.yaml"].present, false);
   assert.equal(report.artifacts.ios.present, false);
   assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "XCODEBUILD_NOT_AVAILABLE"));
   assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "COCOAPODS_NOT_AVAILABLE"));
   assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "MAC_NOT_AVAILABLE"));
-  assert.ok(report.diagnostics.some((diagnostic) => diagnostic.code === "OWNER_BATCH_NOT_CONFIRMED"));
+  assert.ok(!report.diagnostics.some((diagnostic) => diagnostic.code === "OWNER_BATCH_NOT_CONFIRMED"));
 });
 
 test("preflight detects a formal artifact without writing or deleting it", () => {

@@ -66,7 +66,9 @@ export function reconcileProjectOps(model) {
   const ownerIntake = model.ownerIntake ?? {};
   const ownerResponses = Array.isArray(ownerIntake.responses) ? ownerIntake.responses : [];
   const ownerFacts = Array.isArray(ownerIntake.facts) ? ownerIntake.facts : [];
+  const oi02Fact = ownerFacts.find((fact) => fact?.inputId === "OI-02") ?? null;
   const oi03Fact = ownerFacts.find((fact) => fact?.inputId === "OI-03") ?? null;
+  const d032Decision = decisions.find((decision) => decision?.id === "D-032") ?? null;
   const latestEvent = maxTimestamp(model.events, "recordedAt");
   const latestMessage = maxTimestamp(model.messages, "sentAt");
   const latestSource = [latestEvent, latestMessage]
@@ -161,6 +163,15 @@ export function reconcileProjectOps(model) {
     responseCount: ownerResponses.length,
     uniqueDecisionCount: new Set(ownerResponses.map((response) => response?.decisionId).filter(Boolean)).size,
     nextQuestion: ownerIntake.nextQuestion ?? null,
+    identifierStatus: {
+      state: oi02Fact?.state ?? "MISSING",
+      selectedOptionId: oi02Fact?.selectedOptionId ?? null,
+      normalizedValue: oi02Fact?.normalizedValue ?? null,
+      bundleId: oi02Fact?.bundleId ?? null,
+      sku: oi02Fact?.sku ?? null,
+      appIdStatus: oi02Fact?.appIdStatus ?? null,
+      appStoreConnectRecordStatus: oi02Fact?.appStoreConnectRecordStatus ?? null,
+    },
     deviceAvailability: {
       state: oi03Fact?.state ?? "MISSING",
       selectedOptionId: oi03Fact?.selectedOptionId ?? null,
@@ -171,17 +182,28 @@ export function reconcileProjectOps(model) {
       iosVersion: oi03Fact?.iosVersion ?? null,
       nativeIosWorkAuthorized: oi03Fact?.nativeIosWorkAuthorized ?? null,
     },
+    jsSpikeAuthorization: {
+      decisionId: "D-032",
+      decisionState: d032Decision?.status ?? null,
+      choiceKey: d032Decision?.choiceKey ?? null,
+      authorized:
+        d032Decision?.status === "CANDIDATE" &&
+        d032Decision?.choiceKey === "sdk-57-spike-authorized",
+    },
     nativeSelectionGate: {
-      expectedTool: "mcp__choice_ui__ask_choice",
-      expectedQuestionId: "oi02_identifier_status",
+      expectedTool: "request_user_input",
+      expectedQuestionId: "d039_add_meal_entry",
       passed:
-        ownerIntake.channel === "CODEX_CHOICE_UI" &&
-        ownerIntake.nextQuestion?.id === "oi02_identifier_status" &&
-        ownerIntake.nextQuestion?.tool === "mcp__choice_ui__ask_choice",
+        ownerIntake.channel === "CODEX_REQUEST_USER_INPUT" &&
+        ownerIntake.nextQuestion?.id === "d039_add_meal_entry" &&
+        ownerIntake.nextQuestion?.tool === "request_user_input",
     },
   };
   if (!ownerGate.nativeSelectionGate.passed) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持聊天内原生 OI-02 choice-ui 门禁", ownerGate.nativeSelectionGate);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OWNER_INPUT_GATE", "project-ops/owner-intake.json.nextQuestion", "Owner 下一题未保持宿主原生 D-039 PX-3 门禁", ownerGate.nativeSelectionGate);
+  }
+  if (!ownerGate.jsSpikeAuthorization.authorized) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_JS_SPIKE_AUTHORIZATION", "D-032", "D-032 未保持 SDK 57 隔离 JS Spike 授权边界", ownerGate.jsSpikeAuthorization);
   }
 
   const d039Gate = latestD039Gate(model);

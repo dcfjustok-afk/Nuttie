@@ -29,39 +29,39 @@ were checked against the current Nuttie workspace and passed. The current
 live/static verification result is:
 
 ```text
-ProjectOps schema subset: 14/14 PASS; 5 schemas and 255 controlled instances
-ProjectOps validation: 110/110 PASS
-ProjectOps reconcile tests: 5/5 PASS
-Tool contract harnesses: 634/634 PASS
-Full repository suite: 763/763 PASS
-Repository source baseline: 139 events, 114 messages, 25 agents; the latest 2026-08-14 shared AI request-evidence context binds the exact policy subject, complete local profile, D-053 authorization evidence, and recalculated policy check for F01/F02 and F16. It accepts only a current, scope-matched ALLOW profile whose sole remaining gate is D053_NOT_AUTHORIZED, while explicitly stating that transport is not established and send authorization is not granted. Candidate confirmation now uses V3 state/record evidence and F16 uses V2 state/source evidence; legacy loose context and consumer evidence fail closed. This does not prove Provider response truth or authorize policy, credentials, network, native, or formal implementation. F18 wipe, F19 restore/import, F03 data-pack/lookup, F09, F18 access, prohibited-capability, and platform/language contracts retain their recorded boundaries.
-External workbench static rebuild: NOT RUN; neither documented external workbench path exists on this machine for this verification
-External workbench live/static smoke: NOT RUN; the prior 129-event/93-document result is historical and no longer proves parity with the 138-event repository source
+Merged repository source baseline: 31 decisions (28 accepted / 3 candidate), 152 events, 116 messages, 25 agents and 271 controlled ProjectOps instances. Owner batch confirmation remains the latest source timestamp; D-032 is `CANDIDATE + SPIKE_AUTHORIZED`, D-039 is the next native Owner card, and D-052/D-053 remain fail closed. The merged branch also retains the later local contract sequence for F01/F02/F16 request evidence, untrusted response handling and complete candidate provenance plus all previously recorded non-production contracts.
+Repository validation: ProjectOps schema subset 14/14, ProjectOps validation 116/116, read-only reconcile 5/5, tool contract harnesses 634/634, full repository suite 769/769, and isolated SDK 57 static contract PASS.
+Remote-machine historical workbench rebuild: PASS at 31 decisions, 142 events, 116 messages, 25 agents and 94 documents; live/static state and the 12/12 Owner archive rows matched at that source revision.
+Current merged workbench parity: NOT RUN for the 152-event source; the historical 142-event PASS cannot prove current live/static equality.
 Historical responsive check (2026-08-06): desktop and 375px mobile viewports had no horizontal overflow
 ```
 
 The repository snapshot matches the latest local source time. The external
-workbench was not present for the AI candidate-response V2 verification, so no current static copy
-or live/static parity result is claimed. The following supporting-script digest
-belongs to the prior historical run and cannot substitute for a current run:
+workbench was restored and rerun on the remote-machine Owner-batch revision, but
+has not been rerun after integrating the seven additional local contract events.
+Its smoke no longer hard-codes historical event or document totals: events and
+messages are cross-checked against the read-only ProjectOps reconcile report,
+documents must be non-empty and path-unique, required governance documents must
+exist, and generated static state must remain deeply equal to live state. The
+supporting script is outside this repository; its historical verified SHA-256 is:
 
 ```text
-qa/smoke-test.mjs: 3E6EFD070556C3E8FC9B42A8A766F0AB7F722E7620D942392FB7F647F3D235B4
+qa/smoke-test.mjs: 1EC08A690AE0E3CF71DE94CFB2942163C41338D1A2255CF137912CBAB6BBFA2B
 ```
 
 The generated snapshot is intentionally verified by source counts, reconcile
 freshness, required documents, and full live/static deep equality instead of a
 self-referential hash stored in a document that the snapshot itself contains.
 
-The responsive check remains historical because this continuation phase changed
-only recovery commands and smoke invariants, not the workbench UI or CSS.
+The mobile responsive check remains historical because this continuation phase
+changed data-render timing and table wording but did not change layout or CSS.
 
 ## Continuation boundary
 
-`OI-03` is recorded as `iPhone 16 Pro Max / iOS 26.5 / no available Mac`. The
-next Owner input is `OI-02` and must be collected with the native `choice-ui`
-control. Until the Owner batch is
-normalized and confirmed, D-039 remains `CANDIDATE / PX-2_PASS /
-READY_FOR_OWNER_REVIEW`, D-040 remains `CANDIDATE / PX-0_INPUT_GAP /
-FORMULA_REVIEW_REQUIRED`, and no formal React Native scaffold or implementation
-authorization is implied by this workbench integration.
+`OI-02` is recorded as `Bundle ID NOT_CREATED / SKU N/A`; `OI-03` remains
+`iPhone 16 Pro Max / iOS 26.5 / no available Mac`. The next Owner input is the
+host-native D-039 choice. The Owner batch is confirmed, D-039 remains
+`CANDIDATE / PX-2_PASS / READY_FOR_OWNER_REVIEW`, and D-040 remains `CANDIDATE /
+PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`. D-032 authorizes only the isolated
+SDK 57 JS Spike; no formal React Native root scaffold, Apple resource, or native
+iOS implementation authorization is implied by this workbench integration.

@@ -14,11 +14,11 @@
 
 本工件只为 D-040 的 PX-0 公式审查准备中立候选，不关闭门禁，不进入 `project-ops/decisions.json`，不写入 `project-ops/owner-intake.json`，也不产生 `DECISION_ACCEPTED`、`GATE_CHANGED` 或正式实现授权。
 
-当前权威状态必须保持：
+本工件在 2026-08-06 登记时的权威状态为：
 
 ```text
 D-040: CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED
-Owner intake next: OI-03
+Owner intake next at record: OI-03
 Owner choice recorded: false
 Automatic macro rule authorized: false
 Formal implementation authorized: false
@@ -27,6 +27,8 @@ px2Authorized: false
 ownerReviewAuthorized: false
 decisionAcceptedRecorded: false
 ```
+
+后续门禁事实：OI-03 已于 2026-08-11 完成事实采集，OI-02 已于 2026-08-14 记录为 Bundle ID 尚未创建、SKU=`N/A`；当前下一张宿主原生卡是首批整批回读确认。D-040 仍保持 `PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED`，下列宏量候选没有因此获得 Owner 或正式实现授权。
 
 ### 1.1 外部公开证据结论
 
@@ -153,7 +155,7 @@ fat_g = E × (fat_pct / 100) / 9
 
 ## 8. 后续原生选择卡草案（不分配 D 编号）
 
-这些问题只作为未来聊天内原生选择卡草案，尚未进入 Owner intake，当前下一张真实选择卡仍为 `OI-03 设备条件`：
+这些问题只作为未来聊天内原生选择卡草案，尚未进入 Owner intake。本工件登记时下一张真实选择卡是 `OI-03 设备条件`；OI-03 与 OI-02 后续均已完成事实采集，当前下一张真实选择卡为首批整批回读确认，以下问题仍不得抢占：
 
 1. 目标来源（互斥，2–3 项）：无目标 / 仅健康成人参考带 / 用户自定义目标。参考带只作信息参考，区间外不自动判错、告警、纠正或生成医疗结论；M3 专项模式不在本卡内。
 2. 输入形态（互斥，2–3 项）：固定 `100%` 三元组 / 完整克数 / 部分克数。固定比例属于用户自定义目标的一种输入，不与完整或部分克数混用。

@@ -1,0 +1,36 @@
+{
+  "name": "@nuttie/sdk57-js-spike",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": "22.13.x"
+  },
+  "main": "expo-router/entry",
+  "dependencies": {
+    "expo": "~57.0.9",
+    "expo-camera": "~57.0.3",
+    "expo-notifications": "~57.0.8",
+    "expo-router": "~57.0.9",
+    "expo-secure-store": "~57.0.1",
+    "expo-sqlite": "~57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "react-native-reanimated": "4.5.1"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "check": "tsc --noEmit",
+    "config": "expo config --type public",
+    "doctor": "expo-doctor",
+    "export:android": "expo export --platform android --output-dir dist",
+    "verify:contract": "node scripts/verify-contract.mjs"
+  }
+}

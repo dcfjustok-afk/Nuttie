@@ -15,15 +15,15 @@ function validModel() {
   return loadProjectOps(WORKSPACE_ROOT);
 }
 
-test("当前 ProjectOps 源、快照与 OI-03/OI-02 门禁一致", () => {
+test("当前 ProjectOps 源、快照与首批确认/D-039 门禁一致", () => {
   const report = reconcileProjectOps(validModel());
   assert.equal(report.ok, true);
   assert.deepEqual(report.counts, {
     decisions: 31,
-    acceptedDecisions: 17,
-    candidateDecisions: 14,
-    events: 139,
-    messages: 114,
+    acceptedDecisions: 28,
+    candidateDecisions: 3,
+    events: 152,
+    messages: 116,
     agents: 25,
     activeAgents: 1,
     evidenceItems: 66,
@@ -36,6 +36,14 @@ test("当前 ProjectOps 源、快照与 OI-03/OI-02 门禁一致", () => {
   });
   assert.equal(report.snapshot.freshness, "CURRENT");
   assert.equal(report.ownerGate.nativeSelectionGate.passed, true);
+  assert.equal(report.ownerGate.status, "CONFIRMED");
+  assert.equal(report.ownerGate.acceptanceStateChanged, true);
+  assert.equal(report.ownerGate.jsSpikeAuthorization.authorized, true);
+  assert.equal(report.ownerGate.jsSpikeAuthorization.choiceKey, "sdk-57-spike-authorized");
+  assert.equal(report.ownerGate.identifierStatus.selectedOptionId, "not_created");
+  assert.equal(report.ownerGate.identifierStatus.normalizedValue, "NOT_CREATED");
+  assert.equal(report.ownerGate.identifierStatus.bundleId, null);
+  assert.equal(report.ownerGate.identifierStatus.sku, "N/A");
   assert.equal(report.ownerGate.deviceAvailability.selectedOptionId, "iphone_only");
   assert.equal(report.ownerGate.deviceAvailability.iphoneModel, "iPhone 16 Pro Max");
   assert.equal(report.ownerGate.deviceAvailability.iosVersion, "26.5");
@@ -54,7 +62,7 @@ test("快照计数漂移是错误，且不写回任何文件", () => {
   assert.equal(JSON.stringify(model.snapshot), JSON.stringify({ ...JSON.parse(before), metrics: { ...JSON.parse(before).metrics, projectEvents: JSON.parse(before).metrics.projectEvents - 1 } }));
 });
 
-test("Owner 下一题偏离原生 OI-02 choice-ui 时失败关闭", () => {
+test("Owner 下一题偏离原生 D-039 时失败关闭", () => {
   const model = validModel();
   model.ownerIntake.nextQuestion.tool = "static-workbench";
   const report = reconcileProjectOps(model);

@@ -62,7 +62,7 @@ G3 只有在以下证据齐备后才能申请 `PASS`：
 
 ## 5. 连续性与 Owner Gate
 
-- [当前交接](../00-governance/current-handoff.md)：恢复当前 17/14 决策状态、D-032 两阶段、阻断项、Owner 回复和本地命令。
+- [当前交接](../00-governance/current-handoff.md)：恢复当前 28/3 决策状态、D-032 两阶段、D-039 下一门禁、阻断项和本地命令。
 - [Codex 连续性运行手册](../00-governance/codex-continuity-runbook.md)：新实例读取顺序、事实优先级、跨角色协作与每轮持久化规则。
 - [Owner 启动门禁独立审查](../00-governance/owner-startup-gate-independent-review.md)：首批工程候选的独立治理审查、门槛分层和 D-032 循环分析；其中历史计数应以当前交接和权威决定副本为准。
 - [原型与 Owner 评审流程](prototype-and-owner-review-workflow.md)：候选同等完整、跨角色任务评审和 Owner 决定记录规则。

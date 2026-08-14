@@ -7,13 +7,14 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 
 ## 当前阶段
 
-- 快照日期：2026-08-13
+- 快照日期：2026-08-14
 - 阶段：Phase 0，产品、体验、架构基线形成中
 - `G0 项目立项`：PASS
 - `G1 调研可信`：PASS（验收口径为公开可验证资料）
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
-- 应用工程：尚未初始化；未批准的库级选型不会提前固化
-- 框架无关契约与治理检查：全套 756 项测试通过，含 ProjectOps 5 份 Schema/255 个实例校验、F01/F02 不可信 AI 响应、Provider policy/D-053 门禁与 V2 候选确认完整响应证据链、F18 全量删除严格回执、F19 恢复启动对账与导入预检、F03 数据包预授权与本地条码、F09 营养事实/洞察、F16 AI 参考草稿及 F04/F05/F06/F08/F10/F11/F12/F13/F14/F15/F17/F21 合同、F20/F23/F24 禁止能力审计和 F22 平台/语言 Release 审计；完整 response 指纹贯穿 V2 review/确认记录且旧 V1 失败关闭，但不持久化候选正文、不证明 Provider 或营养真值；AI policy 即使本地 `ALLOW` 精确匹配也因 D-053 仍为 candidate 而阻断，零 key/body/network/write；删除、恢复和数据包合同也不等于真实清理、密码学、验签、许可或激活已授权；两项 Release 聚合审计当前均为 `BLOCKED`，这些测试不等于 React Native、Keychain、SQLCipher、UserNotifications、真实相机/照片、平台形态 Owner 决定、签名 Release Archive、真机或发布证据
+- 应用工程：正式根工程尚未初始化；D-032 仅授权约定隔离目录的 SDK 57 JS Spike
+- Owner 首批输入：11 项新决定已接受，D-032 为 `CANDIDATE + SPIKE_AUTHORIZED`，D-052/D-053 继续 fail closed；下一门禁为 D-039 添加餐食体验
+- 框架无关契约与治理检查：合并后全库 769/769，通过 ProjectOps 5 份 Schema/271 个实例、F01/F02/F16 请求证据、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同；所有相关边界继续 fail closed。这些证据不等于正式根工程、Keychain/SQLCipher、真实网络、原生能力、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 

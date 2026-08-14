@@ -13,14 +13,16 @@
 
 本研究包只为 D-040 的 PX-0 输入审查准备中立候选，不关闭门禁，不进入 `project-ops/decisions.json`，不写入 `project-ops/owner-intake.json`，也不产生 `DECISION_ACCEPTED`、`GATE_CHANGED` 或实现授权。
 
-当前权威状态保持：
+本研究包在 2026-08-06 登记时的权威状态为：
 
 ```text
 D-040: CANDIDATE / PX-0_INPUT_GAP / FORMULA_REVIEW_REQUIRED
-Owner intake next: OI-03
+Owner intake next at record: OI-03
 Owner choice recorded: false
 Formal implementation authorized: false
 ```
+
+后续门禁事实：OI-03 已于 2026-08-11 记录为 `iPhone 16 Pro Max / iOS 26.5 / 无可用 Mac`，OI-02 已于 2026-08-14 记录为 Bundle ID 尚未创建、SKU=`N/A`；当前下一张宿主原生卡是首批整批回读确认。该顺序变化不改变 D-040 的上述状态或任何授权位。
 
 研究结论分为七点：
 
@@ -279,7 +281,7 @@ Mifflin、NASEM 成人 EER 和 NIDDK Body Weight Planner 都不能为 Nuttie 的
 
 ## 7. Owner 原生选择卡草案
 
-以下只是未来聊天内原生选择卡的内容设计，不是当前 Owner intake，不得用网页表单、文字回复模板或本文件中的“研究建议”代替实际点击。OI-03 仍必须先出现；D-040 不得抢占顺序。
+以下只是未来聊天内原生选择卡的内容设计，不是当前 Owner intake，不得用网页表单、文字回复模板或本文件中的“研究建议”代替实际点击。本研究登记时 OI-03 必须先出现且 D-040 不得抢占顺序；OI-03 后续已完成，当前仍须先处理 OI-02，并继续禁止 D-040 抢占 Owner intake。
 
 未成年人、孕期、哺乳期以及已确诊/正在治疗或主动自述进食障碍高风险时，普通成人自动减重与热量缺口推导保持 fail closed；这属于当前证据建立的安全不变量，不作为 Owner 可豁免选项。未来若引入专门的儿童、孕哺期或临床模型，必须另做证据、健康领域和 Owner 决策。
 

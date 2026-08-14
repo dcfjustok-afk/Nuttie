@@ -88,6 +88,7 @@
 - [媒体权限编排合同](testing/media-permission-orchestrator-harness.md)：F21 任务触发相机 effect、系统选择媒体零全库权限、拒绝/受限/撤权手工降级；不授权视频、定位、保留、持久化或真实原生调用。
 - [禁止能力审计合同](testing/prohibited-capability-audit-harness.md)：F20/F23/F24 要求正式签名 Release Archive 和 27 个完整证据面；当前未初始化工作区、缺面或未执行均 fail closed 为 `BLOCKED`。
 - [平台与语言 Release 审计合同](testing/platform-language-release-audit-harness.md)：F22 固定 D-011 iOS 17.0 与 D-016 简中，分离设备族/方向/Mac/Vision 四项未决维度，并要求签名 Archive 上 25 个发布证据面。
+- [Choice UI 宿主只读审计](choice-ui-host-audit-2026-08-14.md)：区分 0.1.0 elicitation 文字 fallback 与 0.3.0 MCP Apps 内联控件，记录当前未安装/未启用状态、静态安全边界、协议测试和浏览器宿主模拟；不替 Owner 选择或修改 Gate。
 - [ADR](adr/)：已批准架构决策的上下文与后果。
 - [技术决策候选](decisions/decision-candidates.md)：D-018 起的 Options / Trade-offs / Recommended，全部仍待 Owner 确认。
 - [技术栈调研总览](technology-stack-research.md)：按已批准边界、候选库、原生能力和 Spike 证据解释 React Native 技术栈。
