@@ -173,7 +173,7 @@ Spike 必须覆盖 SQLCipher、Keychain、通知、相机、Prebuild diff、Debu
 | D-053 | 第三方 AI Provider 数据用途准入 | A 只有 terms/policy 能证明保留、训练、人工访问、删除和广告/营销用途与健康/营养载荷相容时才允许发送，未知即阻断；B 每个 Provider 单独隐私/法律复核后由 Owner 接受仍可接受的残余风险，若用途触及 Apple 明确禁项则不能放行；C 任何 OpenAI-compatible HTTPS Provider 均可由用户自行同意 | A；C 不推荐且可能不满足 Apple 审查 | Provider 政策快照、实际数据流和 Apple 5.1.3 复核 |
 | D-026 | 数据包签名 | A Ed25519 + RFC 8785 JCS；B Ed25519 + 原始 manifest bytes；C P-256 + 冻结编码 | A，须互操作 Spike | Swift/发布工具 golden corpus |
 | D-027 | 备份加密 envelope（二维选择） | K1 Argon2id + AES-256-GCM / K2 PBKDF2-HMAC-SHA256 + AES-256-GCM；并另选 S1 两遍认证/解密 / S2 单遍隔离 staging | 先验证 `K1+S1`；Owner 必须各选一个维度 | 最低支持 iPhone 性能、AAD/TOCTOU 与供应链审查 |
-| D-034 | AI 资源预算 | A 保守；B 平衡；C Provider 可配但保留硬上限 | 先用 provisional 平衡档做真机基准 | 最低支持 iPhone 恶意/边界 fixture |
+| D-034 | AI 资源预算 | A 保守固定上限；B 平衡固定上限；C Provider 可收紧的固定全局天花板 | B；三档卡已完成四域自审，先做最低支持 iPhone benchmark，独立复核后才可展示 | 19 维预算、解压/JSON/清理和最低设备证据 |
 
 D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-033 未接受前，不得把 D-014 扩写为所有餐食照片、文本或趋势摘要已经获得逐次上传授权。
 

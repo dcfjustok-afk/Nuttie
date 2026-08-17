@@ -84,6 +84,13 @@ function latestD033Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD034Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D034-AI-RESOURCE-BUDGET-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -458,6 +465,65 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D033_GATE", "D-033", "D-033 未保持三包非标签 AI 确认卡自审完成、D-014 范围、单次绑定/失效、独立复核/Owner/B05/实现待办和未进入权威台账状态", d033);
   }
 
+  const d034Record = latestD034Record(model);
+  const d034 = {
+    eventId: d034Record?.eventId ?? null,
+    decisionState: d034Record?.data?.decisionState ?? null,
+    blockerState: d034Record?.data?.d039BlockerState ?? null,
+    cardState: d034Record?.data?.cardState ?? null,
+    next: d034Record?.data?.next ?? null,
+    optionCount: d034Record?.data?.optionCount ?? null,
+    recommendedOptionId: d034Record?.data?.recommendedOptionId ?? null,
+    budgetDimensionCount: d034Record?.data?.budgetDimensionCount ?? null,
+    fixedGlobalCeilings: [
+      d034Record?.data?.allProfilesHaveFixedGlobalCeilings,
+      d034Record?.data?.providerCanOnlyTighten,
+    ].every((value) => value === true),
+    failureBoundaryDefined: [
+      d034Record?.data?.inputBudgetCheckedBeforeDecode,
+      d034Record?.data?.decompressedResponseCounted,
+      d034Record?.data?.jsonBudgetEnforcedDuringParse,
+      d034Record?.data?.overLimitAbortsAndCleans,
+    ].every((value) => value === true),
+    deviceBenchmarkRequired: d034Record?.data?.minimumSupportedIphoneBenchmarkRequired ?? null,
+    deviceBenchmarkPassed: d034Record?.data?.deviceBenchmarkPassed ?? null,
+    selfReviewPassed: [
+      d034Record?.data?.productSelfReviewPassed,
+      d034Record?.data?.privacySecuritySelfReviewPassed,
+      d034Record?.data?.dataIntegritySelfReviewPassed,
+      d034Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d034Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d034Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d034Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d034Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-034"),
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-034").length,
+  };
+  if (!(
+    d034.eventId === "EVT-20260817-003" &&
+    d034.decisionState === "CANDIDATE" &&
+    d034.blockerState === "OPEN" &&
+    d034.cardState === "DRAFT_COMPLETE" &&
+    d034.next === "D034_DEVICE_BENCHMARK_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d034.optionCount === 3 &&
+    d034.recommendedOptionId === "balanced_fixed_limits" &&
+    d034.budgetDimensionCount === 19 &&
+    d034.fixedGlobalCeilings === true &&
+    d034.failureBoundaryDefined === true &&
+    d034.deviceBenchmarkRequired === true &&
+    d034.deviceBenchmarkPassed === false &&
+    d034.selfReviewPassed === true &&
+    d034.independentReviewPassed === false &&
+    d034.ownerCardScheduled === false &&
+    d034.ownerReviewAuthorized === false &&
+    d034.formalImplementationAuthorized === false &&
+    d034.registeredInDecisionLedger === false &&
+    d034.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_GATE", "D-034", "D-034 未保持三包 AI 资源预算卡、19 维硬上限、真机 benchmark 门禁、自审和独立复核/Owner/B05/实现待办状态", d034);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -520,6 +586,7 @@ export function reconcileProjectOps(model) {
     d045,
     d031,
     d033,
+    d034,
     d040,
     diagnostics,
   };

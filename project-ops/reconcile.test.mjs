@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 168,
+    events: 169,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -101,6 +101,21 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d033.ownerCardScheduled, false);
   assert.equal(report.d033.registeredInDecisionLedger, false);
   assert.equal(report.d033.ownerResponseCount, 0);
+  assert.equal(report.d034.eventId, "EVT-20260817-003");
+  assert.equal(report.d034.decisionState, "CANDIDATE");
+  assert.equal(report.d034.blockerState, "OPEN");
+  assert.equal(report.d034.next, "D034_DEVICE_BENCHMARK_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d034.optionCount, 3);
+  assert.equal(report.d034.budgetDimensionCount, 19);
+  assert.equal(report.d034.fixedGlobalCeilings, true);
+  assert.equal(report.d034.failureBoundaryDefined, true);
+  assert.equal(report.d034.deviceBenchmarkRequired, true);
+  assert.equal(report.d034.deviceBenchmarkPassed, false);
+  assert.equal(report.d034.selfReviewPassed, true);
+  assert.equal(report.d034.independentReviewPassed, false);
+  assert.equal(report.d034.ownerCardScheduled, false);
+  assert.equal(report.d034.registeredInDecisionLedger, false);
+  assert.equal(report.d034.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
@@ -153,6 +168,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d033Report = reconcileProjectOps(d033Model);
   assert.equal(d033Report.ok, false);
   assert.ok(d033Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D033_GATE"));
+
+  const d034Model = validModel();
+  d034Model.events.find((record) => record.value.eventId === "EVT-20260817-003").value.data.providerCanOnlyTighten = false;
+  const d034Report = reconcileProjectOps(d034Model);
+  assert.equal(d034Report.ok, false);
+  assert.ok(d034Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {
