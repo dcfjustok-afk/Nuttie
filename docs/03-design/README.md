@@ -26,6 +26,7 @@
 | [D-039 正式验收矩阵](../05-quality/d039-formal-acceptance-matrix.md) | 24 条实现无关验收用例及写入、联网、依赖和原生证据边界 |
 | [D-039 路由与可观测性契约](d039-route-observability-contract.md) | 5 个逻辑 route、严格参数、43 个静态 testID、返回焦点和非法 deep-link 失败关闭规则 |
 | [D-045 最近使用与收藏选择卡](d045-recent-favorites-card-spec.md) | B03 的三套完整政策包、清除/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
+| [D-031 媒体与 AI 内容保留选择卡](d031-media-ai-retention-card-spec.md) | B04 的三套完整政策包、临时内容清理、备份/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |

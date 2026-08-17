@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 166,
+    events: 167,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -74,6 +74,19 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d045.ownerCardScheduled, false);
   assert.equal(report.d045.registeredInDecisionLedger, false);
   assert.equal(report.d045.ownerResponseCount, 0);
+  assert.equal(report.d031.eventId, "EVT-20260817-001");
+  assert.equal(report.d031.decisionState, "CANDIDATE");
+  assert.equal(report.d031.blockerState, "OPEN");
+  assert.equal(report.d031.next, "D031_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d031.optionCount, 3);
+  assert.equal(report.d031.acquisitionDoesNotAuthorizeRetention, true);
+  assert.equal(report.d031.rawProviderResponsePersisted, false);
+  assert.equal(report.d031.backupBoundaryDefined, true);
+  assert.equal(report.d031.selfReviewPassed, true);
+  assert.equal(report.d031.independentReviewPassed, false);
+  assert.equal(report.d031.ownerCardScheduled, false);
+  assert.equal(report.d031.registeredInDecisionLedger, false);
+  assert.equal(report.d031.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
@@ -114,6 +127,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d040Report = reconcileProjectOps(d040Model);
   assert.equal(d040Report.ok, false);
   assert.ok(d040Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d031Model = validModel();
+  d031Model.events.find((record) => record.value.eventId === "EVT-20260817-001").value.data.rawProviderResponsePersisted = true;
+  const d031Report = reconcileProjectOps(d031Model);
+  assert.equal(d031Report.ok, false);
+  assert.ok(d031Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D031_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

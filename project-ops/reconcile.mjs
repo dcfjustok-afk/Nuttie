@@ -70,6 +70,13 @@ function latestD045Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD031Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D031-MEDIA-AI-RETENTION-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -343,6 +350,58 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D045_GATE", "D-045", "D-045 未保持三包内部卡自审完成、独立复核/Owner/B03/实现待办和未进入权威台账状态", d045);
   }
 
+  const d031Record = latestD031Record(model);
+  const d031 = {
+    eventId: d031Record?.eventId ?? null,
+    decisionState: d031Record?.data?.decisionState ?? null,
+    blockerState: d031Record?.data?.d039BlockerState ?? null,
+    cardState: d031Record?.data?.cardState ?? null,
+    next: d031Record?.data?.next ?? null,
+    optionCount: d031Record?.data?.optionCount ?? null,
+    recommendedOptionId: d031Record?.data?.recommendedOptionId ?? null,
+    acquisitionDoesNotAuthorizeRetention: d031Record?.data?.acquisitionDoesNotAuthorizeRetention ?? null,
+    rawProviderResponsePersisted: d031Record?.data?.rawProviderResponsePersisted ?? null,
+    backupBoundaryDefined: [
+      d031Record?.data?.persistentMediaIncludedInEncryptedBackup,
+      d031Record?.data?.backupSizeDisclosureRequired,
+      d031Record?.data?.fullDataDeletionCoversRetainedMediaAndAiHistory,
+      d031Record?.data?.externalFilesAndPhotoLibraryCopiesOutOfScope,
+    ].every((value) => value === true),
+    selfReviewPassed: [
+      d031Record?.data?.productSelfReviewPassed,
+      d031Record?.data?.privacySecuritySelfReviewPassed,
+      d031Record?.data?.dataIntegritySelfReviewPassed,
+      d031Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d031Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d031Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d031Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d031Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-031"),
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-031").length,
+  };
+  if (!(
+    d031.eventId === "EVT-20260817-001" &&
+    d031.decisionState === "CANDIDATE" &&
+    d031.blockerState === "OPEN" &&
+    d031.cardState === "DRAFT_COMPLETE" &&
+    d031.next === "D031_INDEPENDENT_REVIEW_REQUIRED" &&
+    d031.optionCount === 3 &&
+    d031.recommendedOptionId === "compressed_attachment_ephemeral_ai" &&
+    d031.acquisitionDoesNotAuthorizeRetention === true &&
+    d031.rawProviderResponsePersisted === false &&
+    d031.backupBoundaryDefined === true &&
+    d031.selfReviewPassed === true &&
+    d031.independentReviewPassed === false &&
+    d031.ownerCardScheduled === false &&
+    d031.ownerReviewAuthorized === false &&
+    d031.formalImplementationAuthorized === false &&
+    d031.registeredInDecisionLedger === false &&
+    d031.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D031_GATE", "D-031", "D-031 未保持三包媒体/AI 保留卡自审完成、原始响应不落盘、备份/删除边界、独立复核/Owner/B04/实现待办和未进入权威台账状态", d031);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -403,6 +462,7 @@ export function reconcileProjectOps(model) {
     ownerGate,
     d039,
     d045,
+    d031,
     d040,
     diagnostics,
   };

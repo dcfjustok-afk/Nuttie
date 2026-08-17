@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_15_D045_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_15_D045_CARD_SPEC",
+export const PHASE0_2026_08_17_D031_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_17_D031_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 166,
+    events: 167,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -100,6 +100,7 @@ export const PHASE0_2026_08_15_D045_CARD_SPEC = Object.freeze({
     "2026-08-13": 10,
     "2026-08-14": 22,
     "2026-08-15": 8,
+    "2026-08-17": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1723,6 +1724,73 @@ export const PHASE0_2026_08_15_D045_CARD_SPEC = Object.freeze({
       d039DecisionStateChanged: false,
     }),
   }),
+  d031: Object.freeze({
+    cardSpec: Object.freeze({
+      eventId: "EVT-20260817-001",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D031-MEDIA-AI-RETENTION-CARD-001",
+      subjectRole: "CandidateProductArtifact",
+      correlationId: "d031-media-ai-retention-card-spec",
+      state: "completed",
+      decisionId: "D-031",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B04",
+      d039BlockerState: "OPEN",
+      from: "D031_CARD_SPEC_REQUIRED",
+      next: "D031_INDEPENDENT_REVIEW_REQUIRED",
+      cardState: "DRAFT_COMPLETE",
+      questionId: "d031_media_ai_retention",
+      optionIds: Object.freeze([
+        "compressed_attachment_ephemeral_ai",
+        "no_persistent_media_ephemeral_ai",
+        "per_item_original_and_validated_history",
+      ]),
+      optionCount: 3,
+      recommendedOptionId: "compressed_attachment_ephemeral_ai",
+      allOptionsMutuallyExclusive: true,
+      completePolicyPackages: true,
+      acquisitionDoesNotAuthorizeRetention: true,
+      sourceLibraryAssetNeverDeleted: true,
+      workingCopiesSanitized: true,
+      workingCopiesVolatileUntilExplicitCommit: true,
+      rawProviderResponsePersisted: false,
+      structuredConfirmedBusinessValueAllowed: true,
+      optionAPersistentMedia: "USER_EXPLICIT_SANITIZED_COMPRESSED_ATTACHMENT_ONLY",
+      optionBPersistentMedia: "NONE",
+      optionCPerItemRetentionRequired: true,
+      persistentMediaIncludedInEncryptedBackup: true,
+      backupSizeDisclosureRequired: true,
+      fullDataDeletionCoversRetainedMediaAndAiHistory: true,
+      externalFilesAndPhotoLibraryCopiesOutOfScope: true,
+      unknownCommitRequiresSameCommandReconciliation: true,
+      startupStagingReconciliationRequired: true,
+      otherRequiresNormalization: true,
+      productSelfReviewPassed: true,
+      privacySecuritySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d031RegisteredInDecisionLedger: false,
+      d031RecordedInOwnerIntake: false,
+      closedD039BlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenD039BlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenD039BlockerCount: 5,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      d039DecisionStateChanged: false,
+    }),
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -2283,7 +2351,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_15_D045_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_17_D031_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5363,6 +5431,41 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D045_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-045 必须精确保留三套完整政策包、四域自审、独立复核/Owner/B03/实现未授权，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d031CardSpec = baseline.d031.cardSpec;
+  const d031CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d031CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d031CardSpec.correlationId),
+  );
+  const d031CardEvent = d031CardEvents[0]?.value;
+  const d031CardData = d031CardEvent?.data ?? {};
+  const d031CardFields = Object.keys(d031CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  const d031Registered = model.decisionRegister.decisions.some((decision) => decision.id === "D-031");
+  const d031OwnerResponses = model.ownerIntake.responses.filter((response) => response.decisionId === "D-031");
+  if (
+    d031CardEvents.length !== 1 ||
+    d031CardEvent?.eventId !== d031CardSpec.eventId ||
+    d031CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d031CardEvent?.actor?.id !== d031CardSpec.actorId ||
+    d031CardEvent?.actor?.role !== d031CardSpec.actorRole ||
+    d031CardEvent?.subject?.id !== d031CardSpec.subjectId ||
+    d031CardEvent?.subject?.role !== d031CardSpec.subjectRole ||
+    d031CardEvent?.correlationId !== d031CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d031CardData).sort()) !== JSON.stringify(d031CardFields) ||
+    d031CardFields.some(
+      (field) => JSON.stringify(d031CardData[field]) !== JSON.stringify(d031CardSpec[field]),
+    ) ||
+    d031Registered ||
+    d031OwnerResponses.length !== 0
+  ) {
+    add(
+      "OPS_D031_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-17.jsonl",
+      "D-031 必须精确保留三套媒体/AI 保留政策包、临时内容清理、备份/删除边界、四域自审和独立复核/Owner/B04/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
     );
   }
 
