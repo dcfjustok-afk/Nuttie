@@ -77,6 +77,13 @@ function latestD031Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD033Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D033-NONLABEL-AI-CONFIRMATION-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -402,6 +409,55 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D031_GATE", "D-031", "D-031 未保持三包媒体/AI 保留卡自审完成、原始响应不落盘、备份/删除边界、独立复核/Owner/B04/实现待办和未进入权威台账状态", d031);
   }
 
+  const d033Record = latestD033Record(model);
+  const d033 = {
+    eventId: d033Record?.eventId ?? null,
+    decisionState: d033Record?.data?.decisionState ?? null,
+    blockerState: d033Record?.data?.d039BlockerState ?? null,
+    cardState: d033Record?.data?.cardState ?? null,
+    next: d033Record?.data?.next ?? null,
+    optionCount: d033Record?.data?.optionCount ?? null,
+    recommendedOptionId: d033Record?.data?.recommendedOptionId ?? null,
+    d014LabelPhotoPreviewScopePreserved: d033Record?.data?.d014LabelPhotoPreviewScopePreserved ?? null,
+    confirmationAuthorizesSingleAttemptOnly: d033Record?.data?.confirmationAuthorizesSingleAttemptOnly ?? null,
+    confirmationTokenReusable: d033Record?.data?.confirmationTokenReusable ?? null,
+    policyUnresolvedBlocksRequest: d033Record?.data?.blockedWhenD034D036OrD053Unresolved ?? null,
+    selfReviewPassed: [
+      d033Record?.data?.productSelfReviewPassed,
+      d033Record?.data?.privacySecuritySelfReviewPassed,
+      d033Record?.data?.dataIntegritySelfReviewPassed,
+      d033Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d033Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d033Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d033Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d033Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-033"),
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-033").length,
+  };
+  if (!(
+    d033.eventId === "EVT-20260817-002" &&
+    d033.decisionState === "CANDIDATE" &&
+    d033.blockerState === "OPEN" &&
+    d033.cardState === "DRAFT_COMPLETE" &&
+    d033.next === "D033_INDEPENDENT_REVIEW_REQUIRED" &&
+    d033.optionCount === 3 &&
+    d033.recommendedOptionId === "per_request_preview_all_nonlabel_payloads" &&
+    d033.d014LabelPhotoPreviewScopePreserved === true &&
+    d033.confirmationAuthorizesSingleAttemptOnly === true &&
+    d033.confirmationTokenReusable === false &&
+    d033.policyUnresolvedBlocksRequest === true &&
+    d033.selfReviewPassed === true &&
+    d033.independentReviewPassed === false &&
+    d033.ownerCardScheduled === false &&
+    d033.ownerReviewAuthorized === false &&
+    d033.formalImplementationAuthorized === false &&
+    d033.registeredInDecisionLedger === false &&
+    d033.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D033_GATE", "D-033", "D-033 未保持三包非标签 AI 确认卡自审完成、D-014 范围、单次绑定/失效、独立复核/Owner/B05/实现待办和未进入权威台账状态", d033);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -463,6 +519,7 @@ export function reconcileProjectOps(model) {
     d039,
     d045,
     d031,
+    d033,
     d040,
     diagnostics,
   };

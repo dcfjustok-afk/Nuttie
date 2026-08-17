@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_17_D031_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_17_D031_CARD_SPEC",
+export const PHASE0_2026_08_17_D033_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_17_D033_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 167,
+    events: 168,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -100,7 +100,7 @@ export const PHASE0_2026_08_17_D031_CARD_SPEC = Object.freeze({
     "2026-08-13": 10,
     "2026-08-14": 22,
     "2026-08-15": 8,
-    "2026-08-17": 1,
+    "2026-08-17": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1791,6 +1791,72 @@ export const PHASE0_2026_08_17_D031_CARD_SPEC = Object.freeze({
       d039DecisionStateChanged: false,
     }),
   }),
+  d033: Object.freeze({
+    cardSpec: Object.freeze({
+      eventId: "EVT-20260817-002",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D033-NONLABEL-AI-CONFIRMATION-CARD-001",
+      subjectRole: "CandidateProductArtifact",
+      correlationId: "d033-nonlabel-ai-confirmation-card-spec",
+      state: "completed",
+      decisionId: "D-033",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D033_CARD_SPEC_REQUIRED",
+      next: "D033_INDEPENDENT_REVIEW_REQUIRED",
+      cardState: "DRAFT_COMPLETE",
+      questionId: "d033_nonlabel_ai_confirmation_scope",
+      optionIds: Object.freeze([
+        "per_request_preview_all_nonlabel_payloads",
+        "per_request_preview_images_explicit_text_send",
+        "d014_label_only_explicit_send_others",
+      ]),
+      optionCount: 3,
+      recommendedOptionId: "per_request_preview_all_nonlabel_payloads",
+      allOptionsMutuallyExclusive: true,
+      completePolicyPackages: true,
+      d014LabelPhotoPreviewScopePreserved: true,
+      nonLabelPayloadKinds: Object.freeze(["meal_photo", "meal_text", "trend_summary"]),
+      userInitiatedRequestRequired: true,
+      reviewSubjectBindsTaskPayloadOriginModelAndRevisions: true,
+      payloadOrConfigurationChangeInvalidatesConfirmation: true,
+      confirmationAuthorizesSingleAttemptOnly: true,
+      confirmationTokenReusable: false,
+      backgroundSendAuthorized: false,
+      automaticRetryAuthorized: false,
+      blockedWhenD034D036OrD053Unresolved: true,
+      rawPayloadOrProviderResponsePersisted: false,
+      uploadConfirmationSeparateFromCandidateConfirmation: true,
+      unknownResultRequiresSameAttemptReconciliation: true,
+      startupInvalidatesPriorConfirmation: true,
+      otherRequiresNormalization: true,
+      productSelfReviewPassed: true,
+      privacySecuritySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d033RegisteredInDecisionLedger: false,
+      d033RecordedInOwnerIntake: false,
+      closedD039BlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenD039BlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenD039BlockerCount: 5,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      d039DecisionStateChanged: false,
+    }),
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -2351,7 +2417,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_17_D031_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_17_D033_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5466,6 +5532,41 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D031_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-17.jsonl",
       "D-031 必须精确保留三套媒体/AI 保留政策包、临时内容清理、备份/删除边界、四域自审和独立复核/Owner/B04/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d033CardSpec = baseline.d033.cardSpec;
+  const d033CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d033CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d033CardSpec.correlationId),
+  );
+  const d033CardEvent = d033CardEvents[0]?.value;
+  const d033CardData = d033CardEvent?.data ?? {};
+  const d033CardFields = Object.keys(d033CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  const d033Registered = model.decisionRegister.decisions.some((decision) => decision.id === "D-033");
+  const d033OwnerResponses = model.ownerIntake.responses.filter((response) => response.decisionId === "D-033");
+  if (
+    d033CardEvents.length !== 1 ||
+    d033CardEvent?.eventId !== d033CardSpec.eventId ||
+    d033CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d033CardEvent?.actor?.id !== d033CardSpec.actorId ||
+    d033CardEvent?.actor?.role !== d033CardSpec.actorRole ||
+    d033CardEvent?.subject?.id !== d033CardSpec.subjectId ||
+    d033CardEvent?.subject?.role !== d033CardSpec.subjectRole ||
+    d033CardEvent?.correlationId !== d033CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d033CardData).sort()) !== JSON.stringify(d033CardFields) ||
+    d033CardFields.some(
+      (field) => JSON.stringify(d033CardData[field]) !== JSON.stringify(d033CardSpec[field]),
+    ) ||
+    d033Registered ||
+    d033OwnerResponses.length !== 0
+  ) {
+    add(
+      "OPS_D033_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-17.jsonl",
+      "D-033 必须精确保留三套非标签 AI 上传确认政策包、D-014 范围、单次绑定/失效、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
     );
   }
 
