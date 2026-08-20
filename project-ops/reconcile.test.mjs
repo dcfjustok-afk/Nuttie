@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 187,
+    events: 188,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -218,6 +218,30 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d036.selfReviewPassed, true);
   assert.equal(report.d036.independentReviewPassed, false);
   assert.equal(report.d036.ownerCardScheduled, false);
+  assert.equal(report.d036.protocolEventId, "EVT-20260821-011");
+  assert.equal(report.d036.protocolState, "PROTOCOL_READY");
+  assert.equal(report.d036.protocolNext, "D036_OI07_SPIKE_AUTHORIZATION_AND_MAC_TOOLCHAIN_REQUIRED");
+  assert.equal(report.d036.protocolSourcePacketVersion, "PACKET-001-R1");
+  assert.equal(report.d036.protocolSourceCardInputFrozen, true);
+  assert.equal(report.d036.protocolProviderTargetCount, 3);
+  assert.equal(report.d036.protocolCandidateProfileCount, 3);
+  assert.equal(report.d036.protocolRequiredCompatibilityCellCount, 36);
+  assert.equal(report.d036.protocolNativeBoundarySurfaceCount, 13);
+  assert.equal(report.d036.protocolOfflineRepetitionMinimum, 10);
+  assert.equal(report.d036.protocolProviderPathRepetitionMinimum, 3);
+  assert.equal(report.d036.protocolOi07Complete, false);
+  assert.equal(report.d036.protocolProviderTargetsResolved, false);
+  assert.equal(report.d036.protocolMacAvailable, false);
+  assert.equal(report.d036.protocolHarnessAuthorized, false);
+  assert.equal(report.d036.protocolNetworkSpikeAuthorized, false);
+  assert.equal(report.d036.protocolExecutionStarted, false);
+  assert.equal(report.d036.protocolCompatibilityPassed, false);
+  assert.equal(report.d036.protocolNativeEvidencePassed, false);
+  assert.equal(report.d036.protocolIndependentReviewPassed, false);
+  assert.equal(report.d036.protocolOwnerReviewAuthorized, false);
+  assert.equal(report.d036.protocolB05Closed, false);
+  assert.equal(report.d036.protocolRealNetworkAuthorized, false);
+  assert.equal(report.d036.protocolFormalImplementationAuthorized, false);
   assert.equal(report.d036.registeredInDecisionLedger, false);
   assert.equal(report.d036.ownerResponseCount, 0);
   assert.equal(report.d053.eventId, "EVT-20260820-002");
@@ -635,6 +659,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d036Report = reconcileProjectOps(d036Model);
   assert.equal(d036Report.ok, false);
   assert.ok(d036Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE"));
+
+  const d036ProtocolModel = validModel();
+  d036ProtocolModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-011",
+  ).value.data.realNetworkSpikeAuthorized = true;
+  const d036ProtocolReport = reconcileProjectOps(d036ProtocolModel);
+  assert.equal(d036ProtocolReport.ok, false);
+  assert.ok(
+    d036ProtocolReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE",
+    ),
+  );
 
   const d053Model = validModel();
   d053Model.events.find((record) => record.value.eventId === "EVT-20260820-002").value.data.appleProhibitedUsesOwnerWaivable = true;

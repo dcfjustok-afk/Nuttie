@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY",
+export const PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 187,
+    events: 188,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 10,
+    "2026-08-21": 11,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2233,6 +2233,70 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY = Object.freeze({
       ownerIntakeChanged: false,
       d039DecisionStateChanged: false,
     }),
+    compatibilityProtocol: Object.freeze({
+      eventId: "EVT-20260821-011",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D036-PROVIDER-NATIVE-COMPATIBILITY-SPIKE-PROTOCOL-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d036-provider-native-compatibility-spike-protocol",
+      state: "completed",
+      decisionId: "D-036",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D036_PROVIDER_NATIVE_SPIKE_PROTOCOL_REQUIRED",
+      to: "D036_PROVIDER_NATIVE_SPIKE_PROTOCOL_READY",
+      next: "D036_OI07_SPIKE_AUTHORIZATION_AND_MAC_TOOLCHAIN_REQUIRED",
+      protocolState: "PROTOCOL_READY",
+      sourcePacketVersion: "PACKET-001-R1",
+      sourceCardInputFrozen: true,
+      sourceCardCommit: "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+      sourceCardBlobOid: "3bc58cebfb45e2046891fb774bc242fe69ee5b30",
+      sourceCardSha256: "fdfe2fdebce62e4bc7e31e4ba8b358d9780e4b93377907ecd780bcd4dfcdb7ab",
+      sourcePacketManifestEventId: "EVT-20260821-009",
+      protocolArtifactCommit: "a21110dc651cad83b0c77e4fee5f2e96ac51ef88",
+      protocolArtifactBlobOid: "c72ae3f053f7beaa5ab2cea8fa730ab2b18c82c1",
+      providerTargetCount: 3,
+      candidateProfileCount: 3,
+      buildConfigurationCount: 2,
+      runtimeTargetCount: 2,
+      requiredCompatibilityCellCount: 36,
+      nativeBoundarySurfaceCount: 13,
+      offlineMeasuredRepetitionMinimum: 10,
+      providerCellPathRepetitionMinimum: 3,
+      oi07Complete: false,
+      providerTargetsResolved: false,
+      macAndSupportedXcodeAvailable: false,
+      physicalIphoneAvailableForHarness: false,
+      isolatedNativeHarnessAuthorized: false,
+      syntheticCorpusMaterialized: false,
+      realNetworkSpikeAuthorized: false,
+      credentialInjectionAuthorized: false,
+      spikeExecutionStarted: false,
+      providerCompatibilityReportRecorded: false,
+      providerCompatibilitySpikePassed: false,
+      nativeBoundaryEvidenceRecorded: false,
+      nativeBoundaryEvidencePassed: false,
+      namedSecurityReviewerAssigned: false,
+      namedQaReviewerAssigned: false,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d036RegisteredInDecisionLedger: false,
+      d036RecordedInOwnerIntake: false,
+      b05Closed: false,
+      d032SecondOwnerActionSatisfied: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      realNetworkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+    }),
   }),
   d053: Object.freeze({
     cardSpec: Object.freeze({
@@ -3750,7 +3814,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7482,6 +7546,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D036_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-036 必须精确保留三套 AITransport 隔离政策包、origin/redirect/session/cache/cookie/credential 边界、三 Provider/原生证据门禁、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d036CompatibilityProtocolSpec = baseline.d036.compatibilityProtocol;
+  const d036CompatibilityProtocolEvents = model.events.filter(
+    (record) => record.value?.eventId === d036CompatibilityProtocolSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d036CompatibilityProtocolSpec.correlationId),
+  );
+  const d036CompatibilityProtocolEvent = d036CompatibilityProtocolEvents[0]?.value;
+  const d036CompatibilityProtocolData = d036CompatibilityProtocolEvent?.data ?? {};
+  const d036CompatibilityProtocolFields = Object.keys(d036CompatibilityProtocolSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d036CompatibilityProtocolEvents.length !== 1 ||
+    d036CompatibilityProtocolEvent?.eventId !== d036CompatibilityProtocolSpec.eventId ||
+    d036CompatibilityProtocolEvent?.type !== "ARTIFACT_CREATED" ||
+    d036CompatibilityProtocolEvent?.actor?.id !== d036CompatibilityProtocolSpec.actorId ||
+    d036CompatibilityProtocolEvent?.actor?.role !== d036CompatibilityProtocolSpec.actorRole ||
+    d036CompatibilityProtocolEvent?.subject?.id !== d036CompatibilityProtocolSpec.subjectId ||
+    d036CompatibilityProtocolEvent?.subject?.role !== d036CompatibilityProtocolSpec.subjectRole ||
+    d036CompatibilityProtocolEvent?.correlationId !== d036CompatibilityProtocolSpec.correlationId ||
+    JSON.stringify(Object.keys(d036CompatibilityProtocolData).sort()) !==
+      JSON.stringify(d036CompatibilityProtocolFields) ||
+    d036CompatibilityProtocolFields.some(
+      (field) => JSON.stringify(d036CompatibilityProtocolData[field]) !==
+        JSON.stringify(d036CompatibilityProtocolSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D036_COMPATIBILITY_PROTOCOL_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-036 Spike 协议必须绑定冻结卡输入，覆盖无密钥 OI-07、36 个兼容单元与 13 个原生证据面，同时保持 Provider、工具链、harness、联网、执行、复核、Owner、B05 与实现门禁关闭",
     );
   }
 

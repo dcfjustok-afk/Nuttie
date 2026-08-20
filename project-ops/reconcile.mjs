@@ -119,6 +119,16 @@ function latestD036Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD036CompatibilityProtocolRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D036-PROVIDER-NATIVE-COMPATIBILITY-SPIKE-PROTOCOL-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD053Record(model) {
   return model.events
     .filter((record) => record.value?.subject?.id === "D053-AI-PROVIDER-USE-ADMISSION-CARD-001")
@@ -796,6 +806,7 @@ export function reconcileProjectOps(model) {
   }
 
   const d036Record = latestD036Record(model);
+  const d036ProtocolRecord = latestD036CompatibilityProtocolRecord(model);
   const d036 = {
     eventId: d036Record?.eventId ?? null,
     decisionState: d036Record?.data?.decisionState ?? null,
@@ -827,6 +838,37 @@ export function reconcileProjectOps(model) {
     ownerCardScheduled: d036Record?.data?.ownerCardScheduled ?? null,
     ownerReviewAuthorized: d036Record?.data?.ownerReviewAuthorized ?? null,
     formalImplementationAuthorized: d036Record?.data?.formalImplementationAuthorized ?? null,
+    protocolEventId: d036ProtocolRecord?.eventId ?? null,
+    protocolState: d036ProtocolRecord?.data?.protocolState ?? null,
+    protocolNext: d036ProtocolRecord?.data?.next ?? null,
+    protocolSourcePacketVersion: d036ProtocolRecord?.data?.sourcePacketVersion ?? null,
+    protocolSourceCardInputFrozen: d036ProtocolRecord?.data?.sourceCardInputFrozen ?? null,
+    protocolArtifactCommit: d036ProtocolRecord?.data?.protocolArtifactCommit ?? null,
+    protocolProviderTargetCount: d036ProtocolRecord?.data?.providerTargetCount ?? null,
+    protocolCandidateProfileCount: d036ProtocolRecord?.data?.candidateProfileCount ?? null,
+    protocolRequiredCompatibilityCellCount:
+      d036ProtocolRecord?.data?.requiredCompatibilityCellCount ?? null,
+    protocolNativeBoundarySurfaceCount:
+      d036ProtocolRecord?.data?.nativeBoundarySurfaceCount ?? null,
+    protocolOfflineRepetitionMinimum:
+      d036ProtocolRecord?.data?.offlineMeasuredRepetitionMinimum ?? null,
+    protocolProviderPathRepetitionMinimum:
+      d036ProtocolRecord?.data?.providerCellPathRepetitionMinimum ?? null,
+    protocolOi07Complete: d036ProtocolRecord?.data?.oi07Complete ?? null,
+    protocolProviderTargetsResolved: d036ProtocolRecord?.data?.providerTargetsResolved ?? null,
+    protocolMacAvailable: d036ProtocolRecord?.data?.macAndSupportedXcodeAvailable ?? null,
+    protocolHarnessAuthorized: d036ProtocolRecord?.data?.isolatedNativeHarnessAuthorized ?? null,
+    protocolNetworkSpikeAuthorized: d036ProtocolRecord?.data?.realNetworkSpikeAuthorized ?? null,
+    protocolExecutionStarted: d036ProtocolRecord?.data?.spikeExecutionStarted ?? null,
+    protocolCompatibilityPassed:
+      d036ProtocolRecord?.data?.providerCompatibilitySpikePassed ?? null,
+    protocolNativeEvidencePassed: d036ProtocolRecord?.data?.nativeBoundaryEvidencePassed ?? null,
+    protocolIndependentReviewPassed: d036ProtocolRecord?.data?.independentReviewPassed ?? null,
+    protocolOwnerReviewAuthorized: d036ProtocolRecord?.data?.ownerReviewAuthorized ?? null,
+    protocolB05Closed: d036ProtocolRecord?.data?.b05Closed ?? null,
+    protocolRealNetworkAuthorized: d036ProtocolRecord?.data?.realNetworkAuthorized ?? null,
+    protocolFormalImplementationAuthorized:
+      d036ProtocolRecord?.data?.formalImplementationAuthorized ?? null,
     registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-036"),
     ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-036").length,
   };
@@ -849,10 +891,35 @@ export function reconcileProjectOps(model) {
     d036.ownerCardScheduled === false &&
     d036.ownerReviewAuthorized === false &&
     d036.formalImplementationAuthorized === false &&
+    d036.protocolEventId === "EVT-20260821-011" &&
+    d036.protocolState === "PROTOCOL_READY" &&
+    d036.protocolNext === "D036_OI07_SPIKE_AUTHORIZATION_AND_MAC_TOOLCHAIN_REQUIRED" &&
+    d036.protocolSourcePacketVersion === "PACKET-001-R1" &&
+    d036.protocolSourceCardInputFrozen === true &&
+    d036.protocolArtifactCommit === "a21110dc651cad83b0c77e4fee5f2e96ac51ef88" &&
+    d036.protocolProviderTargetCount === 3 &&
+    d036.protocolCandidateProfileCount === 3 &&
+    d036.protocolRequiredCompatibilityCellCount === 36 &&
+    d036.protocolNativeBoundarySurfaceCount === 13 &&
+    d036.protocolOfflineRepetitionMinimum === 10 &&
+    d036.protocolProviderPathRepetitionMinimum === 3 &&
+    d036.protocolOi07Complete === false &&
+    d036.protocolProviderTargetsResolved === false &&
+    d036.protocolMacAvailable === false &&
+    d036.protocolHarnessAuthorized === false &&
+    d036.protocolNetworkSpikeAuthorized === false &&
+    d036.protocolExecutionStarted === false &&
+    d036.protocolCompatibilityPassed === false &&
+    d036.protocolNativeEvidencePassed === false &&
+    d036.protocolIndependentReviewPassed === false &&
+    d036.protocolOwnerReviewAuthorized === false &&
+    d036.protocolB05Closed === false &&
+    d036.protocolRealNetworkAuthorized === false &&
+    d036.protocolFormalImplementationAuthorized === false &&
     d036.registeredInDecisionLedger === false &&
     d036.ownerResponseCount === 0
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D036_GATE", "D-036", "D-036 未保持三包 AITransport 隔离卡、显式 session 隔离、三 Provider/原生证据待办、自审和独立复核/Owner/B05/实现未授权状态", d036);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D036_GATE", "D-036", "D-036 未保持三包 AITransport 卡、36 单元/13 原生面 Spike 协议，以及 OI-07/Provider/工具链/联网/执行/复核/Owner/B05/实现待办状态", d036);
   }
 
   const d053Record = latestD053Record(model);

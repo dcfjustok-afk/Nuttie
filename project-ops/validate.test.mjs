@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY,
+  PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 306,
+    instancesValidated: 307,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 187);
+  assert.equal(report.counts.events, 188);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -880,6 +880,36 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d036CardEvent.value.data.ownerCardScheduled, false);
   assert.equal(d036CardEvent.value.data.d039BlockerState, "OPEN");
   assert.equal(d036CardEvent.value.data.formalImplementationAuthorized, false);
+  const d036ProtocolEvent = findEvent(VALID_MODEL, "EVT-20260821-011");
+  assert.equal(d036ProtocolEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d036ProtocolEvent.value.subject.id,
+    "D036-PROVIDER-NATIVE-COMPATIBILITY-SPIKE-PROTOCOL-001",
+  );
+  assert.equal(d036ProtocolEvent.value.data.protocolState, "PROTOCOL_READY");
+  assert.equal(d036ProtocolEvent.value.data.sourcePacketVersion, "PACKET-001-R1");
+  assert.equal(d036ProtocolEvent.value.data.sourceCardInputFrozen, true);
+  assert.equal(d036ProtocolEvent.value.data.providerTargetCount, 3);
+  assert.equal(d036ProtocolEvent.value.data.candidateProfileCount, 3);
+  assert.equal(d036ProtocolEvent.value.data.buildConfigurationCount, 2);
+  assert.equal(d036ProtocolEvent.value.data.runtimeTargetCount, 2);
+  assert.equal(d036ProtocolEvent.value.data.requiredCompatibilityCellCount, 36);
+  assert.equal(d036ProtocolEvent.value.data.nativeBoundarySurfaceCount, 13);
+  assert.equal(d036ProtocolEvent.value.data.offlineMeasuredRepetitionMinimum, 10);
+  assert.equal(d036ProtocolEvent.value.data.providerCellPathRepetitionMinimum, 3);
+  assert.equal(d036ProtocolEvent.value.data.oi07Complete, false);
+  assert.equal(d036ProtocolEvent.value.data.providerTargetsResolved, false);
+  assert.equal(d036ProtocolEvent.value.data.macAndSupportedXcodeAvailable, false);
+  assert.equal(d036ProtocolEvent.value.data.isolatedNativeHarnessAuthorized, false);
+  assert.equal(d036ProtocolEvent.value.data.realNetworkSpikeAuthorized, false);
+  assert.equal(d036ProtocolEvent.value.data.spikeExecutionStarted, false);
+  assert.equal(d036ProtocolEvent.value.data.providerCompatibilitySpikePassed, false);
+  assert.equal(d036ProtocolEvent.value.data.nativeBoundaryEvidencePassed, false);
+  assert.equal(d036ProtocolEvent.value.data.independentReviewPassed, false);
+  assert.equal(d036ProtocolEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d036ProtocolEvent.value.data.b05Closed, false);
+  assert.equal(d036ProtocolEvent.value.data.realNetworkAuthorized, false);
+  assert.equal(d036ProtocolEvent.value.data.formalImplementationAuthorized, false);
   const d053CardEvent = findEvent(VALID_MODEL, "EVT-20260820-002");
   assert.equal(d053CardEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d053CardEvent.value.subject.id, "D053-AI-PROVIDER-USE-ADMISSION-CARD-001");
@@ -1397,7 +1427,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 305);
+    assert.equal(report.schemaValidation.instancesValidated, 306);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3187,6 +3217,48 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       model.decisionRegister.decisions.push(candidate);
     });
     assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-036 Provider/原生兼容协议事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-011");
+    });
+    assertDiagnostic(report, "OPS_D036_COMPATIBILITY_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-036 协议静默减少兼容单元或原生证据面", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-011").value.data;
+      data.requiredCompatibilityCellCount = 18;
+      data.nativeBoundarySurfaceCount = 10;
+      data.providerTargetCount = 2;
+    });
+    assertDiagnostic(report, "OPS_D036_COMPATIBILITY_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-036 协议弱化离线与 Provider 路径重复采样", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-011").value.data;
+      data.offlineMeasuredRepetitionMinimum = 1;
+      data.providerCellPathRepetitionMinimum = 1;
+      data.sourceCardInputFrozen = false;
+    });
+    assertDiagnostic(report, "OPS_D036_COMPATIBILITY_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("准备 D-036 协议就越级伪造 OI-07、联网、证据、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-011").value.data;
+      data.oi07Complete = true;
+      data.realNetworkSpikeAuthorized = true;
+      data.providerCompatibilitySpikePassed = true;
+      data.nativeBoundaryEvidencePassed = true;
+      data.independentReviewPassed = true;
+      data.ownerReviewAuthorized = true;
+      data.b05Closed = true;
+      data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D036_COMPATIBILITY_PROTOCOL_MISMATCH");
   });
 
   await t.test("D-053 选择卡工件事件缺失", () => {
