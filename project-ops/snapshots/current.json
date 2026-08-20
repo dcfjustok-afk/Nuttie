@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-20T23:09:56+08:00",
+  "generatedAt": "2026-08-20T23:22:36+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 174
+    "projectEvents": 175
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 三包内部卡完成自审并等待独立复核，D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、十维 Provider 证据与 App Privacy 映射；B06/B07 仍为 Owner/环境依赖；D-040 前三批十三卡等待独立复核，中国支持/健康治理输入草案已完成但具名健康评审人未分配，动态模型方案另需专项证据；D-032 等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 三包内部卡完成自审并等待独立复核，D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、十维 Provider 证据与 App Privacy 映射；B06/B07 仍为 Owner/环境依赖；D-040 前三批十三卡等待独立复核，中国支持/健康治理输入草案已完成但具名健康评审人未分配，中国现行宏量标准证据已补齐但 D-063 未就绪，动态模型方案另需专项证据；D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -272,9 +272,9 @@
     "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
     "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；后续 D-039 已由 Owner 单独明确选择 A",
     "D039-QA-001 至 QA-010 已关闭；D-039 方案 A 已通过 PX-3 Owner Gate 并冻结 PX-4。首次 PX-5 DoR 为 NOT_READY；B01/B02 已完成，B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 内部卡均自审通过但独立复核/Owner 评审均未发生，B03 至 B07 仍开放，正式实现未授权",
-    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入与宏量研究复审归零，20 个决定轴及 D-054 至 D-072 候选 ID 预留保持不变。前三批共十三张内部选择卡已完成单轴互斥规格和 Product/健康安全/隐私/QA 自审；EER/REE 名称、活动缺失、四层数据分离、保存/删除组合、raw/display 舍入和历史不回算边界已固定，动态模型方案仍缺模型/许可/保护线/corpus 证据。中国大陆支持输入已区分 12356 心理援助与 120 医疗急救，并形成四类称谓、六个候选文案场景及 90 天/发版前复核合同；具名健康评审人、资质、批准和 Content QA 均缺失。全部预留 ID 均未进入决定台账或 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED，全部授权位关闭",
+    "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入与宏量研究复审归零，20 个决定轴及 D-054 至 D-072 候选 ID 预留保持不变。前三批共十三张内部选择卡已完成单轴互斥规格和 Product/健康安全/隐私/QA 自审；EER/REE 名称、活动缺失、四层数据分离、保存/删除组合、raw/display 舍入和历史不回算边界已固定，动态模型方案仍缺模型/许可/保护线/corpus 证据。中国大陆支持输入已区分 12356 心理援助与 120 医疗急救，并形成四类称谓、六个候选文案场景及 90 天/发版前复核合同；具名健康评审人、资质、批准和 Content QA 均缺失。WS/T 578.1-2017 当前现行状态、成人 P/C/F 参考带与 4/4/9 已补齐，征求意见稿仅作修订监视；不得生成默认三元组、处方或评分，D-063 仍未 Owner-ready。全部预留 ID 均未进入决定台账或 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED，全部授权位关闭",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
-    "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；原第 10 题已拆为 D-063/D-070/D-071/D-072 四个互斥轴。中国支持文案和健康评审治理输入草案已完成，但具名健康评审/批准仍是 PX-0 缺口；中国宏量标准证据仍缺失",
+    "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；原第 10 题已拆为 D-063/D-070/D-071/D-072 四个互斥轴。中国支持文案和健康评审治理输入草案已完成，但具名健康评审/批准仍是 PX-0 缺口；中国宏量标准证据已用 WS/T 578.1-2017 官方页面/PDF和现行状态关闭，D-063 仍需健康评审、卡片规格与独立复核",
     "current.json 由 PM 按事件、消息、决定和门禁人工归并；仓库尚无 reducer，静态 builder 只打包本快照"
   ],
   "constraints": [

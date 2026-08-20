@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC,
+  PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 293,
+    instancesValidated: 294,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 174);
+  assert.equal(report.counts.events, 175);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -893,6 +893,31 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040ChinaHealthInputEvent.value.data.d069OwnerReady, false);
   assert.equal(d040ChinaHealthInputEvent.value.data.healthCopyImplementationAuthorized, false);
   assert.equal(d040ChinaHealthInputEvent.value.data.formalImplementationAuthorized, false);
+  const d040ChinaMacroInputEvent = findEvent(VALID_MODEL, "EVT-20260820-006");
+  assert.equal(d040ChinaMacroInputEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040ChinaMacroInputEvent.value.subject.id, "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001");
+  assert.equal(d040ChinaMacroInputEvent.value.data.standardId, "WS/T 578.1-2017");
+  assert.equal(d040ChinaMacroInputEvent.value.data.standardStatus, "CURRENT_RECOMMENDED_INDUSTRY_STANDARD");
+  assert.deepEqual(d040ChinaMacroInputEvent.value.data.adultCarbohydrateEnergyPercentRange, [50, 65]);
+  assert.deepEqual(d040ChinaMacroInputEvent.value.data.adultFatEnergyPercentRange, [20, 30]);
+  assert.deepEqual(d040ChinaMacroInputEvent.value.data.adultProteinEnergyPercentRange, [10, 15]);
+  assert.deepEqual(d040ChinaMacroInputEvent.value.data.energyConversionKcalPerGram, {
+    protein: 4,
+    carbohydrate: 4,
+    fat: 9,
+    dietaryFiber: 2,
+  });
+  assert.equal(d040ChinaMacroInputEvent.value.data.rangeEndpointsCanGenerateDefaultTriplet, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.referenceBandCanBeIndividualPrescription, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.outOfRangeCanTriggerDiagnosisScoringOrAutomaticCorrection, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.consultationDraftTreatedAsCurrentStandard, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.maximumStatusReviewIntervalDays, 90);
+  assert.equal(d040ChinaMacroInputEvent.value.data.chinaMacroStandardEvidenceGapClosed, true);
+  assert.equal(d040ChinaMacroInputEvent.value.data.d063ChinaReferenceBandEvidenceReady, true);
+  assert.equal(d040ChinaMacroInputEvent.value.data.healthReviewerAssigned, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.d063OwnerReady, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.macroImplementationAuthorized, false);
+  assert.equal(d040ChinaMacroInputEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -938,7 +963,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 292);
+    assert.equal(report.schemaValidation.instancesValidated, 293);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3008,6 +3033,41 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.healthCopyImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH");
+  });
+
+  await t.test("中国宏量标准输入工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-006",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH");
+  });
+
+  await t.test("从独立范围静默生成默认宏量三元组", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-006").value.data.rangeEndpointsCanGenerateDefaultTriplet = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH");
+  });
+
+  await t.test("把征求意见稿冒充现行标准并授权评分", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-006").value;
+      event.data.consultationDraftTreatedAsCurrentStandard = true;
+      event.data.outOfRangeCanTriggerDiagnosisScoringOrAutomaticCorrection = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH");
+  });
+
+  await t.test("没有健康评审就把 D-063 提交 Owner 并授权实现", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-006").value;
+      event.data.d063OwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.macroImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH");
   });
 
 });

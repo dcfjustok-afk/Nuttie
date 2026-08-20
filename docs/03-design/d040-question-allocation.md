@@ -54,7 +54,7 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 - Mifflin REE 不得冒充每日维持目标，NASEM EER 不得冒充增减重处方；
 - 公式候选、资料变化或规则升级不得自动覆盖生效目标或回算历史日记；
 - 所有路径保留手工或无目标出口，除非 D-072 以后明确限制“新增记录”本身；即使限制，也不能显示自动目标；
-- 中国宏量标准证据缺口未关闭时，不得以“中国标准”名义提供参考比例；
+- 中国宏量标准证据已由 `WS/T 578.1-2017` 现行状态输入包关闭；只允许带版本的健康成人参考带候选，不得生成默认比例、个体处方、评分或自动纠正；
 - App 不诊断、不转诊、不从其他资料推断公式分支或健康状态。
 
 ## 4. 依赖与提交顺序
@@ -65,7 +65,7 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 2. 能量模型：D-057、D-059、D-060、D-061、D-062；
 3. 数据生命周期：D-064、D-065、D-066、D-067；
 4. 非诊断边界：D-068、D-069，并先关闭中国大陆支持称谓/资源文案和健康评审责任人/复核周期；
-5. 宏量轴：D-063、D-070、D-071、D-072；中国标准缺口未关闭时 D-063 不得提供“中国参考带”选项；
+5. 宏量轴：D-063、D-070、D-071、D-072；中国现行标准证据输入已完成，但具名健康评审和前序卡未关闭，D-063 仍不得进入 Owner 评审；
 6. 最终 D-040：只在所有会改变 A/B/C 含义的前置决定已经记录后提交。
 
 依赖关系不是默认答案。前一项被拒绝或选择“停用自动公式”时，后续不适用卡应跳过并记录 `NOT_APPLICABLE`，不得强迫 Owner 选择无意义选项。
@@ -79,6 +79,8 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 第三小批 D-064/D-065/D-066/D-067 已形成[资料与目标生命周期选择卡规格](d040-data-lifecycle-batch-card-spec.md)，固定 CalculationDraft/CurrentProfile/GoalVersion/IndependentHistory 分层、保存/删除组合、raw/display 舍入分离和 stale/pending/supersede 边界。
 
 [中国大陆支持文案与健康评审治理输入包](d040-china-support-health-review-input.md) 已区分 `12356` 心理援助与 `120` 医疗急救，形成稳定支持称谓、六条候选文案、责任矩阵、90 天/每次 Release 来源复核和即时失效条件。它只完成输入草案；具名健康评审人、资质证据、健康批准和 Content QA 均缺失，因此 D-068/D-069 仍不能形成 Owner-ready 卡。
+
+[中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。中国标准证据缺口已关闭，但具名健康评审、前序 D-068/D-069 与宏量卡自审/独立复核尚未完成，D-063 仍为 `NOT_OWNER_READY`。
 
 三批卡片与支持输入仍只是内部草案。下一步同时需要前三批独立复核和具名中国健康评审人；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
@@ -98,6 +100,9 @@ dataLifecycleBatchSelfReviewPassed: true
 chinaSupportCopyDraftComplete: true
 healthReviewGovernanceDraftComplete: true
 healthReviewerAssigned: false
+chinaMacroCurrentStandardEvidenceComplete: true
+d063ChinaReferenceBandEvidenceReady: true
+d063OwnerReady: false
 d068OwnerReady: false
 d069OwnerReady: false
 next: CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED

@@ -116,6 +116,7 @@ function latestD040Record(model) {
         subjectId === "D040-ENERGY-MODEL-BATCH-CARD-SPEC-001" ||
         subjectId === "D040-DATA-LIFECYCLE-BATCH-CARD-SPEC-001" ||
         subjectId === "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001" ||
+        subjectId === "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -690,6 +691,9 @@ export function reconcileProjectOps(model) {
   const d040ChinaHealthInputRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260820-005",
   )?.value ?? null;
+  const d040ChinaMacroInputRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260820-006",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -746,6 +750,20 @@ export function reconcileProjectOps(model) {
     d068OwnerReady: d040ChinaHealthInputRecord?.data?.d068OwnerReady ?? null,
     d069OwnerReady: d040ChinaHealthInputRecord?.data?.d069OwnerReady ?? null,
     firstThreeBatchesIndependentReviewPassed: d040ChinaHealthInputRecord?.data?.firstThreeBatchesIndependentReviewPassed ?? null,
+    chinaMacroInputState: d040ChinaMacroInputRecord?.data?.inputState ?? null,
+    chinaMacroStandardId: d040ChinaMacroInputRecord?.data?.standardId ?? null,
+    chinaMacroStandardStatus: d040ChinaMacroInputRecord?.data?.standardStatus ?? null,
+    chinaMacroOfficialStatusVerified: d040ChinaMacroInputRecord?.data?.officialRegistryCurrentStatusVerified ?? null,
+    chinaMacroCarbohydrateRange: d040ChinaMacroInputRecord?.data?.adultCarbohydrateEnergyPercentRange ?? null,
+    chinaMacroFatRange: d040ChinaMacroInputRecord?.data?.adultFatEnergyPercentRange ?? null,
+    chinaMacroProteinRange: d040ChinaMacroInputRecord?.data?.adultProteinEnergyPercentRange ?? null,
+    chinaMacroRangeCanGenerateDefaultTriplet: d040ChinaMacroInputRecord?.data?.rangeEndpointsCanGenerateDefaultTriplet ?? null,
+    chinaMacroCanTriggerDiagnosisScoringOrCorrection: d040ChinaMacroInputRecord?.data?.outOfRangeCanTriggerDiagnosisScoringOrAutomaticCorrection ?? null,
+    chinaMacroConsultationDraftTreatedAsCurrent: d040ChinaMacroInputRecord?.data?.consultationDraftTreatedAsCurrentStandard ?? null,
+    chinaMacroStandardEvidenceGapClosed: d040ChinaMacroInputRecord?.data?.chinaMacroStandardEvidenceGapClosed ?? null,
+    d063ChinaReferenceBandEvidenceReady: d040ChinaMacroInputRecord?.data?.d063ChinaReferenceBandEvidenceReady ?? null,
+    d063OwnerReady: d040ChinaMacroInputRecord?.data?.d063OwnerReady ?? null,
+    macroCardIndependentReviewPassed: d040ChinaMacroInputRecord?.data?.macroCardIndependentReviewPassed ?? null,
     formulaEvidenceReviewComplete: d040FirstBatchRecord?.data?.formulaEvidenceReviewComplete ?? null,
     firstBatchOwnerReviewAuthorized: d040FirstBatchRecord?.data?.ownerReviewAuthorized ?? null,
     ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
@@ -762,7 +780,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260820-005" &&
+    d040.eventId === "EVT-20260820-006" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -800,12 +818,26 @@ export function reconcileProjectOps(model) {
     d040.d068OwnerReady === false &&
     d040.d069OwnerReady === false &&
     d040.firstThreeBatchesIndependentReviewPassed === false &&
+    d040.chinaMacroInputState === "EVIDENCE_COMPLETE" &&
+    d040.chinaMacroStandardId === "WS/T 578.1-2017" &&
+    d040.chinaMacroStandardStatus === "CURRENT_RECOMMENDED_INDUSTRY_STANDARD" &&
+    d040.chinaMacroOfficialStatusVerified === true &&
+    JSON.stringify(d040.chinaMacroCarbohydrateRange) === JSON.stringify([50, 65]) &&
+    JSON.stringify(d040.chinaMacroFatRange) === JSON.stringify([20, 30]) &&
+    JSON.stringify(d040.chinaMacroProteinRange) === JSON.stringify([10, 15]) &&
+    d040.chinaMacroRangeCanGenerateDefaultTriplet === false &&
+    d040.chinaMacroCanTriggerDiagnosisScoringOrCorrection === false &&
+    d040.chinaMacroConsultationDraftTreatedAsCurrent === false &&
+    d040.chinaMacroStandardEvidenceGapClosed === true &&
+    d040.d063ChinaReferenceBandEvidenceReady === true &&
+    d040.d063OwnerReady === false &&
+    d040.macroCardIndependentReviewPassed === false &&
     d040.formulaEvidenceReviewComplete === true &&
     d040.firstBatchOwnerReviewAuthorized === false &&
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、动态模型/生命周期边界、中国支持草案与具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、动态模型/生命周期边界、中国支持与宏量现行标准输入、具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

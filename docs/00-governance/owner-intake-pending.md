@@ -39,4 +39,4 @@ Owner 后续于 2026-08-15 查看冻结 D-039 原型后明确回复 `a`，单独
 
 ## 3. 后续门禁
 
-OI-01 至 OI-03 和首批 12 项输入已完成整批确认，D-039 后续已单独接受 A。计划中的下一张宿主原生 `request_user_input` 仍以 `d040_onboarding_goals` 作为队列占位，但 D-040 的 20 个独立决定轴必须先完成选择卡规格与 PX-0/PX-1/PX-2 前置评审；前三批十三张内部卡片已完成四域自审，中国支持/健康治理输入草案已形成，当前为 `CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED`。具名健康评审人、资质、健康批准、Content QA、动态模型证据和前三批独立复核均未完成，尚未排入 Owner 评审。D-032 已允许隔离 JS Spike，但 OI-02 与 D-039 均不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。
+OI-01 至 OI-03 和首批 12 项输入已完成整批确认，D-039 后续已单独接受 A。计划中的下一张宿主原生 `request_user_input` 仍以 `d040_onboarding_goals` 作为队列占位，但 D-040 的 20 个独立决定轴必须先完成选择卡规格与 PX-0/PX-1/PX-2 前置评审；前三批十三张内部卡片已完成四域自审，中国支持/健康治理输入草案和 WS/T 578.1-2017 宏量现行证据已形成，当前为 `CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED`。具名健康评审人、资质、健康批准、Content QA、动态模型证据和前三批独立复核均未完成，D-063 仍未 Owner-ready，尚未排入 Owner 评审。D-032 已允许隔离 JS Spike，但 OI-02 与 D-039 均不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。

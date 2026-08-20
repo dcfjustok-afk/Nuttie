@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC",
+export const PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 174,
+    events: 175,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 5,
+    "2026-08-20": 6,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2595,6 +2595,67 @@ export const PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC = Object.freeze({
       healthCopyImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    chinaMacronutrientStandardInput: Object.freeze({
+      eventId: "EVT-20260820-006",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-china-macronutrient-standard-input",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "CHINA_MACRO_STANDARD_EVIDENCE_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "EVIDENCE_COMPLETE",
+      standardId: "WS/T 578.1-2017",
+      standardStatus: "CURRENT_RECOMMENDED_INDUSTRY_STANDARD",
+      standardPublishedAt: "2017-09-14",
+      standardEffectiveAt: "2018-04-01",
+      officialPageAndPdfVerified: true,
+      officialRegistryCurrentStatusVerified: true,
+      officialSourceCount: 4,
+      applicablePopulation: "healthy_chinese_population_or_individual",
+      adultCarbohydrateEnergyPercentRange: Object.freeze([50, 65]),
+      adultFatEnergyPercentRange: Object.freeze([20, 30]),
+      adultProteinEnergyPercentRange: Object.freeze([10, 15]),
+      energyConversionKcalPerGram: Object.freeze({
+        protein: 4,
+        carbohydrate: 4,
+        fat: 9,
+        dietaryFiber: 2,
+      }),
+      rangeEndpointsCanGenerateDefaultTriplet: false,
+      referenceBandCanBeIndividualPrescription: false,
+      referenceBandCanBeWeightLossPrescription: false,
+      outOfRangeCanTriggerDiagnosisScoringOrAutomaticCorrection: false,
+      referenceBandCanSilentlyBecomeGoalVersion: false,
+      standardIdAndSourceLabelRequired: true,
+      stricterProductEligibilityCanBePreserved: true,
+      broaderEligibilityThanSelectedModelAllowed: false,
+      replacementConsultationDraftExists: true,
+      consultationDraftTreatedAsCurrentStandard: false,
+      formalReplacementPublishedEvidenceFound: false,
+      releaseTimeStatusReverificationRequired: true,
+      maximumStatusReviewIntervalDays: 90,
+      runtimeNetworkRequired: false,
+      newStandardCanRecalculateHistory: false,
+      chinaMacroStandardEvidenceGapClosed: true,
+      d063ChinaReferenceBandEvidenceReady: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      d063OwnerReady: false,
+      macroCardIndependentReviewPassed: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      macroImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -2894,7 +2955,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5941,6 +6002,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 中国大陆支持与健康治理输入必须精确保留 12356/120 用途分离、候选称谓/文案、90 天及即时复核、具名评审缺口和 Owner/实现未授权边界",
+    );
+  }
+
+  const chinaMacroInputSpec = baseline.d040Research.chinaMacronutrientStandardInput;
+  const chinaMacroInputEvents = model.events.filter(
+    (record) => record.value?.eventId === chinaMacroInputSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === chinaMacroInputSpec.correlationId),
+  );
+  const chinaMacroInputEvent = chinaMacroInputEvents[0]?.value;
+  const chinaMacroInputData = chinaMacroInputEvent?.data ?? {};
+  const chinaMacroInputFields = Object.keys(chinaMacroInputSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    chinaMacroInputEvents.length !== 1 ||
+    chinaMacroInputEvent?.eventId !== chinaMacroInputSpec.eventId ||
+    chinaMacroInputEvent?.type !== "ARTIFACT_CREATED" ||
+    chinaMacroInputEvent?.actor?.id !== chinaMacroInputSpec.actorId ||
+    chinaMacroInputEvent?.actor?.role !== chinaMacroInputSpec.actorRole ||
+    chinaMacroInputEvent?.subject?.id !== chinaMacroInputSpec.subjectId ||
+    chinaMacroInputEvent?.subject?.role !== chinaMacroInputSpec.subjectRole ||
+    chinaMacroInputEvent?.correlationId !== chinaMacroInputSpec.correlationId ||
+    JSON.stringify(Object.keys(chinaMacroInputData).sort()) !== JSON.stringify(chinaMacroInputFields) ||
+    chinaMacroInputFields.some(
+      (field) => JSON.stringify(chinaMacroInputData[field]) !== JSON.stringify(chinaMacroInputSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 中国宏量标准输入必须精确保留 WS/T 578.1-2017 现行状态、成人范围、4/4/9、修订监视、禁止默认/处方/评分/历史回算和 Owner/实现未授权边界",
     );
   }
 
