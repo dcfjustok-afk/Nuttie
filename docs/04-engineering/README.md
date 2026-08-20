@@ -58,6 +58,7 @@
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。
 - [D-053 Provider 用途证据与 App Privacy 映射协议](testing/d053-provider-evidence-app-privacy-protocol.md)：固定三个 Provider、五类载荷、15 个最小准入 profile、150 项十维评估与至少 5 行 App Privacy 映射；当前 OI-07、Provider、证据采集、映射、签署、复核、Owner 与准入均未发生。
 - [OI-07 Provider 目标统一输入模板](testing/oi07-provider-target-intake-template.md)：把 D-036/D-053 合并为同一 revision、三个 target、每 target 29 字段的无密钥回填面；当前模板已准备，Owner 输入未收到，全部 target 保持 `UNKNOWN/BLOCKED`。
+- [OI-07 Provider target 本地校验合同](testing/oi07-provider-target-intake-harness.md)：以 11 项测试执行 3 target/29 字段/30 联合字段、UNKNOWN、来源 N/A、HTTPS、敏感材料与零授权边界；只输出计数/指纹，不回显 Provider 输入、不联网或授权。
 - [视觉资产契约检查](testing/visual-kit-check.md)：Figma-ready 栗子视觉资产的本地结构与安全边界。
 - [领域合同夹具](testing/domain-contract-harness.md)：七项营养、显式日期、每日汇总与基础内存 CRUD 的框架无关证据。
 - [手工餐食保存合同](testing/manual-meal-entry-harness.md)：状态转换、Repository port、`commandId` 幂等和未知提交结果重放证据。

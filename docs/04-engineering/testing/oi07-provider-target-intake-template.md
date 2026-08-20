@@ -6,6 +6,7 @@
 | 当前状态 | `TEMPLATE_READY / OWNER_INPUT_NOT_RECEIVED / ALL_TARGETS_UNKNOWN_BLOCKED` |
 | 消费协议 | `D036-PROVIDER-NATIVE-COMPATIBILITY-SPIKE-PROTOCOL-001`、`D053-PROVIDER-EVIDENCE-APP-PRIVACY-PROTOCOL-001` |
 | 固定范围 | `3` 个 Provider slot；每个 target `29` 个字段；加 `1` 个共享 revision，共 `30` 个联合字段 |
+| 本地校验 | [OI-07 Provider target 本地校验合同](oi07-provider-target-intake-harness.md)；只检查结构/格式/UNKNOWN，不验证 Provider 真相或授权 |
 | 授权边界 | 填写模板不授权 Provider 选择、付费、凭证创建/注入、真实网络、证据外联、D-036/D-053 通过、Owner 评审、B05 关闭或正式实现 |
 
 ## 1. 目的与非目标
@@ -139,6 +140,8 @@ providerTargetCount: 3
 ```text
 templateReady: true
 templateId: OI07-PROVIDER-TARGET-INTAKE-TEMPLATE-001
+localValidationHarnessReady: true
+localValidationSchemaVersion: OI07_PROVIDER_TARGET_INTAKE_INPUT_V1
 providerTargetCount: 3
 perTargetFieldCount: 29
 unionInputFieldCount: 30
