@@ -4,7 +4,7 @@
 | --- | --- |
 | 工件 ID | `D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001` |
 | 状态 | `PACKET_READY / REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED` |
-| 复核范围 | D-054~D-067 中已形成规格的 13 张卡；不包含尚未形成卡片的 D-063、D-068~D-072 |
+| 复核范围 | D-054~D-067 中已形成规格的 13 张卡；不包含已另行成包的 D-063/D-070/D-071/D-072，也不包含尚未形成卡片的 D-068/D-069 |
 | 当前权威状态 | `D-040 = CANDIDATE / PX-0_INPUT_GAP` |
 | 非目标 | 选择 Owner 答案、批准健康内容、补足动态模型采用证据、把预留 ID 写入决定台账、授权实现或发布 |
 | 当前下一门禁 | `FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED` |
@@ -117,7 +117,7 @@
 - 动态模型两个受限选项仍保持 `NOT_OWNER_READY`，中国健康签署仍保持独立门禁；
 - Owner intake、Owner 卡排期、决定台账和全部实现授权位仍未改变。
 
-通过前三批独立复核不等于 D-040 可以提交 Owner：D-068/D-069 健康签署、D-063 宏量卡、D-070~D-072 和其他未完成轴仍须各自关闭。
+通过前三批独立复核不等于 D-040 可以提交 Owner：[D-063/D-070/D-071/D-072 四张宏量轴卡独立复核包](d040-macro-axis-independent-review-packet.md)、D-068/D-069 健康签署和其他未完成轴仍须各自关闭。
 
 ## 7. 正式复核记录最小 schema
 

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D072_CARD_SPEC,
+  PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D072_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 301,
+    instancesValidated: 302,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 182);
+  assert.equal(report.counts.events, 183);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1158,6 +1158,61 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d072CardEvent.value.data.recordingImplementationAuthorized, false);
   assert.equal(d072CardEvent.value.data.persistenceImplementationAuthorized, false);
   assert.equal(d072CardEvent.value.data.formalImplementationAuthorized, false);
+  const macroAxisReviewPacketEvent = findEvent(VALID_MODEL, "EVT-20260821-006");
+  assert.equal(macroAxisReviewPacketEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    macroAxisReviewPacketEvent.value.subject.id,
+    "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001",
+  );
+  assert.equal(macroAxisReviewPacketEvent.value.data.inputState, "PACKET_READY_REVIEWERS_UNASSIGNED");
+  assert.equal(macroAxisReviewPacketEvent.value.data.reviewPacketReady, true);
+  assert.equal(macroAxisReviewPacketEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(macroAxisReviewPacketEvent.value.data.requiredArtifactCount, 10);
+  assert.equal(macroAxisReviewPacketEvent.value.data.requiredCardCount, 4);
+  assert.deepEqual(macroAxisReviewPacketEvent.value.data.cardDecisionIds, [
+    "D-063",
+    "D-070",
+    "D-071",
+    "D-072",
+  ]);
+  assert.equal(macroAxisReviewPacketEvent.value.data.requiredReviewerDomainCount, 4);
+  assert.deepEqual(macroAxisReviewPacketEvent.value.data.reviewerDomainIds, [
+    "PRODUCT_DECISION_QUALITY",
+    "HEALTH_FORMULA_EVIDENCE",
+    "PRIVACY_DATA_INTEGRITY",
+    "QA_ACCESSIBILITY",
+  ]);
+  assert.equal(macroAxisReviewPacketEvent.value.data.requiredCrossAxisInvariantCount, 14);
+  assert.deepEqual(macroAxisReviewPacketEvent.value.data.allowedCardDispositionIds, [
+    "APPROVE_SPEC",
+    "APPROVE_WITH_REQUIRED_CHANGE",
+    "REJECT_SPEC",
+    "OUT_OF_SCOPE",
+  ]);
+  assert.deepEqual(macroAxisReviewPacketEvent.value.data.blockingSeverityIds, ["P0", "P1", "P2"]);
+  assert.equal(macroAxisReviewPacketEvent.value.data.nonBlockingSeverityId, "P3");
+  assert.equal(macroAxisReviewPacketEvent.value.data.namedReviewerRequired, true);
+  assert.equal(macroAxisReviewPacketEvent.value.data.authorOrPmCanSelfApprove, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.aiOrAgentCanBeIndependentReviewer, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.externalMessageSent, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.reviewersAssigned, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.reviewerIdentityVerified, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.reviewerIndependenceVerified, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.conflictOfInterestResolved, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.independentReviewStarted, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.independentReviewPassed, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.currentFindingCountsMeasured, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.healthReviewStillRequired, true);
+  assert.equal(macroAxisReviewPacketEvent.value.data.healthContentApproved, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.contentQaPassed, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.d063Accepted, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.d070Accepted, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.macroAxisIndependentReviewPassed, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.goalImplementationAuthorized, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.recordingImplementationAuthorized, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.persistenceImplementationAuthorized, false);
+  assert.equal(macroAxisReviewPacketEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -1203,7 +1258,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 300);
+    assert.equal(report.schemaValidation.instancesValidated, 301);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3660,6 +3715,72 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_D072_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("四张宏量轴卡独立复核包事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260821-006",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("宏量轴复核包静默减少输入、卡片、复核域或跨轴不变量", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-006").value;
+      event.data.requiredArtifactCount = 9;
+      event.data.requiredCardCount = 3;
+      event.data.cardDecisionIds.pop();
+      event.data.requiredReviewerDomainCount = 3;
+      event.data.reviewerDomainIds.pop();
+      event.data.requiredCrossAxisInvariantCount = 13;
+      event.data.allowedCardDispositionIds.pop();
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("让作者、PM、AI 或 Agent 冒充宏量轴独立复核人并宣称通过", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-006").value;
+      event.data.namedReviewerRequired = false;
+      event.data.authorOrPmCanSelfApprove = true;
+      event.data.aiOrAgentCanBeIndependentReviewer = true;
+      event.data.reviewersAssigned = true;
+      event.data.reviewerIdentityVerified = true;
+      event.data.reviewerIndependenceVerified = true;
+      event.data.conflictOfInterestResolved = true;
+      event.data.independentReviewStarted = true;
+      event.data.independentReviewPassed = true;
+      event.data.currentFindingCountsMeasured = true;
+      event.data.macroAxisIndependentReviewPassed = true;
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("宏量轴复核包准备完成就开放健康、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-006").value;
+      event.data.healthReviewStillRequired = false;
+      event.data.healthReviewerAssigned = true;
+      event.data.healthContentApproved = true;
+      event.data.contentQaPassed = true;
+      event.data.d063Accepted = true;
+      event.data.d070Accepted = true;
+      event.data.d063OwnerReady = true;
+      event.data.d070OwnerReady = true;
+      event.data.d071OwnerReady = true;
+      event.data.d072OwnerReady = true;
+      event.data.ownerIntakeChanged = true;
+      event.data.ownerCardScheduled = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.decisionAcceptedRecorded = true;
+      event.data.goalImplementationAuthorized = true;
+      event.data.recordingImplementationAuthorized = true;
+      event.data.persistenceImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH");
   });
 
 });

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D072_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_21_D072_CARD_SPEC",
+export const PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET = Object.freeze({
+  id: "PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 182,
+    events: 183,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D072_CARD_SPEC = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 5,
+    "2026-08-21": 6,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3089,6 +3089,75 @@ export const PHASE0_2026_08_21_D072_CARD_SPEC = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    macroAxisIndependentReviewPacket: Object.freeze({
+      eventId: "EVT-20260821-006",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-macro-axis-independent-review-packet",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "D063_D070_D071_D072_CARD_SPEC_COMPLETE_MACRO_AXIS_REVIEW_PACKET_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      packetNext: "MACRO_AXIS_INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "PACKET_READY_REVIEWERS_UNASSIGNED",
+      reviewPacketReady: true,
+      reviewPacketVersion: "PACKET-001-R1",
+      requiredArtifactCount: 10,
+      requiredCardCount: 4,
+      cardDecisionIds: Object.freeze(["D-063", "D-070", "D-071", "D-072"]),
+      requiredReviewerDomainCount: 4,
+      reviewerDomainIds: Object.freeze([
+        "PRODUCT_DECISION_QUALITY",
+        "HEALTH_FORMULA_EVIDENCE",
+        "PRIVACY_DATA_INTEGRITY",
+        "QA_ACCESSIBILITY",
+      ]),
+      requiredCrossAxisInvariantCount: 14,
+      allowedCardDispositionIds: Object.freeze([
+        "APPROVE_SPEC",
+        "APPROVE_WITH_REQUIRED_CHANGE",
+        "REJECT_SPEC",
+        "OUT_OF_SCOPE",
+      ]),
+      blockingSeverityIds: Object.freeze(["P0", "P1", "P2"]),
+      nonBlockingSeverityId: "P3",
+      namedReviewerRequired: true,
+      authorOrPmCanSelfApprove: false,
+      aiOrAgentCanBeIndependentReviewer: false,
+      externalMessageSent: false,
+      reviewersAssigned: false,
+      reviewerIdentityVerified: false,
+      reviewerIndependenceVerified: false,
+      conflictOfInterestResolved: false,
+      independentReviewStarted: false,
+      independentReviewPassed: false,
+      currentFindingCountsMeasured: false,
+      healthReviewStillRequired: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      d063Accepted: false,
+      d070Accepted: false,
+      d063OwnerReady: false,
+      d070OwnerReady: false,
+      d071OwnerReady: false,
+      d072OwnerReady: false,
+      macroAxisIndependentReviewPassed: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      goalImplementationAuthorized: false,
+      recordingImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3388,7 +3457,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D072_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6683,6 +6752,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_D072_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-072 卡片必须精确保留两项互斥事实记录策略、硬停止不可豁免、不诊断、不删历史、保留数据控制，以及健康/独立复核/Owner/实现均未授权状态",
+    );
+  }
+
+  const macroAxisReviewPacketSpec = baseline.d040Research.macroAxisIndependentReviewPacket;
+  const macroAxisReviewPacketEvents = model.events.filter(
+    (record) => record.value?.eventId === macroAxisReviewPacketSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === macroAxisReviewPacketSpec.correlationId),
+  );
+  const macroAxisReviewPacketEvent = macroAxisReviewPacketEvents[0]?.value;
+  const macroAxisReviewPacketData = macroAxisReviewPacketEvent?.data ?? {};
+  const macroAxisReviewPacketFields = Object.keys(macroAxisReviewPacketSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    macroAxisReviewPacketEvents.length !== 1 ||
+    macroAxisReviewPacketEvent?.eventId !== macroAxisReviewPacketSpec.eventId ||
+    macroAxisReviewPacketEvent?.type !== "ARTIFACT_CREATED" ||
+    macroAxisReviewPacketEvent?.actor?.id !== macroAxisReviewPacketSpec.actorId ||
+    macroAxisReviewPacketEvent?.actor?.role !== macroAxisReviewPacketSpec.actorRole ||
+    macroAxisReviewPacketEvent?.subject?.id !== macroAxisReviewPacketSpec.subjectId ||
+    macroAxisReviewPacketEvent?.subject?.role !== macroAxisReviewPacketSpec.subjectRole ||
+    macroAxisReviewPacketEvent?.correlationId !== macroAxisReviewPacketSpec.correlationId ||
+    JSON.stringify(Object.keys(macroAxisReviewPacketData).sort()) !== JSON.stringify(macroAxisReviewPacketFields) ||
+    macroAxisReviewPacketFields.some(
+      (field) => JSON.stringify(macroAxisReviewPacketData[field]) !== JSON.stringify(macroAxisReviewPacketSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-040 四张宏量轴卡复核包必须精确保留 10 份输入、4 张卡、4 个复核域、14 条跨轴不变量、独立性要求，以及健康/Owner/实现均未授权状态",
     );
   }
 

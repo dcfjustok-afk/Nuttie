@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 182,
+    events: 183,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,7 +152,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-005");
+  assert.equal(report.d040.eventId, "EVT-20260821-006");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -348,6 +348,44 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.d072OwnerReviewAuthorized, false);
   assert.equal(report.d040.d072RecordingImplementationAuthorized, false);
   assert.equal(report.d040.d072PersistenceImplementationAuthorized, false);
+  assert.equal(report.d040.macroAxisReviewPacketReady, true);
+  assert.equal(report.d040.macroAxisReviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d040.macroAxisReviewRequiredArtifactCount, 10);
+  assert.equal(report.d040.macroAxisReviewRequiredCardCount, 4);
+  assert.equal(report.d040.macroAxisReviewCardDecisionCount, 4);
+  assert.equal(report.d040.macroAxisReviewRequiredDomainCount, 4);
+  assert.equal(report.d040.macroAxisReviewDomainCount, 4);
+  assert.equal(report.d040.macroAxisReviewRequiredInvariantCount, 14);
+  assert.equal(report.d040.macroAxisReviewDispositionCount, 4);
+  assert.equal(report.d040.macroAxisReviewBlockingSeverityCount, 3);
+  assert.equal(report.d040.macroAxisReviewNamedReviewerRequired, true);
+  assert.equal(report.d040.macroAxisReviewAuthorOrPmCanSelfApprove, false);
+  assert.equal(report.d040.macroAxisReviewAiOrAgentCanBeReviewer, false);
+  assert.equal(report.d040.macroAxisReviewExternalMessageSent, false);
+  assert.equal(report.d040.macroAxisReviewReviewersAssigned, false);
+  assert.equal(report.d040.macroAxisReviewIdentityVerified, false);
+  assert.equal(report.d040.macroAxisReviewIndependenceVerified, false);
+  assert.equal(report.d040.macroAxisReviewConflictResolved, false);
+  assert.equal(report.d040.macroAxisReviewStarted, false);
+  assert.equal(report.d040.macroAxisReviewPassed, false);
+  assert.equal(report.d040.macroAxisReviewFindingCountsMeasured, false);
+  assert.equal(report.d040.macroAxisReviewHealthStillRequired, true);
+  assert.equal(report.d040.macroAxisReviewHealthContentApproved, false);
+  assert.equal(report.d040.macroAxisReviewContentQaPassed, false);
+  assert.equal(report.d040.macroAxisReviewD063Accepted, false);
+  assert.equal(report.d040.macroAxisReviewD070Accepted, false);
+  assert.equal(report.d040.macroAxisReviewD063OwnerReady, false);
+  assert.equal(report.d040.macroAxisReviewD070OwnerReady, false);
+  assert.equal(report.d040.macroAxisReviewD071OwnerReady, false);
+  assert.equal(report.d040.macroAxisReviewD072OwnerReady, false);
+  assert.equal(report.d040.macroAxisIndependentReviewPassed, false);
+  assert.equal(report.d040.macroAxisReviewOwnerIntakeChanged, false);
+  assert.equal(report.d040.macroAxisReviewOwnerCardScheduled, false);
+  assert.equal(report.d040.macroAxisReviewOwnerReviewAuthorized, false);
+  assert.equal(report.d040.macroAxisReviewGoalImplementationAuthorized, false);
+  assert.equal(report.d040.macroAxisReviewRecordingImplementationAuthorized, false);
+  assert.equal(report.d040.macroAxisReviewPersistenceImplementationAuthorized, false);
+  assert.equal(report.d040.macroAxisReviewFormalImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -531,6 +569,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d072CardReport = reconcileProjectOps(d072CardModel);
   assert.equal(d072CardReport.ok, false);
   assert.ok(d072CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const macroAxisReviewPacketModel = validModel();
+  macroAxisReviewPacketModel.events.find((record) => record.value.eventId === "EVT-20260821-006").value.data.independentReviewPassed = true;
+  const macroAxisReviewPacketReport = reconcileProjectOps(macroAxisReviewPacketModel);
+  assert.equal(macroAxisReviewPacketReport.ok, false);
+  assert.ok(macroAxisReviewPacketReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

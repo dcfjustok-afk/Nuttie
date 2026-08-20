@@ -44,6 +44,7 @@
 | [d040-custom-macro-input-shape-card-spec.md](d040-custom-macro-input-shape-card-spec.md) | D-070 完整克数、完整 100% 比例、显式部分克数三项互斥输入卡；D-063/健康/独立复核未通过，尚未 Owner-ready |
 | [d040-macro-display-rounding-card-spec.md](d040-macro-display-rounding-card-spec.md) | D-071 三项互斥显示策略、来源/派生单位、raw/display、十进制舍入与残差披露卡；D-063/D-070/健康/独立复核未通过 |
 | [d040-hard-stop-record-availability-card-spec.md](d040-hard-stop-record-availability-card-spec.md) | D-072 硬停止后允许无目标事实或暂停新增的二选一卡；硬停止不可豁免，健康/Content QA/独立复核未通过 |
+| [d040-macro-axis-independent-review-packet.md](d040-macro-axis-independent-review-packet.md) | D-063/D-070/D-071/D-072 四卡、四复核域、十四条跨轴不变量与 P0~P3 标准；十份输入待冻结，复核人未指派且复核未开始 |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash 与采用缺口；许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
 | [d040-first-three-batches-independent-review-packet.md](d040-first-three-batches-independent-review-packet.md) | D-040 前三批十三卡的四域独立复核、十二条跨批不变量与 P0~P3 关闭标准；复核人未指派且复核未开始 |

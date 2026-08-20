@@ -124,6 +124,7 @@ function latestD040Record(model) {
         subjectId === "D040-CUSTOM-MACRO-INPUT-SHAPE-CARD-SPEC-001" ||
         subjectId === "D040-MACRO-DISPLAY-ROUNDING-CARD-SPEC-001" ||
         subjectId === "D040-HARD-STOP-RECORD-AVAILABILITY-CARD-SPEC-001" ||
+        subjectId === "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -722,6 +723,9 @@ export function reconcileProjectOps(model) {
   const d040D072CardRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260821-005",
   )?.value ?? null;
+  const d040MacroAxisReviewPacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260821-006",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -945,6 +949,44 @@ export function reconcileProjectOps(model) {
     d072OwnerReviewAuthorized: d040D072CardRecord?.data?.ownerReviewAuthorized ?? null,
     d072RecordingImplementationAuthorized: d040D072CardRecord?.data?.recordingImplementationAuthorized ?? null,
     d072PersistenceImplementationAuthorized: d040D072CardRecord?.data?.persistenceImplementationAuthorized ?? null,
+    macroAxisReviewPacketReady: d040MacroAxisReviewPacketRecord?.data?.reviewPacketReady ?? null,
+    macroAxisReviewPacketVersion: d040MacroAxisReviewPacketRecord?.data?.reviewPacketVersion ?? null,
+    macroAxisReviewRequiredArtifactCount: d040MacroAxisReviewPacketRecord?.data?.requiredArtifactCount ?? null,
+    macroAxisReviewRequiredCardCount: d040MacroAxisReviewPacketRecord?.data?.requiredCardCount ?? null,
+    macroAxisReviewCardDecisionCount: d040MacroAxisReviewPacketRecord?.data?.cardDecisionIds?.length ?? null,
+    macroAxisReviewRequiredDomainCount: d040MacroAxisReviewPacketRecord?.data?.requiredReviewerDomainCount ?? null,
+    macroAxisReviewDomainCount: d040MacroAxisReviewPacketRecord?.data?.reviewerDomainIds?.length ?? null,
+    macroAxisReviewRequiredInvariantCount: d040MacroAxisReviewPacketRecord?.data?.requiredCrossAxisInvariantCount ?? null,
+    macroAxisReviewDispositionCount: d040MacroAxisReviewPacketRecord?.data?.allowedCardDispositionIds?.length ?? null,
+    macroAxisReviewBlockingSeverityCount: d040MacroAxisReviewPacketRecord?.data?.blockingSeverityIds?.length ?? null,
+    macroAxisReviewNamedReviewerRequired: d040MacroAxisReviewPacketRecord?.data?.namedReviewerRequired ?? null,
+    macroAxisReviewAuthorOrPmCanSelfApprove: d040MacroAxisReviewPacketRecord?.data?.authorOrPmCanSelfApprove ?? null,
+    macroAxisReviewAiOrAgentCanBeReviewer: d040MacroAxisReviewPacketRecord?.data?.aiOrAgentCanBeIndependentReviewer ?? null,
+    macroAxisReviewExternalMessageSent: d040MacroAxisReviewPacketRecord?.data?.externalMessageSent ?? null,
+    macroAxisReviewReviewersAssigned: d040MacroAxisReviewPacketRecord?.data?.reviewersAssigned ?? null,
+    macroAxisReviewIdentityVerified: d040MacroAxisReviewPacketRecord?.data?.reviewerIdentityVerified ?? null,
+    macroAxisReviewIndependenceVerified: d040MacroAxisReviewPacketRecord?.data?.reviewerIndependenceVerified ?? null,
+    macroAxisReviewConflictResolved: d040MacroAxisReviewPacketRecord?.data?.conflictOfInterestResolved ?? null,
+    macroAxisReviewStarted: d040MacroAxisReviewPacketRecord?.data?.independentReviewStarted ?? null,
+    macroAxisReviewPassed: d040MacroAxisReviewPacketRecord?.data?.independentReviewPassed ?? null,
+    macroAxisReviewFindingCountsMeasured: d040MacroAxisReviewPacketRecord?.data?.currentFindingCountsMeasured ?? null,
+    macroAxisReviewHealthStillRequired: d040MacroAxisReviewPacketRecord?.data?.healthReviewStillRequired ?? null,
+    macroAxisReviewHealthContentApproved: d040MacroAxisReviewPacketRecord?.data?.healthContentApproved ?? null,
+    macroAxisReviewContentQaPassed: d040MacroAxisReviewPacketRecord?.data?.contentQaPassed ?? null,
+    macroAxisReviewD063Accepted: d040MacroAxisReviewPacketRecord?.data?.d063Accepted ?? null,
+    macroAxisReviewD070Accepted: d040MacroAxisReviewPacketRecord?.data?.d070Accepted ?? null,
+    macroAxisReviewD063OwnerReady: d040MacroAxisReviewPacketRecord?.data?.d063OwnerReady ?? null,
+    macroAxisReviewD070OwnerReady: d040MacroAxisReviewPacketRecord?.data?.d070OwnerReady ?? null,
+    macroAxisReviewD071OwnerReady: d040MacroAxisReviewPacketRecord?.data?.d071OwnerReady ?? null,
+    macroAxisReviewD072OwnerReady: d040MacroAxisReviewPacketRecord?.data?.d072OwnerReady ?? null,
+    macroAxisIndependentReviewPassed: d040MacroAxisReviewPacketRecord?.data?.macroAxisIndependentReviewPassed ?? null,
+    macroAxisReviewOwnerIntakeChanged: d040MacroAxisReviewPacketRecord?.data?.ownerIntakeChanged ?? null,
+    macroAxisReviewOwnerCardScheduled: d040MacroAxisReviewPacketRecord?.data?.ownerCardScheduled ?? null,
+    macroAxisReviewOwnerReviewAuthorized: d040MacroAxisReviewPacketRecord?.data?.ownerReviewAuthorized ?? null,
+    macroAxisReviewGoalImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.goalImplementationAuthorized ?? null,
+    macroAxisReviewRecordingImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.recordingImplementationAuthorized ?? null,
+    macroAxisReviewPersistenceImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.persistenceImplementationAuthorized ?? null,
+    macroAxisReviewFormalImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.formalImplementationAuthorized ?? null,
     healthReviewPacketReady: d040ChinaHealthReviewerPacketRecord?.data?.reviewPacketReady ?? null,
     healthReviewRequiredArtifactCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredArtifactCount ?? null,
     healthReviewRequiredItemCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredReviewItemCount ?? null,
@@ -1011,7 +1053,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260821-005" &&
+    d040.eventId === "EVT-20260821-006" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -1211,6 +1253,44 @@ export function reconcileProjectOps(model) {
     d040.d072OwnerReviewAuthorized === false &&
     d040.d072RecordingImplementationAuthorized === false &&
     d040.d072PersistenceImplementationAuthorized === false &&
+    d040.macroAxisReviewPacketReady === true &&
+    d040.macroAxisReviewPacketVersion === "PACKET-001-R1" &&
+    d040.macroAxisReviewRequiredArtifactCount === 10 &&
+    d040.macroAxisReviewRequiredCardCount === 4 &&
+    d040.macroAxisReviewCardDecisionCount === 4 &&
+    d040.macroAxisReviewRequiredDomainCount === 4 &&
+    d040.macroAxisReviewDomainCount === 4 &&
+    d040.macroAxisReviewRequiredInvariantCount === 14 &&
+    d040.macroAxisReviewDispositionCount === 4 &&
+    d040.macroAxisReviewBlockingSeverityCount === 3 &&
+    d040.macroAxisReviewNamedReviewerRequired === true &&
+    d040.macroAxisReviewAuthorOrPmCanSelfApprove === false &&
+    d040.macroAxisReviewAiOrAgentCanBeReviewer === false &&
+    d040.macroAxisReviewExternalMessageSent === false &&
+    d040.macroAxisReviewReviewersAssigned === false &&
+    d040.macroAxisReviewIdentityVerified === false &&
+    d040.macroAxisReviewIndependenceVerified === false &&
+    d040.macroAxisReviewConflictResolved === false &&
+    d040.macroAxisReviewStarted === false &&
+    d040.macroAxisReviewPassed === false &&
+    d040.macroAxisReviewFindingCountsMeasured === false &&
+    d040.macroAxisReviewHealthStillRequired === true &&
+    d040.macroAxisReviewHealthContentApproved === false &&
+    d040.macroAxisReviewContentQaPassed === false &&
+    d040.macroAxisReviewD063Accepted === false &&
+    d040.macroAxisReviewD070Accepted === false &&
+    d040.macroAxisReviewD063OwnerReady === false &&
+    d040.macroAxisReviewD070OwnerReady === false &&
+    d040.macroAxisReviewD071OwnerReady === false &&
+    d040.macroAxisReviewD072OwnerReady === false &&
+    d040.macroAxisIndependentReviewPassed === false &&
+    d040.macroAxisReviewOwnerIntakeChanged === false &&
+    d040.macroAxisReviewOwnerCardScheduled === false &&
+    d040.macroAxisReviewOwnerReviewAuthorized === false &&
+    d040.macroAxisReviewGoalImplementationAuthorized === false &&
+    d040.macroAxisReviewRecordingImplementationAuthorized === false &&
+    d040.macroAxisReviewPersistenceImplementationAuthorized === false &&
+    d040.macroAxisReviewFormalImplementationAuthorized === false &&
     d040.healthReviewPacketReady === true &&
     d040.healthReviewRequiredArtifactCount === 9 &&
     d040.healthReviewRequiredItemCount === 13 &&
@@ -1266,7 +1346,7 @@ export function reconcileProjectOps(model) {
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063 来源卡、D-070 输入形态卡、D-071 显示舍入卡、D-072 硬停止纯记录卡、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063/D-070/D-071/D-072 四张宏量轴卡及四卡独立复核包、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和授权位关闭状态", d040);
   }
 
   return {
