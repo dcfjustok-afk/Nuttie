@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 192,
+    events: 193,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -424,6 +424,36 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d034CorpusManifestHarness.ownerReviewAuthorized, false);
   assert.equal(report.d034CorpusManifestHarness.b05Closed, false);
   assert.equal(report.d034CorpusManifestHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d034RunReportContract.eventId, "EVT-20260821-016");
+  assert.equal(
+    report.d034RunReportContract.contractStatus,
+    "CONTRACT_READY / NO_RUNS / NO_REPORT / EXECUTION_NOT_AUTHORIZED",
+  );
+  assert.equal(report.d034RunReportContract.corpusManifestHarnessEventId, "EVT-20260821-015");
+  assert.equal(report.d034RunReportContract.profileCount, 3);
+  assert.equal(report.d034RunReportContract.requiredFixtureSlotMinimum, 85);
+  assert.equal(report.d034RunReportContract.fixedStageCount, 8);
+  assert.equal(report.d034RunReportContract.metricCount, 14);
+  assert.equal(report.d034RunReportContract.minimumCountedWarmupRunCount, 765);
+  assert.equal(report.d034RunReportContract.minimumCountedMeasuredRunCount, 2550);
+  assert.equal(report.d034RunReportContract.profileOrderRotationCount, 3);
+  assert.equal(report.d034RunReportContract.wholeGroupThermalDiscardRequired, true);
+  assert.equal(report.d034RunReportContract.discardedRecordsRetained, true);
+  assert.equal(report.d034RunReportContract.retryUsesNewRunId, true);
+  assert.equal(report.d034RunReportContract.rawRunValuesRequired, true);
+  assert.equal(report.d034RunReportContract.aggregatesRecomputedFromCountedMeasuredRuns, true);
+  assert.equal(report.d034RunReportContract.p95Algorithm, "NEAREST_RANK_CEIL_0_95_N_MINUS_1");
+  assert.equal(report.d034RunReportContract.benchmarkPassDispositionAllowed, false);
+  assert.equal(report.d034RunReportContract.contractValidatorImplemented, false);
+  assert.equal(report.d034RunReportContract.rawRunRecordCount, 0);
+  assert.equal(report.d034RunReportContract.benchmarkReportRecorded, false);
+  assert.equal(report.d034RunReportContract.corpusMaterialized, false);
+  assert.equal(report.d034RunReportContract.benchmarkExecutionAuthorized, false);
+  assert.equal(report.d034RunReportContract.deviceBenchmarkPassed, false);
+  assert.equal(report.d034RunReportContract.independentReviewPassed, false);
+  assert.equal(report.d034RunReportContract.ownerReviewAuthorized, false);
+  assert.equal(report.d034RunReportContract.b05Closed, false);
+  assert.equal(report.d034RunReportContract.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -884,6 +914,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(
     d034CorpusManifestHarnessReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_CORPUS_MANIFEST_GATE",
+    ),
+  );
+
+  const d034RunReportContractModel = validModel();
+  d034RunReportContractModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-016",
+  ).value.data.rawRunRecordCount = 2550;
+  const d034RunReportContractReport = reconcileProjectOps(d034RunReportContractModel);
+  assert.equal(d034RunReportContractReport.ok, false);
+  assert.ok(
+    d034RunReportContractReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_RUN_REPORT_CONTRACT_GATE",
     ),
   );
 

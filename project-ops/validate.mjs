@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY",
+export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 192,
+    events: 193,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY = Object.freez
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 15,
+    "2026-08-21": 16,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2667,6 +2667,86 @@ export const PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY = Object.freez
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
   }),
+  d034RunReportContract: Object.freeze({
+    eventId: "EVT-20260821-016",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "D034-BENCHMARK-RUN-REPORT-CONTRACT-001",
+    subjectRole: "CandidateTestContract",
+    correlationId: "d034-benchmark-run-report-contract",
+    state: "completed",
+    contractStatus: "CONTRACT_READY / NO_RUNS / NO_REPORT / EXECUTION_NOT_AUTHORIZED",
+    decisionId: "D-034",
+    decisionState: "CANDIDATE",
+    d039BlockerId: "D039-PX5-B05",
+    d039BlockerState: "OPEN",
+    protocolEventId: "EVT-20260821-010",
+    corpusManifestHarnessEventId: "EVT-20260821-015",
+    contractArtifactCommit: "27bfcf74b9739ee4a51e79bf2731845de7ca0cc7",
+    contractArtifactBlobOid: "503564dd1cec0b57d73c1251fadfec51024a014b",
+    bundleInputSchemaVersion: "D034_BENCHMARK_RUN_REPORT_BUNDLE_INPUT_V1",
+    runRecordSchemaVersion: "D034_BENCHMARK_RUN_RECORD_V1",
+    profileCount: 3,
+    requiredFixtureSlotMinimum: 85,
+    fixedStageCount: 8,
+    fixedStageOrder: true,
+    metricCount: 14,
+    warmupPerFixtureProfileMinimum: 3,
+    measuredPerFixtureProfileMinimum: 10,
+    minimumCountedWarmupRunCount: 765,
+    minimumCountedMeasuredRunCount: 2550,
+    profileOrderRotationCount: 3,
+    wholeGroupThermalDiscardRequired: true,
+    discardedRecordsRetained: true,
+    retryUsesNewRunId: true,
+    failedRecordsRetained: true,
+    rawRunValuesRequired: true,
+    aggregatesRecomputedFromCountedMeasuredRuns: true,
+    summaryStatisticCount: 4,
+    summaryStatistics: Object.freeze(["minimum", "median", "p95", "maximum"]),
+    p95Algorithm: "NEAREST_RANK_CEIL_0_95_N_MINUS_1",
+    profileDispositions: Object.freeze([
+      "MEASURED_PROFILE_PASS_CANDIDATE",
+      "FAIL",
+      "INCONCLUSIVE",
+    ]),
+    overallDispositions: Object.freeze([
+      "MEASURED_REVIEW_REQUIRED",
+      "FAIL",
+      "INCONCLUSIVE",
+    ]),
+    benchmarkPassDispositionAllowed: false,
+    independentReviewCallerAssertedNotVerified: true,
+    containsRealUserDataAllowed: false,
+    containsCredentialAllowed: false,
+    sensitivePayloadOrSecretAllowed: false,
+    contractValidatorImplemented: false,
+    syntheticContractFixtureIsBenchmarkEvidence: false,
+    rawRunRecordCount: 0,
+    benchmarkReportRecorded: false,
+    minimumPhysicalDeviceResolved: false,
+    macAndSupportedXcodeAvailable: false,
+    isolatedNativeHarnessAuthorized: false,
+    corpusMaterialized: false,
+    benchmarkExecutionAuthorized: false,
+    benchmarkExecutionStarted: false,
+    benchmarkResultRecorded: false,
+    deviceBenchmarkPassed: false,
+    namedSecurityReviewerAssigned: false,
+    namedQaReviewerAssigned: false,
+    independentReviewPassed: false,
+    ownerIntakeChanged: false,
+    externalMessageSent: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    b05Closed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -4088,7 +4168,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -8037,6 +8117,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-034 corpus manifest 本地合同必须执行 3 档/21 行/19+2 口径、85 个必需槽位、38 个边界/+1、JPEG/摘要/无真实数据与凭据/脱敏/不可变边界，同时保持真实 corpus、最低设备、Mac/Xcode、原生 harness、执行、结果、复核、Owner、B05 与实现全关闭",
+    );
+  }
+
+  const d034RunReportContractSpec = baseline.d034RunReportContract;
+  const d034RunReportContractEvents = model.events.filter(
+    (record) => record.value?.eventId === d034RunReportContractSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d034RunReportContractSpec.correlationId),
+  );
+  const d034RunReportContractEvent = d034RunReportContractEvents[0]?.value;
+  const d034RunReportContractData = d034RunReportContractEvent?.data ?? {};
+  const d034RunReportContractFields = Object.keys(d034RunReportContractSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d034RunReportContractEvents.length !== 1 ||
+    d034RunReportContractEvent?.eventId !== d034RunReportContractSpec.eventId ||
+    d034RunReportContractEvent?.type !== "ARTIFACT_CREATED" ||
+    d034RunReportContractEvent?.actor?.id !== d034RunReportContractSpec.actorId ||
+    d034RunReportContractEvent?.actor?.role !== d034RunReportContractSpec.actorRole ||
+    d034RunReportContractEvent?.subject?.id !== d034RunReportContractSpec.subjectId ||
+    d034RunReportContractEvent?.subject?.role !== d034RunReportContractSpec.subjectRole ||
+    d034RunReportContractEvent?.correlationId !== d034RunReportContractSpec.correlationId ||
+    JSON.stringify(Object.keys(d034RunReportContractData).sort()) !==
+      JSON.stringify(d034RunReportContractFields) ||
+    d034RunReportContractFields.some(
+      (field) => JSON.stringify(d034RunReportContractData[field]) !==
+        JSON.stringify(d034RunReportContractSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D034_BENCHMARK_RUN_REPORT_CONTRACT_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-034 raw run/report 合同必须固定 3 档/8 阶段/14 指标、最低 765 warm-up/2550 measured、整组丢弃/重试保留、raw 聚合重算、nearest-rank p95 与 measured candidate 非 benchmark pass，同时保持 validator/run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭",
     );
   }
 

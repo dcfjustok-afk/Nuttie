@@ -176,6 +176,16 @@ function latestD034CorpusManifestHarnessRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD034RunReportContractRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D034-BENCHMARK-RUN-REPORT-CONTRACT-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1509,6 +1519,148 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_CORPUS_MANIFEST_GATE", "D-034", "D-034 corpus manifest 本地合同未保持 13 测试/3 档/21 行/19+2/85 槽位/38 边界与 +1、JPEG/摘要/无真实数据凭据/脱敏/不可变边界及 corpus/设备/原生执行/结果/复核/Owner/B05/实现全关闭状态", d034CorpusManifestHarness);
   }
 
+  const d034RunReportContractRecord = latestD034RunReportContractRecord(model);
+  const d034RunReportContract = {
+    eventId: d034RunReportContractRecord?.eventId ?? null,
+    state: d034RunReportContractRecord?.data?.state ?? null,
+    contractStatus: d034RunReportContractRecord?.data?.contractStatus ?? null,
+    decisionId: d034RunReportContractRecord?.data?.decisionId ?? null,
+    decisionState: d034RunReportContractRecord?.data?.decisionState ?? null,
+    d039BlockerId: d034RunReportContractRecord?.data?.d039BlockerId ?? null,
+    d039BlockerState: d034RunReportContractRecord?.data?.d039BlockerState ?? null,
+    protocolEventId: d034RunReportContractRecord?.data?.protocolEventId ?? null,
+    corpusManifestHarnessEventId:
+      d034RunReportContractRecord?.data?.corpusManifestHarnessEventId ?? null,
+    contractArtifactCommit: d034RunReportContractRecord?.data?.contractArtifactCommit ?? null,
+    bundleInputSchemaVersion:
+      d034RunReportContractRecord?.data?.bundleInputSchemaVersion ?? null,
+    runRecordSchemaVersion:
+      d034RunReportContractRecord?.data?.runRecordSchemaVersion ?? null,
+    profileCount: d034RunReportContractRecord?.data?.profileCount ?? null,
+    requiredFixtureSlotMinimum:
+      d034RunReportContractRecord?.data?.requiredFixtureSlotMinimum ?? null,
+    fixedStageCount: d034RunReportContractRecord?.data?.fixedStageCount ?? null,
+    fixedStageOrder: d034RunReportContractRecord?.data?.fixedStageOrder ?? null,
+    metricCount: d034RunReportContractRecord?.data?.metricCount ?? null,
+    warmupPerFixtureProfileMinimum:
+      d034RunReportContractRecord?.data?.warmupPerFixtureProfileMinimum ?? null,
+    measuredPerFixtureProfileMinimum:
+      d034RunReportContractRecord?.data?.measuredPerFixtureProfileMinimum ?? null,
+    minimumCountedWarmupRunCount:
+      d034RunReportContractRecord?.data?.minimumCountedWarmupRunCount ?? null,
+    minimumCountedMeasuredRunCount:
+      d034RunReportContractRecord?.data?.minimumCountedMeasuredRunCount ?? null,
+    profileOrderRotationCount:
+      d034RunReportContractRecord?.data?.profileOrderRotationCount ?? null,
+    wholeGroupThermalDiscardRequired:
+      d034RunReportContractRecord?.data?.wholeGroupThermalDiscardRequired ?? null,
+    discardedRecordsRetained:
+      d034RunReportContractRecord?.data?.discardedRecordsRetained ?? null,
+    retryUsesNewRunId: d034RunReportContractRecord?.data?.retryUsesNewRunId ?? null,
+    failedRecordsRetained:
+      d034RunReportContractRecord?.data?.failedRecordsRetained ?? null,
+    rawRunValuesRequired: d034RunReportContractRecord?.data?.rawRunValuesRequired ?? null,
+    aggregatesRecomputedFromCountedMeasuredRuns:
+      d034RunReportContractRecord?.data?.aggregatesRecomputedFromCountedMeasuredRuns ?? null,
+    summaryStatistics: d034RunReportContractRecord?.data?.summaryStatistics ?? null,
+    p95Algorithm: d034RunReportContractRecord?.data?.p95Algorithm ?? null,
+    benchmarkPassDispositionAllowed:
+      d034RunReportContractRecord?.data?.benchmarkPassDispositionAllowed ?? null,
+    independentReviewCallerAssertedNotVerified:
+      d034RunReportContractRecord?.data?.independentReviewCallerAssertedNotVerified ?? null,
+    containsRealUserDataAllowed:
+      d034RunReportContractRecord?.data?.containsRealUserDataAllowed ?? null,
+    containsCredentialAllowed:
+      d034RunReportContractRecord?.data?.containsCredentialAllowed ?? null,
+    sensitivePayloadOrSecretAllowed:
+      d034RunReportContractRecord?.data?.sensitivePayloadOrSecretAllowed ?? null,
+    contractValidatorImplemented:
+      d034RunReportContractRecord?.data?.contractValidatorImplemented ?? null,
+    syntheticContractFixtureIsBenchmarkEvidence:
+      d034RunReportContractRecord?.data?.syntheticContractFixtureIsBenchmarkEvidence ?? null,
+    rawRunRecordCount: d034RunReportContractRecord?.data?.rawRunRecordCount ?? null,
+    benchmarkReportRecorded:
+      d034RunReportContractRecord?.data?.benchmarkReportRecorded ?? null,
+    minimumPhysicalDeviceResolved:
+      d034RunReportContractRecord?.data?.minimumPhysicalDeviceResolved ?? null,
+    macAndSupportedXcodeAvailable:
+      d034RunReportContractRecord?.data?.macAndSupportedXcodeAvailable ?? null,
+    isolatedNativeHarnessAuthorized:
+      d034RunReportContractRecord?.data?.isolatedNativeHarnessAuthorized ?? null,
+    corpusMaterialized: d034RunReportContractRecord?.data?.corpusMaterialized ?? null,
+    benchmarkExecutionAuthorized:
+      d034RunReportContractRecord?.data?.benchmarkExecutionAuthorized ?? null,
+    benchmarkExecutionStarted:
+      d034RunReportContractRecord?.data?.benchmarkExecutionStarted ?? null,
+    benchmarkResultRecorded:
+      d034RunReportContractRecord?.data?.benchmarkResultRecorded ?? null,
+    deviceBenchmarkPassed: d034RunReportContractRecord?.data?.deviceBenchmarkPassed ?? null,
+    independentReviewPassed:
+      d034RunReportContractRecord?.data?.independentReviewPassed ?? null,
+    ownerReviewAuthorized:
+      d034RunReportContractRecord?.data?.ownerReviewAuthorized ?? null,
+    b05Closed: d034RunReportContractRecord?.data?.b05Closed ?? null,
+    formalImplementationAuthorized:
+      d034RunReportContractRecord?.data?.formalImplementationAuthorized ?? null,
+    gateStatesChanged: d034RunReportContractRecord?.data?.gateStatesChanged ?? null,
+  };
+  if (!(
+    d034RunReportContract.eventId === "EVT-20260821-016" &&
+    d034RunReportContract.state === "completed" &&
+    d034RunReportContract.contractStatus === "CONTRACT_READY / NO_RUNS / NO_REPORT / EXECUTION_NOT_AUTHORIZED" &&
+    d034RunReportContract.decisionId === "D-034" &&
+    d034RunReportContract.decisionState === "CANDIDATE" &&
+    d034RunReportContract.d039BlockerId === "D039-PX5-B05" &&
+    d034RunReportContract.d039BlockerState === "OPEN" &&
+    d034RunReportContract.protocolEventId === "EVT-20260821-010" &&
+    d034RunReportContract.corpusManifestHarnessEventId === "EVT-20260821-015" &&
+    d034RunReportContract.contractArtifactCommit === "27bfcf74b9739ee4a51e79bf2731845de7ca0cc7" &&
+    d034RunReportContract.bundleInputSchemaVersion === "D034_BENCHMARK_RUN_REPORT_BUNDLE_INPUT_V1" &&
+    d034RunReportContract.runRecordSchemaVersion === "D034_BENCHMARK_RUN_RECORD_V1" &&
+    d034RunReportContract.profileCount === 3 &&
+    d034RunReportContract.requiredFixtureSlotMinimum === 85 &&
+    d034RunReportContract.fixedStageCount === 8 &&
+    d034RunReportContract.fixedStageOrder === true &&
+    d034RunReportContract.metricCount === 14 &&
+    d034RunReportContract.warmupPerFixtureProfileMinimum === 3 &&
+    d034RunReportContract.measuredPerFixtureProfileMinimum === 10 &&
+    d034RunReportContract.minimumCountedWarmupRunCount === 765 &&
+    d034RunReportContract.minimumCountedMeasuredRunCount === 2550 &&
+    d034RunReportContract.profileOrderRotationCount === 3 &&
+    d034RunReportContract.wholeGroupThermalDiscardRequired === true &&
+    d034RunReportContract.discardedRecordsRetained === true &&
+    d034RunReportContract.retryUsesNewRunId === true &&
+    d034RunReportContract.failedRecordsRetained === true &&
+    d034RunReportContract.rawRunValuesRequired === true &&
+    d034RunReportContract.aggregatesRecomputedFromCountedMeasuredRuns === true &&
+    JSON.stringify(d034RunReportContract.summaryStatistics) === JSON.stringify(["minimum", "median", "p95", "maximum"]) &&
+    d034RunReportContract.p95Algorithm === "NEAREST_RANK_CEIL_0_95_N_MINUS_1" &&
+    d034RunReportContract.benchmarkPassDispositionAllowed === false &&
+    d034RunReportContract.independentReviewCallerAssertedNotVerified === true &&
+    d034RunReportContract.containsRealUserDataAllowed === false &&
+    d034RunReportContract.containsCredentialAllowed === false &&
+    d034RunReportContract.sensitivePayloadOrSecretAllowed === false &&
+    d034RunReportContract.contractValidatorImplemented === false &&
+    d034RunReportContract.syntheticContractFixtureIsBenchmarkEvidence === false &&
+    d034RunReportContract.rawRunRecordCount === 0 &&
+    d034RunReportContract.benchmarkReportRecorded === false &&
+    d034RunReportContract.minimumPhysicalDeviceResolved === false &&
+    d034RunReportContract.macAndSupportedXcodeAvailable === false &&
+    d034RunReportContract.isolatedNativeHarnessAuthorized === false &&
+    d034RunReportContract.corpusMaterialized === false &&
+    d034RunReportContract.benchmarkExecutionAuthorized === false &&
+    d034RunReportContract.benchmarkExecutionStarted === false &&
+    d034RunReportContract.benchmarkResultRecorded === false &&
+    d034RunReportContract.deviceBenchmarkPassed === false &&
+    d034RunReportContract.independentReviewPassed === false &&
+    d034RunReportContract.ownerReviewAuthorized === false &&
+    d034RunReportContract.b05Closed === false &&
+    d034RunReportContract.formalImplementationAuthorized === false &&
+    d034RunReportContract.gateStatesChanged === false
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_RUN_REPORT_CONTRACT_GATE", "D-034", "D-034 raw run/report 合同未保持 3 档/8 阶段/14 指标、765 warm-up/2550 measured、整组丢弃/重试保留、raw 聚合/p95/pass 边界及 validator/run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭状态", d034RunReportContract);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -2233,6 +2385,7 @@ export function reconcileProjectOps(model) {
     oi07,
     oi07Harness,
     d034CorpusManifestHarness,
+    d034RunReportContract,
     d040,
     diagnostics,
   };

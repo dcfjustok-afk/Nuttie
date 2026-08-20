@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T03:51:20+08:00",
+  "generatedAt": "2026-08-21T04:04:56+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 192
+    "projectEvents": 193
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 benchmark 协议与 13 项 corpus manifest 本地校验已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1，但真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性已核验但许可/稳定版本/oracle corpus/保护线门禁未通过；D-032 等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 benchmark 协议、13 项 corpus manifest 本地校验与 raw run/report bundle 机器合同已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1、最低 765 warm-up/2550 measured、整组丢弃/重试保留与聚合重算，但 report validator、真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性已核验但许可/稳定版本/oracle corpus/保护线门禁未通过；D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-034 benchmark raw run/report bundle 机器合同已准备：固定 3 档、8 阶段、14 项指标、每 fixture/profile 至少 3 warm-up 与 10 measured（85 槽位最低 765/2550）、三种 profile 顺序轮换、整组 thermal 丢弃、重试新 run ID、原记录保留、nearest-rank p95、聚合重算及 measured candidate 不等于 benchmark pass；当前 validator 未实现，raw run/report 均为 0，corpus、设备、原生执行、复核、Owner、B05 与实现均未授权或未发生",
     "D-034 benchmark corpus manifest 本地失败关闭合同已完成 13 项测试：执行 3 档、21 行矩阵、19 项直接硬上限、2 项伴随控制、85 个必需语义槽位和 38 个边界/+1，并锁定 JPEG、摘要、无真实数据/凭据、敏感材料、不可变与顺序无关指纹边界；只验证内存中合成 manifest 的结构，不读取或物化 corpus，最低设备、Mac/Xcode、隔离原生 harness、执行、结果、复核、Owner、B05 与实现仍未授权或未完成",
     "OI-07 Provider target 本地失败关闭校验合同已完成 11 项测试：执行 3 target、每 target 29 字段、30 联合字段、UNKNOWN/N/A/HTTPS/敏感材料/不可变指纹边界，并分别报告 D-036/D-053 结构完整度；只输出计数、状态和指纹，不回显 Provider 输入。合成 fixture 不是 Owner 输入或 Provider 证据，revision/真实 target 仍未取得，凭证、费用、联网、证据、Owner、B05 与实现均未授权",
     "D-036/D-053 共用的 OI-07 Provider target 无密钥输入模板已准备：固定同一 OI07-RNNN revision、3 个 Provider slot、每 target 29 个字段（12 共享、8 个 D-036 独有、9 个 D-053 独有）及 30 个联合字段。Owner 或获授权联系人输入尚未收到，revision 未分配，全部 target 继续 UNKNOWN/BLOCKED；模板不授权 Provider、凭证、费用、联网、证据采集、Owner、B05 或实现",
