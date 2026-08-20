@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY",
+export const PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 176,
+    events: 177,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY = Object.fre
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 7,
+    "2026-08-20": 8,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2706,6 +2706,61 @@ export const PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY = Object.fre
       formulaImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    chinaHealthReviewerIntakePacket: Object.freeze({
+      eventId: "EVT-20260820-008",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-china-health-reviewer-intake-packet",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      packetNext: "NAMED_QUALIFIED_HEALTH_REVIEWER_REQUIRED",
+      inputState: "PACKET_READY_REVIEWER_UNASSIGNED",
+      locale: "zh-Hans-CN",
+      reviewPacketReady: true,
+      requiredArtifactCount: 9,
+      requiredReviewItemCount: 13,
+      copyReviewItemCount: 6,
+      boundaryReviewItemCount: 7,
+      itemDispositionIds: Object.freeze([
+        "APPROVE",
+        "APPROVE_WITH_REQUIRED_CHANGE",
+        "REJECT",
+        "OUT_OF_SCOPE",
+      ]),
+      qualificationFieldCount: 9,
+      formalReviewFieldCount: 21,
+      maximumReviewIntervalDays: 90,
+      immutableArtifactRefsRequired: true,
+      contentQaIndependentGateRequired: true,
+      sensitiveCredentialDocumentsStored: false,
+      aiOrAgentCanBeHealthReviewer: false,
+      externalMessageSent: false,
+      reviewerNameRecorded: false,
+      reviewerQualificationVerified: false,
+      conflictOfInterestResolved: false,
+      healthReviewStarted: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      d068OwnerReady: false,
+      d069OwnerReady: false,
+      d063OwnerReady: false,
+      firstThreeBatchesIndependentReviewPassed: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      healthCopyImplementationAuthorized: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3005,7 +3060,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6114,6 +6169,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 NIDDK 动态模型可行性输入必须精确保留来源/hash 已核验，但逐文件许可、稳定版本、官方 oracle corpus、回归容差、产品保护线、健康评审、Owner 和实现门禁均未通过的状态",
+    );
+  }
+
+  const chinaHealthReviewerPacketSpec = baseline.d040Research.chinaHealthReviewerIntakePacket;
+  const chinaHealthReviewerPacketEvents = model.events.filter(
+    (record) => record.value?.eventId === chinaHealthReviewerPacketSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === chinaHealthReviewerPacketSpec.correlationId),
+  );
+  const chinaHealthReviewerPacketEvent = chinaHealthReviewerPacketEvents[0]?.value;
+  const chinaHealthReviewerPacketData = chinaHealthReviewerPacketEvent?.data ?? {};
+  const chinaHealthReviewerPacketFields = Object.keys(chinaHealthReviewerPacketSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    chinaHealthReviewerPacketEvents.length !== 1 ||
+    chinaHealthReviewerPacketEvent?.eventId !== chinaHealthReviewerPacketSpec.eventId ||
+    chinaHealthReviewerPacketEvent?.type !== "ARTIFACT_CREATED" ||
+    chinaHealthReviewerPacketEvent?.actor?.id !== chinaHealthReviewerPacketSpec.actorId ||
+    chinaHealthReviewerPacketEvent?.actor?.role !== chinaHealthReviewerPacketSpec.actorRole ||
+    chinaHealthReviewerPacketEvent?.subject?.id !== chinaHealthReviewerPacketSpec.subjectId ||
+    chinaHealthReviewerPacketEvent?.subject?.role !== chinaHealthReviewerPacketSpec.subjectRole ||
+    chinaHealthReviewerPacketEvent?.correlationId !== chinaHealthReviewerPacketSpec.correlationId ||
+    JSON.stringify(Object.keys(chinaHealthReviewerPacketData).sort()) !== JSON.stringify(chinaHealthReviewerPacketFields) ||
+    chinaHealthReviewerPacketFields.some(
+      (field) => JSON.stringify(chinaHealthReviewerPacketData[field]) !== JSON.stringify(chinaHealthReviewerPacketSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 中国健康评审人交接包必须精确保留九份输入、十三项逐条签署、具名资质/利益冲突/90 天/独立 Content QA 门禁，以及评审未开始、未批准、未外联和 Owner/实现未授权状态",
     );
   }
 

@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY,
+  PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 295,
+    instancesValidated: 296,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 176);
+  assert.equal(report.counts.events, 177);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -940,6 +940,40 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.formulaImplementationAuthorized, false);
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.formalImplementationAuthorized, false);
+  const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.inputState, "PACKET_READY_REVIEWER_UNASSIGNED");
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.reviewPacketReady, true);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.requiredArtifactCount, 9);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.requiredReviewItemCount, 13);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.copyReviewItemCount, 6);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.boundaryReviewItemCount, 7);
+  assert.deepEqual(d040ChinaHealthReviewerPacketEvent.value.data.itemDispositionIds, [
+    "APPROVE",
+    "APPROVE_WITH_REQUIRED_CHANGE",
+    "REJECT",
+    "OUT_OF_SCOPE",
+  ]);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.qualificationFieldCount, 9);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.formalReviewFieldCount, 21);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.maximumReviewIntervalDays, 90);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.immutableArtifactRefsRequired, true);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.contentQaIndependentGateRequired, true);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.sensitiveCredentialDocumentsStored, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.aiOrAgentCanBeHealthReviewer, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.externalMessageSent, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.reviewerNameRecorded, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.reviewerQualificationVerified, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.conflictOfInterestResolved, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.healthReviewStarted, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.healthContentApproved, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.contentQaPassed, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.d068OwnerReady, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.d069OwnerReady, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.d063OwnerReady, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -985,7 +1019,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 294);
+    assert.equal(report.schemaValidation.instancesValidated, 295);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3135,6 +3169,52 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
+  });
+
+  await t.test("中国健康评审人交接包事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-008",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH");
+  });
+
+  await t.test("把 AI 或 Agent 冒充具名合格健康评审人", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-008").value;
+      event.data.aiOrAgentCanBeHealthReviewer = true;
+      event.data.reviewerNameRecorded = true;
+      event.data.reviewerQualificationVerified = true;
+      event.data.conflictOfInterestResolved = true;
+    });
+    assertDiagnostic(report, "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH");
+  });
+
+  await t.test("交接包跳过逐条签署或存储敏感证件", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-008").value;
+      event.data.requiredReviewItemCount = 1;
+      event.data.immutableArtifactRefsRequired = false;
+      event.data.contentQaIndependentGateRequired = false;
+      event.data.sensitiveCredentialDocumentsStored = true;
+    });
+    assertDiagnostic(report, "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH");
+  });
+
+  await t.test("交接包准备完成就冒充健康批准并授权 Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-008").value;
+      event.data.externalMessageSent = true;
+      event.data.healthReviewStarted = true;
+      event.data.healthContentApproved = true;
+      event.data.contentQaPassed = true;
+      event.data.d068OwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.healthCopyImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH");
   });
 
 });

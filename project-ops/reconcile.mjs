@@ -118,6 +118,7 @@ function latestD040Record(model) {
         subjectId === "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001" ||
         subjectId === "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001" ||
         subjectId === "D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001" ||
+        subjectId === "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -698,6 +699,9 @@ export function reconcileProjectOps(model) {
   const d040NiddkDynamicModelInputRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260820-007",
   )?.value ?? null;
+  const d040ChinaHealthReviewerPacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260820-008",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -779,6 +783,31 @@ export function reconcileProjectOps(model) {
     d063ChinaReferenceBandEvidenceReady: d040ChinaMacroInputRecord?.data?.d063ChinaReferenceBandEvidenceReady ?? null,
     d063OwnerReady: d040ChinaMacroInputRecord?.data?.d063OwnerReady ?? null,
     macroCardIndependentReviewPassed: d040ChinaMacroInputRecord?.data?.macroCardIndependentReviewPassed ?? null,
+    healthReviewPacketReady: d040ChinaHealthReviewerPacketRecord?.data?.reviewPacketReady ?? null,
+    healthReviewRequiredArtifactCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredArtifactCount ?? null,
+    healthReviewRequiredItemCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredReviewItemCount ?? null,
+    healthReviewCopyItemCount: d040ChinaHealthReviewerPacketRecord?.data?.copyReviewItemCount ?? null,
+    healthReviewBoundaryItemCount: d040ChinaHealthReviewerPacketRecord?.data?.boundaryReviewItemCount ?? null,
+    healthReviewDispositionCount: d040ChinaHealthReviewerPacketRecord?.data?.itemDispositionIds?.length ?? null,
+    healthReviewQualificationFieldCount: d040ChinaHealthReviewerPacketRecord?.data?.qualificationFieldCount ?? null,
+    healthReviewFormalReviewFieldCount: d040ChinaHealthReviewerPacketRecord?.data?.formalReviewFieldCount ?? null,
+    healthReviewImmutableArtifactRefsRequired: d040ChinaHealthReviewerPacketRecord?.data?.immutableArtifactRefsRequired ?? null,
+    healthReviewContentQaIndependentGateRequired: d040ChinaHealthReviewerPacketRecord?.data?.contentQaIndependentGateRequired ?? null,
+    healthReviewSensitiveCredentialDocumentsStored: d040ChinaHealthReviewerPacketRecord?.data?.sensitiveCredentialDocumentsStored ?? null,
+    healthReviewAiOrAgentCanBeReviewer: d040ChinaHealthReviewerPacketRecord?.data?.aiOrAgentCanBeHealthReviewer ?? null,
+    healthReviewExternalMessageSent: d040ChinaHealthReviewerPacketRecord?.data?.externalMessageSent ?? null,
+    healthReviewerNameRecorded: d040ChinaHealthReviewerPacketRecord?.data?.reviewerNameRecorded ?? null,
+    healthReviewerQualificationVerified: d040ChinaHealthReviewerPacketRecord?.data?.reviewerQualificationVerified ?? null,
+    healthReviewerConflictOfInterestResolved: d040ChinaHealthReviewerPacketRecord?.data?.conflictOfInterestResolved ?? null,
+    healthReviewStarted: d040ChinaHealthReviewerPacketRecord?.data?.healthReviewStarted ?? null,
+    healthReviewPacketHealthContentApproved: d040ChinaHealthReviewerPacketRecord?.data?.healthContentApproved ?? null,
+    healthReviewPacketContentQaPassed: d040ChinaHealthReviewerPacketRecord?.data?.contentQaPassed ?? null,
+    healthReviewPacketD068OwnerReady: d040ChinaHealthReviewerPacketRecord?.data?.d068OwnerReady ?? null,
+    healthReviewPacketD069OwnerReady: d040ChinaHealthReviewerPacketRecord?.data?.d069OwnerReady ?? null,
+    healthReviewPacketD063OwnerReady: d040ChinaHealthReviewerPacketRecord?.data?.d063OwnerReady ?? null,
+    healthReviewPacketFirstThreeBatchesIndependentReviewPassed: d040ChinaHealthReviewerPacketRecord?.data?.firstThreeBatchesIndependentReviewPassed ?? null,
+    healthReviewPacketHealthCopyImplementationAuthorized: d040ChinaHealthReviewerPacketRecord?.data?.healthCopyImplementationAuthorized ?? null,
+    healthReviewPacketFormulaImplementationAuthorized: d040ChinaHealthReviewerPacketRecord?.data?.formulaImplementationAuthorized ?? null,
     formulaEvidenceReviewComplete: d040FirstBatchRecord?.data?.formulaEvidenceReviewComplete ?? null,
     firstBatchOwnerReviewAuthorized: d040FirstBatchRecord?.data?.ownerReviewAuthorized ?? null,
     ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
@@ -795,7 +824,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260820-007" &&
+    d040.eventId === "EVT-20260820-008" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -858,12 +887,37 @@ export function reconcileProjectOps(model) {
     d040.d063ChinaReferenceBandEvidenceReady === true &&
     d040.d063OwnerReady === false &&
     d040.macroCardIndependentReviewPassed === false &&
+    d040.healthReviewPacketReady === true &&
+    d040.healthReviewRequiredArtifactCount === 9 &&
+    d040.healthReviewRequiredItemCount === 13 &&
+    d040.healthReviewCopyItemCount === 6 &&
+    d040.healthReviewBoundaryItemCount === 7 &&
+    d040.healthReviewDispositionCount === 4 &&
+    d040.healthReviewQualificationFieldCount === 9 &&
+    d040.healthReviewFormalReviewFieldCount === 21 &&
+    d040.healthReviewImmutableArtifactRefsRequired === true &&
+    d040.healthReviewContentQaIndependentGateRequired === true &&
+    d040.healthReviewSensitiveCredentialDocumentsStored === false &&
+    d040.healthReviewAiOrAgentCanBeReviewer === false &&
+    d040.healthReviewExternalMessageSent === false &&
+    d040.healthReviewerNameRecorded === false &&
+    d040.healthReviewerQualificationVerified === false &&
+    d040.healthReviewerConflictOfInterestResolved === false &&
+    d040.healthReviewStarted === false &&
+    d040.healthReviewPacketHealthContentApproved === false &&
+    d040.healthReviewPacketContentQaPassed === false &&
+    d040.healthReviewPacketD068OwnerReady === false &&
+    d040.healthReviewPacketD069OwnerReady === false &&
+    d040.healthReviewPacketD063OwnerReady === false &&
+    d040.healthReviewPacketFirstThreeBatchesIndependentReviewPassed === false &&
+    d040.healthReviewPacketHealthCopyImplementationAuthorized === false &&
+    d040.healthReviewPacketFormulaImplementationAuthorized === false &&
     d040.formulaEvidenceReviewComplete === true &&
     d040.firstBatchOwnerReviewAuthorized === false &&
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、NIDDK 动态模型来源已核验但采用门禁未通过、生命周期边界、中国支持与宏量现行标准输入、具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

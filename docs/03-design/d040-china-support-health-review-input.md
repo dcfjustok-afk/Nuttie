@@ -143,7 +143,7 @@ supersedesCopyVersion
 | D-068 Owner-ready | `false` |
 | D-069 Owner-ready | `false` |
 
-下一步必须由项目提供具名且资质可核验的 `ChinaQualifiedHealthReviewer`，完成逐条批准或提出修改；在此之前可以继续研究其他 PX-0 缺口，但不能起草成可提交 Owner 的 D-068/D-069 卡，也不能实现这些文案。
+配套的[中国健康评审人交接与签署检查包](d040-china-health-reviewer-intake-packet.md) 已把九份必读工件、十三个逐条签署项、资质/利益冲突字段和独立 Content QA 门禁整理完成。下一步必须由 ProjectContentOwner 提供具名且资质可核验的 `ChinaQualifiedHealthReviewer`，完成逐条批准或提出修改；交接包就绪不代表评审已开始或批准已发生。在此之前可以继续研究其他 PX-0 缺口，但不能起草成可提交 Owner 的 D-068/D-069 卡，也不能实现这些文案。
 
 ## 9. 自审与授权边界
 

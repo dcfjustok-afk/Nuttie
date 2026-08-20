@@ -82,9 +82,11 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 [中国大陆支持文案与健康评审治理输入包](d040-china-support-health-review-input.md) 已区分 `12356` 心理援助与 `120` 医疗急救，形成稳定支持称谓、六条候选文案、责任矩阵、90 天/每次 Release 来源复核和即时失效条件。它只完成输入草案；具名健康评审人、资质证据、健康批准和 Content QA 均缺失，因此 D-068/D-069 仍不能形成 Owner-ready 卡。
 
+[中国健康评审人交接与签署检查包](d040-china-health-reviewer-intake-packet.md) 已把九份版本化输入、十三个逐条处置项、九项资质字段、利益冲突、90 天复核和独立 Content QA 整理成统一入口。它只把状态推进到 `PACKET_READY`；评审人仍未具名，资质未核验，评审未开始，批准/Content QA 未发生，也没有发送外部消息。
+
 [中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。中国标准证据缺口已关闭，但具名健康评审、前序 D-068/D-069 与宏量卡自审/独立复核尚未完成，D-063 仍为 `NOT_OWNER_READY`。
 
-三批卡片与支持输入仍只是内部草案。下一步同时需要前三批独立复核和具名中国健康评审人；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
+三批卡片与支持输入仍只是内部草案。下一步同时需要前三批独立复核，以及由 ProjectContentOwner 指派并核验具名中国健康评审人后按交接包逐条签署；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
 当前继续保持：
 
@@ -101,7 +103,14 @@ dynamicModelEvidencePassed: false
 dataLifecycleBatchSelfReviewPassed: true
 chinaSupportCopyDraftComplete: true
 healthReviewGovernanceDraftComplete: true
+healthReviewPacketReady: true
+requiredHealthReviewArtifactCount: 9
+requiredHealthReviewItemCount: 13
 healthReviewerAssigned: false
+reviewerQualificationVerified: false
+healthReviewStarted: false
+healthContentApproved: false
+contentQaPassed: false
 chinaMacroCurrentStandardEvidenceComplete: true
 d063ChinaReferenceBandEvidenceReady: true
 d063OwnerReady: false
