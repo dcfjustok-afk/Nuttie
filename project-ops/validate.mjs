@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET = Object.freeze({
-  id: "PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET",
+export const PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN = Object.freeze({
+  id: "PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 185,
+    events: 186,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 8,
+    "2026-08-21": 9,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1678,6 +1678,99 @@ export const PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET = Object.freeze({
       reviewPacketReady: true,
       reviewPacketVersion: "PACKET-001-R1",
       inputManifestFrozen: false,
+      requiredArtifactCount: 10,
+      requiredCardCount: 6,
+      requiredBlockerCount: 3,
+      blockerIds: Object.freeze(["D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05"]),
+      cardDecisionIds: Object.freeze(["D-045", "D-031", "D-033", "D-034", "D-036", "D-053"]),
+      requiredReviewerDomainCount: 4,
+      reviewerDomainIds: Object.freeze([
+        "PRODUCT_DECISION_QUALITY",
+        "PRIVACY_DATA_INTEGRITY",
+        "SECURITY_TRANSPORT_RESOURCE_EVIDENCE",
+        "QA_ACCESSIBILITY",
+      ]),
+      requiredCrossCardInvariantCount: 16,
+      allowedCardDispositionCount: 4,
+      blockingSeverityIds: Object.freeze(["P0", "P1", "P2"]),
+      nonBlockingSeverityId: "P3",
+      namedReviewerRequired: true,
+      authorOrPmCanSelfApprove: false,
+      aiOrAgentCanBeIndependentReviewer: false,
+      externalMessageSent: false,
+      reviewersAssigned: false,
+      reviewerIdentityVerified: false,
+      reviewerIndependenceVerified: false,
+      conflictOfInterestResolved: false,
+      independentReviewStarted: false,
+      independentReviewPassed: false,
+      currentFindingCountsMeasured: false,
+      d034DeviceBenchmarkPassed: false,
+      d036Oi07InputComplete: false,
+      d036ProviderCompatibilitySpikePassed: false,
+      d036NativeBoundaryEvidencePassed: false,
+      d053Oi07EvidenceComplete: false,
+      d053ProviderEvidenceReady: false,
+      d053AppPrivacyMappingApproved: false,
+      d045Accepted: false,
+      d031Accepted: false,
+      d033Accepted: false,
+      d034Accepted: false,
+      d036Accepted: false,
+      d053Accepted: false,
+      b03Closed: false,
+      b04Closed: false,
+      b05Closed: false,
+      ownerIntakeChanged: false,
+      ownerCardsScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d032SecondOwnerActionSatisfied: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+    }),
+    b03B05InputManifestFreeze: Object.freeze({
+      eventId: "EVT-20260821-009",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D039-B03-B05-INPUT-MANIFEST-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d039-b03-b05-independent-review-input-freeze",
+      state: "completed",
+      decisionId: "D-039",
+      decisionState: "ACCEPTED",
+      selectedOption: "A",
+      designBaselineState: "PX-4_BASELINE_FROZEN",
+      px5Disposition: "NOT_READY",
+      from: "B03_B05_INPUT_FREEZE_REQUIRED",
+      to: "B03_B05_INPUT_MANIFEST_FROZEN",
+      next: "D039-PX5-OWNER_DEPENDENCIES_REQUIRED",
+      packetNext: "B03_B05_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      reviewPacketReady: true,
+      reviewPacketVersion: "PACKET-001-R1",
+      inputManifestFrozen: true,
+      manifestEntryCount: 10,
+      manifestCommit: "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+      manifestRecordCommit: "19f2119abcd8ca25bf59b177910a5af1f34e9abb",
+      gitBlobOidAlgorithm: "SHA-1",
+      canonicalDigestAlgorithm: "SHA-256",
+      rawGitBlobBytesUsed: true,
+      frozenArtifactRefs: Object.freeze([
+        "docs/03-design/d039-px4-design-baseline.md",
+        "docs/05-quality/d039-px5-dor-assessment.md",
+        "docs/05-quality/d039-formal-acceptance-matrix.md",
+        "docs/03-design/d039-route-observability-contract.md",
+        "docs/03-design/d045-recent-favorites-card-spec.md",
+        "docs/03-design/d031-media-ai-retention-card-spec.md",
+        "docs/03-design/d033-nonlabel-ai-confirmation-card-spec.md",
+        "docs/03-design/d034-ai-resource-budget-card-spec.md",
+        "docs/03-design/d036-ai-transport-profile-card-spec.md",
+        "docs/03-design/d053-ai-provider-use-admission-card-spec.md",
+      ]),
+      sourcePacketCreationEventId: "EVT-20260821-008",
       requiredArtifactCount: 10,
       requiredCardCount: 6,
       requiredBlockerCount: 3,
@@ -3596,7 +3689,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7080,6 +7173,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-039 B03~B05 六卡复核包必须精确保留 10 项输入、6 卡、3 阻断项、4 复核域、16 条跨卡不变量、P0~P3 标准，以及输入未冻结、复核/证据/Owner/实现门禁关闭状态",
+    );
+  }
+
+  const d039B03B05InputManifestFreezeSpec = baseline.d039.b03B05InputManifestFreeze;
+  const d039B03B05InputManifestFreezeEvents = model.events.filter(
+    (record) => record.value?.eventId === d039B03B05InputManifestFreezeSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d039B03B05InputManifestFreezeSpec.correlationId),
+  );
+  const d039B03B05InputManifestFreezeEvent = d039B03B05InputManifestFreezeEvents[0]?.value;
+  const d039B03B05InputManifestFreezeData = d039B03B05InputManifestFreezeEvent?.data ?? {};
+  const d039B03B05InputManifestFreezeFields = Object.keys(d039B03B05InputManifestFreezeSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d039B03B05InputManifestFreezeEvents.length !== 1 ||
+    d039B03B05InputManifestFreezeEvent?.eventId !== d039B03B05InputManifestFreezeSpec.eventId ||
+    d039B03B05InputManifestFreezeEvent?.type !== "ARTIFACT_CREATED" ||
+    d039B03B05InputManifestFreezeEvent?.actor?.id !== d039B03B05InputManifestFreezeSpec.actorId ||
+    d039B03B05InputManifestFreezeEvent?.actor?.role !== d039B03B05InputManifestFreezeSpec.actorRole ||
+    d039B03B05InputManifestFreezeEvent?.subject?.id !== d039B03B05InputManifestFreezeSpec.subjectId ||
+    d039B03B05InputManifestFreezeEvent?.subject?.role !== d039B03B05InputManifestFreezeSpec.subjectRole ||
+    d039B03B05InputManifestFreezeEvent?.correlationId !==
+      d039B03B05InputManifestFreezeSpec.correlationId ||
+    JSON.stringify(Object.keys(d039B03B05InputManifestFreezeData).sort()) !==
+      JSON.stringify(d039B03B05InputManifestFreezeFields) ||
+    d039B03B05InputManifestFreezeFields.some(
+      (field) => JSON.stringify(d039B03B05InputManifestFreezeData[field]) !==
+        JSON.stringify(d039B03B05InputManifestFreezeSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_B03_B05_INPUT_MANIFEST_FREEZE_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-039 B03~B05 六卡复核输入必须精确绑定 10 项同提交原始 Git blob、SHA-256 清单，并保持复核/证据/Owner/实现门禁关闭",
     );
   }
 

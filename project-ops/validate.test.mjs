@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET,
+  PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 304,
+    instancesValidated: 305,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 185);
+  assert.equal(report.counts.events, 186);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -725,6 +725,44 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039B03B05ReviewPacketEvent.value.data.ownerCardsScheduled, false);
   assert.equal(d039B03B05ReviewPacketEvent.value.data.formalImplementationAuthorized, false);
   assert.equal(d039B03B05ReviewPacketEvent.value.data.px5ImplementationDorSatisfied, false);
+  const d039B03B05InputManifestFreezeEvent = findEvent(VALID_MODEL, "EVT-20260821-009");
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d039B03B05InputManifestFreezeEvent.value.subject.id,
+    "D039-B03-B05-INPUT-MANIFEST-001",
+  );
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.reviewPacketReady, true);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.inputManifestFrozen, true);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.manifestEntryCount, 10);
+  assert.equal(
+    d039B03B05InputManifestFreezeEvent.value.data.manifestCommit,
+    "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+  );
+  assert.equal(
+    d039B03B05InputManifestFreezeEvent.value.data.manifestRecordCommit,
+    "19f2119abcd8ca25bf59b177910a5af1f34e9abb",
+  );
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.gitBlobOidAlgorithm, "SHA-1");
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.canonicalDigestAlgorithm, "SHA-256");
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.rawGitBlobBytesUsed, true);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.frozenArtifactRefs.length, 10);
+  assert.equal(
+    d039B03B05InputManifestFreezeEvent.value.data.sourcePacketCreationEventId,
+    "EVT-20260821-008",
+  );
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.reviewersAssigned, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.independentReviewStarted, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.independentReviewPassed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.d034DeviceBenchmarkPassed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.d036NativeBoundaryEvidencePassed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.d053ProviderEvidenceReady, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.b03Closed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.b04Closed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.b05Closed, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.ownerCardsScheduled, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.formalImplementationAuthorized, false);
+  assert.equal(d039B03B05InputManifestFreezeEvent.value.data.px5ImplementationDorSatisfied, false);
   const d045CardEvent = findEvent(VALID_MODEL, "EVT-20260815-008");
   assert.equal(d045CardEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d045CardEvent.value.subject.id, "D045-RECENT-FAVORITES-CARD-001");
@@ -1326,7 +1364,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 303);
+    assert.equal(report.schemaValidation.instancesValidated, 304);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2867,6 +2905,46 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核输入冻结事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-009");
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核输入冻结提交、算法或数量漂移", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-009").value.data;
+      data.manifestCommit = "0000000000000000000000000000000000000000";
+      data.manifestEntryCount = 9;
+      data.canonicalDigestAlgorithm = "SHA-1";
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核输入冻结被回退或不再使用原始 blob", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-009").value.data;
+      data.inputManifestFrozen = false;
+      data.rawGitBlobBytesUsed = false;
+      data.frozenArtifactRefs.pop();
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("冻结 D-039 B03~B05 六卡复核输入就越级开放复核、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-009").value.data;
+      data.reviewersAssigned = true;
+      data.independentReviewPassed = true;
+      data.b03Closed = true;
+      data.ownerReviewAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.px5ImplementationDorSatisfied = true;
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_INPUT_MANIFEST_FREEZE_MISMATCH");
   });
 
   await t.test("D-045 选择卡工件事件缺失", () => {

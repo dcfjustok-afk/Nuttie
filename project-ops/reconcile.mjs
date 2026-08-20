@@ -65,9 +65,10 @@ function latestD039DorProgress(model) {
 
 function latestD039B03B05ReviewPacket(model) {
   return model.events
-    .filter((record) =>
-      record.value?.subject?.id === "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
-    )
+    .filter((record) => [
+      "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
+      "D039-B03-B05-INPUT-MANIFEST-001",
+    ].includes(record.value?.subject?.id))
     .sort((left, right) =>
       (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
     )
@@ -341,6 +342,20 @@ export function reconcileProjectOps(model) {
     b03B05ReviewPacketReady: d039B03B05ReviewPacket?.data?.reviewPacketReady ?? null,
     b03B05ReviewPacketVersion: d039B03B05ReviewPacket?.data?.reviewPacketVersion ?? null,
     b03B05InputManifestFrozen: d039B03B05ReviewPacket?.data?.inputManifestFrozen ?? null,
+    b03B05InputManifestEntryCount: d039B03B05ReviewPacket?.data?.manifestEntryCount ?? null,
+    b03B05InputManifestCommit: d039B03B05ReviewPacket?.data?.manifestCommit ?? null,
+    b03B05InputManifestRecordCommit:
+      d039B03B05ReviewPacket?.data?.manifestRecordCommit ?? null,
+    b03B05InputManifestGitBlobOidAlgorithm:
+      d039B03B05ReviewPacket?.data?.gitBlobOidAlgorithm ?? null,
+    b03B05InputManifestCanonicalDigestAlgorithm:
+      d039B03B05ReviewPacket?.data?.canonicalDigestAlgorithm ?? null,
+    b03B05InputManifestUsesRawGitBlobBytes:
+      d039B03B05ReviewPacket?.data?.rawGitBlobBytesUsed ?? null,
+    b03B05InputManifestFrozenArtifactRefs:
+      d039B03B05ReviewPacket?.data?.frozenArtifactRefs ?? [],
+    b03B05InputManifestSourcePacketEventId:
+      d039B03B05ReviewPacket?.data?.sourcePacketCreationEventId ?? null,
     b03B05RequiredArtifactCount: d039B03B05ReviewPacket?.data?.requiredArtifactCount ?? null,
     b03B05RequiredCardCount: d039B03B05ReviewPacket?.data?.requiredCardCount ?? null,
     b03B05RequiredBlockerCount: d039B03B05ReviewPacket?.data?.requiredBlockerCount ?? null,
@@ -424,10 +439,18 @@ export function reconcileProjectOps(model) {
     d039.designBaselineFrozen === true &&
     d039.px3FormalImplementationAuthorized === false &&
     d039.formalImplementationAuthorized === false &&
-    d039.b03B05ReviewPacketEventId === "EVT-20260821-008" &&
+    d039.b03B05ReviewPacketEventId === "EVT-20260821-009" &&
     d039.b03B05ReviewPacketReady === true &&
     d039.b03B05ReviewPacketVersion === "PACKET-001-R1" &&
-    d039.b03B05InputManifestFrozen === false &&
+    d039.b03B05InputManifestFrozen === true &&
+    d039.b03B05InputManifestEntryCount === 10 &&
+    d039.b03B05InputManifestCommit === "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117" &&
+    d039.b03B05InputManifestRecordCommit === "19f2119abcd8ca25bf59b177910a5af1f34e9abb" &&
+    d039.b03B05InputManifestGitBlobOidAlgorithm === "SHA-1" &&
+    d039.b03B05InputManifestCanonicalDigestAlgorithm === "SHA-256" &&
+    d039.b03B05InputManifestUsesRawGitBlobBytes === true &&
+    d039.b03B05InputManifestFrozenArtifactRefs.length === 10 &&
+    d039.b03B05InputManifestSourcePacketEventId === "EVT-20260821-008" &&
     d039.b03B05RequiredArtifactCount === 10 &&
     d039.b03B05RequiredCardCount === 6 &&
     d039.b03B05RequiredBlockerCount === 3 &&
@@ -478,7 +501,7 @@ export function reconcileProjectOps(model) {
     d039.b03B05FormalImplementationAuthorized === false &&
     d039.b03B05Px5ImplementationDorSatisfied === false
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、B03~B05 六卡复核包就绪且输入/复核/证据/Owner/实现门禁关闭状态", d039);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、B03~B05 六卡复核包及 10 项输入冻结就绪且复核/证据/Owner/实现门禁关闭状态", d039);
   }
 
   const d045Record = latestD045Record(model);

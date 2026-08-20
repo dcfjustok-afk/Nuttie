@@ -35,9 +35,9 @@ D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of
 | --- | --- | --- | --- |
 | `D039-PX5-B01` | `CLOSED` | 已建立覆盖所有入口、空态、拒绝、失败、返回与零写入的 [24 条正式验收矩阵](d039-formal-acceptance-matrix.md) | 规格完成；自动化与真机证据仍按各 AC 的计划层补充 |
 | `D039-PX5-B02` | `CLOSED` | 已冻结 [5 个 route、严格参数、43 个静态 testID、2 个动态模式、返回焦点和 6 类非法 deep-link 恢复](../03-design/d039-route-observability-contract.md) | 规格完成；正式 Router、组件、E2E 与真机证据仍待授权后补充 |
-| `D039-PX5-B03` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | D-045 内部卡已固定[三套完整政策包、最近/收藏关系、保留、清除和删除语义](../03-design/d045-recent-favorites-card-spec.md) | 四域自审已通过并纳入[六卡统一独立复核包](../03-design/d039-b03-b05-independent-review-packet.md)；输入清单未冻结，独立复核、Owner 展示与选择均未发生 |
-| `D039-PX5-B04` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | [D-031 内部卡](../03-design/d031-media-ai-retention-card-spec.md) 已固定三套媒体/AI 保留包、临时清理、备份和删除语义 | 四域自审已通过并纳入六卡统一复核包；输入清单未冻结，独立复核、Owner 展示与选择均未发生；不得从相机权限反推保留许可 |
-| `D039-PX5-B05` | `OPEN / ALL_FOUR_CARDS_INDEPENDENT_REVIEW_REQUIRED / OTHER_INPUTS_REQUIRED` | D-033/D-034/D-036/D-053 分别关闭发送确认、资源预算、transport profile 和 Provider 数据用途准入 | 四张内部卡均已完成四域自审并纳入六卡统一复核包；输入清单未冻结。D-034 仍需最低支持 iPhone benchmark，D-036 仍需三 Provider 兼容 Spike 与原生边界证据，[D-053](../03-design/d053-ai-provider-use-admission-card-spec.md)仍需 OI-07、逐 Provider 十维证据与 App Privacy 映射，四者均需独立复核与 Owner 选择；任一未知时 AI 入口只能失败关闭，不得发送 |
+| `D039-PX5-B03` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | D-045 内部卡已固定[三套完整政策包、最近/收藏关系、保留、清除和删除语义](../03-design/d045-recent-favorites-card-spec.md) | 四域自审已通过并纳入[六卡统一独立复核包](../03-design/d039-b03-b05-independent-review-packet.md)；10 项输入清单已冻结并记录 blob OID/SHA-256，独立复核、Owner 展示与选择均未发生 |
+| `D039-PX5-B04` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | [D-031 内部卡](../03-design/d031-media-ai-retention-card-spec.md) 已固定三套媒体/AI 保留包、临时清理、备份和删除语义 | 四域自审已通过并纳入六卡统一复核包；10 项输入清单已冻结并记录 blob OID/SHA-256，独立复核、Owner 展示与选择均未发生；不得从相机权限反推保留许可 |
+| `D039-PX5-B05` | `OPEN / ALL_FOUR_CARDS_INDEPENDENT_REVIEW_REQUIRED / OTHER_INPUTS_REQUIRED` | D-033/D-034/D-036/D-053 分别关闭发送确认、资源预算、transport profile 和 Provider 数据用途准入 | 四张内部卡均已完成四域自审并纳入六卡统一复核包；10 项输入清单已冻结并记录 blob OID/SHA-256。D-034 仍需最低支持 iPhone benchmark，D-036 仍需三 Provider 兼容 Spike 与原生边界证据，[D-053](../03-design/d053-ai-provider-use-admission-card-spec.md)仍需 OI-07、逐 Provider 十维证据与 App Privacy 映射，四者均需独立复核与 Owner 选择；任一未知时 AI 入口只能失败关闭，不得发送 |
 | `D039-PX5-B06` | 需 Owner 第二次动作 | D-032 原生证据返回后冻结最终矩阵，并单独授权正式根工程与 D-039 增量 | Windows JS export 不能替代原生证据或第二次动作 |
 | `D039-PX5-B07` | 需环境 | 获得可用 Mac/Xcode 与目标 iPhone 链路，完成相机、系统媒体、VoiceOver、Dynamic Type、SQLCipher/Keychain 和持久化集成验证 | 当前 OI-03 明确只有 iPhone 16 Pro Max / iOS 26.5、无可用 Mac |
 

@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 185,
+    events: 186,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -64,10 +64,24 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039.choiceKey, "local-search-recent-first");
   assert.equal(report.d039.selectedOption, "A");
   assert.equal(report.d039.designBaselineFrozen, true);
-  assert.equal(report.d039.b03B05ReviewPacketEventId, "EVT-20260821-008");
+  assert.equal(report.d039.b03B05ReviewPacketEventId, "EVT-20260821-009");
   assert.equal(report.d039.b03B05ReviewPacketReady, true);
   assert.equal(report.d039.b03B05ReviewPacketVersion, "PACKET-001-R1");
-  assert.equal(report.d039.b03B05InputManifestFrozen, false);
+  assert.equal(report.d039.b03B05InputManifestFrozen, true);
+  assert.equal(report.d039.b03B05InputManifestEntryCount, 10);
+  assert.equal(
+    report.d039.b03B05InputManifestCommit,
+    "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+  );
+  assert.equal(
+    report.d039.b03B05InputManifestRecordCommit,
+    "19f2119abcd8ca25bf59b177910a5af1f34e9abb",
+  );
+  assert.equal(report.d039.b03B05InputManifestGitBlobOidAlgorithm, "SHA-1");
+  assert.equal(report.d039.b03B05InputManifestCanonicalDigestAlgorithm, "SHA-256");
+  assert.equal(report.d039.b03B05InputManifestUsesRawGitBlobBytes, true);
+  assert.equal(report.d039.b03B05InputManifestFrozenArtifactRefs.length, 10);
+  assert.equal(report.d039.b03B05InputManifestSourcePacketEventId, "EVT-20260821-008");
   assert.equal(report.d039.b03B05RequiredArtifactCount, 10);
   assert.equal(report.d039.b03B05RequiredCardCount, 6);
   assert.equal(report.d039.b03B05RequiredBlockerCount, 3);
@@ -532,7 +546,7 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
 
   const d039B03B05ReviewPacketModel = validModel();
   d039B03B05ReviewPacketModel.events.find(
-    (record) => record.value.eventId === "EVT-20260821-008",
+    (record) => record.value.eventId === "EVT-20260821-009",
   ).value.data.independentReviewPassed = true;
   const d039B03B05ReviewPacketReport = reconcileProjectOps(d039B03B05ReviewPacketModel);
   assert.equal(d039B03B05ReviewPacketReport.ok, false);

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T01:58:03+08:00",
+  "generatedAt": "2026-08-21T02:14:42+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 185
+    "projectEvents": 186
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；输入清单尚未冻结，具名复核人、实际复核和外部证据均未发生。D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、十维 Provider 证据与 App Privacy 映射；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性已核验但许可/稳定版本/oracle corpus/保护线门禁未通过；D-032 等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、十维 Provider 证据与 App Privacy 映射；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性已核验但许可/稳定版本/oracle corpus/保护线门禁未通过；D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,7 +236,7 @@
     }
   ],
   "currentWork": [
-    "Owner 于 2026-08-15 查看冻结 D-039 原型后明确回复 A；D-039 已进入决定台账并完成 PX-4。PX-5 首次 DoR 评估为 NOT_READY；B01/B02 已关闭，B03 的 D-045 最近/收藏卡、B04 的 D-031 媒体/AI 保留卡与 B05 的 D-033 非标签 AI 上传确认卡、D-034 AI 资源预算卡、D-036 AITransport 隔离卡、D-053 Provider 用途准入卡均完成四域自审。六卡统一独立复核包已准备，固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；输入清单未冻结，复核人未指派，实际复核未开始。D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、逐 Provider 十维证据与 App Privacy 映射；B03 至 B07 共 5 个 Owner/环境阻断项仍开放；正式 RN/原生实现、D-032 第二次动作和 D-053 均未获授权",
+    "Owner 于 2026-08-15 查看冻结 D-039 原型后明确回复 A；D-039 已进入决定台账并完成 PX-4。PX-5 首次 DoR 评估为 NOT_READY；B01/B02 已关闭，B03 的 D-045 最近/收藏卡、B04 的 D-031 媒体/AI 保留卡与 B05 的 D-033 非标签 AI 上传确认卡、D-034 AI 资源预算卡、D-036 AITransport 隔离卡、D-053 Provider 用途准入卡均完成四域自审。六卡统一独立复核包已准备，固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结并记录 blob OID/SHA-256，复核人未指派，实际复核未开始。D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、逐 Provider 十维证据与 App Privacy 映射；B03 至 B07 共 5 个 Owner/环境阻断项仍开放；正式 RN/原生实现、D-032 第二次动作和 D-053 均未获授权",
     "D-032 Android 平台 JavaScript export 已复用与 iOS 同一结构校验核心：自动固定 Android-only Metro metadata、唯一 Hermes bundle、png/ttf/xml 资产策略、声明/实际文件集精确一致、路径越界和原生目录拒绝；Android/iOS 合计 10 个单测与真实 1,652 模块 export 通过。本次 Android bundle/总字节数比旧记录各少 2，进一步证明字节数和 SHA 不得作可复现构建门禁；不构成 Android 原生运行、签名产物或 D-032 接受",
     "D-032 iOS 平台 JavaScript export 已集成导出后自动结构校验：只接受 iOS-only Metro metadata、唯一 Hermes bundle、声明资产与实际文件精确一致，并拒绝额外平台、路径越界、未声明文件和原生目录；5 个单测与真实 export 通过。后续运行的 bundle 与总字节数各比前三次增加 1，所以字节数和 SHA-256 都明确不作可复现构建门禁；不构成原生 iOS 证据或 D-032 接受",
     "D-032 隔离 SDK 57 Spike 已在 Windows 完成 iOS 平台条件的 JavaScript export，Metro/Hermes 解析 1,565 模块且六包依赖表面继续通过；连续三次 export 的文件数和字节数一致但 SHA-256 不同，所以指纹仅代表单次运行、不构成可复现构建承诺；全程未生成原生目录、未运行 Prebuild/Xcode/CocoaPods、未编译原生模块、未运行模拟器或真机且未产出签名 Archive；该证据只关闭 JS 平台解析子范围，不构成 iOS 原生证据或 D-032 接受",
@@ -271,7 +271,7 @@
     "F10 体重记录框架无关事务合同已登记：原始 kg/lb、精确换算、同日多记录、增删改 revision CAS、幂等回放与完整趋势证据通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权 BMI/目标/异常/显示精度/按日合并、HealthKit、原生或正式工程",
     "AI 凭据生命周期框架无关合同已登记：配置、替换、移除、durable intent、未知结果对账和 secret-free 公共记录通过自动化；合同仍为 SPIKE / NON_PRODUCTION，不授权真实网络、Keychain/原生实现或正式工程",
     "Owner 首批输入已通过 request_user_input 整批确认：11 项决定转为 ACCEPTED，D-032 保持 CANDIDATE + SPIKE_AUTHORIZED，D-052/D-053 继续候选；OI-02 为 Bundle ID 尚未创建、SKU=N/A，OI-03 为只有 iPhone 16 Pro Max（iOS 26.5）且当前无可用 Mac；后续 D-039 已由 Owner 单独明确选择 A",
-    "D039-QA-001 至 QA-010 已关闭；D-039 方案 A 已通过 PX-3 Owner Gate 并冻结 PX-4。首次 PX-5 DoR 为 NOT_READY；B01/B02 已完成，B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 内部卡均自审通过，六卡统一独立复核包已准备但 10 项输入尚未冻结、具名复核人未指派且实际复核/Owner 评审均未发生，B03 至 B07 仍开放，正式实现未授权",
+    "D039-QA-001 至 QA-010 已关闭；D-039 方案 A 已通过 PX-3 Owner Gate 并冻结 PX-4。首次 PX-5 DoR 为 NOT_READY；B01/B02 已完成，B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 内部卡均自审通过，六卡统一独立复核包已准备且 10 项输入已冻结并记录 blob OID/SHA-256，但具名复核人未指派且实际复核/Owner 评审均未发生，B03 至 B07 仍开放，正式实现未授权",
     "D-040 原型首轮 2/4/1 findings 已关闭；PX-0 输入与宏量研究复审归零，20 个决定轴及 D-054 至 D-072 候选 ID 预留保持不变。前三批共十三张内部选择卡已完成单轴互斥规格和 Product/健康安全/隐私/QA 自审；四个具名复核域、十三卡逐项处置、十二条跨批不变量与 P0~P3 关闭标准的独立复核包已就绪，但复核人、身份、胜任范围、独立性与利益冲突均未核验，复核未开始。D-063 固定目标来源，D-070 固定输入形态，D-071 固定显示舍入，D-072 固定允许无目标事实或暂停新增且保留数据控制两项互斥策略；硬停止不可豁免，不显示自动目标/评分，不诊断，不删除或回算历史。四卡均完成内部自审；四个复核域、四卡逐项处置、十四条跨轴不变量与 P0~P3 标准的独立复核包也已就绪，且 10 份输入已冻结到同一提交并记录 blob OID/SHA-256，但具名复核人、身份/胜任范围/独立性/利益冲突核验和实际复核均未发生。四卡仍等待前置接受、D-068/D-069、健康数值边界、具名健康批准、Content QA 与独立复核，未进入决定台账或 Owner intake。EER/REE 名称、活动缺失、四层数据分离、保存/删除组合、raw/display 舍入和历史不回算边界已固定。NIDDK 动态模型的论文、方程和七个当前网页代码资产已定位并记录 hash，但逐文件许可、稳定语义版本、官方版本化 oracle corpus、回归容差、产品保护线和健康评审均未通过，D-062 动态模型与 D-059 数值 PAL 继续 NOT_OWNER_READY。中国大陆支持输入已区分 12356 心理援助与 120 医疗急救，并形成四类称谓、六个候选文案场景及 90 天/发版前复核合同；九份版本化输入、十三个逐条签署项、资质/利益冲突字段与独立 Content QA 门禁的健康评审交接包已就绪，但具名评审人、资质、正式评审、批准和 Content QA 均缺失，且未发送外部消息。WS/T 578.1-2017 当前现行状态、成人 P/C/F 参考带与 4/4/9 已补齐，征求意见稿仅作修订监视；不得生成默认三元组、处方或评分。全部预留 ID 均未进入决定台账或 Owner intake，状态仍为 CANDIDATE / PX-0_INPUT_GAP / CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED，全部授权位关闭",
     "DATA-07 已按公开证据边界改为 pending，权威矩阵程序化重算为 66 = 37 confirmed + 24 cross-source + 5 pending",
     "D-040 P/C/F 宏量证据包已完成两路独立 delta 审查并归零；D-063/D-070/D-071/D-072 四张宏量轴卡均已形成并自审，四卡复核包固定 10 份输入、4 个复核域、4 卡逐项处置、14 条跨轴不变量与 P0~P3 标准，10 项输入已冻结并记录 blob OID/SHA-256。前三批十三卡独立复核包与中国健康评审交接包也已就绪，但两类具名复核、前置接受、D-068/D-069、健康数值边界、健康批准、Content QA 和独立复核仍未完成；NIDDK 动态模型来源可行性已核验，但采用证据未通过且未将源码入库或执行",
