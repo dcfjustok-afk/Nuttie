@@ -47,16 +47,16 @@ node project-ops/reconcile.mjs
 node --test project-ops/reconcile.test.mjs
 ```
 
-`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET` 基线并检查：
+`validate.mjs` 不安装或加载第三方依赖，当前固定 `PHASE0_2026_08_21_D063_CARD_SPEC` 基线并检查：
 
-- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 297 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
+- 5 份 Draft 2020-12 Schema 定义与受控映射；使用仓库内 `DRAFT_2020_12_PROJECT_SUBSET_V1` profile 校验 `decisions.json`、`owner-intake.json`、`snapshots/current.json`、全部 Event 和 Message，当前共 298 个实例。Schema 负责结构与类型，精确计数、Gate、Agent 和跨源事实仍由版本化运营不变量负责。
 - JSON/JSONL 解析、决定/事件/消息/证据 ID 唯一性。
-- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/10/22/8/3/7` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
+- 每日事件文件、日期前缀、连续序号、记录日期和版本化的 `59/13/5/29/5/15/10/22/8/3/8/2` 日分布。历史事件存在已知的时间回填逆序，因此不以物理行时间单调作为失败条件。
 - Agent 消息 `responseTo`、证据状态与五条 pending 集合。
 - 决定、事件、消息、角色、证据和 gap theme 的源计数、快照计数与版本化基线。
 - Agent ID 唯一性与唯一 active 角色 `root`；Owner intake 精确保留首批 12 项输入、后续 D-039=A、D-032 Spike 授权、D-047 A→C 审计链、唯一 OI-02/OI-03 事实和计划中的宿主原生 `request_user_input` D-040 入口。
 - D-039 保留历史 `PX-2_PASS` 与 Owner `A / ACCEPTED / PX-3_PASS`，并精确冻结 PX-4 首层层级和四域复核；首次 PX-5 DoR 的 `NOT_READY / 7 BLOCKERS` 保留为历史评估，随后 B01/B02 关闭。B03 的 D-045 最近/收藏卡、B04 的 D-031 媒体/AI 保留卡与 B05 的 D-033 非标签 AI 上传确认卡、D-034 AI 资源预算卡、D-036 AITransport 隔离卡、D-053 Provider 用途准入卡均已通过四域自审，但独立复核、Owner 评审、决定接受和对应阻断关闭均未发生；D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、逐 Provider 十维证据与 App Privacy 映射；B03 至 B07 共 5 项继续开放。正式实现、正式根工程、原生 iOS、D-032 第二次动作和 D-053 授权均保持关闭。
-- D-040 保持 `CANDIDATE / PX-0_INPUT_GAP / CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED`；首轮 reviewer 的临时 PX-1 表述未被 PM 接受，字段/公式/特殊人群与宏量研究复审已归零。17 个原草案问题和宏量补充轴已分解为 20 个决定轴，D-040 保留最终结构、D-054~D-072 仅预留候选 ID；前三批十三卡已锁定稳定 ID、互斥选项、失败关闭依赖并通过四域自审。独立复核包进一步锁定四个复核域、十三卡逐项结论、十二条跨批不变量、P0~P3 标准和作者/PM/AI 不得自批，同时证明复核人未指派、身份/独立性未核验、复核未开始且未外联。NIDDK 动态模型输入锁定论文/方程和七个当前网页代码资产的来源与 hash，同时证明逐文件许可、稳定版本、官方 oracle corpus、回归容差、产品保护线和健康评审未通过；未 vendoring 或执行源码，D-062/D-059 对应项继续 NOT_OWNER_READY。中国健康评审交接包锁定九份版本化输入、十三个逐条处置项、资质/利益冲突、90 天上限与独立 Content QA；它也仍未开始或批准。中国宏量标准输入已锁定 WS/T 578.1-2017 现行状态、成人 P/C/F 范围、4/4/9、修订监视和禁止默认/处方/评分/历史回算边界；D-063 仍未 Owner-ready。它们不得进入决定台账或 Owner intake，PX-1、PX-2、Owner 评审、决定接受、公式、持久化、健康文案和正式实现继续关闭。
+- D-040 保持 `CANDIDATE / PX-0_INPUT_GAP / CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED`；首轮 reviewer 的临时 PX-1 表述未被 PM 接受，字段/公式/特殊人群与宏量研究复审已归零。17 个原草案问题和宏量补充轴已分解为 20 个决定轴，D-040 保留最终结构、D-054~D-072 仅预留候选 ID；前三批十三卡已锁定稳定 ID、互斥选项、失败关闭依赖并通过四域自审。独立复核包进一步锁定四个复核域、十三卡逐项结论、十二条跨批不变量、P0~P3 标准和作者/PM/AI 不得自批，同时证明复核人未指派、身份/独立性未核验、复核未开始且未外联。D-063 宏量目标来源卡固定无目标、中国健康成人参考带信息、用户自定义三项互斥来源和 D-070~D-072 依赖；参考带不得创建 GoalVersion、评分、诊断或自动纠正，D-068/D-069、健康批准、Content QA 与独立复核仍未完成。NIDDK 动态模型输入锁定论文/方程和七个当前网页代码资产的来源与 hash，同时证明逐文件许可、稳定版本、官方 oracle corpus、回归容差、产品保护线和健康评审未通过；未 vendoring 或执行源码，D-062/D-059 对应项继续 NOT_OWNER_READY。中国健康评审交接包锁定九份版本化输入、十三个逐条处置项、资质/利益冲突、90 天上限与独立 Content QA；它也仍未开始或批准。中国宏量标准输入已锁定 WS/T 578.1-2017 现行状态、成人 P/C/F 范围、4/4/9、修订监视和禁止默认/处方/评分/历史回算边界。所有预留卡都不得进入决定台账或 Owner intake，PX-1、PX-2、Owner 评审、决定接受、公式、持久化、健康文案和正式实现继续关闭。
 - F10 体重记录合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记原始单位、精确换算、同日多记录和事务证据；不得借此授权 BMI/目标/异常/显示精度、按日合并、HealthKit、原生或正式实现。
 - F11 七日能量读模型保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记本地事实窗口、缺失/零、精确聚合和来源反查；不得借此授权消耗公式、目标/净值、平均/更长周期、AI、HealthKit、原生或正式实现。
 - F13 手工消耗合同保持 `SPIKE / FRAMEWORK_AGNOSTIC / NON_PRODUCTION`，只登记直接输入、事务和 `BURNED / MANUAL_BURN / USER_ENTERED` 投影；不得冒充测量值，也不得授权运动字段、公式、步数、HealthKit、AI、原生或正式实现。
@@ -89,6 +89,6 @@ node --test project-ops/reconcile.test.mjs
 
 退出码约定为：`0` 校验通过，`1` 解析成功但一致性断言失败，`2` 用法、文件读取或 JSON/JSONL 解析失败。完成 D-039 PX-5、记录 MVP 范围、关闭后续门禁，或权威计数合法变化时，必须在对应原子提交中显式升级版本化基线和测试，不能静默放宽断言。
 
-内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 297 个受控实例通过校验”。
+内置 profile 只支持当前 5 份 Schema 实际使用的 `$defs`、本地 `$ref`、type/const/enum、required/properties/items/additionalProperties、字符串/数组约束、pattern、RFC 3339 date/date-time 等关键字。新增未支持关键字、外部或循环 `$ref` 会失败关闭，不能把本工具解释为通用 JSON Schema 引擎。完整 Draft 2020-12 元 Schema 合规仍须由 AJV 8 + `ajv-formats` 或后续经批准的等价 validator 交叉检查；当前 PASS 精确表示“Schema 定义符合仓库 profile 且 298 个受控实例通过校验”。
 
-`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已确认的 OI-02 标识状态与 OI-03 设备事实、D-032 隔离 JS Spike 授权、D-039=A 接受/PX-4/PX-5 NOT_READY/B01/B02 关闭、D-045/D-031/D-033/D-034/D-036/D-053 三包内部卡自审/独立复核与额外证据待办、D-040 的 20 轴分解、候选 ID 预留、前三批十三卡自审、十三卡独立复核包、NIDDK 动态模型采用缺口、中国宏量标准证据，以及健康评审交接包和两类具名复核人/资质/独立性/逐条签署/Content QA 缺口。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 2026-08-21 D-040 前三批独立复核包事件并与最新来源时间一致。
+`reconcile.mjs` 是只读诊断器：它重新从事件、消息、决定台账、Owner intake、证据矩阵和人工快照读取数据，报告源计数、快照指标、最新源时间、已确认的 OI-02 标识状态与 OI-03 设备事实、D-032 隔离 JS Spike 授权、D-039=A 接受/PX-4/PX-5 NOT_READY/B01/B02 关闭、D-045/D-031/D-033/D-034/D-036/D-053 三包内部卡自审/独立复核与额外证据待办、D-040 的 20 轴分解、候选 ID 预留、前三批十三卡自审、十三卡独立复核包、D-063 三项来源卡、NIDDK 动态模型采用缺口、中国宏量标准证据，以及健康评审交接包和两类具名复核人/资质/独立性/逐条签署/Content QA 缺口。它不会覆盖 `snapshots/current.json`；当前人工快照已同步至 2026-08-21 D-063 卡片事件并与最新来源时间一致。

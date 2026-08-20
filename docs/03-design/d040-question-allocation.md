@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 工件 ID | `D040-QUESTION-ALLOCATION-001` |
-| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_THREE_BATCHES_SPEC_COMPLETE / CHINA_SUPPORT_INPUT_DRAFT_COMPLETE / PX-0_INPUT_GAP` |
+| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_THREE_BATCHES_SPEC_COMPLETE / D063_SPEC_COMPLETE / CHINA_SUPPORT_INPUT_DRAFT_COMPLETE / PX-0_INPUT_GAP` |
 | 日期 | 2026-08-15（Asia/Shanghai） |
 | 输入 | `D040-RESEARCH-001` 的 17 个草案问题；`D040-RESEARCH-002` 的 4 个宏量轴 |
 | 结果 | 保留 D-040 作为最终首启结构；预留 D-054 至 D-072，共 19 个新的候选 ID |
@@ -86,7 +86,7 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 [前三批十三卡独立复核包](d040-first-three-batches-independent-review-packet.md) 已把四个复核域、十三卡逐项结论、十二条跨批不变量和 P0~P3 关闭标准整理成统一入口。它也只推进到 `PACKET_READY`；具名复核人、身份/胜任范围/独立性/利益冲突核验和实际复核都未发生。
 
-[中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。中国标准证据缺口已关闭，但具名健康评审、前序 D-068/D-069 与宏量卡自审/独立复核尚未完成，D-063 仍为 `NOT_OWNER_READY`。
+[中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。[D-063 宏量目标来源选择卡](d040-macro-target-source-card-spec.md) 已固定无目标、中国健康成人参考带信息和用户自定义三项互斥来源，以及 D-070~D-072 的依赖与失败关闭。卡片完成内部四域自审，但具名健康评审、前序 D-068/D-069、Content QA 和独立复核尚未完成，仍为 `NOT_OWNER_READY`。
 
 三批卡片与支持输入仍只是内部草案。下一步需要为十三卡复核包指派满足独立性的具名复核人并执行逐卡/跨批复核，同时由 ProjectContentOwner 指派并核验具名中国健康评审人后按健康交接包逐条签署；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
@@ -98,7 +98,8 @@ authoritativeState: PX-0_INPUT_GAP
 firstBatchCardCount: 4
 energyBatchCardCount: 5
 dataLifecycleBatchCardCount: 4
-draftedCardCount: 13
+macroTargetSourceCardCount: 1
+draftedCardCount: 14
 firstBatchSelfReviewPassed: true
 energyBatchSelfReviewPassed: true
 dynamicModelEvidencePassed: false
@@ -123,6 +124,10 @@ independentReviewStarted: false
 firstThreeBatchesIndependentReviewPassed: false
 chinaMacroCurrentStandardEvidenceComplete: true
 d063ChinaReferenceBandEvidenceReady: true
+d063CardSelfReviewPassed: true
+d063D068D069PrerequisitesPassed: false
+d063HealthContentApproved: false
+d063IndependentReviewPassed: false
 d063OwnerReady: false
 dynamicModelSourceAssessmentComplete: true
 dynamicModelEvidencePassed: false

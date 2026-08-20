@@ -40,6 +40,7 @@
 | [d040-data-lifecycle-batch-card-spec.md](d040-data-lifecycle-batch-card-spec.md) | D-064/D-065/D-066/D-067 第三批保存、删除、舍入与重算卡；等待独立复核 |
 | [d040-china-support-health-review-input.md](d040-china-support-health-review-input.md) | D-040 中国大陆支持称谓、12356/120 用途、候选简中文案与健康评审责任/复核周期；具名健康评审人仍缺失 |
 | [d040-china-macronutrient-standard-input.md](d040-china-macronutrient-standard-input.md) | D-040 中国现行 WS/T 578.1-2017 成人 P/C/F 参考带、4/4/9、修订监视与禁止默认/处方边界；D-063 尚未 Owner-ready |
+| [d040-macro-target-source-card-spec.md](d040-macro-target-source-card-spec.md) | D-063 无目标、中国健康成人参考带信息、用户自定义三项互斥来源卡；健康/Content QA/独立复核未通过，尚未 Owner-ready |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash 与采用缺口；许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
 | [d040-first-three-batches-independent-review-packet.md](d040-first-three-batches-independent-review-packet.md) | D-040 前三批十三卡的四域独立复核、十二条跨批不变量与 P0~P3 关闭标准；复核人未指派且复核未开始 |

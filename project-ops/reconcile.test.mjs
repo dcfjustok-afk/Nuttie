@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 178,
+    events: 179,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,13 +152,13 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-001");
+  assert.equal(report.d040.eventId, "EVT-20260821-002");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
   assert.equal(report.d040.dataLifecycleBatchCardCount, 4);
-  assert.equal(report.d040.draftedCardCount, 13);
+  assert.equal(report.d040.draftedCardCount, 14);
   assert.equal(report.d040.firstBatchSelfReviewPassed, true);
   assert.equal(report.d040.energyBatchSelfReviewPassed, true);
   assert.equal(report.d040.dataLifecycleBatchSelfReviewPassed, true);
@@ -211,8 +211,38 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.chinaMacroConsultationDraftTreatedAsCurrent, false);
   assert.equal(report.d040.chinaMacroStandardEvidenceGapClosed, true);
   assert.equal(report.d040.d063ChinaReferenceBandEvidenceReady, true);
+  assert.equal(report.d040.d063CardState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(report.d040.d063DecisionId, "D-063");
+  assert.equal(report.d040.d063QuestionId, "d063_macro_target_source");
+  assert.equal(report.d040.d063CardCount, 1);
+  assert.equal(report.d040.d063OptionCount, 3);
+  assert.deepEqual(report.d040.d063OptionIds, [
+    "no_macro_target",
+    "china_adult_reference_band_information_only",
+    "user_defined_macro_target",
+  ]);
+  assert.equal(report.d040.d063RecommendedOptionId, "no_macro_target");
+  assert.equal(report.d040.d063ReferenceBandStandardId, "WS/T 578.1-2017");
+  assert.deepEqual(report.d040.d063ReferenceBandCarbohydrateRange, [50, 65]);
+  assert.deepEqual(report.d040.d063ReferenceBandFatRange, [20, 30]);
+  assert.deepEqual(report.d040.d063ReferenceBandProteinRange, [10, 15]);
+  assert.equal(report.d040.d063ReferenceBandInformationOnly, true);
+  assert.equal(report.d040.d063ReferenceBandCanGenerateDefaultTriplet, false);
+  assert.equal(report.d040.d063ReferenceBandCreatesGoalVersion, false);
+  assert.equal(report.d040.d063ReferenceBandCanTriggerScoringDiagnosisOrCorrection, false);
+  assert.equal(report.d040.d063UserDefinedRequiresD070, true);
+  assert.equal(report.d040.d063DisplayAndRoundingRequiresD071, true);
+  assert.equal(report.d040.d063HardStopRecordAvailabilityRequiresD072, true);
+  assert.equal(report.d040.d063D068D069PrerequisitesPassed, false);
+  assert.equal(report.d040.d063SelfReviewPassed, true);
+  assert.equal(report.d040.d063HealthReviewerAssigned, false);
+  assert.equal(report.d040.d063HealthContentApproved, false);
+  assert.equal(report.d040.d063ContentQaPassed, false);
+  assert.equal(report.d040.d063CardRegisteredInDecisionLedger, false);
   assert.equal(report.d040.d063OwnerReady, false);
   assert.equal(report.d040.macroCardIndependentReviewPassed, false);
+  assert.equal(report.d040.d063OwnerReviewAuthorized, false);
+  assert.equal(report.d040.d063MacroImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -372,6 +402,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d040IndependentReviewPacketReport = reconcileProjectOps(d040IndependentReviewPacketModel);
   assert.equal(d040IndependentReviewPacketReport.ok, false);
   assert.ok(d040IndependentReviewPacketReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d063CardModel = validModel();
+  d063CardModel.events.find((record) => record.value.eventId === "EVT-20260821-002").value.data.referenceBandCreatesGoalVersion = true;
+  const d063CardReport = reconcileProjectOps(d063CardModel);
+  assert.equal(d063CardReport.ok, false);
+  assert.ok(d063CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

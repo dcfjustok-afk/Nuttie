@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET,
+  PHASE0_2026_08_21_D063_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D063_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 297,
+    instancesValidated: 298,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 178);
+  assert.equal(report.counts.events, 179);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1011,6 +1011,40 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040IndependentReviewPacketEvent.value.data.firstThreeBatchesIndependentReviewPassed, false);
   assert.equal(d040IndependentReviewPacketEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040IndependentReviewPacketEvent.value.data.formalImplementationAuthorized, false);
+  const d063CardEvent = findEvent(VALID_MODEL, "EVT-20260821-002");
+  assert.equal(d063CardEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d063CardEvent.value.subject.id, "D040-MACRO-TARGET-SOURCE-CARD-SPEC-001");
+  assert.equal(d063CardEvent.value.data.inputState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(d063CardEvent.value.data.decisionId, "D-063");
+  assert.equal(d063CardEvent.value.data.questionId, "d063_macro_target_source");
+  assert.equal(d063CardEvent.value.data.optionCount, 3);
+  assert.deepEqual(d063CardEvent.value.data.optionIds, [
+    "no_macro_target",
+    "china_adult_reference_band_information_only",
+    "user_defined_macro_target",
+  ]);
+  assert.equal(d063CardEvent.value.data.recommendedOptionId, "no_macro_target");
+  assert.equal(d063CardEvent.value.data.draftedCardCount, 14);
+  assert.equal(d063CardEvent.value.data.referenceBandStandardId, "WS/T 578.1-2017");
+  assert.deepEqual(d063CardEvent.value.data.referenceBandCarbohydrateEnergyPercentRange, [50, 65]);
+  assert.deepEqual(d063CardEvent.value.data.referenceBandFatEnergyPercentRange, [20, 30]);
+  assert.deepEqual(d063CardEvent.value.data.referenceBandProteinEnergyPercentRange, [10, 15]);
+  assert.equal(d063CardEvent.value.data.referenceBandInformationOnly, true);
+  assert.equal(d063CardEvent.value.data.rangeEndpointsCanGenerateDefaultTriplet, false);
+  assert.equal(d063CardEvent.value.data.referenceBandCreatesGoalVersion, false);
+  assert.equal(d063CardEvent.value.data.referenceBandCanTriggerScoringDiagnosisOrCorrection, false);
+  assert.equal(d063CardEvent.value.data.userDefinedRequiresD070, true);
+  assert.equal(d063CardEvent.value.data.displayAndRoundingRequiresD071, true);
+  assert.equal(d063CardEvent.value.data.hardStopRecordAvailabilityRequiresD072, true);
+  assert.equal(d063CardEvent.value.data.d068D069PrerequisitesPassed, false);
+  assert.equal(d063CardEvent.value.data.healthReviewerAssigned, false);
+  assert.equal(d063CardEvent.value.data.healthContentApproved, false);
+  assert.equal(d063CardEvent.value.data.contentQaPassed, false);
+  assert.equal(d063CardEvent.value.data.independentReviewPassed, false);
+  assert.equal(d063CardEvent.value.data.d063OwnerReady, false);
+  assert.equal(d063CardEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d063CardEvent.value.data.macroImplementationAuthorized, false);
+  assert.equal(d063CardEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -1056,7 +1090,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 296);
+    assert.equal(report.schemaValidation.instancesValidated, 297);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3300,6 +3334,56 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("D-063 宏量目标来源卡事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260821-002",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_D063_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-063 静默改变选项集合、推荐项或依赖轴", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-002").value;
+      event.data.optionCount = 2;
+      event.data.optionIds.pop();
+      event.data.recommendedOptionId = "china_adult_reference_band_information_only";
+      event.data.userDefinedRequiresD070 = false;
+      event.data.displayAndRoundingRequiresD071 = false;
+      event.data.hardStopRecordAvailabilityRequiresD072 = false;
+    });
+    assertDiagnostic(report, "OPS_D040_D063_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-063 把中国参考带冒充默认目标、评分或自动纠正规则", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-002").value;
+      event.data.referenceBandInformationOnly = false;
+      event.data.rangeEndpointsCanGenerateDefaultTriplet = true;
+      event.data.referenceBandCreatesGoalVersion = true;
+      event.data.referenceBandCanTriggerScoringDiagnosisOrCorrection = true;
+    });
+    assertDiagnostic(report, "OPS_D040_D063_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-063 在健康和独立复核前进入台账、Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-002").value;
+      event.data.d068D069PrerequisitesPassed = true;
+      event.data.healthReviewerAssigned = true;
+      event.data.healthContentApproved = true;
+      event.data.contentQaPassed = true;
+      event.data.independentReviewPassed = true;
+      event.data.cardRegisteredInDecisionLedger = true;
+      event.data.d063OwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.macroImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_D063_CARD_SPEC_MISMATCH");
   });
 
 });

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET = Object.freeze({
-  id: "PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET",
+export const PHASE0_2026_08_21_D063_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_21_D063_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 178,
+    events: 179,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 1,
+    "2026-08-21": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2840,6 +2840,67 @@ export const PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    d063MacroTargetSourceCardSpec: Object.freeze({
+      eventId: "EVT-20260821-002",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-MACRO-TARGET-SOURCE-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-macro-target-source-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "CHINA_MACRO_STANDARD_EVIDENCE_READY_CARD_SPEC_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardNext: "NAMED_HEALTH_REVIEW_AND_MACRO_CARD_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY",
+      decisionId: "D-063",
+      questionId: "d063_macro_target_source",
+      cardCount: 1,
+      optionCount: 3,
+      optionIds: Object.freeze([
+        "no_macro_target",
+        "china_adult_reference_band_information_only",
+        "user_defined_macro_target",
+      ]),
+      recommendedOptionId: "no_macro_target",
+      draftedCardCount: 14,
+      referenceBandStandardId: "WS/T 578.1-2017",
+      referenceBandCarbohydrateEnergyPercentRange: Object.freeze([50, 65]),
+      referenceBandFatEnergyPercentRange: Object.freeze([20, 30]),
+      referenceBandProteinEnergyPercentRange: Object.freeze([10, 15]),
+      chinaReferenceBandEvidenceReady: true,
+      referenceBandInformationOnly: true,
+      rangeEndpointsCanGenerateDefaultTriplet: false,
+      referenceBandCreatesGoalVersion: false,
+      referenceBandCanTriggerScoringDiagnosisOrCorrection: false,
+      userDefinedRequiresD070: true,
+      displayAndRoundingRequiresD071: true,
+      hardStopRecordAvailabilityRequiresD072: true,
+      d068D069PrerequisitesPassed: false,
+      healthReviewPacketReady: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      firstThreeBatchesIndependentReviewPassed: false,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      cardRegisteredInDecisionLedger: false,
+      d063OwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      macroImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3139,7 +3200,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D063_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6310,6 +6371,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-040 前三批独立复核包必须精确保留十三卡、四域、十二条跨批不变量、P0~P3 标准、动态模型/健康门禁，以及复核人未指派、复核未开始、未外联和 Owner/实现未授权状态",
+    );
+  }
+
+  const d063CardSpec = baseline.d040Research.d063MacroTargetSourceCardSpec;
+  const d063CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d063CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d063CardSpec.correlationId),
+  );
+  const d063CardEvent = d063CardEvents[0]?.value;
+  const d063CardData = d063CardEvent?.data ?? {};
+  const d063CardFields = Object.keys(d063CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    d063CardEvents.length !== 1 ||
+    d063CardEvent?.eventId !== d063CardSpec.eventId ||
+    d063CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d063CardEvent?.actor?.id !== d063CardSpec.actorId ||
+    d063CardEvent?.actor?.role !== d063CardSpec.actorRole ||
+    d063CardEvent?.subject?.id !== d063CardSpec.subjectId ||
+    d063CardEvent?.subject?.role !== d063CardSpec.subjectRole ||
+    d063CardEvent?.correlationId !== d063CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d063CardData).sort()) !== JSON.stringify(d063CardFields) ||
+    d063CardFields.some(
+      (field) => JSON.stringify(d063CardData[field]) !== JSON.stringify(d063CardSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_D063_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-063 卡片必须精确保留三项互斥目标来源、中国健康成人参考带只读边界、D-070~D-072 依赖、四域自审，以及健康/独立复核/Owner/实现均未授权状态",
     );
   }
 
