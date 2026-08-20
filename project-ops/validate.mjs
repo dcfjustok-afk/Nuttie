@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D063_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_21_D063_CARD_SPEC",
+export const PHASE0_2026_08_21_D070_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_21_D070_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 179,
+    events: 180,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D063_CARD_SPEC = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 2,
+    "2026-08-21": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2901,6 +2901,68 @@ export const PHASE0_2026_08_21_D063_CARD_SPEC = Object.freeze({
       macroImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    d070CustomMacroInputShapeCardSpec: Object.freeze({
+      eventId: "EVT-20260821-003",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-CUSTOM-MACRO-INPUT-SHAPE-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-custom-macro-input-shape-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "D063_CARD_SPEC_COMPLETE_D070_SPEC_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardNext: "D063_ACCEPTANCE_HEALTH_AND_D070_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY",
+      decisionId: "D-070",
+      questionId: "d070_custom_macro_input_shape",
+      applicableWhen: "D-063 = user_defined_macro_target",
+      cardCount: 1,
+      optionCount: 3,
+      optionIds: Object.freeze([
+        "complete_macro_grams",
+        "fixed_100_percent_triplet",
+        "partial_macro_grams_explicit_missing",
+      ]),
+      recommendedOptionId: "complete_macro_grams",
+      draftedCardCount: 15,
+      inputShapesMutuallyExclusive: true,
+      percentAllThreeRequired: true,
+      percentSumRequired: 100,
+      completeGramsAllThreeRequired: true,
+      partialGramsSetCountRange: Object.freeze([1, 2]),
+      missingMacroTreatedAsZero: false,
+      residualAutoFilled: false,
+      mixedInputShapesAllowed: false,
+      percentToGramConversionRequiresExplicitEnergyTarget: true,
+      conversionSelectsEnergyOrMacroTarget: false,
+      actualEnergyMismatchIsDataError: false,
+      numericHealthBoundsApproved: false,
+      d063Accepted: false,
+      d068D069PrerequisitesPassed: false,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      cardRegisteredInDecisionLedger: false,
+      d070OwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      macroConversionImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3200,7 +3262,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D063_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D070_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6402,6 +6464,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_D063_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-063 卡片必须精确保留三项互斥目标来源、中国健康成人参考带只读边界、D-070~D-072 依赖、四域自审，以及健康/独立复核/Owner/实现均未授权状态",
+    );
+  }
+
+  const d070CardSpec = baseline.d040Research.d070CustomMacroInputShapeCardSpec;
+  const d070CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d070CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d070CardSpec.correlationId),
+  );
+  const d070CardEvent = d070CardEvents[0]?.value;
+  const d070CardData = d070CardEvent?.data ?? {};
+  const d070CardFields = Object.keys(d070CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    d070CardEvents.length !== 1 ||
+    d070CardEvent?.eventId !== d070CardSpec.eventId ||
+    d070CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d070CardEvent?.actor?.id !== d070CardSpec.actorId ||
+    d070CardEvent?.actor?.role !== d070CardSpec.actorRole ||
+    d070CardEvent?.subject?.id !== d070CardSpec.subjectId ||
+    d070CardEvent?.subject?.role !== d070CardSpec.subjectRole ||
+    d070CardEvent?.correlationId !== d070CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d070CardData).sort()) !== JSON.stringify(d070CardFields) ||
+    d070CardFields.some(
+      (field) => JSON.stringify(d070CardData[field]) !== JSON.stringify(d070CardSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_D070_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-070 卡片必须精确保留完整克数/完整 100% 比例/显式部分克数三项互斥合同、缺失与换算失败关闭，以及 D-063/健康/独立复核/Owner/实现均未授权状态",
     );
   }
 

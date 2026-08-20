@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 179,
+    events: 180,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,13 +152,13 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-002");
+  assert.equal(report.d040.eventId, "EVT-20260821-003");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
   assert.equal(report.d040.dataLifecycleBatchCardCount, 4);
-  assert.equal(report.d040.draftedCardCount, 14);
+  assert.equal(report.d040.draftedCardCount, 15);
   assert.equal(report.d040.firstBatchSelfReviewPassed, true);
   assert.equal(report.d040.energyBatchSelfReviewPassed, true);
   assert.equal(report.d040.dataLifecycleBatchSelfReviewPassed, true);
@@ -243,6 +243,41 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.macroCardIndependentReviewPassed, false);
   assert.equal(report.d040.d063OwnerReviewAuthorized, false);
   assert.equal(report.d040.d063MacroImplementationAuthorized, false);
+  assert.equal(report.d040.d070CardState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(report.d040.d070DecisionId, "D-070");
+  assert.equal(report.d040.d070QuestionId, "d070_custom_macro_input_shape");
+  assert.equal(report.d040.d070ApplicableWhen, "D-063 = user_defined_macro_target");
+  assert.equal(report.d040.d070CardCount, 1);
+  assert.equal(report.d040.d070OptionCount, 3);
+  assert.deepEqual(report.d040.d070OptionIds, [
+    "complete_macro_grams",
+    "fixed_100_percent_triplet",
+    "partial_macro_grams_explicit_missing",
+  ]);
+  assert.equal(report.d040.d070RecommendedOptionId, "complete_macro_grams");
+  assert.equal(report.d040.d070InputShapesMutuallyExclusive, true);
+  assert.equal(report.d040.d070PercentAllThreeRequired, true);
+  assert.equal(report.d040.d070PercentSumRequired, 100);
+  assert.equal(report.d040.d070CompleteGramsAllThreeRequired, true);
+  assert.deepEqual(report.d040.d070PartialGramsSetCountRange, [1, 2]);
+  assert.equal(report.d040.d070MissingMacroTreatedAsZero, false);
+  assert.equal(report.d040.d070ResidualAutoFilled, false);
+  assert.equal(report.d040.d070MixedInputShapesAllowed, false);
+  assert.equal(report.d040.d070PercentToGramRequiresEnergyTarget, true);
+  assert.equal(report.d040.d070ConversionSelectsTarget, false);
+  assert.equal(report.d040.d070ActualEnergyMismatchIsDataError, false);
+  assert.equal(report.d040.d070NumericHealthBoundsApproved, false);
+  assert.equal(report.d040.d070D063Accepted, false);
+  assert.equal(report.d040.d070D068D069PrerequisitesPassed, false);
+  assert.equal(report.d040.d070SelfReviewPassed, true);
+  assert.equal(report.d040.d070HealthContentApproved, false);
+  assert.equal(report.d040.d070ContentQaPassed, false);
+  assert.equal(report.d040.d070IndependentReviewPassed, false);
+  assert.equal(report.d040.d070CardRegisteredInDecisionLedger, false);
+  assert.equal(report.d040.d070OwnerReady, false);
+  assert.equal(report.d040.d070OwnerReviewAuthorized, false);
+  assert.equal(report.d040.d070MacroConversionImplementationAuthorized, false);
+  assert.equal(report.d040.d070PersistenceImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -408,6 +443,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d063CardReport = reconcileProjectOps(d063CardModel);
   assert.equal(d063CardReport.ok, false);
   assert.ok(d063CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d070CardModel = validModel();
+  d070CardModel.events.find((record) => record.value.eventId === "EVT-20260821-003").value.data.missingMacroTreatedAsZero = true;
+  const d070CardReport = reconcileProjectOps(d070CardModel);
+  assert.equal(d070CardReport.ok, false);
+  assert.ok(d070CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

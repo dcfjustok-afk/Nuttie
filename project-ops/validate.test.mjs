@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D063_CARD_SPEC,
+  PHASE0_2026_08_21_D070_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D063_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D070_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 298,
+    instancesValidated: 299,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 179);
+  assert.equal(report.counts.events, 180);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1045,6 +1045,44 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d063CardEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d063CardEvent.value.data.macroImplementationAuthorized, false);
   assert.equal(d063CardEvent.value.data.formalImplementationAuthorized, false);
+  const d070CardEvent = findEvent(VALID_MODEL, "EVT-20260821-003");
+  assert.equal(d070CardEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d070CardEvent.value.subject.id, "D040-CUSTOM-MACRO-INPUT-SHAPE-CARD-SPEC-001");
+  assert.equal(d070CardEvent.value.data.inputState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(d070CardEvent.value.data.decisionId, "D-070");
+  assert.equal(d070CardEvent.value.data.questionId, "d070_custom_macro_input_shape");
+  assert.equal(d070CardEvent.value.data.applicableWhen, "D-063 = user_defined_macro_target");
+  assert.equal(d070CardEvent.value.data.optionCount, 3);
+  assert.deepEqual(d070CardEvent.value.data.optionIds, [
+    "complete_macro_grams",
+    "fixed_100_percent_triplet",
+    "partial_macro_grams_explicit_missing",
+  ]);
+  assert.equal(d070CardEvent.value.data.recommendedOptionId, "complete_macro_grams");
+  assert.equal(d070CardEvent.value.data.draftedCardCount, 15);
+  assert.equal(d070CardEvent.value.data.inputShapesMutuallyExclusive, true);
+  assert.equal(d070CardEvent.value.data.percentAllThreeRequired, true);
+  assert.equal(d070CardEvent.value.data.percentSumRequired, 100);
+  assert.equal(d070CardEvent.value.data.completeGramsAllThreeRequired, true);
+  assert.deepEqual(d070CardEvent.value.data.partialGramsSetCountRange, [1, 2]);
+  assert.equal(d070CardEvent.value.data.missingMacroTreatedAsZero, false);
+  assert.equal(d070CardEvent.value.data.residualAutoFilled, false);
+  assert.equal(d070CardEvent.value.data.mixedInputShapesAllowed, false);
+  assert.equal(d070CardEvent.value.data.percentToGramConversionRequiresExplicitEnergyTarget, true);
+  assert.equal(d070CardEvent.value.data.conversionSelectsEnergyOrMacroTarget, false);
+  assert.equal(d070CardEvent.value.data.actualEnergyMismatchIsDataError, false);
+  assert.equal(d070CardEvent.value.data.numericHealthBoundsApproved, false);
+  assert.equal(d070CardEvent.value.data.d063Accepted, false);
+  assert.equal(d070CardEvent.value.data.d068D069PrerequisitesPassed, false);
+  assert.equal(d070CardEvent.value.data.healthContentApproved, false);
+  assert.equal(d070CardEvent.value.data.contentQaPassed, false);
+  assert.equal(d070CardEvent.value.data.independentReviewPassed, false);
+  assert.equal(d070CardEvent.value.data.cardRegisteredInDecisionLedger, false);
+  assert.equal(d070CardEvent.value.data.d070OwnerReady, false);
+  assert.equal(d070CardEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d070CardEvent.value.data.macroConversionImplementationAuthorized, false);
+  assert.equal(d070CardEvent.value.data.persistenceImplementationAuthorized, false);
+  assert.equal(d070CardEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -1090,7 +1128,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 297);
+    assert.equal(report.schemaValidation.instancesValidated, 298);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3384,6 +3422,60 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_D063_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-070 自定义宏量输入形态卡事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260821-003",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_D070_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-070 静默改变输入形态集合或制造形态重叠", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-003").value;
+      event.data.optionCount = 2;
+      event.data.optionIds.pop();
+      event.data.inputShapesMutuallyExclusive = false;
+      event.data.partialGramsSetCountRange = [1, 3];
+      event.data.mixedInputShapesAllowed = true;
+    });
+    assertDiagnostic(report, "OPS_D040_D070_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-070 把缺失补零、自动补残差或让换算选择目标", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-003").value;
+      event.data.percentAllThreeRequired = false;
+      event.data.percentSumRequired = 99;
+      event.data.missingMacroTreatedAsZero = true;
+      event.data.residualAutoFilled = true;
+      event.data.percentToGramConversionRequiresExplicitEnergyTarget = false;
+      event.data.conversionSelectsEnergyOrMacroTarget = true;
+      event.data.actualEnergyMismatchIsDataError = true;
+    });
+    assertDiagnostic(report, "OPS_D040_D070_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-070 在 D-063、健康和独立复核前进入 Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-003").value;
+      event.data.numericHealthBoundsApproved = true;
+      event.data.d063Accepted = true;
+      event.data.d068D069PrerequisitesPassed = true;
+      event.data.healthContentApproved = true;
+      event.data.contentQaPassed = true;
+      event.data.independentReviewPassed = true;
+      event.data.cardRegisteredInDecisionLedger = true;
+      event.data.d070OwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.macroConversionImplementationAuthorized = true;
+      event.data.persistenceImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_D070_CARD_SPEC_MISMATCH");
   });
 
 });
