@@ -57,6 +57,7 @@
 - [D-034 最低支持 iPhone benchmark 协议](testing/d034-minimum-iphone-benchmark-protocol.md)：固定三档同 corpus、21 行矩阵/19 项直接硬上限口径、真机采样、清理与失败关闭标准；当前只准备协议，未授权或执行 benchmark。
 - [D-034 benchmark corpus manifest 机器输入合同](testing/d034-benchmark-corpus-manifest-contract.md)：固定三档 21 行机器值、85 个必需语义槽位、38 个 direct-limit 边界/`+1` 与无真实数据/无凭据边界；当前只准备合同，corpus、原生 harness 和执行均未授权或未发生。
 - [D-034 benchmark corpus manifest 本地校验合同](testing/d034-benchmark-corpus-manifest-harness.md)：以 13 项测试执行 3 档/21 行/85 个必需槽位、direct-limit、JPEG、摘要、敏感材料与零授权边界；只检查结构与指纹，不读取或物化 corpus。
+- [D-034 benchmark raw run 与报告 bundle 机器合同](testing/d034-benchmark-run-report-contract.md)：固定 raw run 身份/阶段/指标、最低 2,550 measured + 765 warm-up、整组丢弃/重试保留、nearest-rank p95、聚合重算和 measured candidate 不等于 benchmark pass；当前无 run、无报告、无执行授权。
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。
 - [D-053 Provider 用途证据与 App Privacy 映射协议](testing/d053-provider-evidence-app-privacy-protocol.md)：固定三个 Provider、五类载荷、15 个最小准入 profile、150 项十维评估与至少 5 行 App Privacy 映射；当前 OI-07、Provider、证据采集、映射、签署、复核、Owner 与准入均未发生。
 - [OI-07 Provider 目标统一输入模板](testing/oi07-provider-target-intake-template.md)：把 D-036/D-053 合并为同一 revision、三个 target、每 target 29 字段的无密钥回填面；当前模板已准备，Owner 输入未收到，全部 target 保持 `UNKNOWN/BLOCKED`。
