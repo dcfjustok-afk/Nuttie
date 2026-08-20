@@ -33,6 +33,22 @@
 | 6 | [第三批资料与目标生命周期卡片规格](d040-data-lifecycle-batch-card-spec.md) | D-064/D-065/D-066/D-067 |
 | 7 | [中国健康评审人交接包](d040-china-health-reviewer-intake-packet.md) | 证明健康签署是另一门禁，当前仍未开始 |
 
+### 2.1 冻结输入清单
+
+`PACKET-001-R1` 的七份输入冻结在 Git commit `b39a8f09ae544d7c3276f532b536c67ade75b446`。下表中的 Git blob OID 与 SHA-256 都基于该提交中的原始 blob 字节计算，不使用工作区换行、文件时间或后续提交内容。正式复核记录必须逐项引用这些值；任一项不一致都视为另一 packet revision，既有签署不能沿用。
+
+| 顺序 | 仓库路径 | Git blob OID | 规范 SHA-256 |
+| ---: | --- | --- | --- |
+| 1 | `docs/03-design/d040-question-allocation.md` | `380435e7bbe611319b102052662da471ff9e49b1` | `20fd5c4671419c17ab06d99a8f1241169b67b8009b86b51fc1181fb66847ce08` |
+| 2 | `docs/03-design/d040-px0-input-research.md` | `f3b9e68d4b181b761e21a57ba476291d7410cf36` | `bf7b4c6e74307b93a15c38c47cf3c81a3c5b45e651fcb4b1b3a02ef9b2a51381` |
+| 3 | `docs/03-design/d040-first-batch-card-spec.md` | `c55e5d73a8cffc31ee81fb9d72dd2c252ea08282` | `8489e99efbdb2f2f410eb1005909dd2b1732d8a8ce69616aca6eec51f8d86ef9` |
+| 4 | `docs/03-design/d040-energy-model-batch-card-spec.md` | `46f3a6b353ebfa9c2ab73f76b291873dbd9f6569` | `e776e8f7ca9aa9649849ef2b6cc814e6e0c461c8b55e7f0f0f6ae4e517373835` |
+| 5 | `docs/03-design/d040-niddk-dynamic-model-feasibility-input.md` | `409119ac4af1691791794a733364d50f847653b2` | `6feeba9bf07991c66254cf42250eefdf5d082de155417d2c7490a59a679b00b0` |
+| 6 | `docs/03-design/d040-data-lifecycle-batch-card-spec.md` | `cbf152542e9c5d6020e311dd2e859e89a7aa3881` | `55cd099d3dad3ddd8244a46e1c78d0d4d31f5426af9b53af73b1f9bf3378a567` |
+| 7 | `docs/03-design/d040-china-health-reviewer-intake-packet.md` | `89f66cb38da0cd2865a343ac471e1cbe63de92c8` | `7e48fa29be626429b63c31492d37b710f8f873d5f079aeb5c70dee918bf5f110` |
+
+冻结清单只证明“复核输入是哪一版”，不证明内容正确、评审人合格或复核通过。当前包自身仍是 `REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED`。
+
 ## 3. 复核域与责任
 
 | reviewDomain | 必查内容 | 不得声称 |
