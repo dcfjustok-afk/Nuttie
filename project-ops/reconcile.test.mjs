@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 189,
+    events: 190,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -298,6 +298,44 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.protocolFormalImplementationAuthorized, false);
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
+  assert.equal(report.oi07.eventId, "EVT-20260821-013");
+  assert.equal(report.oi07.state, "completed");
+  assert.equal(report.oi07.templateState, "TEMPLATE_READY");
+  assert.equal(report.oi07.next, "OI07_OWNER_OR_AUTHORIZED_CONTACT_INPUT_REQUIRED");
+  assert.deepEqual(report.oi07.decisionIds, ["D-036", "D-053"]);
+  assert.equal(
+    report.oi07.templateArtifactCommit,
+    "46e22ced7be0c5940fe5f5e4860f73817c6b0d52",
+  );
+  assert.equal(report.oi07.providerTargetCount, 3);
+  assert.equal(report.oi07.perTargetFieldCount, 29);
+  assert.equal(report.oi07.sharedPerTargetFieldCount, 12);
+  assert.equal(report.oi07.d036OnlyPerTargetFieldCount, 8);
+  assert.equal(report.oi07.d053OnlyPerTargetFieldCount, 9);
+  assert.equal(report.oi07.unionInputFieldCount, 30);
+  assert.equal(report.oi07.sameRevisionRequiredForD036AndD053, true);
+  assert.equal(report.oi07.unknownAllowedButBlocks, true);
+  assert.equal(report.oi07.naRequiresReasonAndSource, true);
+  assert.equal(report.oi07.secretFreeInputRequired, true);
+  assert.equal(report.oi07.ownerOrAuthorizedContactRequired, true);
+  assert.equal(report.oi07.oi07RevisionAssigned, false);
+  assert.equal(report.oi07.ownerInputReceived, false);
+  assert.equal(report.oi07.inputAuthorityVerified, false);
+  assert.equal(report.oi07.providerTargetsResolved, false);
+  assert.equal(report.oi07.allProviderTargets, "UNKNOWN_BLOCKED");
+  assert.equal(report.oi07.credentialsReceived, false);
+  assert.equal(report.oi07.credentialInjectionAuthorized, false);
+  assert.equal(report.oi07.testCostAuthorized, false);
+  assert.equal(report.oi07.realNetworkAuthorized, false);
+  assert.equal(report.oi07.providerEvidenceCollectionAuthorized, false);
+  assert.equal(report.oi07.externalMessageSent, false);
+  assert.equal(report.oi07.ownerIntakeChanged, false);
+  assert.equal(report.oi07.d036ExecutionAuthorized, false);
+  assert.equal(report.oi07.d053EvidenceCollectionStarted, false);
+  assert.equal(report.oi07.d053AdmissionRecords, 0);
+  assert.equal(report.oi07.ownerReviewAuthorized, false);
+  assert.equal(report.oi07.b05Closed, false);
+  assert.equal(report.oi07.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -722,6 +760,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(
     d053ProtocolReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE",
+    ),
+  );
+
+  const oi07TemplateModel = validModel();
+  oi07TemplateModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-013",
+  ).value.data.ownerInputReceived = true;
+  const oi07TemplateReport = reconcileProjectOps(oi07TemplateModel);
+  assert.equal(oi07TemplateReport.ok, false);
+  assert.ok(
+    oi07TemplateReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_OI07_TEMPLATE_GATE",
     ),
   );
 

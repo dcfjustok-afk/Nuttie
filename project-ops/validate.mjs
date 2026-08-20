@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY",
+export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 189,
+    events: 190,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY = Object.fr
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 12,
+    "2026-08-21": 13,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2462,6 +2462,58 @@ export const PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY = Object.fr
       px5ImplementationDorSatisfied: false,
     }),
   }),
+  oi07: Object.freeze({
+    eventId: "EVT-20260821-013",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "OI07-PROVIDER-TARGET-INTAKE-TEMPLATE-001",
+    subjectRole: "CandidateResearchArtifact",
+    correlationId: "oi07-provider-target-intake-template",
+    state: "completed",
+    decisionIds: Object.freeze(["D-036", "D-053"]),
+    d039BlockerId: "D039-PX5-B05",
+    d039BlockerState: "OPEN",
+    from: "OI07_FRAGMENTED_PROTOCOL_INPUT_CONTRACTS",
+    to: "OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY",
+    next: "OI07_OWNER_OR_AUTHORIZED_CONTACT_INPUT_REQUIRED",
+    templateState: "TEMPLATE_READY",
+    templateArtifactCommit: "46e22ced7be0c5940fe5f5e4860f73817c6b0d52",
+    templateArtifactBlobOid: "875167cdc6aba15f9a2589bcc76ac889e7b40e0a",
+    sharedRevisionFieldCount: 1,
+    providerTargetCount: 3,
+    perTargetFieldCount: 29,
+    sharedPerTargetFieldCount: 12,
+    d036OnlyPerTargetFieldCount: 8,
+    d053OnlyPerTargetFieldCount: 9,
+    unionInputFieldCount: 30,
+    sameRevisionRequiredForD036AndD053: true,
+    unknownAllowedButBlocks: true,
+    naRequiresReasonAndSource: true,
+    secretFreeInputRequired: true,
+    ownerOrAuthorizedContactRequired: true,
+    oi07RevisionAssigned: false,
+    ownerInputReceived: false,
+    inputAuthorityVerified: false,
+    providerTargetsResolved: false,
+    allProviderTargets: "UNKNOWN_BLOCKED",
+    credentialsReceived: false,
+    credentialInjectionAuthorized: false,
+    testCostAuthorized: false,
+    realNetworkAuthorized: false,
+    providerEvidenceCollectionAuthorized: false,
+    externalMessageSent: false,
+    ownerIntakeChanged: false,
+    d036ExecutionAuthorized: false,
+    d053EvidenceCollectionStarted: false,
+    d053AdmissionRecords: 0,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    b05Closed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    px5ImplementationDorSatisfied: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -3883,7 +3935,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7724,6 +7776,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-053 证据协议必须绑定冻结卡输入，覆盖三个 Provider、五类 payload、15 个最小 profile、150 项十维评估与至少 5 行 App Privacy 映射，同时保持 OI-07、Provider、采集、映射、签署、复核、Owner、准入、B05、联网与实现门禁关闭",
+    );
+  }
+
+  const oi07TemplateSpec = baseline.oi07;
+  const oi07TemplateEvents = model.events.filter(
+    (record) => record.value?.eventId === oi07TemplateSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === oi07TemplateSpec.correlationId),
+  );
+  const oi07TemplateEvent = oi07TemplateEvents[0]?.value;
+  const oi07TemplateData = oi07TemplateEvent?.data ?? {};
+  const oi07TemplateFields = Object.keys(oi07TemplateSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    oi07TemplateEvents.length !== 1 ||
+    oi07TemplateEvent?.eventId !== oi07TemplateSpec.eventId ||
+    oi07TemplateEvent?.type !== "ARTIFACT_CREATED" ||
+    oi07TemplateEvent?.actor?.id !== oi07TemplateSpec.actorId ||
+    oi07TemplateEvent?.actor?.role !== oi07TemplateSpec.actorRole ||
+    oi07TemplateEvent?.subject?.id !== oi07TemplateSpec.subjectId ||
+    oi07TemplateEvent?.subject?.role !== oi07TemplateSpec.subjectRole ||
+    oi07TemplateEvent?.correlationId !== oi07TemplateSpec.correlationId ||
+    JSON.stringify(Object.keys(oi07TemplateData).sort()) !==
+      JSON.stringify(oi07TemplateFields) ||
+    oi07TemplateFields.some(
+      (field) => JSON.stringify(oi07TemplateData[field]) !==
+        JSON.stringify(oi07TemplateSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "OI-07 模板必须让 D-036/D-053 共用同一 revision，精确保留 3 个 Provider target、每 target 29 字段和 30 个联合字段，同时保持 Owner 输入、Provider 解析、凭证、费用、联网、证据采集、Owner、B05 与实现门禁关闭",
     );
   }
 

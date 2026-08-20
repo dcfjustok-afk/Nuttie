@@ -146,6 +146,16 @@ function latestD053EvidenceProtocolRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestOi07ProviderTargetTemplateRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "OI07-PROVIDER-TARGET-INTAKE-TEMPLATE-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1115,6 +1125,94 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D053_GATE", "D-053", "D-053 未保持三包 Provider 用途准入卡、3 Provider/5 payload/15 profile/150 十维评估/App Privacy 映射协议、Apple 不可豁免/UNKNOWN 阻断、OI-07/采集/签署/独立复核待办、台账 CANDIDATE 和 Owner/准入/B05/联网/实现未授权状态", d053);
   }
 
+  const oi07TemplateRecord = latestOi07ProviderTargetTemplateRecord(model);
+  const oi07 = {
+    eventId: oi07TemplateRecord?.eventId ?? null,
+    state: oi07TemplateRecord?.data?.state ?? null,
+    templateState: oi07TemplateRecord?.data?.templateState ?? null,
+    next: oi07TemplateRecord?.data?.next ?? null,
+    decisionIds: oi07TemplateRecord?.data?.decisionIds ?? null,
+    templateArtifactCommit: oi07TemplateRecord?.data?.templateArtifactCommit ?? null,
+    templateArtifactBlobOid: oi07TemplateRecord?.data?.templateArtifactBlobOid ?? null,
+    sharedRevisionFieldCount: oi07TemplateRecord?.data?.sharedRevisionFieldCount ?? null,
+    providerTargetCount: oi07TemplateRecord?.data?.providerTargetCount ?? null,
+    perTargetFieldCount: oi07TemplateRecord?.data?.perTargetFieldCount ?? null,
+    sharedPerTargetFieldCount: oi07TemplateRecord?.data?.sharedPerTargetFieldCount ?? null,
+    d036OnlyPerTargetFieldCount: oi07TemplateRecord?.data?.d036OnlyPerTargetFieldCount ?? null,
+    d053OnlyPerTargetFieldCount: oi07TemplateRecord?.data?.d053OnlyPerTargetFieldCount ?? null,
+    unionInputFieldCount: oi07TemplateRecord?.data?.unionInputFieldCount ?? null,
+    sameRevisionRequiredForD036AndD053:
+      oi07TemplateRecord?.data?.sameRevisionRequiredForD036AndD053 ?? null,
+    unknownAllowedButBlocks: oi07TemplateRecord?.data?.unknownAllowedButBlocks ?? null,
+    naRequiresReasonAndSource: oi07TemplateRecord?.data?.naRequiresReasonAndSource ?? null,
+    secretFreeInputRequired: oi07TemplateRecord?.data?.secretFreeInputRequired ?? null,
+    ownerOrAuthorizedContactRequired:
+      oi07TemplateRecord?.data?.ownerOrAuthorizedContactRequired ?? null,
+    oi07RevisionAssigned: oi07TemplateRecord?.data?.oi07RevisionAssigned ?? null,
+    ownerInputReceived: oi07TemplateRecord?.data?.ownerInputReceived ?? null,
+    inputAuthorityVerified: oi07TemplateRecord?.data?.inputAuthorityVerified ?? null,
+    providerTargetsResolved: oi07TemplateRecord?.data?.providerTargetsResolved ?? null,
+    allProviderTargets: oi07TemplateRecord?.data?.allProviderTargets ?? null,
+    credentialsReceived: oi07TemplateRecord?.data?.credentialsReceived ?? null,
+    credentialInjectionAuthorized:
+      oi07TemplateRecord?.data?.credentialInjectionAuthorized ?? null,
+    testCostAuthorized: oi07TemplateRecord?.data?.testCostAuthorized ?? null,
+    realNetworkAuthorized: oi07TemplateRecord?.data?.realNetworkAuthorized ?? null,
+    providerEvidenceCollectionAuthorized:
+      oi07TemplateRecord?.data?.providerEvidenceCollectionAuthorized ?? null,
+    externalMessageSent: oi07TemplateRecord?.data?.externalMessageSent ?? null,
+    ownerIntakeChanged: oi07TemplateRecord?.data?.ownerIntakeChanged ?? null,
+    d036ExecutionAuthorized: oi07TemplateRecord?.data?.d036ExecutionAuthorized ?? null,
+    d053EvidenceCollectionStarted:
+      oi07TemplateRecord?.data?.d053EvidenceCollectionStarted ?? null,
+    d053AdmissionRecords: oi07TemplateRecord?.data?.d053AdmissionRecords ?? null,
+    ownerReviewAuthorized: oi07TemplateRecord?.data?.ownerReviewAuthorized ?? null,
+    b05Closed: oi07TemplateRecord?.data?.b05Closed ?? null,
+    formalImplementationAuthorized:
+      oi07TemplateRecord?.data?.formalImplementationAuthorized ?? null,
+  };
+  if (!(
+    oi07.eventId === "EVT-20260821-013" &&
+    oi07.state === "completed" &&
+    oi07.templateState === "TEMPLATE_READY" &&
+    oi07.next === "OI07_OWNER_OR_AUTHORIZED_CONTACT_INPUT_REQUIRED" &&
+    JSON.stringify(oi07.decisionIds) === JSON.stringify(["D-036", "D-053"]) &&
+    oi07.templateArtifactCommit === "46e22ced7be0c5940fe5f5e4860f73817c6b0d52" &&
+    oi07.templateArtifactBlobOid === "875167cdc6aba15f9a2589bcc76ac889e7b40e0a" &&
+    oi07.sharedRevisionFieldCount === 1 &&
+    oi07.providerTargetCount === 3 &&
+    oi07.perTargetFieldCount === 29 &&
+    oi07.sharedPerTargetFieldCount === 12 &&
+    oi07.d036OnlyPerTargetFieldCount === 8 &&
+    oi07.d053OnlyPerTargetFieldCount === 9 &&
+    oi07.unionInputFieldCount === 30 &&
+    oi07.sameRevisionRequiredForD036AndD053 === true &&
+    oi07.unknownAllowedButBlocks === true &&
+    oi07.naRequiresReasonAndSource === true &&
+    oi07.secretFreeInputRequired === true &&
+    oi07.ownerOrAuthorizedContactRequired === true &&
+    oi07.oi07RevisionAssigned === false &&
+    oi07.ownerInputReceived === false &&
+    oi07.inputAuthorityVerified === false &&
+    oi07.providerTargetsResolved === false &&
+    oi07.allProviderTargets === "UNKNOWN_BLOCKED" &&
+    oi07.credentialsReceived === false &&
+    oi07.credentialInjectionAuthorized === false &&
+    oi07.testCostAuthorized === false &&
+    oi07.realNetworkAuthorized === false &&
+    oi07.providerEvidenceCollectionAuthorized === false &&
+    oi07.externalMessageSent === false &&
+    oi07.ownerIntakeChanged === false &&
+    oi07.d036ExecutionAuthorized === false &&
+    oi07.d053EvidenceCollectionStarted === false &&
+    oi07.d053AdmissionRecords === 0 &&
+    oi07.ownerReviewAuthorized === false &&
+    oi07.b05Closed === false &&
+    oi07.formalImplementationAuthorized === false
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OI07_TEMPLATE_GATE", "OI-07", "OI-07 未保持 D-036/D-053 共用 revision、3 target/29 字段/30 联合字段、UNKNOWN 阻断和输入/凭证/费用/联网/证据/Owner/B05/实现全关闭边界", oi07);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -1836,6 +1934,7 @@ export function reconcileProjectOps(model) {
     d034,
     d036,
     d053,
+    oi07,
     d040,
     diagnostics,
   };

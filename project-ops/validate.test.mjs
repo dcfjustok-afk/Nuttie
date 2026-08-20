@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY,
+  PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 308,
+    instancesValidated: 309,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 189);
+  assert.equal(report.counts.events, 190);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -968,6 +968,42 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d053ProtocolEvent.value.data.b05Closed, false);
   assert.equal(d053ProtocolEvent.value.data.realNetworkAuthorized, false);
   assert.equal(d053ProtocolEvent.value.data.formalImplementationAuthorized, false);
+  const oi07TemplateEvent = findEvent(VALID_MODEL, "EVT-20260821-013");
+  assert.equal(oi07TemplateEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    oi07TemplateEvent.value.subject.id,
+    "OI07-PROVIDER-TARGET-INTAKE-TEMPLATE-001",
+  );
+  assert.equal(oi07TemplateEvent.value.data.templateState, "TEMPLATE_READY");
+  assert.deepEqual(oi07TemplateEvent.value.data.decisionIds, ["D-036", "D-053"]);
+  assert.equal(oi07TemplateEvent.value.data.providerTargetCount, 3);
+  assert.equal(oi07TemplateEvent.value.data.perTargetFieldCount, 29);
+  assert.equal(oi07TemplateEvent.value.data.sharedPerTargetFieldCount, 12);
+  assert.equal(oi07TemplateEvent.value.data.d036OnlyPerTargetFieldCount, 8);
+  assert.equal(oi07TemplateEvent.value.data.d053OnlyPerTargetFieldCount, 9);
+  assert.equal(oi07TemplateEvent.value.data.unionInputFieldCount, 30);
+  assert.equal(oi07TemplateEvent.value.data.sameRevisionRequiredForD036AndD053, true);
+  assert.equal(oi07TemplateEvent.value.data.unknownAllowedButBlocks, true);
+  assert.equal(oi07TemplateEvent.value.data.naRequiresReasonAndSource, true);
+  assert.equal(oi07TemplateEvent.value.data.secretFreeInputRequired, true);
+  assert.equal(oi07TemplateEvent.value.data.oi07RevisionAssigned, false);
+  assert.equal(oi07TemplateEvent.value.data.ownerInputReceived, false);
+  assert.equal(oi07TemplateEvent.value.data.inputAuthorityVerified, false);
+  assert.equal(oi07TemplateEvent.value.data.providerTargetsResolved, false);
+  assert.equal(oi07TemplateEvent.value.data.allProviderTargets, "UNKNOWN_BLOCKED");
+  assert.equal(oi07TemplateEvent.value.data.credentialsReceived, false);
+  assert.equal(oi07TemplateEvent.value.data.credentialInjectionAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.testCostAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.realNetworkAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.providerEvidenceCollectionAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.externalMessageSent, false);
+  assert.equal(oi07TemplateEvent.value.data.ownerIntakeChanged, false);
+  assert.equal(oi07TemplateEvent.value.data.d036ExecutionAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.d053EvidenceCollectionStarted, false);
+  assert.equal(oi07TemplateEvent.value.data.d053AdmissionRecords, 0);
+  assert.equal(oi07TemplateEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(oi07TemplateEvent.value.data.b05Closed, false);
+  assert.equal(oi07TemplateEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1463,7 +1499,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 307);
+    assert.equal(report.schemaValidation.instancesValidated, 308);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3376,6 +3412,60 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("OI-07 Provider target 统一输入模板事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-013");
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("OI-07 模板静默减少 target 或 D-036/D-053 字段覆盖", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-013").value.data;
+      data.providerTargetCount = 2;
+      data.perTargetFieldCount = 20;
+      data.sharedPerTargetFieldCount = 10;
+      data.d036OnlyPerTargetFieldCount = 5;
+      data.d053OnlyPerTargetFieldCount = 5;
+      data.unionInputFieldCount = 21;
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("OI-07 模板弱化同 revision、UNKNOWN 阻断、N/A 来源或无密钥规则", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-013").value.data;
+      data.sameRevisionRequiredForD036AndD053 = false;
+      data.unknownAllowedButBlocks = false;
+      data.naRequiresReasonAndSource = false;
+      data.secretFreeInputRequired = false;
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("准备 OI-07 模板就越级伪造输入、凭证、费用、联网、证据、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-013").value.data;
+      data.oi07RevisionAssigned = true;
+      data.ownerInputReceived = true;
+      data.inputAuthorityVerified = true;
+      data.providerTargetsResolved = true;
+      data.allProviderTargets = "RESOLVED";
+      data.credentialsReceived = true;
+      data.credentialInjectionAuthorized = true;
+      data.testCostAuthorized = true;
+      data.realNetworkAuthorized = true;
+      data.providerEvidenceCollectionAuthorized = true;
+      data.d036ExecutionAuthorized = true;
+      data.d053EvidenceCollectionStarted = true;
+      data.d053AdmissionRecords = 15;
+      data.ownerReviewAuthorized = true;
+      data.b05Closed = true;
+      data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH");
   });
 });
 
