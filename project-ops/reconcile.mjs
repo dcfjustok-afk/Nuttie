@@ -166,6 +166,16 @@ function latestOi07ProviderTargetHarnessRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD034CorpusManifestHarnessRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D034-BENCHMARK-CORPUS-MANIFEST-HARNESS-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1334,6 +1344,171 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OI07_HARNESS_GATE", "OI-07", "OI-07 本地校验未保持 11 测试/3 target/29 字段/30 联合字段、UNKNOWN/N/A/脱敏/合成 fixture 边界及输入/Provider/凭证/费用/联网/证据/Owner/B05/发送/实现全关闭状态", oi07Harness);
   }
 
+  const d034CorpusManifestHarnessRecord = latestD034CorpusManifestHarnessRecord(model);
+  const d034CorpusManifestHarness = {
+    eventId: d034CorpusManifestHarnessRecord?.eventId ?? null,
+    state: d034CorpusManifestHarnessRecord?.data?.state ?? null,
+    contractStatus: d034CorpusManifestHarnessRecord?.data?.contractStatus ?? null,
+    decisionId: d034CorpusManifestHarnessRecord?.data?.decisionId ?? null,
+    decisionState: d034CorpusManifestHarnessRecord?.data?.decisionState ?? null,
+    d039BlockerId: d034CorpusManifestHarnessRecord?.data?.d039BlockerId ?? null,
+    d039BlockerState: d034CorpusManifestHarnessRecord?.data?.d039BlockerState ?? null,
+    protocolEventId: d034CorpusManifestHarnessRecord?.data?.protocolEventId ?? null,
+    artifactCommit: d034CorpusManifestHarnessRecord?.data?.artifactCommit ?? null,
+    inputSchemaVersion: d034CorpusManifestHarnessRecord?.data?.inputSchemaVersion ?? null,
+    resultSchemaVersion: d034CorpusManifestHarnessRecord?.data?.resultSchemaVersion ?? null,
+    boundarySchemaVersion: d034CorpusManifestHarnessRecord?.data?.boundarySchemaVersion ?? null,
+    topLevelTests: d034CorpusManifestHarnessRecord?.data?.topLevelTests ?? null,
+    fullSuitePassed: d034CorpusManifestHarnessRecord?.data?.fullSuitePassed ?? null,
+    profileCount: d034CorpusManifestHarnessRecord?.data?.profileCount ?? null,
+    profileMatrixRowCount: d034CorpusManifestHarnessRecord?.data?.profileMatrixRowCount ?? null,
+    directHardLimitCount: d034CorpusManifestHarnessRecord?.data?.directHardLimitCount ?? null,
+    companionControlCount: d034CorpusManifestHarnessRecord?.data?.companionControlCount ?? null,
+    requiredFixtureSlotCount: d034CorpusManifestHarnessRecord?.data?.requiredFixtureSlotCount ?? null,
+    directLimitFixtureCount: d034CorpusManifestHarnessRecord?.data?.directLimitFixtureCount ?? null,
+    familyCounts: d034CorpusManifestHarnessRecord?.data?.familyCounts ?? null,
+    structuralDisposition: d034CorpusManifestHarnessRecord?.data?.structuralDisposition ?? null,
+    extensionsAllowed: d034CorpusManifestHarnessRecord?.data?.extensionsAllowed ?? null,
+    extensionCanReplaceRequired: d034CorpusManifestHarnessRecord?.data?.extensionCanReplaceRequired ?? null,
+    binaryUnitsAndMachineValuesExact:
+      d034CorpusManifestHarnessRecord?.data?.binaryUnitsAndMachineValuesExact ?? null,
+    imageJpegQualityBoundForAllImageFixtures:
+      d034CorpusManifestHarnessRecord?.data?.imageJpegQualityBoundForAllImageFixtures ?? null,
+    fixtureArtifactSha256SyntaxRequired:
+      d034CorpusManifestHarnessRecord?.data?.fixtureArtifactSha256SyntaxRequired ?? null,
+    containsRealUserDataAllowed:
+      d034CorpusManifestHarnessRecord?.data?.containsRealUserDataAllowed ?? null,
+    containsCredentialAllowed:
+      d034CorpusManifestHarnessRecord?.data?.containsCredentialAllowed ?? null,
+    sensitiveLookingMaterialRejectedWithoutEcho:
+      d034CorpusManifestHarnessRecord?.data?.sensitiveLookingMaterialRejectedWithoutEcho ?? null,
+    specialObjectAndResourceAbuseRejected:
+      d034CorpusManifestHarnessRecord?.data?.specialObjectAndResourceAbuseRejected ?? null,
+    immutableNormalizationAndResultFingerprintBound:
+      d034CorpusManifestHarnessRecord?.data?.immutableNormalizationAndResultFingerprintBound ?? null,
+    fixtureOrderCanonicalized:
+      d034CorpusManifestHarnessRecord?.data?.fixtureOrderCanonicalized ?? null,
+    onlyCountsSummariesBlockersAndFingerprintsReturned:
+      d034CorpusManifestHarnessRecord?.data?.onlyCountsSummariesBlockersAndFingerprintsReturned ?? null,
+    fixtureManifestValuesReturned:
+      d034CorpusManifestHarnessRecord?.data?.fixtureManifestValuesReturned ?? null,
+    syntheticManifestOnly: d034CorpusManifestHarnessRecord?.data?.syntheticManifestOnly ?? null,
+    fixtureArtifactsCallerAssertedNotVerified:
+      d034CorpusManifestHarnessRecord?.data?.fixtureArtifactsCallerAssertedNotVerified ?? null,
+    corpusRevisionAssigned: d034CorpusManifestHarnessRecord?.data?.corpusRevisionAssigned ?? null,
+    corpusMaterialized: d034CorpusManifestHarnessRecord?.data?.corpusMaterialized ?? null,
+    fixtureArtifactReads: d034CorpusManifestHarnessRecord?.data?.fixtureArtifactReads ?? null,
+    fixtureArtifactWrites: d034CorpusManifestHarnessRecord?.data?.fixtureArtifactWrites ?? null,
+    minimumPhysicalDeviceResolved:
+      d034CorpusManifestHarnessRecord?.data?.minimumPhysicalDeviceResolved ?? null,
+    macAndSupportedXcodeAvailable:
+      d034CorpusManifestHarnessRecord?.data?.macAndSupportedXcodeAvailable ?? null,
+    isolatedNativeHarnessAuthorized:
+      d034CorpusManifestHarnessRecord?.data?.isolatedNativeHarnessAuthorized ?? null,
+    benchmarkExecutionAuthorized:
+      d034CorpusManifestHarnessRecord?.data?.benchmarkExecutionAuthorized ?? null,
+    benchmarkExecutionStarted:
+      d034CorpusManifestHarnessRecord?.data?.benchmarkExecutionStarted ?? null,
+    benchmarkResultRecorded:
+      d034CorpusManifestHarnessRecord?.data?.benchmarkResultRecorded ?? null,
+    deviceBenchmarkPassed: d034CorpusManifestHarnessRecord?.data?.deviceBenchmarkPassed ?? null,
+    namedSecurityReviewerAssigned:
+      d034CorpusManifestHarnessRecord?.data?.namedSecurityReviewerAssigned ?? null,
+    namedQaReviewerAssigned:
+      d034CorpusManifestHarnessRecord?.data?.namedQaReviewerAssigned ?? null,
+    independentReviewPassed:
+      d034CorpusManifestHarnessRecord?.data?.independentReviewPassed ?? null,
+    ownerIntakeChanged: d034CorpusManifestHarnessRecord?.data?.ownerIntakeChanged ?? null,
+    externalMessageSent: d034CorpusManifestHarnessRecord?.data?.externalMessageSent ?? null,
+    ownerCardScheduled: d034CorpusManifestHarnessRecord?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d034CorpusManifestHarnessRecord?.data?.ownerReviewAuthorized ?? null,
+    ownerChoiceRecorded: d034CorpusManifestHarnessRecord?.data?.ownerChoiceRecorded ?? null,
+    decisionAcceptedRecorded:
+      d034CorpusManifestHarnessRecord?.data?.decisionAcceptedRecorded ?? null,
+    b05Closed: d034CorpusManifestHarnessRecord?.data?.b05Closed ?? null,
+    formalRootProjectAuthorized:
+      d034CorpusManifestHarnessRecord?.data?.formalRootProjectAuthorized ?? null,
+    nativeIosWorkAuthorized:
+      d034CorpusManifestHarnessRecord?.data?.nativeIosWorkAuthorized ?? null,
+    formalImplementationAuthorized:
+      d034CorpusManifestHarnessRecord?.data?.formalImplementationAuthorized ?? null,
+    gateStatesChanged: d034CorpusManifestHarnessRecord?.data?.gateStatesChanged ?? null,
+  };
+  if (!(
+    d034CorpusManifestHarness.eventId === "EVT-20260821-015" &&
+    d034CorpusManifestHarness.state === "completed" &&
+    d034CorpusManifestHarness.contractStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    d034CorpusManifestHarness.decisionId === "D-034" &&
+    d034CorpusManifestHarness.decisionState === "CANDIDATE" &&
+    d034CorpusManifestHarness.d039BlockerId === "D039-PX5-B05" &&
+    d034CorpusManifestHarness.d039BlockerState === "OPEN" &&
+    d034CorpusManifestHarness.protocolEventId === "EVT-20260821-010" &&
+    d034CorpusManifestHarness.artifactCommit === "217a632236a12b885f2d6177f10f03f099c45e3c" &&
+    d034CorpusManifestHarness.inputSchemaVersion === "D034_BENCHMARK_CORPUS_MANIFEST_INPUT_V1" &&
+    d034CorpusManifestHarness.resultSchemaVersion === "D034_BENCHMARK_CORPUS_MANIFEST_RESULT_V1" &&
+    d034CorpusManifestHarness.boundarySchemaVersion === "D034_BENCHMARK_CORPUS_MANIFEST_BOUNDARY_V1" &&
+    d034CorpusManifestHarness.topLevelTests === 13 &&
+    d034CorpusManifestHarness.fullSuitePassed === 947 &&
+    d034CorpusManifestHarness.profileCount === 3 &&
+    d034CorpusManifestHarness.profileMatrixRowCount === 21 &&
+    d034CorpusManifestHarness.directHardLimitCount === 19 &&
+    d034CorpusManifestHarness.companionControlCount === 2 &&
+    d034CorpusManifestHarness.requiredFixtureSlotCount === 85 &&
+    d034CorpusManifestHarness.directLimitFixtureCount === 38 &&
+    JSON.stringify(d034CorpusManifestHarness.familyCounts) === JSON.stringify({
+      NORMAL: 8,
+      DIRECT_LIMIT: 38,
+      IMAGE_ADVERSARIAL: 7,
+      STREAM_ADVERSARIAL: 6,
+      JSON_ADVERSARIAL: 9,
+      LIFECYCLE: 11,
+      QUALITY_ACCESSIBILITY: 6,
+    }) &&
+    d034CorpusManifestHarness.structuralDisposition === "STRUCTURALLY_COMPLETE_MANIFEST_ONLY" &&
+    d034CorpusManifestHarness.extensionsAllowed === true &&
+    d034CorpusManifestHarness.extensionCanReplaceRequired === false &&
+    d034CorpusManifestHarness.binaryUnitsAndMachineValuesExact === true &&
+    d034CorpusManifestHarness.imageJpegQualityBoundForAllImageFixtures === true &&
+    d034CorpusManifestHarness.fixtureArtifactSha256SyntaxRequired === true &&
+    d034CorpusManifestHarness.containsRealUserDataAllowed === false &&
+    d034CorpusManifestHarness.containsCredentialAllowed === false &&
+    d034CorpusManifestHarness.sensitiveLookingMaterialRejectedWithoutEcho === true &&
+    d034CorpusManifestHarness.specialObjectAndResourceAbuseRejected === true &&
+    d034CorpusManifestHarness.immutableNormalizationAndResultFingerprintBound === true &&
+    d034CorpusManifestHarness.fixtureOrderCanonicalized === true &&
+    d034CorpusManifestHarness.onlyCountsSummariesBlockersAndFingerprintsReturned === true &&
+    d034CorpusManifestHarness.fixtureManifestValuesReturned === false &&
+    d034CorpusManifestHarness.syntheticManifestOnly === true &&
+    d034CorpusManifestHarness.fixtureArtifactsCallerAssertedNotVerified === true &&
+    d034CorpusManifestHarness.corpusRevisionAssigned === false &&
+    d034CorpusManifestHarness.corpusMaterialized === false &&
+    d034CorpusManifestHarness.fixtureArtifactReads === 0 &&
+    d034CorpusManifestHarness.fixtureArtifactWrites === 0 &&
+    d034CorpusManifestHarness.minimumPhysicalDeviceResolved === false &&
+    d034CorpusManifestHarness.macAndSupportedXcodeAvailable === false &&
+    d034CorpusManifestHarness.isolatedNativeHarnessAuthorized === false &&
+    d034CorpusManifestHarness.benchmarkExecutionAuthorized === false &&
+    d034CorpusManifestHarness.benchmarkExecutionStarted === false &&
+    d034CorpusManifestHarness.benchmarkResultRecorded === false &&
+    d034CorpusManifestHarness.deviceBenchmarkPassed === false &&
+    d034CorpusManifestHarness.namedSecurityReviewerAssigned === false &&
+    d034CorpusManifestHarness.namedQaReviewerAssigned === false &&
+    d034CorpusManifestHarness.independentReviewPassed === false &&
+    d034CorpusManifestHarness.ownerIntakeChanged === false &&
+    d034CorpusManifestHarness.externalMessageSent === false &&
+    d034CorpusManifestHarness.ownerCardScheduled === false &&
+    d034CorpusManifestHarness.ownerReviewAuthorized === false &&
+    d034CorpusManifestHarness.ownerChoiceRecorded === false &&
+    d034CorpusManifestHarness.decisionAcceptedRecorded === false &&
+    d034CorpusManifestHarness.b05Closed === false &&
+    d034CorpusManifestHarness.formalRootProjectAuthorized === false &&
+    d034CorpusManifestHarness.nativeIosWorkAuthorized === false &&
+    d034CorpusManifestHarness.formalImplementationAuthorized === false &&
+    d034CorpusManifestHarness.gateStatesChanged === false
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_CORPUS_MANIFEST_GATE", "D-034", "D-034 corpus manifest 本地合同未保持 13 测试/3 档/21 行/19+2/85 槽位/38 边界与 +1、JPEG/摘要/无真实数据凭据/脱敏/不可变边界及 corpus/设备/原生执行/结果/复核/Owner/B05/实现全关闭状态", d034CorpusManifestHarness);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -2057,6 +2232,7 @@ export function reconcileProjectOps(model) {
     d053,
     oi07,
     oi07Harness,
+    d034CorpusManifestHarness,
     d040,
     diagnostics,
   };

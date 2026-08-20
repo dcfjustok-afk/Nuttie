@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY",
+export const PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 191,
+    events: 192,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY = Objec
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 14,
+    "2026-08-21": 15,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2585,6 +2585,88 @@ export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY = Objec
     sendAuthorization: "NOT_GRANTED",
     gateStatesChanged: false,
   }),
+  d034CorpusManifestHarness: Object.freeze({
+    eventId: "EVT-20260821-015",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "D034-BENCHMARK-CORPUS-MANIFEST-HARNESS-001",
+    subjectRole: "LocalBenchmarkManifestContract",
+    correlationId: "d034-benchmark-corpus-manifest-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    decisionId: "D-034",
+    decisionState: "CANDIDATE",
+    d039BlockerId: "D039-PX5-B05",
+    d039BlockerState: "OPEN",
+    protocolEventId: "EVT-20260821-010",
+    contractArtifactCommit: "214c2d7467c9a8cb5632c3cedd14cb540ff827ed",
+    contractDocumentationBlobOid: "6ef54d5d49ba9e3465d74880af95f0769c62eddd",
+    artifactCommit: "217a632236a12b885f2d6177f10f03f099c45e3c",
+    implementationBlobOid: "54237ba6f6a00fd5a11c9bb862428e069c04cdd5",
+    testBlobOid: "2d0bc513a91192dd0694179910aa3c9c4c22f999",
+    documentationBlobOid: "95a2d4e6b11211678f372a3393a4239e20aff68c",
+    inputSchemaVersion: "D034_BENCHMARK_CORPUS_MANIFEST_INPUT_V1",
+    resultSchemaVersion: "D034_BENCHMARK_CORPUS_MANIFEST_RESULT_V1",
+    boundarySchemaVersion: "D034_BENCHMARK_CORPUS_MANIFEST_BOUNDARY_V1",
+    topLevelTests: 13,
+    fullSuitePassed: 947,
+    profileCount: 3,
+    profileMatrixRowCount: 21,
+    directHardLimitCount: 19,
+    companionControlCount: 2,
+    requiredFixtureSlotCount: 85,
+    directLimitFixtureCount: 38,
+    familyCounts: Object.freeze({
+      NORMAL: 8,
+      DIRECT_LIMIT: 38,
+      IMAGE_ADVERSARIAL: 7,
+      STREAM_ADVERSARIAL: 6,
+      JSON_ADVERSARIAL: 9,
+      LIFECYCLE: 11,
+      QUALITY_ACCESSIBILITY: 6,
+    }),
+    structuralDisposition: "STRUCTURALLY_COMPLETE_MANIFEST_ONLY",
+    extensionsAllowed: true,
+    extensionCanReplaceRequired: false,
+    binaryUnitsAndMachineValuesExact: true,
+    imageJpegQualityBoundForAllImageFixtures: true,
+    fixtureArtifactSha256SyntaxRequired: true,
+    containsRealUserDataAllowed: false,
+    containsCredentialAllowed: false,
+    sensitiveLookingMaterialRejectedWithoutEcho: true,
+    specialObjectAndResourceAbuseRejected: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    fixtureOrderCanonicalized: true,
+    onlyCountsSummariesBlockersAndFingerprintsReturned: true,
+    fixtureManifestValuesReturned: false,
+    syntheticManifestOnly: true,
+    fixtureArtifactsCallerAssertedNotVerified: true,
+    corpusRevisionAssigned: false,
+    corpusMaterialized: false,
+    fixtureArtifactReads: 0,
+    fixtureArtifactWrites: 0,
+    minimumPhysicalDeviceResolved: false,
+    macAndSupportedXcodeAvailable: false,
+    isolatedNativeHarnessAuthorized: false,
+    benchmarkExecutionAuthorized: false,
+    benchmarkExecutionStarted: false,
+    benchmarkResultRecorded: false,
+    deviceBenchmarkPassed: false,
+    namedSecurityReviewerAssigned: false,
+    namedQaReviewerAssigned: false,
+    independentReviewPassed: false,
+    ownerIntakeChanged: false,
+    externalMessageSent: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    b05Closed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -4006,7 +4088,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7919,6 +8001,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "OI-07 本地校验合同必须执行 3 target/29 字段/30 联合字段、UNKNOWN/N/A/HTTPS/敏感材料与不可变结果边界，只输出计数/状态/指纹，同时保持真实输入、Provider 真相、凭证、费用、联网、证据、Owner、B05 与实现门禁关闭",
+    );
+  }
+
+  const d034CorpusManifestHarnessSpec = baseline.d034CorpusManifestHarness;
+  const d034CorpusManifestHarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === d034CorpusManifestHarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d034CorpusManifestHarnessSpec.correlationId),
+  );
+  const d034CorpusManifestHarnessEvent = d034CorpusManifestHarnessEvents[0]?.value;
+  const d034CorpusManifestHarnessData = d034CorpusManifestHarnessEvent?.data ?? {};
+  const d034CorpusManifestHarnessFields = Object.keys(d034CorpusManifestHarnessSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d034CorpusManifestHarnessEvents.length !== 1 ||
+    d034CorpusManifestHarnessEvent?.eventId !== d034CorpusManifestHarnessSpec.eventId ||
+    d034CorpusManifestHarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    d034CorpusManifestHarnessEvent?.actor?.id !== d034CorpusManifestHarnessSpec.actorId ||
+    d034CorpusManifestHarnessEvent?.actor?.role !== d034CorpusManifestHarnessSpec.actorRole ||
+    d034CorpusManifestHarnessEvent?.subject?.id !== d034CorpusManifestHarnessSpec.subjectId ||
+    d034CorpusManifestHarnessEvent?.subject?.role !== d034CorpusManifestHarnessSpec.subjectRole ||
+    d034CorpusManifestHarnessEvent?.correlationId !== d034CorpusManifestHarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(d034CorpusManifestHarnessData).sort()) !==
+      JSON.stringify(d034CorpusManifestHarnessFields) ||
+    d034CorpusManifestHarnessFields.some(
+      (field) => JSON.stringify(d034CorpusManifestHarnessData[field]) !==
+        JSON.stringify(d034CorpusManifestHarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-034 corpus manifest 本地合同必须执行 3 档/21 行/19+2 口径、85 个必需槽位、38 个边界/+1、JPEG/摘要/无真实数据与凭据/脱敏/不可变边界，同时保持真实 corpus、最低设备、Mac/Xcode、原生 harness、执行、结果、复核、Owner、B05 与实现全关闭",
     );
   }
 

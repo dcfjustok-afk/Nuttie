@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 191,
+    events: 192,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -383,6 +383,47 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.oi07Harness.b05Closed, false);
   assert.equal(report.oi07Harness.formalImplementationAuthorized, false);
   assert.equal(report.oi07Harness.sendAuthorization, "NOT_GRANTED");
+  assert.equal(report.d034CorpusManifestHarness.eventId, "EVT-20260821-015");
+  assert.equal(report.d034CorpusManifestHarness.contractStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(report.d034CorpusManifestHarness.decisionId, "D-034");
+  assert.equal(report.d034CorpusManifestHarness.protocolEventId, "EVT-20260821-010");
+  assert.equal(
+    report.d034CorpusManifestHarness.artifactCommit,
+    "217a632236a12b885f2d6177f10f03f099c45e3c",
+  );
+  assert.equal(report.d034CorpusManifestHarness.inputSchemaVersion, "D034_BENCHMARK_CORPUS_MANIFEST_INPUT_V1");
+  assert.equal(report.d034CorpusManifestHarness.resultSchemaVersion, "D034_BENCHMARK_CORPUS_MANIFEST_RESULT_V1");
+  assert.equal(report.d034CorpusManifestHarness.boundarySchemaVersion, "D034_BENCHMARK_CORPUS_MANIFEST_BOUNDARY_V1");
+  assert.equal(report.d034CorpusManifestHarness.topLevelTests, 13);
+  assert.equal(report.d034CorpusManifestHarness.fullSuitePassed, 947);
+  assert.equal(report.d034CorpusManifestHarness.profileCount, 3);
+  assert.equal(report.d034CorpusManifestHarness.profileMatrixRowCount, 21);
+  assert.equal(report.d034CorpusManifestHarness.directHardLimitCount, 19);
+  assert.equal(report.d034CorpusManifestHarness.companionControlCount, 2);
+  assert.equal(report.d034CorpusManifestHarness.requiredFixtureSlotCount, 85);
+  assert.equal(report.d034CorpusManifestHarness.directLimitFixtureCount, 38);
+  assert.equal(report.d034CorpusManifestHarness.structuralDisposition, "STRUCTURALLY_COMPLETE_MANIFEST_ONLY");
+  assert.equal(report.d034CorpusManifestHarness.extensionCanReplaceRequired, false);
+  assert.equal(report.d034CorpusManifestHarness.imageJpegQualityBoundForAllImageFixtures, true);
+  assert.equal(report.d034CorpusManifestHarness.containsRealUserDataAllowed, false);
+  assert.equal(report.d034CorpusManifestHarness.containsCredentialAllowed, false);
+  assert.equal(report.d034CorpusManifestHarness.fixtureManifestValuesReturned, false);
+  assert.equal(report.d034CorpusManifestHarness.fixtureArtifactsCallerAssertedNotVerified, true);
+  assert.equal(report.d034CorpusManifestHarness.corpusRevisionAssigned, false);
+  assert.equal(report.d034CorpusManifestHarness.corpusMaterialized, false);
+  assert.equal(report.d034CorpusManifestHarness.fixtureArtifactReads, 0);
+  assert.equal(report.d034CorpusManifestHarness.fixtureArtifactWrites, 0);
+  assert.equal(report.d034CorpusManifestHarness.minimumPhysicalDeviceResolved, false);
+  assert.equal(report.d034CorpusManifestHarness.macAndSupportedXcodeAvailable, false);
+  assert.equal(report.d034CorpusManifestHarness.isolatedNativeHarnessAuthorized, false);
+  assert.equal(report.d034CorpusManifestHarness.benchmarkExecutionAuthorized, false);
+  assert.equal(report.d034CorpusManifestHarness.benchmarkExecutionStarted, false);
+  assert.equal(report.d034CorpusManifestHarness.benchmarkResultRecorded, false);
+  assert.equal(report.d034CorpusManifestHarness.deviceBenchmarkPassed, false);
+  assert.equal(report.d034CorpusManifestHarness.independentReviewPassed, false);
+  assert.equal(report.d034CorpusManifestHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d034CorpusManifestHarness.b05Closed, false);
+  assert.equal(report.d034CorpusManifestHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -831,6 +872,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(
     oi07HarnessReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_OI07_HARNESS_GATE",
+    ),
+  );
+
+  const d034CorpusManifestHarnessModel = validModel();
+  d034CorpusManifestHarnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-015",
+  ).value.data.corpusMaterialized = true;
+  const d034CorpusManifestHarnessReport = reconcileProjectOps(d034CorpusManifestHarnessModel);
+  assert.equal(d034CorpusManifestHarnessReport.ok, false);
+  assert.ok(
+    d034CorpusManifestHarnessReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_CORPUS_MANIFEST_GATE",
     ),
   );
 

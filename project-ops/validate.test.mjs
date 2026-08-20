@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY,
+  PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D034_CORPUS_MANIFEST_HARNESS_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 310,
+    instancesValidated: 311,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 191);
+  assert.equal(report.counts.events, 192);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1051,6 +1051,54 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(oi07HarnessEvent.value.data.b05Closed, false);
   assert.equal(oi07HarnessEvent.value.data.formalImplementationAuthorized, false);
   assert.equal(oi07HarnessEvent.value.data.sendAuthorization, "NOT_GRANTED");
+  const d034CorpusManifestHarnessEvent = findEvent(VALID_MODEL, "EVT-20260821-015");
+  assert.equal(d034CorpusManifestHarnessEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d034CorpusManifestHarnessEvent.value.subject.id,
+    "D034-BENCHMARK-CORPUS-MANIFEST-HARNESS-001",
+  );
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.contractStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.protocolEventId, "EVT-20260821-010");
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.topLevelTests, 13);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.fullSuitePassed, 947);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.profileCount, 3);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.profileMatrixRowCount, 21);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.directHardLimitCount, 19);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.companionControlCount, 2);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.requiredFixtureSlotCount, 85);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.directLimitFixtureCount, 38);
+  assert.deepEqual(d034CorpusManifestHarnessEvent.value.data.familyCounts, {
+    NORMAL: 8,
+    DIRECT_LIMIT: 38,
+    IMAGE_ADVERSARIAL: 7,
+    STREAM_ADVERSARIAL: 6,
+    JSON_ADVERSARIAL: 9,
+    LIFECYCLE: 11,
+    QUALITY_ACCESSIBILITY: 6,
+  });
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.structuralDisposition, "STRUCTURALLY_COMPLETE_MANIFEST_ONLY");
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.extensionCanReplaceRequired, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.imageJpegQualityBoundForAllImageFixtures, true);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.containsRealUserDataAllowed, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.containsCredentialAllowed, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.fixtureManifestValuesReturned, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.fixtureArtifactsCallerAssertedNotVerified, true);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.corpusRevisionAssigned, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.corpusMaterialized, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.fixtureArtifactReads, 0);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.fixtureArtifactWrites, 0);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.minimumPhysicalDeviceResolved, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.macAndSupportedXcodeAvailable, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.isolatedNativeHarnessAuthorized, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.benchmarkExecutionAuthorized, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.benchmarkExecutionStarted, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.benchmarkResultRecorded, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.deviceBenchmarkPassed, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.independentReviewPassed, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.ownerIntakeChanged, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.b05Closed, false);
+  assert.equal(d034CorpusManifestHarnessEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1546,7 +1594,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 309);
+    assert.equal(report.schemaValidation.instancesValidated, 310);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3570,6 +3618,77 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.sendAuthorization = "GRANTED";
     });
     assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-034 corpus manifest 本地校验合同事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-015");
+    });
+    assertDiagnostic(report, "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-034 corpus manifest 校验静默减少矩阵、硬上限、槽位或 direct-limit 覆盖", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-015").value.data;
+      data.topLevelTests = 6;
+      data.profileCount = 2;
+      data.profileMatrixRowCount = 20;
+      data.directHardLimitCount = 18;
+      data.companionControlCount = 1;
+      data.requiredFixtureSlotCount = 84;
+      data.directLimitFixtureCount = 36;
+      data.familyCounts.DIRECT_LIMIT = 36;
+    });
+    assertDiagnostic(report, "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-034 corpus manifest 校验弱化 JPEG、摘要、数据、脱敏或不可变输出边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-015").value.data;
+      data.extensionCanReplaceRequired = true;
+      data.binaryUnitsAndMachineValuesExact = false;
+      data.imageJpegQualityBoundForAllImageFixtures = false;
+      data.fixtureArtifactSha256SyntaxRequired = false;
+      data.containsRealUserDataAllowed = true;
+      data.containsCredentialAllowed = true;
+      data.sensitiveLookingMaterialRejectedWithoutEcho = false;
+      data.immutableNormalizationAndResultFingerprintBound = false;
+      data.fixtureManifestValuesReturned = true;
+      data.fixtureArtifactsCallerAssertedNotVerified = false;
+    });
+    assertDiagnostic(report, "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地 D-034 manifest 校验就越级伪造 corpus、设备、原生执行、结果、复核、Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-015").value.data;
+      data.corpusRevisionAssigned = true;
+      data.corpusMaterialized = true;
+      data.fixtureArtifactReads = 85;
+      data.fixtureArtifactWrites = 85;
+      data.minimumPhysicalDeviceResolved = true;
+      data.macAndSupportedXcodeAvailable = true;
+      data.isolatedNativeHarnessAuthorized = true;
+      data.benchmarkExecutionAuthorized = true;
+      data.benchmarkExecutionStarted = true;
+      data.benchmarkResultRecorded = true;
+      data.deviceBenchmarkPassed = true;
+      data.namedSecurityReviewerAssigned = true;
+      data.namedQaReviewerAssigned = true;
+      data.independentReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.externalMessageSent = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.b05Closed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D034_CORPUS_MANIFEST_HARNESS_MISMATCH");
   });
 });
 
