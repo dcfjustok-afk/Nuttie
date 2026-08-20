@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 188,
+    events: 189,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -261,6 +261,41 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.selfReviewPassed, true);
   assert.equal(report.d053.independentReviewPassed, false);
   assert.equal(report.d053.ownerCardScheduled, false);
+  assert.equal(report.d053.protocolEventId, "EVT-20260821-012");
+  assert.equal(report.d053.protocolState, "PROTOCOL_READY");
+  assert.equal(
+    report.d053.protocolNext,
+    "D053_OI07_PROVIDER_EVIDENCE_AND_APP_PRIVACY_MAPPING_REQUIRED",
+  );
+  assert.equal(report.d053.protocolSourcePacketVersion, "PACKET-001-R1");
+  assert.equal(report.d053.protocolSourceCardInputFrozen, true);
+  assert.equal(report.d053.protocolProviderTargetCount, 3);
+  assert.equal(report.d053.protocolPayloadClassCount, 5);
+  assert.equal(report.d053.protocolMinimumAdmissionProfileCount, 15);
+  assert.equal(report.d053.protocolEvidenceDimensionCount, 10);
+  assert.equal(report.d053.protocolRequiredDimensionAssessmentCount, 150);
+  assert.equal(report.d053.protocolAppPrivacyMappingRowMinimum, 5);
+  assert.equal(report.d053.protocolApplePolicySourceCount, 3);
+  assert.equal(report.d053.protocolOi07Complete, false);
+  assert.equal(report.d053.protocolProviderTargetsResolved, false);
+  assert.equal(report.d053.protocolEvidenceCollectionAuthorized, false);
+  assert.equal(report.d053.protocolEvidenceCollectionStarted, false);
+  assert.equal(report.d053.protocolSourceSnapshotsRecorded, false);
+  assert.equal(report.d053.protocolAdmissionProfilesRecorded, 0);
+  assert.equal(report.d053.protocolDimensionAssessmentsRecorded, 0);
+  assert.equal(report.d053.protocolAppPrivacyMappingStarted, false);
+  assert.equal(report.d053.protocolAppPrivacyMappingRowCount, 0);
+  assert.equal(report.d053.protocolAppPrivacyMappingSigned, false);
+  assert.equal(report.d053.protocolNamedSignersAssigned, false);
+  assert.equal(report.d053.protocolIndependentReviewPassed, false);
+  assert.equal(report.d053.protocolProviderEvidencePassed, false);
+  assert.equal(report.d053.protocolProviderAdmissionRecords, 0);
+  assert.equal(report.d053.protocolAllProviderPayloadProfiles, "UNKNOWN_BLOCKED");
+  assert.equal(report.d053.protocolLedgerCandidatePreserved, true);
+  assert.equal(report.d053.protocolOwnerReviewAuthorized, false);
+  assert.equal(report.d053.protocolB05Closed, false);
+  assert.equal(report.d053.protocolRealNetworkAuthorized, false);
+  assert.equal(report.d053.protocolFormalImplementationAuthorized, false);
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
@@ -677,6 +712,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d053Report = reconcileProjectOps(d053Model);
   assert.equal(d053Report.ok, false);
   assert.ok(d053Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE"));
+
+  const d053ProtocolModel = validModel();
+  d053ProtocolModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-012",
+  ).value.data.providerEvidenceCollectionAuthorized = true;
+  const d053ProtocolReport = reconcileProjectOps(d053ProtocolModel);
+  assert.equal(d053ProtocolReport.ok, false);
+  assert.ok(
+    d053ProtocolReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE",
+    ),
+  );
 
   const d040EnergyModel = validModel();
   d040EnergyModel.events.find((record) => record.value.eventId === "EVT-20260820-003").value.data.silentDefaultPalAllowed = true;

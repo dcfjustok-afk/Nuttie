@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY",
+export const PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 188,
+    events: 189,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY = Object.free
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 11,
+    "2026-08-21": 12,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2392,6 +2392,75 @@ export const PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY = Object.free
       ownerIntakeChanged: false,
       d039DecisionStateChanged: false,
     }),
+    evidenceProtocol: Object.freeze({
+      eventId: "EVT-20260821-012",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D053-PROVIDER-EVIDENCE-APP-PRIVACY-PROTOCOL-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d053-provider-evidence-app-privacy-protocol",
+      state: "completed",
+      decisionId: "D-053",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D053_PROVIDER_EVIDENCE_APP_PRIVACY_PROTOCOL_REQUIRED",
+      to: "D053_PROVIDER_EVIDENCE_APP_PRIVACY_PROTOCOL_READY",
+      next: "D053_OI07_PROVIDER_EVIDENCE_AND_APP_PRIVACY_MAPPING_REQUIRED",
+      protocolState: "PROTOCOL_READY",
+      sourcePacketVersion: "PACKET-001-R1",
+      sourceCardInputFrozen: true,
+      sourceCardCommit: "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+      sourceCardBlobOid: "d406e17c8e7b0e11218a8907e757a603df01e465",
+      sourceCardSha256: "9c1cc88d34ec116f2825d6a71dd580ac8c625d99b30c87a8a06cf7086b894caf",
+      sourcePacketManifestEventId: "EVT-20260821-009",
+      protocolArtifactCommit: "d6e72dd449c8de8b385b6f9e6427cb0fd99f7ce7",
+      protocolArtifactBlobOid: "d422ad302e8d2c32fc9184557bf5f458693ceaad",
+      providerTargetCount: 3,
+      payloadClassCount: 5,
+      minimumAdmissionProfileCount: 15,
+      evidenceDimensionCount: 10,
+      requiredDimensionAssessmentCount: 150,
+      appPrivacyMappingRowMinimum: 5,
+      applePolicySourceCount: 3,
+      oi07Complete: false,
+      providerTargetsResolved: false,
+      providerEvidenceCollectionAuthorized: false,
+      providerEvidenceCollectionStarted: false,
+      sourceSnapshotsRecorded: false,
+      admissionProfilesRecorded: 0,
+      dimensionAssessmentsRecorded: 0,
+      appPrivacyMappingStarted: false,
+      appPrivacyMappingRowCount: 0,
+      appPrivacyMappingSigned: false,
+      privacyPolicyPublicUrlAvailable: false,
+      privacyChoicesUrlAvailable: false,
+      appStoreConnectRecordAvailable: false,
+      namedProductSignerAssigned: false,
+      namedPrivacySecuritySignerAssigned: false,
+      namedReleaseSignerAssigned: false,
+      independentReviewerAssigned: false,
+      independentReviewPassed: false,
+      providerEvidencePassed: false,
+      externalMessageSent: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      providerAdmissionRecords: 0,
+      allProviderPayloadProfiles: "UNKNOWN_BLOCKED",
+      d053RegisteredInDecisionLedger: true,
+      d053RecordedInOwnerIntake: false,
+      d053CandidateStatusPreserved: true,
+      b05Closed: false,
+      d032SecondOwnerActionSatisfied: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      realNetworkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+    }),
   }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
@@ -3814,7 +3883,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7619,6 +7688,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D053_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-053 必须精确保留三套 Provider 用途准入政策包、十维证据、五类 payload、Apple 不可豁免/App Privacy/旧 harness 边界、四域自审和 OI-07/独立复核/Owner/B05/实现未授权状态，同时保持权威台账 CANDIDATE 且 Owner intake 无响应",
+    );
+  }
+
+  const d053EvidenceProtocolSpec = baseline.d053.evidenceProtocol;
+  const d053EvidenceProtocolEvents = model.events.filter(
+    (record) => record.value?.eventId === d053EvidenceProtocolSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d053EvidenceProtocolSpec.correlationId),
+  );
+  const d053EvidenceProtocolEvent = d053EvidenceProtocolEvents[0]?.value;
+  const d053EvidenceProtocolData = d053EvidenceProtocolEvent?.data ?? {};
+  const d053EvidenceProtocolFields = Object.keys(d053EvidenceProtocolSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d053EvidenceProtocolEvents.length !== 1 ||
+    d053EvidenceProtocolEvent?.eventId !== d053EvidenceProtocolSpec.eventId ||
+    d053EvidenceProtocolEvent?.type !== "ARTIFACT_CREATED" ||
+    d053EvidenceProtocolEvent?.actor?.id !== d053EvidenceProtocolSpec.actorId ||
+    d053EvidenceProtocolEvent?.actor?.role !== d053EvidenceProtocolSpec.actorRole ||
+    d053EvidenceProtocolEvent?.subject?.id !== d053EvidenceProtocolSpec.subjectId ||
+    d053EvidenceProtocolEvent?.subject?.role !== d053EvidenceProtocolSpec.subjectRole ||
+    d053EvidenceProtocolEvent?.correlationId !== d053EvidenceProtocolSpec.correlationId ||
+    JSON.stringify(Object.keys(d053EvidenceProtocolData).sort()) !==
+      JSON.stringify(d053EvidenceProtocolFields) ||
+    d053EvidenceProtocolFields.some(
+      (field) => JSON.stringify(d053EvidenceProtocolData[field]) !==
+        JSON.stringify(d053EvidenceProtocolSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-053 证据协议必须绑定冻结卡输入，覆盖三个 Provider、五类 payload、15 个最小 profile、150 项十维评估与至少 5 行 App Privacy 映射，同时保持 OI-07、Provider、采集、映射、签署、复核、Owner、准入、B05、联网与实现门禁关闭",
     );
   }
 

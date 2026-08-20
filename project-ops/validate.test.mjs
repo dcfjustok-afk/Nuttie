@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY,
+  PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D036_PROVIDER_NATIVE_PROTOCOL_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D053_PROVIDER_EVIDENCE_PROTOCOL_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 307,
+    instancesValidated: 308,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 188);
+  assert.equal(report.counts.events, 189);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -932,6 +932,42 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d053CardEvent.value.data.ownerCardScheduled, false);
   assert.equal(d053CardEvent.value.data.d053RegisteredInDecisionLedger, true);
   assert.equal(d053CardEvent.value.data.formalImplementationAuthorized, false);
+  const d053ProtocolEvent = findEvent(VALID_MODEL, "EVT-20260821-012");
+  assert.equal(d053ProtocolEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d053ProtocolEvent.value.subject.id,
+    "D053-PROVIDER-EVIDENCE-APP-PRIVACY-PROTOCOL-001",
+  );
+  assert.equal(d053ProtocolEvent.value.data.protocolState, "PROTOCOL_READY");
+  assert.equal(d053ProtocolEvent.value.data.sourcePacketVersion, "PACKET-001-R1");
+  assert.equal(d053ProtocolEvent.value.data.sourceCardInputFrozen, true);
+  assert.equal(d053ProtocolEvent.value.data.providerTargetCount, 3);
+  assert.equal(d053ProtocolEvent.value.data.payloadClassCount, 5);
+  assert.equal(d053ProtocolEvent.value.data.minimumAdmissionProfileCount, 15);
+  assert.equal(d053ProtocolEvent.value.data.evidenceDimensionCount, 10);
+  assert.equal(d053ProtocolEvent.value.data.requiredDimensionAssessmentCount, 150);
+  assert.equal(d053ProtocolEvent.value.data.appPrivacyMappingRowMinimum, 5);
+  assert.equal(d053ProtocolEvent.value.data.applePolicySourceCount, 3);
+  assert.equal(d053ProtocolEvent.value.data.oi07Complete, false);
+  assert.equal(d053ProtocolEvent.value.data.providerTargetsResolved, false);
+  assert.equal(d053ProtocolEvent.value.data.providerEvidenceCollectionAuthorized, false);
+  assert.equal(d053ProtocolEvent.value.data.providerEvidenceCollectionStarted, false);
+  assert.equal(d053ProtocolEvent.value.data.sourceSnapshotsRecorded, false);
+  assert.equal(d053ProtocolEvent.value.data.admissionProfilesRecorded, 0);
+  assert.equal(d053ProtocolEvent.value.data.dimensionAssessmentsRecorded, 0);
+  assert.equal(d053ProtocolEvent.value.data.appPrivacyMappingStarted, false);
+  assert.equal(d053ProtocolEvent.value.data.appPrivacyMappingRowCount, 0);
+  assert.equal(d053ProtocolEvent.value.data.appPrivacyMappingSigned, false);
+  assert.equal(d053ProtocolEvent.value.data.independentReviewPassed, false);
+  assert.equal(d053ProtocolEvent.value.data.providerEvidencePassed, false);
+  assert.equal(d053ProtocolEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d053ProtocolEvent.value.data.providerAdmissionRecords, 0);
+  assert.equal(d053ProtocolEvent.value.data.allProviderPayloadProfiles, "UNKNOWN_BLOCKED");
+  assert.equal(d053ProtocolEvent.value.data.d053RegisteredInDecisionLedger, true);
+  assert.equal(d053ProtocolEvent.value.data.d053RecordedInOwnerIntake, false);
+  assert.equal(d053ProtocolEvent.value.data.b05Closed, false);
+  assert.equal(d053ProtocolEvent.value.data.realNetworkAuthorized, false);
+  assert.equal(d053ProtocolEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1427,7 +1463,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 306);
+    assert.equal(report.schemaValidation.instancesValidated, 307);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3290,6 +3326,56 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       decision.choiceKey = "documented-compatible-use-only";
     });
     assertDiagnostic(report, "OPS_D053_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-053 Provider 证据/App Privacy 协议事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-012");
+    });
+    assertDiagnostic(report, "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-053 协议静默减少 Provider、payload、profile、维度或映射覆盖", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-012").value.data;
+      data.providerTargetCount = 2;
+      data.payloadClassCount = 4;
+      data.minimumAdmissionProfileCount = 8;
+      data.evidenceDimensionCount = 9;
+      data.requiredDimensionAssessmentCount = 72;
+      data.appPrivacyMappingRowMinimum = 4;
+    });
+    assertDiagnostic(report, "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-053 协议弱化冻结来源、官方政策入口或 Candidate 台账边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-012").value.data;
+      data.sourceCardInputFrozen = false;
+      data.applePolicySourceCount = 1;
+      data.d053RegisteredInDecisionLedger = false;
+      data.d053CandidateStatusPreserved = false;
+    });
+    assertDiagnostic(report, "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("准备 D-053 协议就越级伪造 OI-07、证据、映射、准入、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-012").value.data;
+      data.oi07Complete = true;
+      data.providerEvidenceCollectionAuthorized = true;
+      data.providerEvidenceCollectionStarted = true;
+      data.appPrivacyMappingSigned = true;
+      data.independentReviewPassed = true;
+      data.providerEvidencePassed = true;
+      data.providerAdmissionRecords = 15;
+      data.allProviderPayloadProfiles = "ALLOW";
+      data.ownerReviewAuthorized = true;
+      data.b05Closed = true;
+      data.realNetworkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D053_EVIDENCE_PROTOCOL_MISMATCH");
   });
 });
 

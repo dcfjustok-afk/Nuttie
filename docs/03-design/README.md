@@ -31,7 +31,7 @@
 | [D-033 非标签 AI 上传确认选择卡](d033-nonlabel-ai-confirmation-card-spec.md) | B05 的三套完整政策包、D-014 保留范围、单次绑定/失效和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-034 AI 资源预算选择卡](d034-ai-resource-budget-card-spec.md) | B05 的三套固定预算政策包、19 项直接硬上限、超限清理和内部四域自审；[最低支持 iPhone benchmark 协议](../04-engineering/testing/d034-minimum-iphone-benchmark-protocol.md)已准备并覆盖 21 行矩阵，但设备/工具链/harness/fixture/执行/结果仍缺失，尚未独立复核或展示给 Owner |
 | [D-036 AITransport 隔离选择卡](d036-ai-transport-profile-card-spec.md) | B05 的三套 URL/redirect/session 政策包、显式 cache/cookie/credential 隔离和内部四域自审；[Provider/原生兼容协议](../04-engineering/testing/d036-provider-native-compatibility-spike-protocol.md)已固定无 key OI-07 输入、36 个兼容单元、13 个原生边界面和重复标准，但 OI-07/Provider/工具链/harness/corpus/凭证/联网/执行结果仍缺失，尚未独立复核或展示给 Owner |
-| [D-053 AI Provider 用途准入选择卡](d053-ai-provider-use-admission-card-spec.md) | B05 的三套用途准入政策包、十维 Provider 真相、App Privacy 映射和旧 harness 边界；尚需 OI-07 与逐 Provider 证据，尚未独立复核或展示给 Owner |
+| [D-053 AI Provider 用途准入选择卡](d053-ai-provider-use-admission-card-spec.md) | B05 的三套用途准入政策包、十维 Provider 真相、App Privacy 映射和旧 harness 边界；[Provider 证据/App Privacy 协议](../04-engineering/testing/d053-provider-evidence-app-privacy-protocol.md)已固定 3 个 Provider、5 类 payload、15 个最小 profile、150 项十维评估与至少 5 行映射，但 OI-07/Provider/采集/快照/映射/签署仍缺失，尚未独立复核或展示给 Owner |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |

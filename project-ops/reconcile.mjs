@@ -136,6 +136,16 @@ function latestD053Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD053EvidenceProtocolRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D053-PROVIDER-EVIDENCE-APP-PRIVACY-PROTOCOL-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -923,6 +933,7 @@ export function reconcileProjectOps(model) {
   }
 
   const d053Record = latestD053Record(model);
+  const d053EvidenceProtocolRecord = latestD053EvidenceProtocolRecord(model);
   const d053LedgerDecision = model.decisionRegister.decisions.find((decision) => decision.id === "D-053") ?? null;
   const d053 = {
     eventId: d053Record?.eventId ?? null,
@@ -963,6 +974,79 @@ export function reconcileProjectOps(model) {
     ownerCardScheduled: d053Record?.data?.ownerCardScheduled ?? null,
     ownerReviewAuthorized: d053Record?.data?.ownerReviewAuthorized ?? null,
     formalImplementationAuthorized: d053Record?.data?.formalImplementationAuthorized ?? null,
+    protocolEventId: d053EvidenceProtocolRecord?.eventId ?? null,
+    protocolState: d053EvidenceProtocolRecord?.data?.protocolState ?? null,
+    protocolNext: d053EvidenceProtocolRecord?.data?.next ?? null,
+    protocolSourcePacketVersion:
+      d053EvidenceProtocolRecord?.data?.sourcePacketVersion ?? null,
+    protocolSourceCardInputFrozen:
+      d053EvidenceProtocolRecord?.data?.sourceCardInputFrozen ?? null,
+    protocolSourceCardCommit:
+      d053EvidenceProtocolRecord?.data?.sourceCardCommit ?? null,
+    protocolArtifactCommit:
+      d053EvidenceProtocolRecord?.data?.protocolArtifactCommit ?? null,
+    protocolProviderTargetCount:
+      d053EvidenceProtocolRecord?.data?.providerTargetCount ?? null,
+    protocolPayloadClassCount:
+      d053EvidenceProtocolRecord?.data?.payloadClassCount ?? null,
+    protocolMinimumAdmissionProfileCount:
+      d053EvidenceProtocolRecord?.data?.minimumAdmissionProfileCount ?? null,
+    protocolEvidenceDimensionCount:
+      d053EvidenceProtocolRecord?.data?.evidenceDimensionCount ?? null,
+    protocolRequiredDimensionAssessmentCount:
+      d053EvidenceProtocolRecord?.data?.requiredDimensionAssessmentCount ?? null,
+    protocolAppPrivacyMappingRowMinimum:
+      d053EvidenceProtocolRecord?.data?.appPrivacyMappingRowMinimum ?? null,
+    protocolApplePolicySourceCount:
+      d053EvidenceProtocolRecord?.data?.applePolicySourceCount ?? null,
+    protocolOi07Complete: d053EvidenceProtocolRecord?.data?.oi07Complete ?? null,
+    protocolProviderTargetsResolved:
+      d053EvidenceProtocolRecord?.data?.providerTargetsResolved ?? null,
+    protocolEvidenceCollectionAuthorized:
+      d053EvidenceProtocolRecord?.data?.providerEvidenceCollectionAuthorized ?? null,
+    protocolEvidenceCollectionStarted:
+      d053EvidenceProtocolRecord?.data?.providerEvidenceCollectionStarted ?? null,
+    protocolSourceSnapshotsRecorded:
+      d053EvidenceProtocolRecord?.data?.sourceSnapshotsRecorded ?? null,
+    protocolAdmissionProfilesRecorded:
+      d053EvidenceProtocolRecord?.data?.admissionProfilesRecorded ?? null,
+    protocolDimensionAssessmentsRecorded:
+      d053EvidenceProtocolRecord?.data?.dimensionAssessmentsRecorded ?? null,
+    protocolAppPrivacyMappingStarted:
+      d053EvidenceProtocolRecord?.data?.appPrivacyMappingStarted ?? null,
+    protocolAppPrivacyMappingRowCount:
+      d053EvidenceProtocolRecord?.data?.appPrivacyMappingRowCount ?? null,
+    protocolAppPrivacyMappingSigned:
+      d053EvidenceProtocolRecord?.data?.appPrivacyMappingSigned ?? null,
+    protocolPrivacyPolicyPublicUrlAvailable:
+      d053EvidenceProtocolRecord?.data?.privacyPolicyPublicUrlAvailable ?? null,
+    protocolAppStoreConnectRecordAvailable:
+      d053EvidenceProtocolRecord?.data?.appStoreConnectRecordAvailable ?? null,
+    protocolNamedSignersAssigned: [
+      d053EvidenceProtocolRecord?.data?.namedProductSignerAssigned,
+      d053EvidenceProtocolRecord?.data?.namedPrivacySecuritySignerAssigned,
+      d053EvidenceProtocolRecord?.data?.namedReleaseSignerAssigned,
+    ].some((value) => value === true),
+    protocolIndependentReviewPassed:
+      d053EvidenceProtocolRecord?.data?.independentReviewPassed ?? null,
+    protocolProviderEvidencePassed:
+      d053EvidenceProtocolRecord?.data?.providerEvidencePassed ?? null,
+    protocolOwnerReviewAuthorized:
+      d053EvidenceProtocolRecord?.data?.ownerReviewAuthorized ?? null,
+    protocolProviderAdmissionRecords:
+      d053EvidenceProtocolRecord?.data?.providerAdmissionRecords ?? null,
+    protocolAllProviderPayloadProfiles:
+      d053EvidenceProtocolRecord?.data?.allProviderPayloadProfiles ?? null,
+    protocolLedgerCandidatePreserved: [
+      d053EvidenceProtocolRecord?.data?.d053RegisteredInDecisionLedger === true,
+      d053EvidenceProtocolRecord?.data?.d053RecordedInOwnerIntake === false,
+      d053EvidenceProtocolRecord?.data?.d053CandidateStatusPreserved === true,
+    ].every((value) => value === true),
+    protocolB05Closed: d053EvidenceProtocolRecord?.data?.b05Closed ?? null,
+    protocolRealNetworkAuthorized:
+      d053EvidenceProtocolRecord?.data?.realNetworkAuthorized ?? null,
+    protocolFormalImplementationAuthorized:
+      d053EvidenceProtocolRecord?.data?.formalImplementationAuthorized ?? null,
     registeredInDecisionLedger: d053LedgerDecision !== null,
     ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-053").length,
   };
@@ -989,10 +1073,46 @@ export function reconcileProjectOps(model) {
     d053.ownerCardScheduled === false &&
     d053.ownerReviewAuthorized === false &&
     d053.formalImplementationAuthorized === false &&
+    d053.protocolEventId === "EVT-20260821-012" &&
+    d053.protocolState === "PROTOCOL_READY" &&
+    d053.protocolNext === "D053_OI07_PROVIDER_EVIDENCE_AND_APP_PRIVACY_MAPPING_REQUIRED" &&
+    d053.protocolSourcePacketVersion === "PACKET-001-R1" &&
+    d053.protocolSourceCardInputFrozen === true &&
+    d053.protocolSourceCardCommit === "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117" &&
+    d053.protocolArtifactCommit === "d6e72dd449c8de8b385b6f9e6427cb0fd99f7ce7" &&
+    d053.protocolProviderTargetCount === 3 &&
+    d053.protocolPayloadClassCount === 5 &&
+    d053.protocolMinimumAdmissionProfileCount === 15 &&
+    d053.protocolEvidenceDimensionCount === 10 &&
+    d053.protocolRequiredDimensionAssessmentCount === 150 &&
+    d053.protocolAppPrivacyMappingRowMinimum === 5 &&
+    d053.protocolApplePolicySourceCount === 3 &&
+    d053.protocolOi07Complete === false &&
+    d053.protocolProviderTargetsResolved === false &&
+    d053.protocolEvidenceCollectionAuthorized === false &&
+    d053.protocolEvidenceCollectionStarted === false &&
+    d053.protocolSourceSnapshotsRecorded === false &&
+    d053.protocolAdmissionProfilesRecorded === 0 &&
+    d053.protocolDimensionAssessmentsRecorded === 0 &&
+    d053.protocolAppPrivacyMappingStarted === false &&
+    d053.protocolAppPrivacyMappingRowCount === 0 &&
+    d053.protocolAppPrivacyMappingSigned === false &&
+    d053.protocolPrivacyPolicyPublicUrlAvailable === false &&
+    d053.protocolAppStoreConnectRecordAvailable === false &&
+    d053.protocolNamedSignersAssigned === false &&
+    d053.protocolIndependentReviewPassed === false &&
+    d053.protocolProviderEvidencePassed === false &&
+    d053.protocolOwnerReviewAuthorized === false &&
+    d053.protocolProviderAdmissionRecords === 0 &&
+    d053.protocolAllProviderPayloadProfiles === "UNKNOWN_BLOCKED" &&
+    d053.protocolLedgerCandidatePreserved === true &&
+    d053.protocolB05Closed === false &&
+    d053.protocolRealNetworkAuthorized === false &&
+    d053.protocolFormalImplementationAuthorized === false &&
     d053.registeredInDecisionLedger === true &&
     d053.ownerResponseCount === 0
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D053_GATE", "D-053", "D-053 未保持三包 Provider 用途准入卡、十维证据、Apple 不可豁免/UNKNOWN 阻断、OI-07/App Privacy/独立复核待办、台账 CANDIDATE 和 Owner/B05/实现未授权状态", d053);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D053_GATE", "D-053", "D-053 未保持三包 Provider 用途准入卡、3 Provider/5 payload/15 profile/150 十维评估/App Privacy 映射协议、Apple 不可豁免/UNKNOWN 阻断、OI-07/采集/签署/独立复核待办、台账 CANDIDATE 和 Owner/准入/B05/联网/实现未授权状态", d053);
   }
 
   const d040Record = latestD040Record(model);
