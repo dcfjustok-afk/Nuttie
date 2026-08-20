@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY,
+  PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 312,
+    instancesValidated: 313,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 193);
+  assert.equal(report.counts.events, 194);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1142,6 +1142,46 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d034RunReportContractEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d034RunReportContractEvent.value.data.b05Closed, false);
   assert.equal(d034RunReportContractEvent.value.data.formalImplementationAuthorized, false);
+  const d034RunReportHarnessEvent = findEvent(VALID_MODEL, "EVT-20260821-017");
+  assert.equal(d034RunReportHarnessEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d034RunReportHarnessEvent.value.subject.id,
+    "D034-BENCHMARK-RUN-REPORT-HARNESS-001",
+  );
+  assert.equal(d034RunReportHarnessEvent.value.data.contractEventId, "EVT-20260821-016");
+  assert.equal(d034RunReportHarnessEvent.value.data.artifactCommit, "b56f4d33d9de0e045dbdab4aa14a4cd588fbaaa4");
+  assert.equal(d034RunReportHarnessEvent.value.data.topLevelTests, 17);
+  assert.equal(d034RunReportHarnessEvent.value.data.profileCount, 3);
+  assert.equal(d034RunReportHarnessEvent.value.data.fixedStageCount, 8);
+  assert.equal(d034RunReportHarnessEvent.value.data.metricCount, 14);
+  assert.equal(d034RunReportHarnessEvent.value.data.minimumRequiredFixtureSlotCount, 85);
+  assert.equal(d034RunReportHarnessEvent.value.data.minimumCountedWarmupRunCount, 765);
+  assert.equal(d034RunReportHarnessEvent.value.data.minimumCountedMeasuredRunCount, 2550);
+  assert.equal(d034RunReportHarnessEvent.value.data.profileOrderRotationCount, 3);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticFixtureCount, 1);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticRawRunRecordCount, 39);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticCountedWarmupRunCount, 9);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticCountedMeasuredRunCount, 30);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticContractFixtureOnly, true);
+  assert.equal(d034RunReportHarnessEvent.value.data.syntheticContractFixtureIsBenchmarkEvidence, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.wholeGroupThermalDiscardRequired, true);
+  assert.equal(d034RunReportHarnessEvent.value.data.retryUsesNewRunAndGroupIds, true);
+  assert.equal(d034RunReportHarnessEvent.value.data.aggregatesRecomputedFromCountedMeasuredRuns, true);
+  assert.equal(d034RunReportHarnessEvent.value.data.p95Algorithm, "NEAREST_RANK_CEIL_0_95_N_MINUS_1");
+  assert.equal(d034RunReportHarnessEvent.value.data.structuralDisposition, "STRUCTURALLY_COMPLETE_REPORT_ONLY");
+  assert.equal(d034RunReportHarnessEvent.value.data.benchmarkPassReturned, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.contractValidatorImplemented, true);
+  assert.equal(d034RunReportHarnessEvent.value.data.rawRunRecordReads, 0);
+  assert.equal(d034RunReportHarnessEvent.value.data.rawRunRecordWrites, 0);
+  assert.equal(d034RunReportHarnessEvent.value.data.rawRunRecordCount, 0);
+  assert.equal(d034RunReportHarnessEvent.value.data.benchmarkReportRecorded, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.corpusMaterialized, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.benchmarkExecutionAuthorized, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.deviceBenchmarkPassed, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.independentReviewPassed, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.b05Closed, false);
+  assert.equal(d034RunReportHarnessEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1637,7 +1677,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 311);
+    assert.equal(report.schemaValidation.instancesValidated, 312);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3802,6 +3842,85 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_D034_BENCHMARK_RUN_REPORT_CONTRACT_MISMATCH");
+  });
+
+  await t.test("D-034 raw run/report 本地 validator 事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-017");
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-034 report validator 静默减少测试、阶段、指标、覆盖公式、轮换或合成边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-017").value.data;
+      data.topLevelTests = 16;
+      data.profileCount = 2;
+      data.fixedStageCount = 7;
+      data.metricCount = 13;
+      data.minimumRequiredFixtureSlotCount = 84;
+      data.minimumCountedWarmupRunCount = 764;
+      data.minimumCountedMeasuredRunCount = 2549;
+      data.profileOrderRotationCount = 2;
+      data.syntheticRawRunRecordCount = 38;
+      data.syntheticContractFixtureOnly = false;
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-034 report validator 弱化整组丢弃、重试保留、raw 聚合、p95、脱敏或 pass 边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-017").value.data;
+      data.wholeGroupThermalDiscardRequired = false;
+      data.discardedRecordsRetained = false;
+      data.retryUsesNewRunAndGroupIds = false;
+      data.failedRecordsRetained = false;
+      data.rawRunValuesRequired = false;
+      data.aggregatesRecomputedFromCountedMeasuredRuns = false;
+      data.p95Algorithm = "AVERAGE";
+      data.sensitiveLookingMaterialRejectedWithoutEcho = false;
+      data.immutableNormalizationAndResultFingerprintBound = false;
+      data.syntheticContractFixtureIsBenchmarkEvidence = true;
+      data.benchmarkPassDispositionAllowed = true;
+      data.benchmarkPassReturned = true;
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地 D-034 report validator 就越级伪造实际 run、report、corpus、设备、执行、复核、Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-017").value.data;
+      data.rawRunRecordReads = 2550;
+      data.rawRunRecordWrites = 2550;
+      data.rawRunRecordCount = 2550;
+      data.benchmarkReportRecorded = true;
+      data.minimumPhysicalDeviceResolved = true;
+      data.macAndSupportedXcodeAvailable = true;
+      data.isolatedNativeHarnessAuthorized = true;
+      data.corpusMaterialized = true;
+      data.benchmarkExecutionAuthorized = true;
+      data.benchmarkExecutionStarted = true;
+      data.benchmarkResultRecorded = true;
+      data.deviceBenchmarkPassed = true;
+      data.namedSecurityReviewerAssigned = true;
+      data.namedQaReviewerAssigned = true;
+      data.independentReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.externalMessageSent = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.b05Closed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.networkRequests = 1;
+      data.providerRequests = 1;
+      data.businessWrites = 1;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH");
   });
 });
 

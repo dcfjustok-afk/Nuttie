@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 193,
+    events: 194,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -454,6 +454,35 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d034RunReportContract.ownerReviewAuthorized, false);
   assert.equal(report.d034RunReportContract.b05Closed, false);
   assert.equal(report.d034RunReportContract.formalImplementationAuthorized, false);
+  assert.equal(report.d034RunReportHarness.eventId, "EVT-20260821-017");
+  assert.equal(report.d034RunReportHarness.contractEventId, "EVT-20260821-016");
+  assert.equal(report.d034RunReportHarness.topLevelTests, 17);
+  assert.equal(report.d034RunReportHarness.profileCount, 3);
+  assert.equal(report.d034RunReportHarness.fixedStageCount, 8);
+  assert.equal(report.d034RunReportHarness.metricCount, 14);
+  assert.equal(report.d034RunReportHarness.minimumRequiredFixtureSlotCount, 85);
+  assert.equal(report.d034RunReportHarness.minimumCountedWarmupRunCount, 765);
+  assert.equal(report.d034RunReportHarness.minimumCountedMeasuredRunCount, 2550);
+  assert.equal(report.d034RunReportHarness.profileOrderRotationCount, 3);
+  assert.equal(report.d034RunReportHarness.syntheticRawRunRecordCount, 39);
+  assert.equal(report.d034RunReportHarness.syntheticContractFixtureOnly, true);
+  assert.equal(report.d034RunReportHarness.syntheticContractFixtureIsBenchmarkEvidence, false);
+  assert.equal(report.d034RunReportHarness.wholeGroupThermalDiscardRequired, true);
+  assert.equal(report.d034RunReportHarness.retryUsesNewRunAndGroupIds, true);
+  assert.equal(report.d034RunReportHarness.aggregatesRecomputedFromCountedMeasuredRuns, true);
+  assert.equal(report.d034RunReportHarness.p95Algorithm, "NEAREST_RANK_CEIL_0_95_N_MINUS_1");
+  assert.equal(report.d034RunReportHarness.structuralDisposition, "STRUCTURALLY_COMPLETE_REPORT_ONLY");
+  assert.equal(report.d034RunReportHarness.benchmarkPassReturned, false);
+  assert.equal(report.d034RunReportHarness.contractValidatorImplemented, true);
+  assert.equal(report.d034RunReportHarness.rawRunRecordCount, 0);
+  assert.equal(report.d034RunReportHarness.benchmarkReportRecorded, false);
+  assert.equal(report.d034RunReportHarness.corpusMaterialized, false);
+  assert.equal(report.d034RunReportHarness.benchmarkExecutionAuthorized, false);
+  assert.equal(report.d034RunReportHarness.deviceBenchmarkPassed, false);
+  assert.equal(report.d034RunReportHarness.independentReviewPassed, false);
+  assert.equal(report.d034RunReportHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d034RunReportHarness.b05Closed, false);
+  assert.equal(report.d034RunReportHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -926,6 +955,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(
     d034RunReportContractReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_RUN_REPORT_CONTRACT_GATE",
+    ),
+  );
+
+  const d034RunReportHarnessModel = validModel();
+  d034RunReportHarnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-017",
+  ).value.data.rawRunRecordCount = 39;
+  const d034RunReportHarnessReport = reconcileProjectOps(d034RunReportHarnessModel);
+  assert.equal(d034RunReportHarnessReport.ok, false);
+  assert.ok(
+    d034RunReportHarnessReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_RUN_REPORT_HARNESS_GATE",
     ),
   );
 

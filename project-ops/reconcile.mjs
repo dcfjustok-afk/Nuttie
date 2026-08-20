@@ -186,6 +186,16 @@ function latestD034RunReportContractRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD034RunReportHarnessRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D034-BENCHMARK-RUN-REPORT-HARNESS-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1661,6 +1671,153 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_RUN_REPORT_CONTRACT_GATE", "D-034", "D-034 raw run/report 合同未保持 3 档/8 阶段/14 指标、765 warm-up/2550 measured、整组丢弃/重试保留、raw 聚合/p95/pass 边界及 validator/run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭状态", d034RunReportContract);
   }
 
+  const d034RunReportHarnessRecord = latestD034RunReportHarnessRecord(model);
+  const d034RunReportHarness = {
+    eventId: d034RunReportHarnessRecord?.eventId ?? null,
+    state: d034RunReportHarnessRecord?.data?.state ?? null,
+    contractStatus: d034RunReportHarnessRecord?.data?.contractStatus ?? null,
+    decisionId: d034RunReportHarnessRecord?.data?.decisionId ?? null,
+    decisionState: d034RunReportHarnessRecord?.data?.decisionState ?? null,
+    d039BlockerId: d034RunReportHarnessRecord?.data?.d039BlockerId ?? null,
+    d039BlockerState: d034RunReportHarnessRecord?.data?.d039BlockerState ?? null,
+    contractEventId: d034RunReportHarnessRecord?.data?.contractEventId ?? null,
+    artifactCommit: d034RunReportHarnessRecord?.data?.artifactCommit ?? null,
+    topLevelTests: d034RunReportHarnessRecord?.data?.topLevelTests ?? null,
+    fullSuitePassed: d034RunReportHarnessRecord?.data?.fullSuitePassed ?? null,
+    profileCount: d034RunReportHarnessRecord?.data?.profileCount ?? null,
+    fixedStageCount: d034RunReportHarnessRecord?.data?.fixedStageCount ?? null,
+    metricCount: d034RunReportHarnessRecord?.data?.metricCount ?? null,
+    minimumRequiredFixtureSlotCount:
+      d034RunReportHarnessRecord?.data?.minimumRequiredFixtureSlotCount ?? null,
+    minimumCountedWarmupRunCount:
+      d034RunReportHarnessRecord?.data?.minimumCountedWarmupRunCount ?? null,
+    minimumCountedMeasuredRunCount:
+      d034RunReportHarnessRecord?.data?.minimumCountedMeasuredRunCount ?? null,
+    profileOrderRotationCount:
+      d034RunReportHarnessRecord?.data?.profileOrderRotationCount ?? null,
+    syntheticFixtureCount: d034RunReportHarnessRecord?.data?.syntheticFixtureCount ?? null,
+    syntheticRawRunRecordCount:
+      d034RunReportHarnessRecord?.data?.syntheticRawRunRecordCount ?? null,
+    syntheticCountedWarmupRunCount:
+      d034RunReportHarnessRecord?.data?.syntheticCountedWarmupRunCount ?? null,
+    syntheticCountedMeasuredRunCount:
+      d034RunReportHarnessRecord?.data?.syntheticCountedMeasuredRunCount ?? null,
+    syntheticContractFixtureOnly:
+      d034RunReportHarnessRecord?.data?.syntheticContractFixtureOnly ?? null,
+    syntheticContractFixtureIsBenchmarkEvidence:
+      d034RunReportHarnessRecord?.data?.syntheticContractFixtureIsBenchmarkEvidence ?? null,
+    wholeGroupThermalDiscardRequired:
+      d034RunReportHarnessRecord?.data?.wholeGroupThermalDiscardRequired ?? null,
+    discardedRecordsRetained:
+      d034RunReportHarnessRecord?.data?.discardedRecordsRetained ?? null,
+    retryUsesNewRunAndGroupIds:
+      d034RunReportHarnessRecord?.data?.retryUsesNewRunAndGroupIds ?? null,
+    rawRunValuesRequired: d034RunReportHarnessRecord?.data?.rawRunValuesRequired ?? null,
+    aggregatesRecomputedFromCountedMeasuredRuns:
+      d034RunReportHarnessRecord?.data?.aggregatesRecomputedFromCountedMeasuredRuns ?? null,
+    p95Algorithm: d034RunReportHarnessRecord?.data?.p95Algorithm ?? null,
+    structuralDisposition: d034RunReportHarnessRecord?.data?.structuralDisposition ?? null,
+    benchmarkPassDispositionAllowed:
+      d034RunReportHarnessRecord?.data?.benchmarkPassDispositionAllowed ?? null,
+    benchmarkPassReturned: d034RunReportHarnessRecord?.data?.benchmarkPassReturned ?? null,
+    sensitiveLookingMaterialRejectedWithoutEcho:
+      d034RunReportHarnessRecord?.data?.sensitiveLookingMaterialRejectedWithoutEcho ?? null,
+    immutableNormalizationAndResultFingerprintBound:
+      d034RunReportHarnessRecord?.data?.immutableNormalizationAndResultFingerprintBound ?? null,
+    contractValidatorImplemented:
+      d034RunReportHarnessRecord?.data?.contractValidatorImplemented ?? null,
+    rawRunRecordReads: d034RunReportHarnessRecord?.data?.rawRunRecordReads ?? null,
+    rawRunRecordWrites: d034RunReportHarnessRecord?.data?.rawRunRecordWrites ?? null,
+    rawRunRecordCount: d034RunReportHarnessRecord?.data?.rawRunRecordCount ?? null,
+    benchmarkReportRecorded:
+      d034RunReportHarnessRecord?.data?.benchmarkReportRecorded ?? null,
+    minimumPhysicalDeviceResolved:
+      d034RunReportHarnessRecord?.data?.minimumPhysicalDeviceResolved ?? null,
+    macAndSupportedXcodeAvailable:
+      d034RunReportHarnessRecord?.data?.macAndSupportedXcodeAvailable ?? null,
+    isolatedNativeHarnessAuthorized:
+      d034RunReportHarnessRecord?.data?.isolatedNativeHarnessAuthorized ?? null,
+    corpusMaterialized: d034RunReportHarnessRecord?.data?.corpusMaterialized ?? null,
+    benchmarkExecutionAuthorized:
+      d034RunReportHarnessRecord?.data?.benchmarkExecutionAuthorized ?? null,
+    benchmarkExecutionStarted:
+      d034RunReportHarnessRecord?.data?.benchmarkExecutionStarted ?? null,
+    benchmarkResultRecorded:
+      d034RunReportHarnessRecord?.data?.benchmarkResultRecorded ?? null,
+    deviceBenchmarkPassed: d034RunReportHarnessRecord?.data?.deviceBenchmarkPassed ?? null,
+    independentReviewPassed:
+      d034RunReportHarnessRecord?.data?.independentReviewPassed ?? null,
+    ownerReviewAuthorized:
+      d034RunReportHarnessRecord?.data?.ownerReviewAuthorized ?? null,
+    b05Closed: d034RunReportHarnessRecord?.data?.b05Closed ?? null,
+    formalImplementationAuthorized:
+      d034RunReportHarnessRecord?.data?.formalImplementationAuthorized ?? null,
+    networkRequests: d034RunReportHarnessRecord?.data?.networkRequests ?? null,
+    providerRequests: d034RunReportHarnessRecord?.data?.providerRequests ?? null,
+    businessWrites: d034RunReportHarnessRecord?.data?.businessWrites ?? null,
+    gateStatesChanged: d034RunReportHarnessRecord?.data?.gateStatesChanged ?? null,
+  };
+  if (!(
+    d034RunReportHarness.eventId === "EVT-20260821-017" &&
+    d034RunReportHarness.state === "completed" &&
+    d034RunReportHarness.contractStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    d034RunReportHarness.decisionId === "D-034" &&
+    d034RunReportHarness.decisionState === "CANDIDATE" &&
+    d034RunReportHarness.d039BlockerId === "D039-PX5-B05" &&
+    d034RunReportHarness.d039BlockerState === "OPEN" &&
+    d034RunReportHarness.contractEventId === "EVT-20260821-016" &&
+    d034RunReportHarness.artifactCommit === "b56f4d33d9de0e045dbdab4aa14a4cd588fbaaa4" &&
+    d034RunReportHarness.topLevelTests === 17 &&
+    d034RunReportHarness.fullSuitePassed === 972 &&
+    d034RunReportHarness.profileCount === 3 &&
+    d034RunReportHarness.fixedStageCount === 8 &&
+    d034RunReportHarness.metricCount === 14 &&
+    d034RunReportHarness.minimumRequiredFixtureSlotCount === 85 &&
+    d034RunReportHarness.minimumCountedWarmupRunCount === 765 &&
+    d034RunReportHarness.minimumCountedMeasuredRunCount === 2550 &&
+    d034RunReportHarness.profileOrderRotationCount === 3 &&
+    d034RunReportHarness.syntheticFixtureCount === 1 &&
+    d034RunReportHarness.syntheticRawRunRecordCount === 39 &&
+    d034RunReportHarness.syntheticCountedWarmupRunCount === 9 &&
+    d034RunReportHarness.syntheticCountedMeasuredRunCount === 30 &&
+    d034RunReportHarness.syntheticContractFixtureOnly === true &&
+    d034RunReportHarness.syntheticContractFixtureIsBenchmarkEvidence === false &&
+    d034RunReportHarness.wholeGroupThermalDiscardRequired === true &&
+    d034RunReportHarness.discardedRecordsRetained === true &&
+    d034RunReportHarness.retryUsesNewRunAndGroupIds === true &&
+    d034RunReportHarness.rawRunValuesRequired === true &&
+    d034RunReportHarness.aggregatesRecomputedFromCountedMeasuredRuns === true &&
+    d034RunReportHarness.p95Algorithm === "NEAREST_RANK_CEIL_0_95_N_MINUS_1" &&
+    d034RunReportHarness.structuralDisposition === "STRUCTURALLY_COMPLETE_REPORT_ONLY" &&
+    d034RunReportHarness.benchmarkPassDispositionAllowed === false &&
+    d034RunReportHarness.benchmarkPassReturned === false &&
+    d034RunReportHarness.sensitiveLookingMaterialRejectedWithoutEcho === true &&
+    d034RunReportHarness.immutableNormalizationAndResultFingerprintBound === true &&
+    d034RunReportHarness.contractValidatorImplemented === true &&
+    d034RunReportHarness.rawRunRecordReads === 0 &&
+    d034RunReportHarness.rawRunRecordWrites === 0 &&
+    d034RunReportHarness.rawRunRecordCount === 0 &&
+    d034RunReportHarness.benchmarkReportRecorded === false &&
+    d034RunReportHarness.minimumPhysicalDeviceResolved === false &&
+    d034RunReportHarness.macAndSupportedXcodeAvailable === false &&
+    d034RunReportHarness.isolatedNativeHarnessAuthorized === false &&
+    d034RunReportHarness.corpusMaterialized === false &&
+    d034RunReportHarness.benchmarkExecutionAuthorized === false &&
+    d034RunReportHarness.benchmarkExecutionStarted === false &&
+    d034RunReportHarness.benchmarkResultRecorded === false &&
+    d034RunReportHarness.deviceBenchmarkPassed === false &&
+    d034RunReportHarness.independentReviewPassed === false &&
+    d034RunReportHarness.ownerReviewAuthorized === false &&
+    d034RunReportHarness.b05Closed === false &&
+    d034RunReportHarness.formalImplementationAuthorized === false &&
+    d034RunReportHarness.networkRequests === 0 &&
+    d034RunReportHarness.providerRequests === 0 &&
+    d034RunReportHarness.businessWrites === 0 &&
+    d034RunReportHarness.gateStatesChanged === false
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_RUN_REPORT_HARNESS_GATE", "D-034", "D-034 raw run/report 本地 validator 未保持 17 测试、3/8/14、765/2550、39 条合成记录非证据、整组丢弃/新 ID 重试、raw 聚合/p95/pass/脱敏边界及实际 run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭状态", d034RunReportHarness);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -2386,6 +2543,7 @@ export function reconcileProjectOps(model) {
     oi07Harness,
     d034CorpusManifestHarness,
     d034RunReportContract,
+    d034RunReportHarness,
     d040,
     diagnostics,
   };

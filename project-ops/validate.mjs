@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY",
+export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 193,
+    events: 194,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY = Object
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 16,
+    "2026-08-21": 17,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2747,6 +2747,112 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY = Object
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
   }),
+  d034RunReportHarness: Object.freeze({
+    eventId: "EVT-20260821-017",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "D034-BENCHMARK-RUN-REPORT-HARNESS-001",
+    subjectRole: "LocalBenchmarkReportContract",
+    correlationId: "d034-benchmark-run-report-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    decisionId: "D-034",
+    decisionState: "CANDIDATE",
+    d039BlockerId: "D039-PX5-B05",
+    d039BlockerState: "OPEN",
+    contractEventId: "EVT-20260821-016",
+    corpusManifestHarnessEventId: "EVT-20260821-015",
+    contractArtifactCommit: "27bfcf74b9739ee4a51e79bf2731845de7ca0cc7",
+    artifactCommit: "b56f4d33d9de0e045dbdab4aa14a4cd588fbaaa4",
+    implementationBlobOid: "c48736b083cb4c02444b8b2aa2eaad4b30780708",
+    testBlobOid: "796253185796a7006c16d3de4394c6ddccb756ec",
+    documentationBlobOid: "984e4c3d9e48321e8830be23b1b5adb55bd28f66",
+    inputSchemaVersion: "D034_BENCHMARK_RUN_REPORT_BUNDLE_INPUT_V1",
+    runRecordSchemaVersion: "D034_BENCHMARK_RUN_RECORD_V1",
+    resultSchemaVersion: "D034_BENCHMARK_RUN_REPORT_RESULT_V1",
+    boundarySchemaVersion: "D034_BENCHMARK_RUN_REPORT_BOUNDARY_V1",
+    topLevelTests: 17,
+    fullSuitePassed: 972,
+    profileCount: 3,
+    fixedStageCount: 8,
+    metricCount: 14,
+    warmupPerFixtureProfileMinimum: 3,
+    measuredPerFixtureProfileMinimum: 10,
+    minimumRequiredFixtureSlotCount: 85,
+    minimumCountedWarmupRunCount: 765,
+    minimumCountedMeasuredRunCount: 2550,
+    profileOrderRotationCount: 3,
+    syntheticFixtureCount: 1,
+    syntheticRawRunRecordCount: 39,
+    syntheticCountedWarmupRunCount: 9,
+    syntheticCountedMeasuredRunCount: 30,
+    syntheticContractFixtureOnly: true,
+    syntheticContractFixtureIsBenchmarkEvidence: false,
+    wholeGroupThermalDiscardRequired: true,
+    discardedRecordsRetained: true,
+    retryUsesNewRunAndGroupIds: true,
+    failedRecordsRetained: true,
+    rawRunValuesRequired: true,
+    aggregatesRecomputedFromCountedMeasuredRuns: true,
+    summaryStatisticCount: 4,
+    summaryStatistics: Object.freeze(["minimum", "median", "p95", "maximum"]),
+    p95Algorithm: "NEAREST_RANK_CEIL_0_95_N_MINUS_1",
+    profileDispositions: Object.freeze([
+      "MEASURED_PROFILE_PASS_CANDIDATE",
+      "FAIL",
+      "INCONCLUSIVE",
+    ]),
+    overallDispositions: Object.freeze([
+      "MEASURED_REVIEW_REQUIRED",
+      "FAIL",
+      "INCONCLUSIVE",
+    ]),
+    structuralDisposition: "STRUCTURALLY_COMPLETE_REPORT_ONLY",
+    benchmarkPassDispositionAllowed: false,
+    benchmarkPassReturned: false,
+    strictDataTreeAndExactFields: true,
+    sensitiveLookingMaterialRejectedWithoutEcho: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    reportSha256BindsBundleWithoutSelf: true,
+    identityClaimsCallerAssertedNotVerified: true,
+    fixtureArtifactsCallerAssertedNotVerified: true,
+    independentReviewCallerAssertedNotVerified: true,
+    onlyCountsDispositionsBlockersAndFingerprintsReturned: true,
+    rawRunValuesReturned: false,
+    contractValidatorImplemented: true,
+    harnessReadsCallerSuppliedDataOnly: true,
+    rawRunRecordReads: 0,
+    rawRunRecordWrites: 0,
+    fixtureArtifactReads: 0,
+    fixtureArtifactWrites: 0,
+    rawRunRecordCount: 0,
+    benchmarkReportRecorded: false,
+    minimumPhysicalDeviceResolved: false,
+    macAndSupportedXcodeAvailable: false,
+    isolatedNativeHarnessAuthorized: false,
+    corpusMaterialized: false,
+    benchmarkExecutionAuthorized: false,
+    benchmarkExecutionStarted: false,
+    benchmarkResultRecorded: false,
+    deviceBenchmarkPassed: false,
+    namedSecurityReviewerAssigned: false,
+    namedQaReviewerAssigned: false,
+    independentReviewPassed: false,
+    ownerIntakeChanged: false,
+    externalMessageSent: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    b05Closed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    networkRequests: 0,
+    providerRequests: 0,
+    businessWrites: 0,
+    gateStatesChanged: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -4168,7 +4274,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_CONTRACT_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -8153,6 +8259,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D034_BENCHMARK_RUN_REPORT_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-034 raw run/report 合同必须固定 3 档/8 阶段/14 指标、最低 765 warm-up/2550 measured、整组丢弃/重试保留、raw 聚合重算、nearest-rank p95 与 measured candidate 非 benchmark pass，同时保持 validator/run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭",
+    );
+  }
+
+  const d034RunReportHarnessSpec = baseline.d034RunReportHarness;
+  const d034RunReportHarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === d034RunReportHarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d034RunReportHarnessSpec.correlationId),
+  );
+  const d034RunReportHarnessEvent = d034RunReportHarnessEvents[0]?.value;
+  const d034RunReportHarnessData = d034RunReportHarnessEvent?.data ?? {};
+  const d034RunReportHarnessFields = Object.keys(d034RunReportHarnessSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d034RunReportHarnessEvents.length !== 1 ||
+    d034RunReportHarnessEvent?.eventId !== d034RunReportHarnessSpec.eventId ||
+    d034RunReportHarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    d034RunReportHarnessEvent?.actor?.id !== d034RunReportHarnessSpec.actorId ||
+    d034RunReportHarnessEvent?.actor?.role !== d034RunReportHarnessSpec.actorRole ||
+    d034RunReportHarnessEvent?.subject?.id !== d034RunReportHarnessSpec.subjectId ||
+    d034RunReportHarnessEvent?.subject?.role !== d034RunReportHarnessSpec.subjectRole ||
+    d034RunReportHarnessEvent?.correlationId !== d034RunReportHarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(d034RunReportHarnessData).sort()) !==
+      JSON.stringify(d034RunReportHarnessFields) ||
+    d034RunReportHarnessFields.some(
+      (field) => JSON.stringify(d034RunReportHarnessData[field]) !==
+        JSON.stringify(d034RunReportHarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-034 raw run/report 本地 validator 必须固定 17 项测试、3/8/14、85 槽位 765/2550 公式、39 条缩小合成记录非证据、三轮换整组丢弃/新 ID 重试、raw 聚合/p95/disposition/脱敏/不可变边界，并保持实际 run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭",
     );
   }
 

@@ -173,7 +173,7 @@ Spike 必须覆盖 SQLCipher、Keychain、通知、相机、Prebuild diff、Debu
 | D-053 | 第三方 AI Provider 数据用途准入 | A 十维证据满足固定标准才准入，未知即阻断；B 每个 Provider/产品/地区/载荷单独复核并由 Owner 接受已知有限残余风险，Apple 禁项不可豁免；C 用户同意广泛准入，但当前无法用同意替代 Provider 真相 | A；内部卡与 Provider 证据/App Privacy 协议已准备，协议固定 3 个 Provider、5 类 payload、15 个最小 profile、150 项十维评估和至少 5 行映射；仍待 OI-07、Provider、证据采集/快照、映射、具名签署与独立复核，C 当前不可进入 Owner 卡 | 法律实体/API 产品、terms/privacy 快照、十维用途证据、实际数据流和 Apple 5.1.2(i)/5.1.3 复核 |
 | D-026 | 数据包签名 | A Ed25519 + RFC 8785 JCS；B Ed25519 + 原始 manifest bytes；C P-256 + 冻结编码 | A，须互操作 Spike | Swift/发布工具 golden corpus |
 | D-027 | 备份加密 envelope（二维选择） | K1 Argon2id + AES-256-GCM / K2 PBKDF2-HMAC-SHA256 + AES-256-GCM；并另选 S1 两遍认证/解密 / S2 单遍隔离 staging | 先验证 `K1+S1`；Owner 必须各选一个维度 | 最低支持 iPhone 性能、AAD/TOCTOU 与供应链审查 |
-| D-034 | AI 资源预算 | A 保守固定上限；B 平衡固定上限；C Provider 可收紧的固定全局天花板 | B；三档卡、benchmark 协议、本地 manifest 校验与 raw run/report 合同已准备，但 report validator 未实现且校验不物化 corpus；仍须取得真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核后才可展示 | 21 行矩阵（19 项直接硬上限 + JPEG/内存 2 项伴随控制）、解压/JSON/清理和最低设备证据 |
+| D-034 | AI 资源预算 | A 保守固定上限；B 平衡固定上限；C Provider 可收紧的固定全局天花板 | B；三档卡、benchmark 协议、本地 manifest 校验、raw run/report 合同与 17 项本地 validator 已准备；17 项本地 validator 已通过，39 条合成记录不物化 corpus且不构成 benchmark 证据；仍须取得真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核后才可展示 | 21 行矩阵（19 项直接硬上限 + JPEG/内存 2 项伴随控制）、解压/JSON/清理和最低设备证据 |
 
 D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-033 未接受前，不得把 D-014 扩写为所有餐食照片、文本或趋势摘要已经获得逐次上传授权。
 
