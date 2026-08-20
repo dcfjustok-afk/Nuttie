@@ -117,6 +117,7 @@ function latestD040Record(model) {
         subjectId === "D040-DATA-LIFECYCLE-BATCH-CARD-SPEC-001" ||
         subjectId === "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001" ||
         subjectId === "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001" ||
+        subjectId === "D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -694,6 +695,9 @@ export function reconcileProjectOps(model) {
   const d040ChinaMacroInputRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260820-006",
   )?.value ?? null;
+  const d040NiddkDynamicModelInputRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260820-007",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -727,8 +731,19 @@ export function reconcileProjectOps(model) {
     modelOutputNamesPreserved: d040EnergyBatchRecord?.data?.modelOutputNamesPreserved ?? null,
     reeToDailyTargetStrategyAuthorized: d040EnergyBatchRecord?.data?.reeToDailyTargetStrategyAuthorized ?? null,
     silentDefaultPalAllowed: d040EnergyBatchRecord?.data?.silentDefaultPalAllowed ?? null,
-    dynamicModelEvidencePassed: d040EnergyBatchRecord?.data?.dynamicModelEvidencePassed ?? null,
-    dynamicModelOptionOwnerReady: d040EnergyBatchRecord?.data?.dynamicModelOptionCurrentlyOwnerReady ?? null,
+    dynamicModelSourceAssessmentComplete: d040NiddkDynamicModelInputRecord?.data?.dynamicModelSourceAssessmentComplete ?? null,
+    dynamicModelIdentityAndEquationSourceLocated: d040NiddkDynamicModelInputRecord?.data?.modelIdentityAndEquationSourceLocated ?? null,
+    dynamicModelObservedPublicCodeAssetCount: d040NiddkDynamicModelInputRecord?.data?.observedPublicCodeAssetCount ?? null,
+    dynamicModelPublicCodeAssetHashesRecorded: d040NiddkDynamicModelInputRecord?.data?.publicCodeAssetHashesRecorded ?? null,
+    dynamicModelExplicitPerFileLicenseFound: d040NiddkDynamicModelInputRecord?.data?.explicitPerFileSoftwareLicenseFound ?? null,
+    dynamicModelStableSemanticReleaseFound: d040NiddkDynamicModelInputRecord?.data?.stableSemanticReleaseFound ?? null,
+    dynamicModelOfficialVersionedOracleCorpusFound: d040NiddkDynamicModelInputRecord?.data?.officialVersionedOracleCorpusFound ?? null,
+    dynamicModelRegressionToleranceDefined: d040NiddkDynamicModelInputRecord?.data?.regressionToleranceDefined ?? null,
+    dynamicModelProductGuardrailsApproved: d040NiddkDynamicModelInputRecord?.data?.productGuardrailsApproved ?? null,
+    dynamicModelSourceCodeVendored: d040NiddkDynamicModelInputRecord?.data?.niddkSourceCodeVendored ?? null,
+    dynamicModelRemoteCodeExecuted: d040NiddkDynamicModelInputRecord?.data?.niddkRemoteCodeExecuted ?? null,
+    dynamicModelEvidencePassed: d040NiddkDynamicModelInputRecord?.data?.dynamicModelEvidencePassed ?? null,
+    dynamicModelOptionOwnerReady: d040NiddkDynamicModelInputRecord?.data?.dynamicModelOptionOwnerReady ?? null,
     firstBatchIndependentReviewPassed: d040EnergyBatchRecord?.data?.firstBatchIndependentReviewPassed ?? null,
     dataLayerCount: d040DataLifecycleBatchRecord?.data?.dataLayerCount ?? null,
     formulaInputDoesNotImplyPersistence: d040DataLifecycleBatchRecord?.data?.formulaInputDoesNotImplyPersistence ?? null,
@@ -780,7 +795,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260820-006" &&
+    d040.eventId === "EVT-20260820-007" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -795,6 +810,17 @@ export function reconcileProjectOps(model) {
     d040.modelOutputNamesPreserved === true &&
     d040.reeToDailyTargetStrategyAuthorized === false &&
     d040.silentDefaultPalAllowed === false &&
+    d040.dynamicModelSourceAssessmentComplete === true &&
+    d040.dynamicModelIdentityAndEquationSourceLocated === true &&
+    d040.dynamicModelObservedPublicCodeAssetCount === 7 &&
+    d040.dynamicModelPublicCodeAssetHashesRecorded === true &&
+    d040.dynamicModelExplicitPerFileLicenseFound === false &&
+    d040.dynamicModelStableSemanticReleaseFound === false &&
+    d040.dynamicModelOfficialVersionedOracleCorpusFound === false &&
+    d040.dynamicModelRegressionToleranceDefined === false &&
+    d040.dynamicModelProductGuardrailsApproved === false &&
+    d040.dynamicModelSourceCodeVendored === false &&
+    d040.dynamicModelRemoteCodeExecuted === false &&
     d040.dynamicModelEvidencePassed === false &&
     d040.dynamicModelOptionOwnerReady === false &&
     d040.firstBatchIndependentReviewPassed === false &&
@@ -837,7 +863,7 @@ export function reconcileProjectOps(model) {
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、动态模型/生命周期边界、中国支持与宏量现行标准输入、具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、NIDDK 动态模型来源已核验但采用门禁未通过、生命周期边界、中国支持与宏量现行标准输入、具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

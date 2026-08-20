@@ -111,7 +111,7 @@ NIDDK 官方工具公开限定为 18 岁及以上成人，并排除未成年人�
 
 该工具基于动态代谢模型，描述体重变化期间能量消耗的适应，不是 `REE x 活动系数 +/- 固定热量`。公开 UI 的 `PAL 1.6` 默认值和 `1000 kcal/day` 阻断只证明该工具自身行为，不能被提升为 Nuttie 通用默认或临床安全线。
 
-若以后考虑本地移植，必须另立模型 Spike，固定论文/代码版本、许可、输入范围、测试向量、回归容差和与官方工具的差异说明。D-040 当前不因此获得实现授权。
+若以后考虑本地移植，必须另立模型 Spike，固定论文/代码版本、许可、输入范围、测试向量、回归容差和与官方工具的差异说明。[NIDDK 动态模型采用可行性输入](d040-niddk-dynamic-model-feasibility-input.md)已完成后续来源核验：论文、方程和七个当前网页代码资产可定位，但逐文件许可、稳定版本、官方 oracle corpus、容差、产品保护线与健康评审均未通过。D-040 当前不因此获得实现授权。
 
 ### 3.4 路径比较
 
@@ -367,6 +367,7 @@ Mifflin、NASEM 成人 EER 和 NIDDK Body Weight Planner 都不能为 Nuttie 的
 - [NASEM Consensus Study Report Highlights](https://nap.nationalacademies.org/resource/26818/DRIs_for_Energy_Highlights.pdf)
 - [NIDDK Body Weight Planner](https://www.niddk.nih.gov/bwp)
 - [Body Weight Planner 动态模型论文，PMC3880593](https://pmc.ncbi.nlm.nih.gov/articles/PMC3880593/)
+- [NIDDK 动态模型采用可行性输入](d040-niddk-dynamic-model-feasibility-input.md)
 
 NASEM Supplemental Appendix X 经核验是基于 NHANES/CCHS 全国调查数据的膳食能量摄入均值、标准误与百分位统计表，不是调查问卷，也不是 EER 方程表。本研究不使用它为公式、活动分类或个体目标背书。
 

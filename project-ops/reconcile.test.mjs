@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 175,
+    events: 176,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,7 +152,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260820-006");
+  assert.equal(report.d040.eventId, "EVT-20260820-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -165,6 +165,17 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.modelOutputNamesPreserved, true);
   assert.equal(report.d040.reeToDailyTargetStrategyAuthorized, false);
   assert.equal(report.d040.silentDefaultPalAllowed, false);
+  assert.equal(report.d040.dynamicModelSourceAssessmentComplete, true);
+  assert.equal(report.d040.dynamicModelIdentityAndEquationSourceLocated, true);
+  assert.equal(report.d040.dynamicModelObservedPublicCodeAssetCount, 7);
+  assert.equal(report.d040.dynamicModelPublicCodeAssetHashesRecorded, true);
+  assert.equal(report.d040.dynamicModelExplicitPerFileLicenseFound, false);
+  assert.equal(report.d040.dynamicModelStableSemanticReleaseFound, false);
+  assert.equal(report.d040.dynamicModelOfficialVersionedOracleCorpusFound, false);
+  assert.equal(report.d040.dynamicModelRegressionToleranceDefined, false);
+  assert.equal(report.d040.dynamicModelProductGuardrailsApproved, false);
+  assert.equal(report.d040.dynamicModelSourceCodeVendored, false);
+  assert.equal(report.d040.dynamicModelRemoteCodeExecuted, false);
   assert.equal(report.d040.dynamicModelEvidencePassed, false);
   assert.equal(report.d040.dynamicModelOptionOwnerReady, false);
   assert.equal(report.d040.firstBatchIndependentReviewPassed, false);
@@ -293,6 +304,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d040ChinaMacroReport = reconcileProjectOps(d040ChinaMacroModel);
   assert.equal(d040ChinaMacroReport.ok, false);
   assert.ok(d040ChinaMacroReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d040NiddkDynamicModel = validModel();
+  d040NiddkDynamicModel.events.find((record) => record.value.eventId === "EVT-20260820-007").value.data.dynamicModelOptionOwnerReady = true;
+  const d040NiddkDynamicModelReport = reconcileProjectOps(d040NiddkDynamicModel);
+  assert.equal(d040NiddkDynamicModelReport.ok, false);
+  assert.ok(d040NiddkDynamicModelReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

@@ -4,7 +4,7 @@
 | --- | --- |
 | 工件 ID | `D040-ENERGY-MODEL-BATCH-CARD-SPEC-001` |
 | 范围 | D-057、D-059、D-060、D-061、D-062 |
-| 状态 | `DRAFT_COMPLETE / CROSS_DOMAIN_SELF_REVIEW_PASS / DYNAMIC_MODEL_EVIDENCE_REQUIRED / INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY` |
+| 状态 | `DRAFT_COMPLETE / CROSS_DOMAIN_SELF_REVIEW_PASS / DYNAMIC_MODEL_FEASIBILITY_REVIEW_COMPLETE / ADOPTION_EVIDENCE_NOT_PASSED / INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY` |
 | 日期 | 2026-08-20（Asia/Shanghai） |
 | 权威状态 | D-040 仍为 `CANDIDATE / PX-0_INPUT_GAP` |
 | Owner intake | 未写入；五张卡均未排期、未展示、未收集响应 |
@@ -18,7 +18,7 @@
 
 - NASEM 2023 成人 EER 只形成体重稳定语境的维持能量候选；不能改名为减重、增重或个体处方。
 - Mifflin-St Jeor 只输出 `REE`；活动乘数、`TDEE`、热量缺口、目标速度和 P/C/F 都不属于原研究。
-- 动态体重模型必须先有精确模型/代码/许可证、适用人群、输入范围、保护线、测试向量和回归容差；NIDDK 网页工具或其默认 `PAL 1.6` 不能直接成为 Nuttie 规则。
+- 动态体重模型必须先有精确模型/代码/许可证、适用人群、输入范围、保护线、测试向量和回归容差；[NIDDK 动态模型采用可行性输入](d040-niddk-dynamic-model-feasibility-input.md)已定位论文、方程和七个当前网页代码资产，但采用证据未通过，网页工具或其默认 `PAL 1.6` 不能直接成为 Nuttie 规则。
 - 活动未知、拒答、越界或无法归类时，不使用默认 PAL、不夹取到边界、不从步数/HealthKit 推断。
 - 任何自动结果都只是待确认候选；取消、拒答、冲突或失败时保留手工目标和无目标日记，资料与目标写入为 0。
 - D-054/D-055/D-056/D-058 尚未独立复核；本批次不能反向把第一批卡升级为 Owner-ready。
@@ -86,7 +86,7 @@ applicableWhen: D-057 != manual_or_no_goal
 | 1 | `maintenance_only_manual_or_no_goal_for_change` | 自动只做维持（推荐） | NASEM 自动结果只服务体重稳定；增减重转到显式手工目标或无目标，不制造未验证的热量差。自动便利有限，但当前证据边界最清楚。 |
 | 2 | `validated_dynamic_change_model` | 经验证的动态模型 | 可表达目标体重、达成时间和活动变化；必须先完成模型/许可/人群/保护线/测试专项证据，成本和健康风险最高。 |
 
-`validated_dynamic_change_model` 是完整的条件方案，但当前 `ownerOptionReady=false`：仓库没有已批准的本地模型实现、许可结论、保护线、跨实现向量或健康评审。独立复核必须选择“补齐证据后保留”或产出移除该项的 superseding card，不能把 NIDDK 工具截图或默认值冒充实现证据。
+`validated_dynamic_change_model` 是完整的条件方案，但当前 `ownerOptionReady=false`：专项可行性核验只证明 NIDDK 模型身份、方程和当前公开代码表面可定位，仍没有明确逐文件许可、稳定语义版本、已批准保护线、官方版本化 oracle corpus、跨实现容差或健康评审。独立复核必须选择“补齐证据后保留”或产出移除该项的 superseding card，不能把 NIDDK 工具截图、当前网页 hash 或默认值冒充实现证据。
 
 ## 6. D-059 活动输入表示
 
@@ -142,8 +142,8 @@ applicableWhen: D-059 != no_activity_disable_automatic_daily_energy
 
 | 领域 | 结论 | 已检查内容 | 未关闭事项 |
 | --- | --- | --- | --- |
-| Product | `PASS_WITH_GATE` | 五卡单轴、模型输出名称、条件选项、跳过和回退顺序明确 | 第一批依赖、动态模型证据、独立复核和 Owner 排期未完成 |
-| 健康安全 | `PASS_WITH_GATE` | EER=维持、REE≠每日目标、增减重不拼固定缺口、活动未知失败关闭 | 健康评审责任人/周期、动态模型/保护线、用户文案未完成 |
+| Product | `PASS_WITH_GATE` | 五卡单轴、模型输出名称、条件选项、跳过和回退顺序明确 | 第一批依赖、动态模型采用门禁、独立复核和 Owner 排期未完成 |
+| 健康安全 | `PASS_WITH_GATE` | EER=维持、REE≠每日目标、增减重不拼固定缺口、活动未知失败关闭 | 健康评审责任人/周期、动态模型保护线、用户文案未完成 |
 | Privacy | `PASS_WITH_GATE` | 不要求活动永久保存，不从 HealthKit/步数推断，取消和失败零写入 | D-064/D-065 的保存/删除组合尚未选择 |
 | QA | `PASS_WITH_GATE` | 稳定 ID、条件适用、冲突回退、PAL 越界、零写入与旧答案保留可测试 | 独立复核、宿主渲染、模型 corpus 和真机证据未完成 |
 
@@ -155,6 +155,7 @@ applicableWhen: D-059 != no_activity_disable_automatic_daily_energy
 - [NASEM 2023 EER 应用章节](https://www.ncbi.nlm.nih.gov/books/NBK591020/)说明 PAL 选择具有不确定性，EER 用于体重维持，增减重、极高活动和临床情况需要额外考量。
 - [Mifflin 等 1990 原始研究](https://pubmed.ncbi.nlm.nih.gov/2305711/)以 498 名 19–78 岁健康受试者建立 REE 方程；它没有定义活动乘数或每日目标。
 - [NIDDK Body Weight Planner](https://www.niddk.nih.gov/bwp)展示动态体重工具需要年龄、身高、体重、公式分支、PAL、目标体重和时间，并排除未成年人、孕妇和哺乳期使用；其网页默认值只属于该工具。
+- [NIDDK 动态模型采用可行性输入](d040-niddk-dynamic-model-feasibility-input.md)记录模型研究页、方程附录、七个网页代码资产的取证 hash，以及许可、版本、oracle corpus、回归容差和产品保护线未关闭的结论。
 
 这些来源只约束候选含义。它们不证明 Nuttie 应选择某一模型，不授权移植 NIDDK 算法，也不替代中国大陆内容/健康治理。
 
@@ -169,6 +170,11 @@ draftedCardCount: 9
 energyBatchSelfReviewPassed: true
 dynamicModelEvidencePassed: false
 dynamicModelOptionOwnerReady: false
+dynamicModelSourceAssessmentComplete: true
+observedPublicCodeAssetCount: 7
+explicitPerFileSoftwareLicenseFound: false
+stableSemanticReleaseFound: false
+officialVersionedOracleCorpusFound: false
 next: FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED
 ownerIntakeChanged: false
 ownerCardScheduled: false

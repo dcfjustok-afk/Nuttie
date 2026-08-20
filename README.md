@@ -14,7 +14,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - `G2 产品基线`、`G3 体验基线`、`G4 Build Ready`：IN_PROGRESS
 - 应用工程：正式根工程尚未初始化；D-032 仅授权的隔离 SDK 57 Windows JS Spike 已通过冻结安装、类型检查、Doctor 20/20 与 Android/iOS 平台 Metro export，两个 export 已共用平台限定 metadata、精确文件集、资产策略、路径和原生目录自动校验，六个高风险依赖符号已进入 JS/类型解析路径且原生调用为零；Windows 平台 JS export 不是原生运行或可复现构建证据
 - Owner 决定：首批 11 项新决定和后续 D-039 方案 A 已接受；D-032 为 `CANDIDATE + SPIKE_AUTHORIZED`，D-052/D-053 继续 fail closed。D-039 已冻结 PX-4；PX-5 首次 DoR 评估为 `NOT_READY`，B01 正式验收矩阵与 B02 路由/可观测性契约已关闭，B03~B07 共 5 个 Owner/环境阻断项待关闭，未授权正式实现
-- 框架无关契约与治理检查：合并后全库 859/859，通过 ProjectOps 5 份 Schema/294 个实例；D-045 最近/收藏、D-031 媒体/AI 保留、D-033 非标签 AI 上传确认、D-034 AI 资源预算、D-036 AITransport 隔离、D-053 Provider 用途准入与 D-040 前三批十三卡都完成四域自审、等待独立复核，均未进入 Owner 评审。D-034 另需最低支持 iPhone benchmark；D-036 另需三 Provider 兼容 Spike 与原生边界证据；D-053 另需 OI-07、逐 Provider 十维证据和 App Privacy 映射。D-040 已分解为 20 个决定轴，D-054~D-072 仍只预留候选 ID；中国支持/健康治理输入草案已形成，但具名健康评审人、资质、批准和 Content QA 仍缺失；WS/T 578.1-2017 中国现行宏量标准证据已补齐，但 D-063 仍未 Owner-ready；第二批动态模型方案另需模型/许可/保护线/corpus 证据。F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同继续 fail closed；这些证据和 Windows JS 依赖/平台解析不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
+- 框架无关契约与治理检查：合并后全库 863/863，通过 ProjectOps 5 份 Schema/295 个实例；D-045 最近/收藏、D-031 媒体/AI 保留、D-033 非标签 AI 上传确认、D-034 AI 资源预算、D-036 AITransport 隔离、D-053 Provider 用途准入与 D-040 前三批十三卡都完成四域自审、等待独立复核，均未进入 Owner 评审。D-034 另需最低支持 iPhone benchmark；D-036 另需三 Provider 兼容 Spike 与原生边界证据；D-053 另需 OI-07、逐 Provider 十维证据和 App Privacy 映射。D-040 已分解为 20 个决定轴，D-054~D-072 仍只预留候选 ID；中国支持/健康治理输入草案已形成，但具名健康评审人、资质、批准和 Content QA 仍缺失；WS/T 578.1-2017 中国现行宏量标准证据已补齐，但 D-063 仍未 Owner-ready；NIDDK 动态模型的论文、方程和七个当前网页代码资产已完成来源可行性核验，但逐文件许可、稳定版本、官方 oracle corpus、回归容差、保护线与健康评审未通过，D-062/D-059 对应选项仍未 Owner-ready。F01/F02/F16 请求证据、AI 配置—策略预检、不可信响应、D-053 门禁、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 营养洞察及其他本地合同继续 fail closed；这些证据和 Windows JS 依赖/平台解析不等于正式根工程、Keychain/SQLCipher、真实网络、原生 iOS 能力、签名 Release Archive、真机或发布证据
 
 ## 硬边界
 
@@ -46,6 +46,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [D-040 第一小批选择卡规格](docs/03-design/d040-first-batch-card-spec.md)
 - [D-040 第二小批能量模型选择卡规格](docs/03-design/d040-energy-model-batch-card-spec.md)
 - [D-040 第三小批资料与目标生命周期选择卡规格](docs/03-design/d040-data-lifecycle-batch-card-spec.md)
+- [D-040 NIDDK 动态模型采用可行性输入](docs/03-design/d040-niddk-dynamic-model-feasibility-input.md)
 - [Nuttie 视觉方向与 Figma 导入合同](docs/03-design/nuttie-visual-direction.md)
 - [视觉资产契约检查](tools/visual-kit-check.mjs)
 - [React Native / Expo 独立复核](docs/05-quality/rn-stack-independent-review.md)

@@ -76,6 +76,8 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 第二小批 D-057/D-059/D-060/D-061/D-062 已形成[能量模型选择卡规格](d040-energy-model-batch-card-spec.md)，固定 EER/REE 名称、活动输入/缺失、增减重路径和模型相容性。动态模型与 model-native PAL 方案当前另需模型/许可/保护线/corpus 证据，不能进入 Owner 卡。
 
+[NIDDK 动态模型采用可行性输入](d040-niddk-dynamic-model-feasibility-input.md)已完成来源可行性核验：论文、方程和七个当前网页代码资产可定位并记录 hash，但逐文件许可、稳定语义版本、官方版本化 oracle corpus、回归容差、产品保护线和健康评审仍未通过。因此动态模型研究不再是“来源未知”，但 D-062/D-059 对应选项继续 `NOT_OWNER_READY`。
+
 第三小批 D-064/D-065/D-066/D-067 已形成[资料与目标生命周期选择卡规格](d040-data-lifecycle-batch-card-spec.md)，固定 CalculationDraft/CurrentProfile/GoalVersion/IndependentHistory 分层、保存/删除组合、raw/display 舍入分离和 stale/pending/supersede 边界。
 
 [中国大陆支持文案与健康评审治理输入包](d040-china-support-health-review-input.md) 已区分 `12356` 心理援助与 `120` 医疗急救，形成稳定支持称谓、六条候选文案、责任矩阵、90 天/每次 Release 来源复核和即时失效条件。它只完成输入草案；具名健康评审人、资质证据、健康批准和 Content QA 均缺失，因此 D-068/D-069 仍不能形成 Owner-ready 卡。
@@ -103,6 +105,9 @@ healthReviewerAssigned: false
 chinaMacroCurrentStandardEvidenceComplete: true
 d063ChinaReferenceBandEvidenceReady: true
 d063OwnerReady: false
+dynamicModelSourceAssessmentComplete: true
+dynamicModelEvidencePassed: false
+dynamicModelOptionOwnerReady: false
 d068OwnerReady: false
 d069OwnerReady: false
 next: CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED

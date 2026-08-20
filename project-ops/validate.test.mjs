@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT,
+  PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 294,
+    instancesValidated: 295,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 175);
+  assert.equal(report.counts.events, 176);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -918,6 +918,28 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040ChinaMacroInputEvent.value.data.d063OwnerReady, false);
   assert.equal(d040ChinaMacroInputEvent.value.data.macroImplementationAuthorized, false);
   assert.equal(d040ChinaMacroInputEvent.value.data.formalImplementationAuthorized, false);
+  const d040NiddkDynamicModelInputEvent = findEvent(VALID_MODEL, "EVT-20260820-007");
+  assert.equal(d040NiddkDynamicModelInputEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040NiddkDynamicModelInputEvent.value.subject.id, "D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001");
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.inputState, "RESEARCH_COMPLETE_ADOPTION_NOT_PASSED");
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.modelPaperDoi, "10.1016/S0140-6736(11)60812-X");
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.observedPublicCodeAssetCount, 7);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.publicCodeAssetHashesRecorded, true);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.dynamicModelSourceAssessmentComplete, true);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.modelIdentityAndEquationSourceLocated, true);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.explicitPerFileSoftwareLicenseFound, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.stableSemanticReleaseFound, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.officialVersionedOracleCorpusFound, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.regressionToleranceDefined, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.niddkUiDefaultsAdopted, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.productGuardrailsApproved, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.dynamicModelEvidencePassed, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.dynamicModelOptionOwnerReady, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.niddkSourceCodeVendored, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.niddkRemoteCodeExecuted, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.formulaImplementationAuthorized, false);
+  assert.equal(d040NiddkDynamicModelInputEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -963,7 +985,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 293);
+    assert.equal(report.schemaValidation.instancesValidated, 294);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3068,6 +3090,51 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.macroImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH");
+  });
+
+  await t.test("NIDDK 动态模型可行性输入工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-007",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
+  });
+
+  await t.test("把通用版权页冒充逐文件许可并宣称稳定版本和官方 corpus", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-007").value;
+      event.data.explicitPerFileSoftwareLicenseFound = true;
+      event.data.stableSemanticReleaseFound = true;
+      event.data.officialVersionedOracleCorpusFound = true;
+      event.data.regressionToleranceDefined = true;
+      event.data.dynamicModelEvidencePassed = true;
+      event.data.dynamicModelOptionOwnerReady = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
+  });
+
+  await t.test("静默采用 NIDDK UI 默认值和最低能量线", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-007").value;
+      event.data.niddkUiDefaultsAdopted = true;
+      event.data.niddk1000KcalGuardrailAdopted = true;
+      event.data.niddkAdultMinimumAgeAdopted = true;
+      event.data.stricterExistingEligibilityPreserved = false;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
+  });
+
+  await t.test("采用门禁未通过就 vendoring 或执行远端代码并授权公式", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-007").value;
+      event.data.niddkSourceCodeVendored = true;
+      event.data.niddkRemoteCodeExecuted = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.formulaImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
   });
 
 });

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT",
+export const PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 175,
+    events: 176,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 6,
+    "2026-08-20": 7,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2656,6 +2656,56 @@ export const PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT = Object.freeze({
       macroImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    niddkDynamicModelFeasibilityInput: Object.freeze({
+      eventId: "EVT-20260820-007",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-niddk-dynamic-model-feasibility-input",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "DYNAMIC_MODEL_SOURCE_AND_LICENSE_EVIDENCE_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "RESEARCH_COMPLETE_ADOPTION_NOT_PASSED",
+      modelFamily: "NIDDK_BODY_WEIGHT_PLANNER_ADULT_DYNAMIC_MODEL",
+      modelPaperDoi: "10.1016/S0140-6736(11)60812-X",
+      officialDocumentSourceCount: 6,
+      observedPublicCodeAssetCount: 7,
+      publicCodeAssetHashesRecorded: true,
+      codeAssetLastModifiedObserved: "2026-08-07T15:09:31Z",
+      dynamicModelSourceAssessmentComplete: true,
+      modelIdentityAndEquationSourceLocated: true,
+      explicitPerFileSoftwareLicenseFound: false,
+      niddkGeneralCopyrightReviewed: true,
+      niddkCopyrightExceptionsAcknowledged: true,
+      niddkContactRequiredIfReuseDoubt: true,
+      stableSemanticReleaseFound: false,
+      officialVersionedOracleCorpusFound: false,
+      regressionToleranceDefined: false,
+      niddkUiDefaultsAdopted: false,
+      niddk1000KcalGuardrailAdopted: false,
+      niddkAdultMinimumAgeAdopted: false,
+      stricterExistingEligibilityPreserved: true,
+      productGuardrailsApproved: false,
+      healthReviewerAssigned: false,
+      dynamicModelEvidencePassed: false,
+      dynamicModelOptionOwnerReady: false,
+      modelNativeNumericPalOptionOwnerReady: false,
+      niddkSourceCodeVendored: false,
+      niddkRemoteCodeExecuted: false,
+      runtimeNetworkRequired: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -2955,7 +3005,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_CHINA_MACRO_STANDARD_INPUT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6033,6 +6083,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_CHINA_MACRO_STANDARD_INPUT_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 中国宏量标准输入必须精确保留 WS/T 578.1-2017 现行状态、成人范围、4/4/9、修订监视、禁止默认/处方/评分/历史回算和 Owner/实现未授权边界",
+    );
+  }
+
+  const niddkDynamicModelInputSpec = baseline.d040Research.niddkDynamicModelFeasibilityInput;
+  const niddkDynamicModelInputEvents = model.events.filter(
+    (record) => record.value?.eventId === niddkDynamicModelInputSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === niddkDynamicModelInputSpec.correlationId),
+  );
+  const niddkDynamicModelInputEvent = niddkDynamicModelInputEvents[0]?.value;
+  const niddkDynamicModelInputData = niddkDynamicModelInputEvent?.data ?? {};
+  const niddkDynamicModelInputFields = Object.keys(niddkDynamicModelInputSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    niddkDynamicModelInputEvents.length !== 1 ||
+    niddkDynamicModelInputEvent?.eventId !== niddkDynamicModelInputSpec.eventId ||
+    niddkDynamicModelInputEvent?.type !== "ARTIFACT_CREATED" ||
+    niddkDynamicModelInputEvent?.actor?.id !== niddkDynamicModelInputSpec.actorId ||
+    niddkDynamicModelInputEvent?.actor?.role !== niddkDynamicModelInputSpec.actorRole ||
+    niddkDynamicModelInputEvent?.subject?.id !== niddkDynamicModelInputSpec.subjectId ||
+    niddkDynamicModelInputEvent?.subject?.role !== niddkDynamicModelInputSpec.subjectRole ||
+    niddkDynamicModelInputEvent?.correlationId !== niddkDynamicModelInputSpec.correlationId ||
+    JSON.stringify(Object.keys(niddkDynamicModelInputData).sort()) !== JSON.stringify(niddkDynamicModelInputFields) ||
+    niddkDynamicModelInputFields.some(
+      (field) => JSON.stringify(niddkDynamicModelInputData[field]) !== JSON.stringify(niddkDynamicModelInputSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 NIDDK 动态模型可行性输入必须精确保留来源/hash 已核验，但逐文件许可、稳定版本、官方 oracle corpus、回归容差、产品保护线、健康评审、Owner 和实现门禁均未通过的状态",
     );
   }
 
