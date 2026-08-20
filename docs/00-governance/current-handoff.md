@@ -8,7 +8,7 @@
 | 权威决定 | 29 项 `ACCEPTED`；3 项 `CANDIDATE`，其中 D-032 为 `SPIKE_AUTHORIZED`；D-039=A 已接受 |
 | 当前允许 | 文档、原型、测试设计、许可证据、工作台维护；约定隔离目录中的 SDK 57 JS Spike |
 | 当前禁止 | 正式 React Native 根工程、正式 lockfile、`ios/`、Apple 注册/付费、TestFlight 上传、发布或其他线上变更 |
-| 下一位责任人 | PM 继续推进 D-053 B05 内部卡与 D-036 的 OI-07/三 Provider/原生证据准备；D-034 等待最低支持 iPhone benchmark，D-045/D-031/D-033/D-034/D-036 与 D-040 第一批卡均等待独立复核；D-039 保持 PX-4 已冻结、PX-5 未授权 |
+| 下一位责任人 | PM 为 B03~B05 已完成的内部卡准备独立复核与外部证据：D-034 最低支持 iPhone benchmark、D-036 三 Provider/原生边界、D-053 OI-07/十维 Provider/App Privacy；同时继续可离线推进的 D-040 后续小批卡，D-039 保持 PX-4 已冻结、PX-5 未授权 |
 
 本文件是恢复入口，不是新的决定源。事实冲突时按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的优先级处理：Owner 明确回复和有效决定事件优先，其次是 [决定台账](decision-register.md) 与 `project-ops/decisions.json` 的一致副本；原型、推荐、工作台和本文件都不能替代 Owner 选择。
 
@@ -16,7 +16,7 @@
 
 `project-ops/decisions.json` 生成于 `2026-08-15T00:03:31+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 29 项 `ACCEPTED` 和 3 项 `CANDIDATE`。
 
-`project-ops/snapshots/current.json` 已按 `2026-08-20T22:13:54+08:00` 最新权威来源完成归并，当前记录 29 项 accepted、3 项 candidate、170 个事件、116 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。Owner 首批整批回读仍为 11 项 accepted，D-032 仅获得隔离 SDK 57 JS Spike 授权；后续 Owner 查看冻结 D-039 原型后明确回复 `a`，D-039 方案 A 现为 `ACCEPTED / PX-3_PASS / PX-4_BASELINE_FROZEN`。首次 PX-5 DoR 为 `NOT_READY`；B01/B02 已关闭，当前 `B03~B07 / 5 BLOCKERS / D039-PX5-OWNER_DEPENDENCIES_REQUIRED`。B03 的 D-045 最近/收藏、B04 的 D-031 媒体/AI 保留与 B05 的 D-033 非标签 AI 上传确认、D-034 AI 资源预算、D-036 AITransport 隔离三包内部卡均已完成四域自审，仍为 `INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY`；D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据。D-040 的 20 个决定轴、D-054~D-072 候选 ID 预留和第一批四卡保持不变，同样等待独立复核。OI-02 仍为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 仍为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。隔离 Spike 的 Android/iOS JS export 与共用结构校验保持通过，所有原生调用仍为零。D-039 DoR 进展、ID 预留和卡片自审都不授权正式页面、路由、原生或发布工作。
+`project-ops/snapshots/current.json` 已按 `2026-08-20T22:26:29+08:00` 最新权威来源完成归并，当前记录 29 项 accepted、3 项 candidate、171 个事件、116 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。Owner 首批整批回读仍为 11 项 accepted，D-032 仅获得隔离 SDK 57 JS Spike 授权；后续 Owner 查看冻结 D-039 原型后明确回复 `a`，D-039 方案 A 现为 `ACCEPTED / PX-3_PASS / PX-4_BASELINE_FROZEN`。首次 PX-5 DoR 为 `NOT_READY`；B01/B02 已关闭，当前 `B03~B07 / 5 BLOCKERS / D039-PX5-OWNER_DEPENDENCIES_REQUIRED`。B03 的 D-045 最近/收藏、B04 的 D-031 媒体/AI 保留与 B05 的 D-033 非标签 AI 上传确认、D-034 AI 资源预算、D-036 AITransport 隔离、D-053 Provider 用途准入三包内部卡均已完成四域自审，仍为 `INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY`；D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、逐 Provider 十维证据与 App Privacy 映射。D-040 的 20 个决定轴、D-054~D-072 候选 ID 预留和第一批四卡保持不变，同样等待独立复核。OI-02 仍为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 仍为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。隔离 Spike 的 Android/iOS JS export 与共用结构校验保持通过，所有原生调用仍为零。D-039 DoR 进展、ID 预留和卡片自审都不授权正式页面、路由、原生或发布工作。
 
 门禁状态以 [阶段门禁](stage-gates.md) 为准：G0/G1 已通过；G2/G3/G4 仍在形成证据；G5~G8 因尚无经批准实现、构建、Beta 或发布证据而保持 `FAIL`。这里的 `FAIL` 表示退出条件尚不存在，不表示项目异常。
 
@@ -77,6 +77,7 @@ D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
 | [D-033 非标签 AI 上传确认内部卡](../03-design/d033-nonlabel-ai-confirmation-card-spec.md) | 三套完整政策包、D-014 保留范围、单次绑定/失效和四域自审已完成 | 独立复核、Owner 展示/选择、决定接受和 B05 关闭均未发生 |
 | [D-034 AI 资源预算内部卡](../03-design/d034-ai-resource-budget-card-spec.md) | 三套固定预算政策包、19 维硬上限、超限清理和四域自审已完成 | 最低支持 iPhone benchmark、独立复核、Owner 展示/选择、决定接受和 B05 关闭均未发生 |
 | [D-036 AITransport 隔离内部卡](../03-design/d036-ai-transport-profile-card-spec.md) | 三套 URL/redirect/session 政策包、显式 cache/cookie/credential storage 隔离和四域自审已完成 | OI-07、三 Provider 兼容 Spike、原生边界、独立复核、Owner 展示/选择、决定接受和 B05 关闭均未发生 |
+| [D-053 AI Provider 用途准入内部卡](../03-design/d053-ai-provider-use-admission-card-spec.md) | 三套准入政策包、十维 Provider 真相、五类 payload、App Privacy 和旧 harness 边界已完成 | OI-07、逐 Provider 证据、App Privacy/隐私政策签署、独立复核、Owner 展示/选择、决定接受和 B05 关闭均未发生 |
 | [D-039 正式验收矩阵](../05-quality/d039-formal-acceptance-matrix.md) | 24 条用例覆盖首层、本地、最近、扫描、AI、保存、返回和无障碍 | 规格完成不等于实现或真机证据；依赖阻断保持条件化 |
 | [D-039 PX-4 设计基线](../03-design/d039-px4-design-baseline.md) | 首层层级、返回、状态、无障碍顺序和四域复核已冻结 | 稳定设计 ID 尚未映射到经授权的正式页面/路由，真机与持久化证据仍缺失 |
 | [D-040 原型 Manifest](../03-design/d040-prototype-manifest.md) | `CANDIDATE / PX-0_INPUT_GAP / FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`；三方案流程与作者 QA 已形成 | 20 个决定轴已分配候选 ID，第一批四卡完成自审；独立复核、其余卡片、支持文案和健康评审治理仍未关闭，不能进入 PX-1/PX-2 或 Owner 方案选择 |
@@ -106,16 +107,16 @@ D-038 仓库同源为 [交互原型](../../prototypes/d038-navigation-shell/inde
 
 1. **D-039 已完成 PX-4，但 PX-5 尚未完成。** Owner 已选择 A；首层组织、返回、状态、无障碍顺序和四域复核已冻结。不得把设计基线冒充实现 DoR、真机证据或正式工程授权。
 2. **D-040 已完成问题分解，选择卡规格仍待评审。** A/B/C 流程、恢复、无目标和失败零写入已形成原型；公式/治理证据复审归零，20 个决定轴已分配候选 ID。中国支持文案、健康评审治理和第一小批中立卡规格尚未关闭；不得把固定测试夹具当作产品目标，也不得直接向 Owner 提交未成熟选择卡。
-3. **G4 仍未通过；纯 JS Spike 子范围已验证。** 工程基础选择已接受，现有框架无关合同继续提供本地事实、事务、AI fail-closed 与禁止能力边界。合并后的 ProjectOps 有 5 份 Schema/289 个实例；D-039 B01/B02 关闭、D-045、D-031、D-033、D-034、D-036 与 D-040 内部卡自审都不授权正式工程。F01/F02/F16 共享请求证据只接受唯一剩余 policy blocker 为 `D053_NOT_AUTHORIZED` 的本地上下文；D-033/D-034/D-036 只完成内部卡，AI 配置—策略预检仍阻断 D-033/D-034/D-036/D-053；正式根工程、Prebuild/Xcode/CocoaPods、原生编译与运行证据继续关闭。
+3. **G4 仍未通过；纯 JS Spike 子范围已验证。** 工程基础选择已接受，现有框架无关合同继续提供本地事实、事务、AI fail-closed 与禁止能力边界。合并后的 ProjectOps 有 5 份 Schema/290 个实例；D-039 B01/B02 关闭、D-045、D-031、D-033、D-034、D-036、D-053 与 D-040 内部卡自审都不授权正式工程。F01/F02/F16 共享请求证据只接受唯一剩余 policy blocker 为 `D053_NOT_AUTHORIZED` 的本地上下文；D-033/D-034/D-036/D-053 只完成内部卡，AI 配置—策略预检仍阻断 D-033/D-034/D-036/D-053；正式根工程、Prebuild/Xcode/CocoaPods、原生编译与运行证据继续关闭。
 4. **数据与 AI 分发 fail closed。** D-052 未处理前不向美国境外朋友分发 USDA；D-053 和 Provider 证据未满足前不向第三方 AI 发送健康/营养载荷。
 5. **Apple 原生链路仍阻断。** 已记录 iPhone 16 Pro Max / iOS 26.5 与 Bundle ID 尚未创建，但当前无可用 Mac、macOS、Xcode、CocoaPods、具体 Bundle ID、签名链、App Store Connect record 或 TestFlight build；只有 iPhone 不构成原生构建能力。
 6. **D-039 Owner 阻塞已关闭。** OI-02、首批整批确认和 D-039=A 均已登记；D-040 仍只是计划中的 Owner 队列占位，第一小批选择卡规格与 PX 前置必须先关闭。完整宿主迁移记录见 [Choice UI 宿主只读审计](../04-engineering/choice-ui-host-audit-2026-08-14.md)。
 
-当前合并基线全库 839/839、工具合同 642/642、ProjectOps 验证 168/168、Schema 子集 14/14、只读对账 5/5；包含 5 个 Schema、`289` 个受控实例、`32` 条决定、1 份 Owner intake、`170` 个事件、`116` 条消息和 25 个角色。验证器锁定首批接受事件、D-039=A 单独接受/PX-4/PX-5 NOT_READY、B01/B02、D-045、D-031、D-033、D-034 与 D-036 三包内部卡的稳定 ID/自审/未授权状态、D-040 的 20 轴分解与第一批四卡、D-032 Spike 授权、OI-02/OI-03、Windows JS/双平台 export 与全部非生产合同。`project-ops/reconcile.mjs` 对账 D-039 `D039-PX5-OWNER_DEPENDENCIES_REQUIRED`、D-045 `D045_INDEPENDENT_REVIEW_REQUIRED`、D-031 `D031_INDEPENDENT_REVIEW_REQUIRED`、D-033 `D033_INDEPENDENT_REVIEW_REQUIRED`、D-034 `D034_DEVICE_BENCHMARK_AND_INDEPENDENT_REVIEW_REQUIRED`、D-036 `D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED`、D-040 `FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`，并继续证明正式实现和 Owner 卡均未越级授权。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`；Windows 主机继续阻断原生路径。
+当前合并基线全库 843/843、工具合同 642/642、ProjectOps 验证 172/172、Schema 子集 14/14、只读对账 5/5；包含 5 个 Schema、`290` 个受控实例、`32` 条决定、1 份 Owner intake、`171` 个事件、`116` 条消息和 25 个角色。验证器锁定首批接受事件、D-039=A 单独接受/PX-4/PX-5 NOT_READY、B01/B02、D-045、D-031、D-033、D-034、D-036 与 D-053 三包内部卡的稳定 ID/自审/未授权状态、D-040 的 20 轴分解与第一批四卡、D-032 Spike 授权、OI-02/OI-03、Windows JS/双平台 export 与全部非生产合同。`project-ops/reconcile.mjs` 对账 D-039 `D039-PX5-OWNER_DEPENDENCIES_REQUIRED`、D-045 `D045_INDEPENDENT_REVIEW_REQUIRED`、D-031 `D031_INDEPENDENT_REVIEW_REQUIRED`、D-033 `D033_INDEPENDENT_REVIEW_REQUIRED`、D-034 `D034_DEVICE_BENCHMARK_AND_INDEPENDENT_REVIEW_REQUIRED`、D-036 `D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED`、D-053 `D053_OI07_POLICY_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED`、D-040 `FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`，并继续证明正式实现和 Owner 卡均未越级授权。证据矩阵仍为 `66 = 37 confirmed + 24 cross-source + 5 pending`；Windows 主机继续阻断原生路径。
 
 ## 7. 下一步 Owner 互动
 
-Owner 已明确选择 D-039=A，不得重复询问；PX-4 设计基线也已完成。D-034 资源预算卡已完成，但仍需最低支持 iPhone benchmark 和独立复核；D-036 传输隔离卡已完成，但仍需 OI-07、三 Provider 兼容 Spike、原生边界证据和独立复核。PM 下一步推进 D-053 内部卡，并继续复核 D-040 的 D-054/D-055/D-056/D-058 第一小批中立选择卡规格。`owner-intake.json` 中的 `d040_onboarding_goals` 只是队列占位，D-034、D-036、D-053 和 D-040 达到 `READY_FOR_OWNER_REVIEW` 前不得提前展示。
+Owner 已明确选择 D-039=A，不得重复询问；PX-4 设计基线也已完成。D-034 资源预算卡已完成，但仍需最低支持 iPhone benchmark 和独立复核；D-036 传输隔离卡已完成，但仍需 OI-07、三 Provider 兼容 Spike、原生边界证据和独立复核；D-053 用途准入卡已完成，但仍需 OI-07、逐 Provider 十维证据、App Privacy/隐私政策映射和独立复核。PM 可继续准备这些证据，并推进 D-040 的后续小批中立选择卡。`owner-intake.json` 中的 `d040_onboarding_goals` 只是队列占位，上述卡片达到 `READY_FOR_OWNER_REVIEW` 前不得提前展示。
 
 当前 Codex host 已通过新安装的 `interactive-questions` 插件暴露原生 `request_user_input`，OI-02 已取得真实返回。旧 Choice UI MCP 的安装流程不再需要，也不得为本项目额外修改全局插件或 feature；历史审计结论及迁移说明保留在 [Choice UI 宿主只读审计](../04-engineering/choice-ui-host-audit-2026-08-14.md)。
 
@@ -167,4 +168,4 @@ node (Join-Path $repoRoot 'prototypes\d040-onboarding-goals\qa-smoke.mjs') http:
 
 打开 `http://127.0.0.1:4177/`。该页面只比较首启资料与目标流程；固定数值不是健康公式结果，也不保存 Owner 选择。
 
-恢复后至少重新确认：决定是 29/3；事件/消息/角色是 170/116/25 且仅 `root` 活跃；D-039=A 为 `ACCEPTED / PX-4_BASELINE_FROZEN / PX-5_DOR_NOT_READY`，B01/B02 已关闭、B03~B07 共 5 项开放且正式实现为 false；D-045、D-031、D-033、D-034 与 D-036 三包内部卡自审通过但独立复核/Owner 卡未排期，均未进入决定台账或 Owner intake；D-034 还需最低支持 iPhone benchmark，D-036 还需 OI-07、三 Provider 兼容 Spike和原生边界证据；D-040 为 `CANDIDATE / PX-0_INPUT_GAP / FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`，D-054~D-072 仅预留。D-032 是 `CANDIDATE + SPIKE_AUTHORIZED` 且 Windows JS/类型依赖表面、Android/iOS 平台条件 export 与共用结构校验子范围已通过。OI-02 精确为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac；D-052/D-053 继续 fail closed；根目录正式工程、原生、签名、Archive 与 TestFlight 仍未授权。
+恢复后至少重新确认：决定是 29/3；事件/消息/角色是 171/116/25 且仅 `root` 活跃；D-039=A 为 `ACCEPTED / PX-4_BASELINE_FROZEN / PX-5_DOR_NOT_READY`，B01/B02 已关闭、B03~B07 共 5 项开放且正式实现为 false；D-045、D-031、D-033、D-034、D-036 与 D-053 三包内部卡自审通过但独立复核/Owner 卡未排期；D-053 仍是台账内 candidate，其余内部卡未进入决定台账或 Owner intake；D-034 还需最低支持 iPhone benchmark，D-036 还需 OI-07、三 Provider 兼容 Spike和原生边界证据，D-053 还需 OI-07、逐 Provider 十维证据与 App Privacy 映射；D-040 为 `CANDIDATE / PX-0_INPUT_GAP / FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`，D-054~D-072 仅预留。D-032 是 `CANDIDATE + SPIKE_AUTHORIZED` 且 Windows JS/类型依赖表面、Android/iOS 平台条件 export 与共用结构校验子范围已通过。OI-02 精确为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 精确为 iPhone 16 Pro Max / iOS 26.5 / 无 Mac；D-052/D-053 继续 fail closed；根目录正式工程、原生、签名、Archive 与 TestFlight 仍未授权。

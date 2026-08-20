@@ -30,6 +30,7 @@
 | [D-033 非标签 AI 上传确认选择卡](d033-nonlabel-ai-confirmation-card-spec.md) | B05 的三套完整政策包、D-014 保留范围、单次绑定/失效和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-034 AI 资源预算选择卡](d034-ai-resource-budget-card-spec.md) | B05 的三套固定预算政策包、19 维硬上限、超限清理和内部四域自审；尚需最低支持 iPhone benchmark，尚未独立复核或展示给 Owner |
 | [D-036 AITransport 隔离选择卡](d036-ai-transport-profile-card-spec.md) | B05 的三套 URL/redirect/session 政策包、显式 cache/cookie/credential 隔离和内部四域自审；尚需三 Provider 兼容与原生边界证据，尚未独立复核或展示给 Owner |
+| [D-053 AI Provider 用途准入选择卡](d053-ai-provider-use-admission-card-spec.md) | B05 的三套用途准入政策包、十维 Provider 真相、App Privacy 映射和旧 harness 边界；尚需 OI-07 与逐 Provider 证据，尚未独立复核或展示给 Owner |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |
 | [d040-px0-input-research.md](d040-px0-input-research.md) | D-040 的字段、能量公式、持久化、删除和特殊人群 PX-0 候选研究；不代表 Owner 已选择 |
 | [d040-macronutrient-evidence.md](d040-macronutrient-evidence.md) | D-040 的 P/C/F 宏量营养公开证据、换算合同和未批准候选规则；不代表 Owner 已选择 |

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D036_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_20_D036_CARD_SPEC",
+export const PHASE0_2026_08_20_D053_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_20_D053_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 170,
+    events: 171,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D036_CARD_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 1,
+    "2026-08-20": 2,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2005,6 +2005,101 @@ export const PHASE0_2026_08_20_D036_CARD_SPEC = Object.freeze({
       d039DecisionStateChanged: false,
     }),
   }),
+  d053: Object.freeze({
+    cardSpec: Object.freeze({
+      eventId: "EVT-20260820-002",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D053-AI-PROVIDER-USE-ADMISSION-CARD-001",
+      subjectRole: "CandidateProductArtifact",
+      correlationId: "d053-ai-provider-use-admission-card-spec",
+      state: "completed",
+      decisionId: "D-053",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D053_CARD_SPEC_REQUIRED",
+      next: "D053_OI07_POLICY_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardState: "DRAFT_COMPLETE",
+      questionId: "d053_ai_provider_use_admission",
+      optionIds: Object.freeze([
+        "documented_compatible_use_only",
+        "provider_specific_residual_risk_review",
+        "user_consent_broad_admission",
+      ]),
+      optionCount: 3,
+      recommendedOptionId: "documented_compatible_use_only",
+      allOptionsMutuallyExclusive: true,
+      completePolicyPackages: true,
+      evidenceDimensionIds: Object.freeze([
+        "legal_entity_and_api_product",
+        "terms_privacy_effective_version",
+        "retention_and_backup",
+        "training_and_model_improvement",
+        "human_access",
+        "deletion_revocation_and_sla",
+        "advertising_marketing_tracking_broker",
+        "health_data_use_and_repurpose",
+        "subprocessors_regions_and_transfers",
+        "app_privacy_and_policy_mapping",
+      ]),
+      evidenceDimensionCount: 10,
+      payloadClasses: Object.freeze([
+        "nutrition_label_photo",
+        "meal_photo",
+        "meal_text",
+        "trend_summary",
+        "guidance_context",
+      ]),
+      payloadClassCount: 5,
+      providerPayloadRegionScopedDecisionRequired: true,
+      profileExpiryRequired: true,
+      policyChangeInvalidatesAdmission: true,
+      explicitThirdPartyAiPermissionRequired: true,
+      appleProhibitedUsesOwnerWaivable: false,
+      unknownEvidenceCanAuthorize: false,
+      apiKeyHttpsConnectivityCountsAsPolicyEvidence: false,
+      localProfileAssertionCountsAsProviderTruth: false,
+      generalModelTrainingAllowed: false,
+      advertisingMarketingTrackingDataBrokerUseAllowed: false,
+      unrelatedHealthDataUseAllowed: false,
+      privacyPolicyEqualProtectionEvidenceRequired: true,
+      appPrivacyMappingRequired: true,
+      appPrivacyMappingSigned: false,
+      oi07Complete: false,
+      providerEvidencePassed: false,
+      providerAdmissionRecords: 0,
+      allProviderPayloadProfiles: "UNKNOWN_BLOCKED",
+      broadConsentOptionCurrentlyOwnerReady: false,
+      existingHarnessReusableAsAcceptedAuthorizationEvidence: false,
+      blockedWhenD033D034OrD036Unresolved: true,
+      realNetworkRequests: 0,
+      productSelfReviewPassed: true,
+      privacySecuritySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d053RegisteredInDecisionLedger: true,
+      d053RecordedInOwnerIntake: false,
+      d053CandidateStatusPreserved: true,
+      closedD039BlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenD039BlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenD039BlockerCount: 5,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      d039DecisionStateChanged: false,
+    }),
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -2565,7 +2660,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D036_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D053_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5785,6 +5880,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D036_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-036 必须精确保留三套 AITransport 隔离政策包、origin/redirect/session/cache/cookie/credential 边界、三 Provider/原生证据门禁、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d053CardSpec = baseline.d053.cardSpec;
+  const d053CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d053CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d053CardSpec.correlationId),
+  );
+  const d053CardEvent = d053CardEvents[0]?.value;
+  const d053CardData = d053CardEvent?.data ?? {};
+  const d053CardFields = Object.keys(d053CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  const d053Decision = model.decisionRegister.decisions.find((decision) => decision.id === "D-053");
+  const d053OwnerResponses = model.ownerIntake.responses.filter((response) => response.decisionId === "D-053");
+  if (
+    d053CardEvents.length !== 1 ||
+    d053CardEvent?.eventId !== d053CardSpec.eventId ||
+    d053CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d053CardEvent?.actor?.id !== d053CardSpec.actorId ||
+    d053CardEvent?.actor?.role !== d053CardSpec.actorRole ||
+    d053CardEvent?.subject?.id !== d053CardSpec.subjectId ||
+    d053CardEvent?.subject?.role !== d053CardSpec.subjectRole ||
+    d053CardEvent?.correlationId !== d053CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d053CardData).sort()) !== JSON.stringify(d053CardFields) ||
+    d053CardFields.some(
+      (field) => JSON.stringify(d053CardData[field]) !== JSON.stringify(d053CardSpec[field]),
+    ) ||
+    d053Decision?.status !== "CANDIDATE" ||
+    d053Decision?.acceptedOn !== null ||
+    d053Decision?.choiceKey !== "pending-owner-choice" ||
+    d053OwnerResponses.length !== 0
+  ) {
+    add(
+      "OPS_D053_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-053 必须精确保留三套 Provider 用途准入政策包、十维证据、五类 payload、Apple 不可豁免/App Privacy/旧 harness 边界、四域自审和 OI-07/独立复核/Owner/B05/实现未授权状态，同时保持权威台账 CANDIDATE 且 Owner intake 无响应",
     );
   }
 

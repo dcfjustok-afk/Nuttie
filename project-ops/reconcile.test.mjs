@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 170,
+    events: 171,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -132,6 +132,25 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d036.ownerCardScheduled, false);
   assert.equal(report.d036.registeredInDecisionLedger, false);
   assert.equal(report.d036.ownerResponseCount, 0);
+  assert.equal(report.d053.eventId, "EVT-20260820-002");
+  assert.equal(report.d053.decisionState, "CANDIDATE");
+  assert.equal(report.d053.ledgerDecisionState, "CANDIDATE");
+  assert.equal(report.d053.blockerState, "OPEN");
+  assert.equal(report.d053.next, "D053_OI07_POLICY_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d053.optionCount, 3);
+  assert.equal(report.d053.evidenceDimensionCount, 10);
+  assert.equal(report.d053.payloadClassCount, 5);
+  assert.equal(report.d053.nonWaivableBoundary, true);
+  assert.equal(report.d053.evidenceReady, false);
+  assert.equal(report.d053.providerAdmissionRecords, 0);
+  assert.equal(report.d053.allProviderPayloadProfiles, "UNKNOWN_BLOCKED");
+  assert.equal(report.d053.broadConsentOptionOwnerReady, false);
+  assert.equal(report.d053.realNetworkRequests, 0);
+  assert.equal(report.d053.selfReviewPassed, true);
+  assert.equal(report.d053.independentReviewPassed, false);
+  assert.equal(report.d053.ownerCardScheduled, false);
+  assert.equal(report.d053.registeredInDecisionLedger, true);
+  assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
@@ -196,6 +215,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d036Report = reconcileProjectOps(d036Model);
   assert.equal(d036Report.ok, false);
   assert.ok(d036Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE"));
+
+  const d053Model = validModel();
+  d053Model.events.find((record) => record.value.eventId === "EVT-20260820-002").value.data.appleProhibitedUsesOwnerWaivable = true;
+  const d053Report = reconcileProjectOps(d053Model);
+  assert.equal(d053Report.ok, false);
+  assert.ok(d053Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

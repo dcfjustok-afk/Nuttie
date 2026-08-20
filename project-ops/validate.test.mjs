@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D036_CARD_SPEC,
+  PHASE0_2026_08_20_D053_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D036_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D053_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 289,
+    instancesValidated: 290,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 170);
+  assert.equal(report.counts.events, 171);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -771,6 +771,28 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d036CardEvent.value.data.ownerCardScheduled, false);
   assert.equal(d036CardEvent.value.data.d039BlockerState, "OPEN");
   assert.equal(d036CardEvent.value.data.formalImplementationAuthorized, false);
+  const d053CardEvent = findEvent(VALID_MODEL, "EVT-20260820-002");
+  assert.equal(d053CardEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d053CardEvent.value.subject.id, "D053-AI-PROVIDER-USE-ADMISSION-CARD-001");
+  assert.equal(d053CardEvent.value.data.next, "D053_OI07_POLICY_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d053CardEvent.value.data.optionIds, [
+    "documented_compatible_use_only",
+    "provider_specific_residual_risk_review",
+    "user_consent_broad_admission",
+  ]);
+  assert.equal(d053CardEvent.value.data.evidenceDimensionCount, 10);
+  assert.equal(d053CardEvent.value.data.payloadClassCount, 5);
+  assert.equal(d053CardEvent.value.data.appleProhibitedUsesOwnerWaivable, false);
+  assert.equal(d053CardEvent.value.data.unknownEvidenceCanAuthorize, false);
+  assert.equal(d053CardEvent.value.data.localProfileAssertionCountsAsProviderTruth, false);
+  assert.equal(d053CardEvent.value.data.appPrivacyMappingSigned, false);
+  assert.equal(d053CardEvent.value.data.oi07Complete, false);
+  assert.equal(d053CardEvent.value.data.providerAdmissionRecords, 0);
+  assert.equal(d053CardEvent.value.data.allProviderPayloadProfiles, "UNKNOWN_BLOCKED");
+  assert.equal(d053CardEvent.value.data.independentReviewPassed, false);
+  assert.equal(d053CardEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d053CardEvent.value.data.d053RegisteredInDecisionLedger, true);
+  assert.equal(d053CardEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -839,7 +861,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 288);
+    assert.equal(report.schemaValidation.instancesValidated, 289);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2499,6 +2521,37 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       model.decisionRegister.decisions.push(candidate);
     });
     assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-053 选择卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260820-002");
+    });
+    assertDiagnostic(report, "OPS_D053_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-053 选择卡稳定选项漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-002").value.data.optionIds[0] = "any_https_provider";
+    });
+    assertDiagnostic(report, "OPS_D053_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-053 错误允许 Owner 豁免 Apple 禁项", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-002").value.data.appleProhibitedUsesOwnerWaivable = true;
+    });
+    assertDiagnostic(report, "OPS_D053_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-053 卡片自审被越级改成 Owner 接受", () => {
+    const report = validateMutation((model) => {
+      const decision = model.decisionRegister.decisions.find((candidate) => candidate.id === "D-053");
+      decision.status = "ACCEPTED";
+      decision.acceptedOn = "2026-08-20";
+      decision.choiceKey = "documented-compatible-use-only";
+    });
+    assertDiagnostic(report, "OPS_D053_CARD_SPEC_MISMATCH");
   });
 });
 

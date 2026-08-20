@@ -188,7 +188,7 @@
 | --- | --- | --- | --- | --- |
 | D-032 | Expo/RN/Node/Xcode 版本矩阵 | 已授权隔离 SDK 57 / RN 0.86.2 candidate Spike；等待证据后的第二次 Owner 动作冻结最终矩阵 | CANDIDATE + SPIKE_AUTHORIZED | - |
 | D-052 | USDA 数据面向美国境外朋友的再分发口径 | A 获得 USDA/NAL 书面确认前境外构建仅含台湾合规包；B 明确接受残余风险并保持来源分包 | CANDIDATE | `DLR-C01` |
-| D-053 | 第三方 AI Provider 数据用途准入 | A 证据证明用途相容才允许，未知即阻断；B 每个 Provider 单独复核并由 Owner 接受可接受残余风险；C 仅凭用户同意放行（不推荐，且不能覆盖 Apple 禁项） | CANDIDATE | - |
+| D-053 | 第三方 AI Provider 数据用途准入 | A 十维证据满足固定标准才准入；B 每个 Provider/产品/地区/载荷单独复核并由 Owner 接受已知有限残余风险；C 用户同意广泛准入（当前不可用同意替代 Provider 真相或 Apple 禁项） | CANDIDATE / INTERNAL_CARD_SELF_REVIEWED | - |
 
 D-032、D-052 与 D-053 是当前仅余的三项权威候选。首批其他 11 项已于 2026-08-14 经宿主原生 `request_user_input` 整批回读确认并转为 `ACCEPTED`。
 
@@ -196,7 +196,7 @@ D-032 采用两次 Owner 动作：第一次动作已选择 A，形成 `CANDIDATE
 
 D-052 的 A 为团队推荐和当前 fail-closed 执行边界，不是 Owner 已接受的决定。Owner 未明确回复前，USDA 原始或转换数据只可用于本地研发，不得进入面向美国境外朋友的 TestFlight/IPA。详细证据和选项见 [食品数据许可与来源合规审查](../05-quality/data-license-review.md) 与 [Owner 分批决策包](../02-product/owner-decision-packs.md)。
 
-D-053 未接受前，所有 Provider/载荷组合都保持 `UNKNOWN/BLOCKED`，AI 功能不得取得发布门禁通过。Owner 即使选择 B，也只能接受 Apple 规则允许范围内的残余风险，不能豁免明确禁止的数据用途。Provider 名称、terms/privacy URL 或快照、保留、训练、人工访问、删除和广告/营销用途证据属于 OI-07，不能用 API key 或 HTTPS 可用性替代。
+D-053 未接受前，所有 Provider/载荷组合都保持 `UNKNOWN/BLOCKED`，AI 功能不得取得发布门禁通过。Owner 即使选择 B，也只能接受 Apple 规则允许范围内、已知且有界的残余风险，不能豁免明确禁止的数据用途。Provider 名称、法律实体/API 产品、terms/privacy URL 或快照、保留/备份、训练、人工访问、删除、广告/营销/tracking、健康数据用途、subprocessor/地区和 App Privacy 映射属于 OI-07 与后续证据，不能用 API key、HTTPS 可用性或本地 `ALLOW` 断言替代。完整内部候选见 [D-053 Provider 用途准入选择卡](../03-design/d053-ai-provider-use-admission-card-spec.md)；该卡只通过四域自审，未进入 Owner 评审。
 
 ## 其余尚未决定的类别
 

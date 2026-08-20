@@ -98,6 +98,13 @@ function latestD036Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD053Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D053-AI-PROVIDER-USE-ADMISSION-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -591,6 +598,79 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D036_GATE", "D-036", "D-036 未保持三包 AITransport 隔离卡、显式 session 隔离、三 Provider/原生证据待办、自审和独立复核/Owner/B05/实现未授权状态", d036);
   }
 
+  const d053Record = latestD053Record(model);
+  const d053LedgerDecision = model.decisionRegister.decisions.find((decision) => decision.id === "D-053") ?? null;
+  const d053 = {
+    eventId: d053Record?.eventId ?? null,
+    decisionState: d053Record?.data?.decisionState ?? null,
+    ledgerDecisionState: d053LedgerDecision?.status ?? null,
+    ledgerChoiceKey: d053LedgerDecision?.choiceKey ?? null,
+    blockerState: d053Record?.data?.d039BlockerState ?? null,
+    cardState: d053Record?.data?.cardState ?? null,
+    next: d053Record?.data?.next ?? null,
+    optionCount: d053Record?.data?.optionCount ?? null,
+    recommendedOptionId: d053Record?.data?.recommendedOptionId ?? null,
+    evidenceDimensionCount: d053Record?.data?.evidenceDimensionCount ?? null,
+    payloadClassCount: d053Record?.data?.payloadClassCount ?? null,
+    nonWaivableBoundary: [
+      d053Record?.data?.appleProhibitedUsesOwnerWaivable === false,
+      d053Record?.data?.unknownEvidenceCanAuthorize === false,
+      d053Record?.data?.localProfileAssertionCountsAsProviderTruth === false,
+      d053Record?.data?.generalModelTrainingAllowed === false,
+      d053Record?.data?.advertisingMarketingTrackingDataBrokerUseAllowed === false,
+      d053Record?.data?.unrelatedHealthDataUseAllowed === false,
+    ].every((value) => value === true),
+    evidenceReady: [
+      d053Record?.data?.oi07Complete,
+      d053Record?.data?.providerEvidencePassed,
+      d053Record?.data?.appPrivacyMappingSigned,
+    ].every((value) => value === true),
+    providerAdmissionRecords: d053Record?.data?.providerAdmissionRecords ?? null,
+    allProviderPayloadProfiles: d053Record?.data?.allProviderPayloadProfiles ?? null,
+    broadConsentOptionOwnerReady: d053Record?.data?.broadConsentOptionCurrentlyOwnerReady ?? null,
+    realNetworkRequests: d053Record?.data?.realNetworkRequests ?? null,
+    selfReviewPassed: [
+      d053Record?.data?.productSelfReviewPassed,
+      d053Record?.data?.privacySecuritySelfReviewPassed,
+      d053Record?.data?.dataIntegritySelfReviewPassed,
+      d053Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d053Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d053Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d053Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d053Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: d053LedgerDecision !== null,
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-053").length,
+  };
+  if (!(
+    d053.eventId === "EVT-20260820-002" &&
+    d053.decisionState === "CANDIDATE" &&
+    d053.ledgerDecisionState === "CANDIDATE" &&
+    d053.ledgerChoiceKey === "pending-owner-choice" &&
+    d053.blockerState === "OPEN" &&
+    d053.cardState === "DRAFT_COMPLETE" &&
+    d053.next === "D053_OI07_POLICY_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d053.optionCount === 3 &&
+    d053.recommendedOptionId === "documented_compatible_use_only" &&
+    d053.evidenceDimensionCount === 10 &&
+    d053.payloadClassCount === 5 &&
+    d053.nonWaivableBoundary === true &&
+    d053.evidenceReady === false &&
+    d053.providerAdmissionRecords === 0 &&
+    d053.allProviderPayloadProfiles === "UNKNOWN_BLOCKED" &&
+    d053.broadConsentOptionOwnerReady === false &&
+    d053.realNetworkRequests === 0 &&
+    d053.selfReviewPassed === true &&
+    d053.independentReviewPassed === false &&
+    d053.ownerCardScheduled === false &&
+    d053.ownerReviewAuthorized === false &&
+    d053.formalImplementationAuthorized === false &&
+    d053.registeredInDecisionLedger === true &&
+    d053.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D053_GATE", "D-053", "D-053 未保持三包 Provider 用途准入卡、十维证据、Apple 不可豁免/UNKNOWN 阻断、OI-07/App Privacy/独立复核待办、台账 CANDIDATE 和 Owner/B05/实现未授权状态", d053);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -655,6 +735,7 @@ export function reconcileProjectOps(model) {
     d033,
     d034,
     d036,
+    d053,
     d040,
     diagnostics,
   };
