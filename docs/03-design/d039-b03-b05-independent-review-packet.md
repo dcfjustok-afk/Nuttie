@@ -7,7 +7,7 @@
 | 复核范围 | B03 的 D-045、B04 的 D-031、B05 的 D-033/D-034/D-036/D-053 六张内部卡 |
 | 当前权威状态 | `D-039 = ACCEPTED / PX-4_BASELINE_FROZEN / PX-5_DOR_NOT_READY` |
 | 非目标 | 替 Owner 选择答案、关闭 B03/B04/B05、伪造 benchmark/Provider/原生/政策证据、授权 Owner 评审或正式实现 |
-| 当前下一门禁 | `B03_B05_INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED` |
+| 当前下一门禁 | `B03_B05_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED` |
 
 ## 1. 用途与独立性
 
@@ -36,7 +36,24 @@
 | 9 | [D-036 AITransport 隔离卡](d036-ai-transport-profile-card-spec.md) | B05 的 URL、redirect、session、cache/cookie/credential 隔离三包 |
 | 10 | [D-053 Provider 用途准入卡](d053-ai-provider-use-admission-card-spec.md) | B05 的十维 Provider 真相、五类载荷、Apple 禁项与 UNKNOWN 阻断 |
 
-本次原子任务只建立复核包结构。下一原子任务必须把这 10 份输入冻结到同一 Git commit 并记录 blob OID 与规范 SHA-256；冻结清单形成前不得发起可计入门禁的正式复核。
+### 2.1 冻结输入清单
+
+`PACKET-001-R1` 的十份输入冻结在 Git commit `6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117`。下表中的 Git blob OID 与 SHA-256 都基于该提交中的原始 blob 字节计算，不使用工作区换行、文件时间或后续提交内容。正式复核记录必须逐项引用这些值；任一项不一致都视为另一 packet revision，既有签署不能沿用。
+
+| 顺序 | 仓库路径 | Git blob OID | 规范 SHA-256 |
+| ---: | --- | --- | --- |
+| 1 | `docs/03-design/d039-px4-design-baseline.md` | `a1d5018d0c579a04ce799d169ce51d0f00924703` | `15dabd5dc75443f0fe1711b9a1dac931b5e462508ab39efe25554fd6b3b970b5` |
+| 2 | `docs/05-quality/d039-px5-dor-assessment.md` | `484b6344c97fe39fe578043dbc960ee147c5495d` | `2d647534e697193045786cc424986b898bf0204e71511a6e12867b50e003a75a` |
+| 3 | `docs/05-quality/d039-formal-acceptance-matrix.md` | `c158896b2cd008f2c315994c4b2acc812de6c035` | `007b034dcd865091ec87cf43a3bf35a4e9aaea51dfb2f5646d01c8f00a56ba86` |
+| 4 | `docs/03-design/d039-route-observability-contract.md` | `fd1f1db0f54d4f5054b22305f39ae2735c9c216e` | `4947904bb18bf94c55b030d8ef737cff1f4f65a5bdc10686584b42a71d8b0475` |
+| 5 | `docs/03-design/d045-recent-favorites-card-spec.md` | `f41fb50964d869946bf4accf381df8267bca68cb` | `f2195d4fe8fef9637efb1cff30139ee1b11c915503e16275a9d720b06fa6cf04` |
+| 6 | `docs/03-design/d031-media-ai-retention-card-spec.md` | `9dcff0e98f10f8e1c96a7742afbe887adce5bd8c` | `a93604d1e2dd2c057fbb1e1353f4c09105ad19185938ae75db66bab3efb8b3d0` |
+| 7 | `docs/03-design/d033-nonlabel-ai-confirmation-card-spec.md` | `35df3b5a37220521870d0ad1a90bb7f1161d5e42` | `68446272e3203113bad8c9a4d00bfc430203dd82f22294039e0bb650ef1f0a8b` |
+| 8 | `docs/03-design/d034-ai-resource-budget-card-spec.md` | `3d1d7681b0285d65ea5d64a2176bfab4c5d28c5c` | `a8e6b5a992854efb92bd30fe477b7deee090ab152976bdb6cf293179c0ac7bf6` |
+| 9 | `docs/03-design/d036-ai-transport-profile-card-spec.md` | `3bc58cebfb45e2046891fb774bc242fe69ee5b30` | `fdfe2fdebce62e4bc7e31e4ba8b358d9780e4b93377907ecd780bcd4dfcdb7ab` |
+| 10 | `docs/03-design/d053-ai-provider-use-admission-card-spec.md` | `d406e17c8e7b0e11218a8907e757a603df01e465` | `9c1cc88d34ec116f2825d6a71dd580ac8c625d99b30c87a8a06cf7086b894caf` |
+
+冻结清单只证明“复核输入是哪一版”，不证明卡片正确、外部证据齐备、评审人合格或复核通过。当前包自身仍是 `REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED`。
 
 ## 3. 复核域与责任
 
@@ -148,7 +165,7 @@ supersedesReviewId
 ```text
 reviewPacketReady: true
 reviewPacketVersion: PACKET-001-R1
-inputManifestFrozen: false
+inputManifestFrozen: true
 requiredArtifactCount: 10
 requiredCardCount: 6
 requiredBlockerCount: 3
@@ -193,5 +210,5 @@ formalRootProjectAuthorized: false
 nativeIosWorkAuthorized: false
 formalImplementationAuthorized: false
 px5ImplementationDorSatisfied: false
-next: INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED
+next: REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED
 ```
