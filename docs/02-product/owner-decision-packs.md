@@ -212,7 +212,7 @@ D-014 只批准“营养标签照片”的首次说明和每次预览确认。D-
 | OI-04 | 朋友人数、是否属于 App Store Connect 团队、是否接受 external Beta Review | D-049 |
 | OI-05 | 隐私政策域名/静态托管偏好、Support URL 与反馈邮箱 | D-050 与外部 Beta |
 | OI-06 | 首发/长期目标地区，特别是中国大陆、法国、EU | 出口加密、DSA、ICP 和地区合规 |
-| OI-07 | 准备测试的 OpenAI-compatible Provider 名称及不含 key 的 terms/privacy URL 或快照；注明保留期限、训练、人工访问、删除和广告/营销用途，未知项明确写 `UNKNOWN` | D-033/D-036/D-053 兼容与隐私准入；证据不足时保持 BLOCKED |
+| [OI-07](../04-engineering/testing/oi07-provider-target-intake-template.md) | 使用统一模板提供三个 OpenAI-compatible Provider target；填写法律实体、API 产品/套餐/地区/origin、无 key 的 endpoint/terms/privacy/用途来源、账户控制、凭证注入机制和测试费用上限，未知项明确写 `UNKNOWN` | D-033/D-036/D-053 兼容与隐私准入；填写不授权付费、凭证、联网或准入，证据不足时保持 BLOCKED |
 
 ## 8. 当前聊天决策流程
 
