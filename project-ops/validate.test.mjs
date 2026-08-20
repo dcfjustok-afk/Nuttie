@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY,
+  PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 309,
+    instancesValidated: 310,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 190);
+  assert.equal(report.counts.events, 191);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1004,6 +1004,53 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(oi07TemplateEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(oi07TemplateEvent.value.data.b05Closed, false);
   assert.equal(oi07TemplateEvent.value.data.formalImplementationAuthorized, false);
+  const oi07HarnessEvent = findEvent(VALID_MODEL, "EVT-20260821-014");
+  assert.equal(oi07HarnessEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    oi07HarnessEvent.value.subject.id,
+    "OI07-PROVIDER-TARGET-INTAKE-HARNESS-001",
+  );
+  assert.equal(oi07HarnessEvent.value.data.contractStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(oi07HarnessEvent.value.data.templateEventId, "EVT-20260821-013");
+  assert.equal(oi07HarnessEvent.value.data.topLevelTests, 11);
+  assert.equal(oi07HarnessEvent.value.data.fullSuitePassed, 930);
+  assert.equal(oi07HarnessEvent.value.data.providerTargetCount, 3);
+  assert.equal(oi07HarnessEvent.value.data.perTargetFieldCount, 29);
+  assert.equal(oi07HarnessEvent.value.data.sharedPerTargetFieldCount, 12);
+  assert.equal(oi07HarnessEvent.value.data.d036OnlyPerTargetFieldCount, 8);
+  assert.equal(oi07HarnessEvent.value.data.d053OnlyPerTargetFieldCount, 9);
+  assert.equal(oi07HarnessEvent.value.data.unionInputFieldCount, 30);
+  assert.deepEqual(oi07HarnessEvent.value.data.dispositions, [
+    "STRUCTURALLY_COMPLETE_INTAKE_ONLY",
+    "PARTIAL_UNKNOWN_BLOCKED",
+  ]);
+  assert.equal(oi07HarnessEvent.value.data.d036AndD053CompletenessEvaluatedSeparately, true);
+  assert.equal(oi07HarnessEvent.value.data.sharedUnknownBlocksBothConsumers, true);
+  assert.equal(oi07HarnessEvent.value.data.sourcedNaRequired, true);
+  assert.equal(oi07HarnessEvent.value.data.concreteTargetIdentityAllowsNa, false);
+  assert.equal(oi07HarnessEvent.value.data.sensitiveLookingMaterialRejectedWithoutEcho, true);
+  assert.equal(oi07HarnessEvent.value.data.onlyCountsStatesAndFingerprintsReturned, true);
+  assert.equal(oi07HarnessEvent.value.data.providerInputValuesReturned, false);
+  assert.equal(oi07HarnessEvent.value.data.syntheticFixtureOnly, true);
+  assert.equal(oi07HarnessEvent.value.data.inputAuthorityCallerAssertedNotVerified, true);
+  assert.equal(oi07HarnessEvent.value.data.providerFactsVerified, false);
+  assert.equal(oi07HarnessEvent.value.data.sourceUrlsFetched, false);
+  assert.equal(oi07HarnessEvent.value.data.oi07RevisionAssigned, false);
+  assert.equal(oi07HarnessEvent.value.data.ownerInputReceived, false);
+  assert.equal(oi07HarnessEvent.value.data.providerTargetsResolved, false);
+  assert.equal(oi07HarnessEvent.value.data.allProviderTargets, "UNKNOWN_BLOCKED");
+  assert.equal(oi07HarnessEvent.value.data.credentialMaterialReads, 0);
+  assert.equal(oi07HarnessEvent.value.data.testCostAuthorized, false);
+  assert.equal(oi07HarnessEvent.value.data.realNetworkRequests, 0);
+  assert.equal(oi07HarnessEvent.value.data.providerEvidenceCollectionAuthorized, false);
+  assert.equal(oi07HarnessEvent.value.data.ownerIntakeChanged, false);
+  assert.equal(oi07HarnessEvent.value.data.d036ExecutionAuthorized, false);
+  assert.equal(oi07HarnessEvent.value.data.d053EvidenceCollectionStarted, false);
+  assert.equal(oi07HarnessEvent.value.data.d053AdmissionRecords, 0);
+  assert.equal(oi07HarnessEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(oi07HarnessEvent.value.data.b05Closed, false);
+  assert.equal(oi07HarnessEvent.value.data.formalImplementationAuthorized, false);
+  assert.equal(oi07HarnessEvent.value.data.sendAuthorization, "NOT_GRANTED");
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1499,7 +1546,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 308);
+    assert.equal(report.schemaValidation.instancesValidated, 309);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3466,6 +3513,63 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("OI-07 Provider target 本地校验合同事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-014");
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH");
+  });
+
+  await t.test("OI-07 校验合同静默减少 target、字段或测试覆盖", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-014").value.data;
+      data.topLevelTests = 5;
+      data.providerTargetCount = 2;
+      data.perTargetFieldCount = 20;
+      data.unionInputFieldCount = 21;
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH");
+  });
+
+  await t.test("OI-07 校验合同弱化 UNKNOWN、N/A、脱敏或合成 fixture 边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-014").value.data;
+      data.sharedUnknownBlocksBothConsumers = false;
+      data.sourcedNaRequired = false;
+      data.sensitiveLookingMaterialRejectedWithoutEcho = false;
+      data.onlyCountsStatesAndFingerprintsReturned = false;
+      data.providerInputValuesReturned = true;
+      data.syntheticFixtureOnly = false;
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地 OI-07 校验就越级伪造输入、Provider 真相、凭证、费用、联网、证据、Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-014").value.data;
+      data.providerFactsVerified = true;
+      data.sourceUrlsFetched = true;
+      data.oi07RevisionAssigned = true;
+      data.ownerInputReceived = true;
+      data.inputAuthorityVerified = true;
+      data.providerTargetsResolved = true;
+      data.allProviderTargets = "RESOLVED";
+      data.credentialMaterialReads = 1;
+      data.testCostAuthorized = true;
+      data.transportsCreated = 1;
+      data.realNetworkRequests = 1;
+      data.providerEvidenceCollectionAuthorized = true;
+      data.d036ExecutionAuthorized = true;
+      data.d053EvidenceCollectionStarted = true;
+      data.d053AdmissionRecords = 15;
+      data.ownerReviewAuthorized = true;
+      data.b05Closed = true;
+      data.formalImplementationAuthorized = true;
+      data.sendAuthorization = "GRANTED";
+    });
+    assertDiagnostic(report, "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH");
   });
 });
 

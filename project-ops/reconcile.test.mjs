@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 190,
+    events: 191,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -336,6 +336,53 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.oi07.ownerReviewAuthorized, false);
   assert.equal(report.oi07.b05Closed, false);
   assert.equal(report.oi07.formalImplementationAuthorized, false);
+  assert.equal(report.oi07Harness.eventId, "EVT-20260821-014");
+  assert.equal(report.oi07Harness.contractStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(report.oi07Harness.templateEventId, "EVT-20260821-013");
+  assert.equal(
+    report.oi07Harness.artifactCommit,
+    "20f228586617d03449d840897cf223a9d87dfdc8",
+  );
+  assert.equal(report.oi07Harness.inputSchemaVersion, "OI07_PROVIDER_TARGET_INTAKE_INPUT_V1");
+  assert.equal(report.oi07Harness.resultSchemaVersion, "OI07_PROVIDER_TARGET_INTAKE_RESULT_V1");
+  assert.equal(report.oi07Harness.boundarySchemaVersion, "OI07_PROVIDER_TARGET_INTAKE_BOUNDARY_V1");
+  assert.equal(report.oi07Harness.topLevelTests, 11);
+  assert.equal(report.oi07Harness.fullSuitePassed, 930);
+  assert.equal(report.oi07Harness.providerTargetCount, 3);
+  assert.equal(report.oi07Harness.perTargetFieldCount, 29);
+  assert.equal(report.oi07Harness.unionInputFieldCount, 30);
+  assert.deepEqual(report.oi07Harness.dispositions, [
+    "STRUCTURALLY_COMPLETE_INTAKE_ONLY",
+    "PARTIAL_UNKNOWN_BLOCKED",
+  ]);
+  assert.equal(report.oi07Harness.d036AndD053CompletenessEvaluatedSeparately, true);
+  assert.equal(report.oi07Harness.sharedUnknownBlocksBothConsumers, true);
+  assert.equal(report.oi07Harness.sourcedNaRequired, true);
+  assert.equal(report.oi07Harness.concreteTargetIdentityAllowsNa, false);
+  assert.equal(report.oi07Harness.sensitiveLookingMaterialRejectedWithoutEcho, true);
+  assert.equal(report.oi07Harness.onlyCountsStatesAndFingerprintsReturned, true);
+  assert.equal(report.oi07Harness.providerInputValuesReturned, false);
+  assert.equal(report.oi07Harness.syntheticFixtureOnly, true);
+  assert.equal(report.oi07Harness.inputAuthorityCallerAssertedNotVerified, true);
+  assert.equal(report.oi07Harness.providerFactsVerified, false);
+  assert.equal(report.oi07Harness.sourceUrlsFetched, false);
+  assert.equal(report.oi07Harness.oi07RevisionAssigned, false);
+  assert.equal(report.oi07Harness.ownerInputReceived, false);
+  assert.equal(report.oi07Harness.providerTargetsResolved, false);
+  assert.equal(report.oi07Harness.allProviderTargets, "UNKNOWN_BLOCKED");
+  assert.equal(report.oi07Harness.credentialMaterialReads, 0);
+  assert.equal(report.oi07Harness.testCostAuthorized, false);
+  assert.equal(report.oi07Harness.transportsCreated, 0);
+  assert.equal(report.oi07Harness.realNetworkRequests, 0);
+  assert.equal(report.oi07Harness.providerEvidenceCollectionAuthorized, false);
+  assert.equal(report.oi07Harness.ownerIntakeChanged, false);
+  assert.equal(report.oi07Harness.d036ExecutionAuthorized, false);
+  assert.equal(report.oi07Harness.d053EvidenceCollectionStarted, false);
+  assert.equal(report.oi07Harness.d053AdmissionRecords, 0);
+  assert.equal(report.oi07Harness.ownerReviewAuthorized, false);
+  assert.equal(report.oi07Harness.b05Closed, false);
+  assert.equal(report.oi07Harness.formalImplementationAuthorized, false);
+  assert.equal(report.oi07Harness.sendAuthorization, "NOT_GRANTED");
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -772,6 +819,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   assert.ok(
     oi07TemplateReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_OI07_TEMPLATE_GATE",
+    ),
+  );
+
+  const oi07HarnessModel = validModel();
+  oi07HarnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-014",
+  ).value.data.realNetworkRequests = 1;
+  const oi07HarnessReport = reconcileProjectOps(oi07HarnessModel);
+  assert.equal(oi07HarnessReport.ok, false);
+  assert.ok(
+    oi07HarnessReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_OI07_HARNESS_GATE",
     ),
   );
 

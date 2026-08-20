@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY",
+export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 190,
+    events: 191,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY = Obje
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 13,
+    "2026-08-21": 14,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2514,6 +2514,77 @@ export const PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY = Obje
     formalImplementationAuthorized: false,
     px5ImplementationDorSatisfied: false,
   }),
+  oi07Harness: Object.freeze({
+    eventId: "EVT-20260821-014",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "OI07-PROVIDER-TARGET-INTAKE-HARNESS-001",
+    subjectRole: "LocalProviderTargetIntakeContract",
+    correlationId: "oi07-provider-target-intake-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    d039BlockerId: "D039-PX5-B05",
+    d039BlockerState: "OPEN",
+    templateEventId: "EVT-20260821-013",
+    templateArtifactCommit: "46e22ced7be0c5940fe5f5e4860f73817c6b0d52",
+    artifactCommit: "20f228586617d03449d840897cf223a9d87dfdc8",
+    implementationBlobOid: "1f2d6c6d25f063798cce512d615599417fc05b3b",
+    testBlobOid: "1b1cd8a000772953082e9b774c39ae3b9287de97",
+    documentationBlobOid: "238513c84fa978880d924fb564fd730790df3067",
+    inputSchemaVersion: "OI07_PROVIDER_TARGET_INTAKE_INPUT_V1",
+    resultSchemaVersion: "OI07_PROVIDER_TARGET_INTAKE_RESULT_V1",
+    boundarySchemaVersion: "OI07_PROVIDER_TARGET_INTAKE_BOUNDARY_V1",
+    topLevelTests: 11,
+    fullSuitePassed: 930,
+    providerTargetCount: 3,
+    perTargetFieldCount: 29,
+    sharedPerTargetFieldCount: 12,
+    d036OnlyPerTargetFieldCount: 8,
+    d053OnlyPerTargetFieldCount: 9,
+    unionInputFieldCount: 30,
+    dispositions: Object.freeze([
+      "STRUCTURALLY_COMPLETE_INTAKE_ONLY",
+      "PARTIAL_UNKNOWN_BLOCKED",
+    ]),
+    d036AndD053CompletenessEvaluatedSeparately: true,
+    sharedUnknownBlocksBothConsumers: true,
+    sourcedNaRequired: true,
+    concreteTargetIdentityAllowsNa: false,
+    httpsOriginAndSourceSyntaxRequired: true,
+    sensitiveLookingMaterialRejectedWithoutEcho: true,
+    specialObjectAndResourceAbuseRejected: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    onlyCountsStatesAndFingerprintsReturned: true,
+    providerInputValuesReturned: false,
+    syntheticFixtureOnly: true,
+    inputAuthorityCallerAssertedNotVerified: true,
+    providerFactsVerified: false,
+    sourceUrlsFetched: false,
+    oi07RevisionAssigned: false,
+    ownerInputReceived: false,
+    inputAuthorityVerified: false,
+    providerTargetsResolved: false,
+    allProviderTargets: "UNKNOWN_BLOCKED",
+    credentialMaterialReads: 0,
+    credentialMaterialStored: false,
+    testCostAuthorized: false,
+    transportsCreated: 0,
+    realNetworkRequests: 0,
+    providerEvidenceCollectionAuthorized: false,
+    ownerIntakeChanged: false,
+    externalMessageSent: false,
+    d036ExecutionAuthorized: false,
+    d053EvidenceCollectionStarted: false,
+    d053AdmissionRecords: 0,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    b05Closed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    sendAuthorization: "NOT_GRANTED",
+    gateStatesChanged: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -3935,7 +4006,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_TEMPLATE_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_OI07_PROVIDER_TARGET_INTAKE_HARNESS_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7812,6 +7883,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_OI07_PROVIDER_TARGET_TEMPLATE_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "OI-07 模板必须让 D-036/D-053 共用同一 revision，精确保留 3 个 Provider target、每 target 29 字段和 30 个联合字段，同时保持 Owner 输入、Provider 解析、凭证、费用、联网、证据采集、Owner、B05 与实现门禁关闭",
+    );
+  }
+
+  const oi07HarnessSpec = baseline.oi07Harness;
+  const oi07HarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === oi07HarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === oi07HarnessSpec.correlationId),
+  );
+  const oi07HarnessEvent = oi07HarnessEvents[0]?.value;
+  const oi07HarnessData = oi07HarnessEvent?.data ?? {};
+  const oi07HarnessFields = Object.keys(oi07HarnessSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    oi07HarnessEvents.length !== 1 ||
+    oi07HarnessEvent?.eventId !== oi07HarnessSpec.eventId ||
+    oi07HarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    oi07HarnessEvent?.actor?.id !== oi07HarnessSpec.actorId ||
+    oi07HarnessEvent?.actor?.role !== oi07HarnessSpec.actorRole ||
+    oi07HarnessEvent?.subject?.id !== oi07HarnessSpec.subjectId ||
+    oi07HarnessEvent?.subject?.role !== oi07HarnessSpec.subjectRole ||
+    oi07HarnessEvent?.correlationId !== oi07HarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(oi07HarnessData).sort()) !==
+      JSON.stringify(oi07HarnessFields) ||
+    oi07HarnessFields.some(
+      (field) => JSON.stringify(oi07HarnessData[field]) !==
+        JSON.stringify(oi07HarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_OI07_PROVIDER_TARGET_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "OI-07 本地校验合同必须执行 3 target/29 字段/30 联合字段、UNKNOWN/N/A/HTTPS/敏感材料与不可变结果边界，只输出计数/状态/指纹，同时保持真实输入、Provider 真相、凭证、费用、联网、证据、Owner、B05 与实现门禁关闭",
     );
   }
 

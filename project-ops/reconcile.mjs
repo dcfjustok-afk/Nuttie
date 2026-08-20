@@ -156,6 +156,16 @@ function latestOi07ProviderTargetTemplateRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestOi07ProviderTargetHarnessRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "OI07-PROVIDER-TARGET-INTAKE-HARNESS-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1213,6 +1223,117 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OI07_TEMPLATE_GATE", "OI-07", "OI-07 未保持 D-036/D-053 共用 revision、3 target/29 字段/30 联合字段、UNKNOWN 阻断和输入/凭证/费用/联网/证据/Owner/B05/实现全关闭边界", oi07);
   }
 
+  const oi07HarnessRecord = latestOi07ProviderTargetHarnessRecord(model);
+  const oi07Harness = {
+    eventId: oi07HarnessRecord?.eventId ?? null,
+    state: oi07HarnessRecord?.data?.state ?? null,
+    contractStatus: oi07HarnessRecord?.data?.contractStatus ?? null,
+    templateEventId: oi07HarnessRecord?.data?.templateEventId ?? null,
+    artifactCommit: oi07HarnessRecord?.data?.artifactCommit ?? null,
+    inputSchemaVersion: oi07HarnessRecord?.data?.inputSchemaVersion ?? null,
+    resultSchemaVersion: oi07HarnessRecord?.data?.resultSchemaVersion ?? null,
+    boundarySchemaVersion: oi07HarnessRecord?.data?.boundarySchemaVersion ?? null,
+    topLevelTests: oi07HarnessRecord?.data?.topLevelTests ?? null,
+    fullSuitePassed: oi07HarnessRecord?.data?.fullSuitePassed ?? null,
+    providerTargetCount: oi07HarnessRecord?.data?.providerTargetCount ?? null,
+    perTargetFieldCount: oi07HarnessRecord?.data?.perTargetFieldCount ?? null,
+    sharedPerTargetFieldCount: oi07HarnessRecord?.data?.sharedPerTargetFieldCount ?? null,
+    d036OnlyPerTargetFieldCount: oi07HarnessRecord?.data?.d036OnlyPerTargetFieldCount ?? null,
+    d053OnlyPerTargetFieldCount: oi07HarnessRecord?.data?.d053OnlyPerTargetFieldCount ?? null,
+    unionInputFieldCount: oi07HarnessRecord?.data?.unionInputFieldCount ?? null,
+    dispositions: oi07HarnessRecord?.data?.dispositions ?? null,
+    d036AndD053CompletenessEvaluatedSeparately:
+      oi07HarnessRecord?.data?.d036AndD053CompletenessEvaluatedSeparately ?? null,
+    sharedUnknownBlocksBothConsumers:
+      oi07HarnessRecord?.data?.sharedUnknownBlocksBothConsumers ?? null,
+    sourcedNaRequired: oi07HarnessRecord?.data?.sourcedNaRequired ?? null,
+    concreteTargetIdentityAllowsNa:
+      oi07HarnessRecord?.data?.concreteTargetIdentityAllowsNa ?? null,
+    sensitiveLookingMaterialRejectedWithoutEcho:
+      oi07HarnessRecord?.data?.sensitiveLookingMaterialRejectedWithoutEcho ?? null,
+    onlyCountsStatesAndFingerprintsReturned:
+      oi07HarnessRecord?.data?.onlyCountsStatesAndFingerprintsReturned ?? null,
+    providerInputValuesReturned:
+      oi07HarnessRecord?.data?.providerInputValuesReturned ?? null,
+    syntheticFixtureOnly: oi07HarnessRecord?.data?.syntheticFixtureOnly ?? null,
+    inputAuthorityCallerAssertedNotVerified:
+      oi07HarnessRecord?.data?.inputAuthorityCallerAssertedNotVerified ?? null,
+    providerFactsVerified: oi07HarnessRecord?.data?.providerFactsVerified ?? null,
+    sourceUrlsFetched: oi07HarnessRecord?.data?.sourceUrlsFetched ?? null,
+    oi07RevisionAssigned: oi07HarnessRecord?.data?.oi07RevisionAssigned ?? null,
+    ownerInputReceived: oi07HarnessRecord?.data?.ownerInputReceived ?? null,
+    providerTargetsResolved: oi07HarnessRecord?.data?.providerTargetsResolved ?? null,
+    allProviderTargets: oi07HarnessRecord?.data?.allProviderTargets ?? null,
+    credentialMaterialReads: oi07HarnessRecord?.data?.credentialMaterialReads ?? null,
+    testCostAuthorized: oi07HarnessRecord?.data?.testCostAuthorized ?? null,
+    transportsCreated: oi07HarnessRecord?.data?.transportsCreated ?? null,
+    realNetworkRequests: oi07HarnessRecord?.data?.realNetworkRequests ?? null,
+    providerEvidenceCollectionAuthorized:
+      oi07HarnessRecord?.data?.providerEvidenceCollectionAuthorized ?? null,
+    ownerIntakeChanged: oi07HarnessRecord?.data?.ownerIntakeChanged ?? null,
+    d036ExecutionAuthorized: oi07HarnessRecord?.data?.d036ExecutionAuthorized ?? null,
+    d053EvidenceCollectionStarted:
+      oi07HarnessRecord?.data?.d053EvidenceCollectionStarted ?? null,
+    d053AdmissionRecords: oi07HarnessRecord?.data?.d053AdmissionRecords ?? null,
+    ownerReviewAuthorized: oi07HarnessRecord?.data?.ownerReviewAuthorized ?? null,
+    b05Closed: oi07HarnessRecord?.data?.b05Closed ?? null,
+    formalImplementationAuthorized:
+      oi07HarnessRecord?.data?.formalImplementationAuthorized ?? null,
+    sendAuthorization: oi07HarnessRecord?.data?.sendAuthorization ?? null,
+  };
+  if (!(
+    oi07Harness.eventId === "EVT-20260821-014" &&
+    oi07Harness.state === "completed" &&
+    oi07Harness.contractStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    oi07Harness.templateEventId === "EVT-20260821-013" &&
+    oi07Harness.artifactCommit === "20f228586617d03449d840897cf223a9d87dfdc8" &&
+    oi07Harness.inputSchemaVersion === "OI07_PROVIDER_TARGET_INTAKE_INPUT_V1" &&
+    oi07Harness.resultSchemaVersion === "OI07_PROVIDER_TARGET_INTAKE_RESULT_V1" &&
+    oi07Harness.boundarySchemaVersion === "OI07_PROVIDER_TARGET_INTAKE_BOUNDARY_V1" &&
+    oi07Harness.topLevelTests === 11 &&
+    oi07Harness.fullSuitePassed === 930 &&
+    oi07Harness.providerTargetCount === 3 &&
+    oi07Harness.perTargetFieldCount === 29 &&
+    oi07Harness.sharedPerTargetFieldCount === 12 &&
+    oi07Harness.d036OnlyPerTargetFieldCount === 8 &&
+    oi07Harness.d053OnlyPerTargetFieldCount === 9 &&
+    oi07Harness.unionInputFieldCount === 30 &&
+    JSON.stringify(oi07Harness.dispositions) === JSON.stringify([
+      "STRUCTURALLY_COMPLETE_INTAKE_ONLY",
+      "PARTIAL_UNKNOWN_BLOCKED",
+    ]) &&
+    oi07Harness.d036AndD053CompletenessEvaluatedSeparately === true &&
+    oi07Harness.sharedUnknownBlocksBothConsumers === true &&
+    oi07Harness.sourcedNaRequired === true &&
+    oi07Harness.concreteTargetIdentityAllowsNa === false &&
+    oi07Harness.sensitiveLookingMaterialRejectedWithoutEcho === true &&
+    oi07Harness.onlyCountsStatesAndFingerprintsReturned === true &&
+    oi07Harness.providerInputValuesReturned === false &&
+    oi07Harness.syntheticFixtureOnly === true &&
+    oi07Harness.inputAuthorityCallerAssertedNotVerified === true &&
+    oi07Harness.providerFactsVerified === false &&
+    oi07Harness.sourceUrlsFetched === false &&
+    oi07Harness.oi07RevisionAssigned === false &&
+    oi07Harness.ownerInputReceived === false &&
+    oi07Harness.providerTargetsResolved === false &&
+    oi07Harness.allProviderTargets === "UNKNOWN_BLOCKED" &&
+    oi07Harness.credentialMaterialReads === 0 &&
+    oi07Harness.testCostAuthorized === false &&
+    oi07Harness.transportsCreated === 0 &&
+    oi07Harness.realNetworkRequests === 0 &&
+    oi07Harness.providerEvidenceCollectionAuthorized === false &&
+    oi07Harness.ownerIntakeChanged === false &&
+    oi07Harness.d036ExecutionAuthorized === false &&
+    oi07Harness.d053EvidenceCollectionStarted === false &&
+    oi07Harness.d053AdmissionRecords === 0 &&
+    oi07Harness.ownerReviewAuthorized === false &&
+    oi07Harness.b05Closed === false &&
+    oi07Harness.formalImplementationAuthorized === false &&
+    oi07Harness.sendAuthorization === "NOT_GRANTED"
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_OI07_HARNESS_GATE", "OI-07", "OI-07 本地校验未保持 11 测试/3 target/29 字段/30 联合字段、UNKNOWN/N/A/脱敏/合成 fixture 边界及输入/Provider/凭证/费用/联网/证据/Owner/B05/发送/实现全关闭状态", oi07Harness);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -1935,6 +2056,7 @@ export function reconcileProjectOps(model) {
     d036,
     d053,
     oi07,
+    oi07Harness,
     d040,
     diagnostics,
   };
