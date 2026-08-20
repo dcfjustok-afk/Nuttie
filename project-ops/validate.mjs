@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D053_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_20_D053_CARD_SPEC",
+export const PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 171,
+    events: 172,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D053_CARD_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 2,
+    "2026-08-20": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2361,6 +2361,83 @@ export const PHASE0_2026_08_20_D053_CARD_SPEC = Object.freeze({
       decisionAcceptedRecorded: false,
       formalImplementationAuthorized: false,
     }),
+    energyBatchCards: Object.freeze({
+      eventId: "EVT-20260820-003",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-ENERGY-MODEL-BATCH-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-energy-model-batch-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "FIRST_BATCH_SPEC_COMPLETE",
+      next: "FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED",
+      cardDecisionIds: Object.freeze(["D-057", "D-059", "D-060", "D-061", "D-062"]),
+      cardQuestionIds: Object.freeze([
+        "d057_base_energy_path",
+        "d059_activity_input_representation",
+        "d060_missing_activity_behavior",
+        "d061_mifflin_ree_use",
+        "d062_weight_change_goal_path",
+      ]),
+      cardCount: 5,
+      draftedCardCount: 9,
+      optionsPerCard: Object.freeze({ "D-057": 3, "D-059": 3, "D-060": 2, "D-061": 2, "D-062": 2 }),
+      stableOptionIds: Object.freeze({
+        "D-057": Object.freeze(["nasem_2023_maintenance_eer", "mifflin_ree_only", "manual_or_no_goal"]),
+        "D-059": Object.freeze([
+          "nasem_four_category_self_report",
+          "model_native_numeric_pal",
+          "no_activity_disable_automatic_daily_energy",
+        ]),
+        "D-060": Object.freeze(["no_automatic_result_or_target", "mifflin_ree_information_only"]),
+        "D-061": Object.freeze(["show_ree_information_only", "do_not_calculate_or_display_mifflin"]),
+        "D-062": Object.freeze([
+          "maintenance_only_manual_or_no_goal_for_change",
+          "validated_dynamic_change_model",
+        ]),
+      }),
+      recommendedOptionIds: Object.freeze({
+        "D-057": "nasem_2023_maintenance_eer",
+        "D-059": "nasem_four_category_self_report",
+        "D-060": "no_automatic_result_or_target",
+        "D-061": "show_ree_information_only",
+        "D-062": "maintenance_only_manual_or_no_goal_for_change",
+      }),
+      allOptionsMutuallyExclusive: true,
+      allCardsHostNativeOnly: true,
+      otherRequiresNormalization: true,
+      conditionalNotApplicableDefined: true,
+      modelOutputNamesPreserved: true,
+      nasemMaintenanceOnly: true,
+      mifflinReeOnly: true,
+      reeToDailyTargetStrategyAuthorized: false,
+      silentDefaultPalAllowed: false,
+      healthKitOrStepsPalInferenceAllowed: false,
+      dynamicModelEvidenceRequired: true,
+      dynamicModelEvidencePassed: false,
+      dynamicModelOptionCurrentlyOwnerReady: false,
+      niddkDefaultsAdopted: false,
+      manualAndNoGoalFallbackPreserved: true,
+      zeroWriteFailureBoundary: true,
+      firstBatchIndependentReviewPassed: false,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      reservedIdsOnly: true,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -2660,7 +2737,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D053_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5614,6 +5691,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-040 第一批四张选择卡必须精确保留稳定 ID、互斥选项、失败关闭依赖、自审结果和 Owner 未授权边界",
+    );
+  }
+
+  const energyBatchSpec = baseline.d040Research.energyBatchCards;
+  const energyBatchEvents = model.events.filter(
+    (record) => record.value?.eventId === energyBatchSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === energyBatchSpec.correlationId),
+  );
+  const energyBatchEvent = energyBatchEvents[0]?.value;
+  const energyBatchData = energyBatchEvent?.data ?? {};
+  const energyBatchDataFields = Object.keys(energyBatchSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    energyBatchEvents.length !== 1 ||
+    energyBatchEvent?.eventId !== energyBatchSpec.eventId ||
+    energyBatchEvent?.type !== "ARTIFACT_CREATED" ||
+    energyBatchEvent?.actor?.id !== energyBatchSpec.actorId ||
+    energyBatchEvent?.actor?.role !== energyBatchSpec.actorRole ||
+    energyBatchEvent?.subject?.id !== energyBatchSpec.subjectId ||
+    energyBatchEvent?.subject?.role !== energyBatchSpec.subjectRole ||
+    energyBatchEvent?.correlationId !== energyBatchSpec.correlationId ||
+    JSON.stringify(Object.keys(energyBatchData).sort()) !== JSON.stringify(energyBatchDataFields) ||
+    energyBatchDataFields.some(
+      (field) => JSON.stringify(energyBatchData[field]) !== JSON.stringify(energyBatchSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 第二批五张能量模型卡必须精确保留 EER/REE 名称、活动输入与缺失、动态模型证据门禁、零写入、自审和 Owner/实现未授权边界",
     );
   }
 

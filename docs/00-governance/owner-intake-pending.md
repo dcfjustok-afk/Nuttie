@@ -39,4 +39,4 @@ Owner 后续于 2026-08-15 查看冻结 D-039 原型后明确回复 `a`，单独
 
 ## 3. 后续门禁
 
-OI-01 至 OI-03 和首批 12 项输入已完成整批确认，D-039 后续已单独接受 A。计划中的下一张宿主原生 `request_user_input` 仍以 `d040_onboarding_goals` 作为队列占位，但 D-040 的 20 个独立决定轴必须先完成选择卡规格与 PX-0/PX-1/PX-2 前置评审；第一批 D-054/D-055/D-056/D-058 内部卡片已完成四域自审，当前为 `FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED`，尚未排入 Owner 评审。D-032 已允许隔离 JS Spike，但 OI-02 与 D-039 均不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。
+OI-01 至 OI-03 和首批 12 项输入已完成整批确认，D-039 后续已单独接受 A。计划中的下一张宿主原生 `request_user_input` 仍以 `d040_onboarding_goals` 作为队列占位，但 D-040 的 20 个独立决定轴必须先完成选择卡规格与 PX-0/PX-1/PX-2 前置评审；前两批九张内部卡片已完成四域自审，当前为 `FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED`，动态模型证据未完成，尚未排入 Owner 评审。D-032 已允许隔离 JS Spike，但 OI-02 与 D-039 均不构成 Bundle ID 注册、Prebuild、签名或原生 iOS 工作授权。

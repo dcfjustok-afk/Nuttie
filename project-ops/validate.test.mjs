@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D053_CARD_SPEC,
+  PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D053_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 290,
+    instancesValidated: 291,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 171);
+  assert.equal(report.counts.events, 172);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -816,6 +816,31 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040FirstBatchEvent.value.data.conditionalNotApplicableDefined, true);
   assert.equal(d040FirstBatchEvent.value.data.ownerCardScheduled, false);
   assert.equal(d040FirstBatchEvent.value.data.ownerReviewAuthorized, false);
+  const d040EnergyBatchEvent = findEvent(VALID_MODEL, "EVT-20260820-003");
+  assert.equal(d040EnergyBatchEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040EnergyBatchEvent.value.subject.id, "D040-ENERGY-MODEL-BATCH-CARD-SPEC-001");
+  assert.equal(d040EnergyBatchEvent.value.data.next, "FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d040EnergyBatchEvent.value.data.cardDecisionIds, ["D-057", "D-059", "D-060", "D-061", "D-062"]);
+  assert.equal(d040EnergyBatchEvent.value.data.cardCount, 5);
+  assert.equal(d040EnergyBatchEvent.value.data.draftedCardCount, 9);
+  assert.deepEqual(d040EnergyBatchEvent.value.data.stableOptionIds["D-057"], [
+    "nasem_2023_maintenance_eer",
+    "mifflin_ree_only",
+    "manual_or_no_goal",
+  ]);
+  assert.deepEqual(d040EnergyBatchEvent.value.data.stableOptionIds["D-062"], [
+    "maintenance_only_manual_or_no_goal_for_change",
+    "validated_dynamic_change_model",
+  ]);
+  assert.equal(d040EnergyBatchEvent.value.data.modelOutputNamesPreserved, true);
+  assert.equal(d040EnergyBatchEvent.value.data.reeToDailyTargetStrategyAuthorized, false);
+  assert.equal(d040EnergyBatchEvent.value.data.silentDefaultPalAllowed, false);
+  assert.equal(d040EnergyBatchEvent.value.data.dynamicModelEvidencePassed, false);
+  assert.equal(d040EnergyBatchEvent.value.data.dynamicModelOptionCurrentlyOwnerReady, false);
+  assert.equal(d040EnergyBatchEvent.value.data.firstBatchIndependentReviewPassed, false);
+  assert.equal(d040EnergyBatchEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d040EnergyBatchEvent.value.data.formulaImplementationAuthorized, false);
+  assert.equal(d040EnergyBatchEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -861,7 +886,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 289);
+    assert.equal(report.schemaValidation.instancesValidated, 290);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2833,6 +2858,38 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       findEvent(model, "EVT-20260815-004").value.data.ownerReviewAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_FIRST_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第二批能量模型卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-003",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第二批把 Mifflin REE 越级为每日目标", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-003").value.data.reeToDailyTargetStrategyAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第二批静默采用默认 PAL", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-003").value.data.silentDefaultPalAllowed = true;
+    });
+    assertDiagnostic(report, "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第二批未补动态模型证据就进入 Owner 评审", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-003").value;
+      event.data.dynamicModelOptionCurrentlyOwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH");
   });
 
 });
