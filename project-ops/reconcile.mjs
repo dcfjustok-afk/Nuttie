@@ -125,6 +125,7 @@ function latestD040Record(model) {
         subjectId === "D040-MACRO-DISPLAY-ROUNDING-CARD-SPEC-001" ||
         subjectId === "D040-HARD-STOP-RECORD-AVAILABILITY-CARD-SPEC-001" ||
         subjectId === "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001" ||
+        subjectId === "D040-MACRO-AXIS-INPUT-MANIFEST-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -726,6 +727,9 @@ export function reconcileProjectOps(model) {
   const d040MacroAxisReviewPacketRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260821-006",
   )?.value ?? null;
+  const d040MacroAxisInputManifestFreezeRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260821-007",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -987,6 +991,23 @@ export function reconcileProjectOps(model) {
     macroAxisReviewRecordingImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.recordingImplementationAuthorized ?? null,
     macroAxisReviewPersistenceImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.persistenceImplementationAuthorized ?? null,
     macroAxisReviewFormalImplementationAuthorized: d040MacroAxisReviewPacketRecord?.data?.formalImplementationAuthorized ?? null,
+    macroAxisInputManifestFrozen: d040MacroAxisInputManifestFreezeRecord?.data?.inputManifestFrozen ?? null,
+    macroAxisInputManifestEntryCount: d040MacroAxisInputManifestFreezeRecord?.data?.manifestEntryCount ?? null,
+    macroAxisInputManifestCommit: d040MacroAxisInputManifestFreezeRecord?.data?.manifestCommit ?? null,
+    macroAxisInputManifestRecordCommit: d040MacroAxisInputManifestFreezeRecord?.data?.manifestRecordCommit ?? null,
+    macroAxisInputManifestGitBlobOidAlgorithm: d040MacroAxisInputManifestFreezeRecord?.data?.gitBlobOidAlgorithm ?? null,
+    macroAxisInputManifestCanonicalDigestAlgorithm: d040MacroAxisInputManifestFreezeRecord?.data?.canonicalDigestAlgorithm ?? null,
+    macroAxisInputManifestUsesRawGitBlobBytes: d040MacroAxisInputManifestFreezeRecord?.data?.rawGitBlobBytesUsed ?? null,
+    macroAxisInputManifestFrozenArtifactCount: d040MacroAxisInputManifestFreezeRecord?.data?.frozenArtifactRefs?.length ?? null,
+    macroAxisInputManifestSourcePacketEventId: d040MacroAxisInputManifestFreezeRecord?.data?.sourcePacketCreationEventId ?? null,
+    macroAxisInputManifestPacketNext: d040MacroAxisInputManifestFreezeRecord?.data?.packetNext ?? null,
+    macroAxisInputManifestReviewersAssigned: d040MacroAxisInputManifestFreezeRecord?.data?.reviewersAssigned ?? null,
+    macroAxisInputManifestReviewStarted: d040MacroAxisInputManifestFreezeRecord?.data?.independentReviewStarted ?? null,
+    macroAxisInputManifestReviewPassed: d040MacroAxisInputManifestFreezeRecord?.data?.independentReviewPassed ?? null,
+    macroAxisInputManifestHealthContentApproved: d040MacroAxisInputManifestFreezeRecord?.data?.healthContentApproved ?? null,
+    macroAxisInputManifestContentQaPassed: d040MacroAxisInputManifestFreezeRecord?.data?.contentQaPassed ?? null,
+    macroAxisInputManifestOwnerReviewAuthorized: d040MacroAxisInputManifestFreezeRecord?.data?.ownerReviewAuthorized ?? null,
+    macroAxisInputManifestFormalImplementationAuthorized: d040MacroAxisInputManifestFreezeRecord?.data?.formalImplementationAuthorized ?? null,
     healthReviewPacketReady: d040ChinaHealthReviewerPacketRecord?.data?.reviewPacketReady ?? null,
     healthReviewRequiredArtifactCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredArtifactCount ?? null,
     healthReviewRequiredItemCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredReviewItemCount ?? null,
@@ -1053,7 +1074,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260821-006" &&
+    d040.eventId === "EVT-20260821-007" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -1291,6 +1312,23 @@ export function reconcileProjectOps(model) {
     d040.macroAxisReviewRecordingImplementationAuthorized === false &&
     d040.macroAxisReviewPersistenceImplementationAuthorized === false &&
     d040.macroAxisReviewFormalImplementationAuthorized === false &&
+    d040.macroAxisInputManifestFrozen === true &&
+    d040.macroAxisInputManifestEntryCount === 10 &&
+    d040.macroAxisInputManifestCommit === "47ba4895dac2535682e8d1a8cb985176d6ad45f7" &&
+    d040.macroAxisInputManifestRecordCommit === "d8e812f1324590d735f809ea994e8aaa2f6805d8" &&
+    d040.macroAxisInputManifestGitBlobOidAlgorithm === "SHA-1" &&
+    d040.macroAxisInputManifestCanonicalDigestAlgorithm === "SHA-256" &&
+    d040.macroAxisInputManifestUsesRawGitBlobBytes === true &&
+    d040.macroAxisInputManifestFrozenArtifactCount === 10 &&
+    d040.macroAxisInputManifestSourcePacketEventId === "EVT-20260821-006" &&
+    d040.macroAxisInputManifestPacketNext === "MACRO_AXIS_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d040.macroAxisInputManifestReviewersAssigned === false &&
+    d040.macroAxisInputManifestReviewStarted === false &&
+    d040.macroAxisInputManifestReviewPassed === false &&
+    d040.macroAxisInputManifestHealthContentApproved === false &&
+    d040.macroAxisInputManifestContentQaPassed === false &&
+    d040.macroAxisInputManifestOwnerReviewAuthorized === false &&
+    d040.macroAxisInputManifestFormalImplementationAuthorized === false &&
     d040.healthReviewPacketReady === true &&
     d040.healthReviewRequiredArtifactCount === 9 &&
     d040.healthReviewRequiredItemCount === 13 &&
@@ -1346,7 +1384,7 @@ export function reconcileProjectOps(model) {
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063/D-070/D-071/D-072 四张宏量轴卡及四卡独立复核包、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063/D-070/D-071/D-072 四张宏量轴卡、四卡独立复核包及其 10 项输入冻结、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和授权位关闭状态", d040);
   }
 
   return {

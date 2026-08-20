@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 183,
+    events: 184,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,7 +152,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-006");
+  assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -386,6 +386,32 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.macroAxisReviewRecordingImplementationAuthorized, false);
   assert.equal(report.d040.macroAxisReviewPersistenceImplementationAuthorized, false);
   assert.equal(report.d040.macroAxisReviewFormalImplementationAuthorized, false);
+  assert.equal(report.d040.macroAxisInputManifestFrozen, true);
+  assert.equal(report.d040.macroAxisInputManifestEntryCount, 10);
+  assert.equal(
+    report.d040.macroAxisInputManifestCommit,
+    "47ba4895dac2535682e8d1a8cb985176d6ad45f7",
+  );
+  assert.equal(
+    report.d040.macroAxisInputManifestRecordCommit,
+    "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+  );
+  assert.equal(report.d040.macroAxisInputManifestGitBlobOidAlgorithm, "SHA-1");
+  assert.equal(report.d040.macroAxisInputManifestCanonicalDigestAlgorithm, "SHA-256");
+  assert.equal(report.d040.macroAxisInputManifestUsesRawGitBlobBytes, true);
+  assert.equal(report.d040.macroAxisInputManifestFrozenArtifactCount, 10);
+  assert.equal(report.d040.macroAxisInputManifestSourcePacketEventId, "EVT-20260821-006");
+  assert.equal(
+    report.d040.macroAxisInputManifestPacketNext,
+    "MACRO_AXIS_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+  );
+  assert.equal(report.d040.macroAxisInputManifestReviewersAssigned, false);
+  assert.equal(report.d040.macroAxisInputManifestReviewStarted, false);
+  assert.equal(report.d040.macroAxisInputManifestReviewPassed, false);
+  assert.equal(report.d040.macroAxisInputManifestHealthContentApproved, false);
+  assert.equal(report.d040.macroAxisInputManifestContentQaPassed, false);
+  assert.equal(report.d040.macroAxisInputManifestOwnerReviewAuthorized, false);
+  assert.equal(report.d040.macroAxisInputManifestFormalImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -575,6 +601,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const macroAxisReviewPacketReport = reconcileProjectOps(macroAxisReviewPacketModel);
   assert.equal(macroAxisReviewPacketReport.ok, false);
   assert.ok(macroAxisReviewPacketReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const macroAxisInputManifestFreezeModel = validModel();
+  macroAxisInputManifestFreezeModel.events.find((record) => record.value.eventId === "EVT-20260821-007").value.data.inputManifestFrozen = false;
+  const macroAxisInputManifestFreezeReport = reconcileProjectOps(macroAxisInputManifestFreezeModel);
+  assert.equal(macroAxisInputManifestFreezeReport.ok, false);
+  assert.ok(macroAxisInputManifestFreezeReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

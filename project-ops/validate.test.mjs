@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET,
+  PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 302,
+    instancesValidated: 303,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 183);
+  assert.equal(report.counts.events, 184);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1213,6 +1213,36 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(macroAxisReviewPacketEvent.value.data.recordingImplementationAuthorized, false);
   assert.equal(macroAxisReviewPacketEvent.value.data.persistenceImplementationAuthorized, false);
   assert.equal(macroAxisReviewPacketEvent.value.data.formalImplementationAuthorized, false);
+  const macroAxisInputManifestFreezeEvent = findEvent(VALID_MODEL, "EVT-20260821-007");
+  assert.equal(macroAxisInputManifestFreezeEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    macroAxisInputManifestFreezeEvent.value.subject.id,
+    "D040-MACRO-AXIS-INPUT-MANIFEST-001",
+  );
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.inputManifestFrozen, true);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.manifestEntryCount, 10);
+  assert.equal(
+    macroAxisInputManifestFreezeEvent.value.data.manifestCommit,
+    "47ba4895dac2535682e8d1a8cb985176d6ad45f7",
+  );
+  assert.equal(
+    macroAxisInputManifestFreezeEvent.value.data.manifestRecordCommit,
+    "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+  );
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.gitBlobOidAlgorithm, "SHA-1");
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.canonicalDigestAlgorithm, "SHA-256");
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.rawGitBlobBytesUsed, true);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.frozenArtifactRefs.length, 10);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.sourcePacketCreationEventId, "EVT-20260821-006");
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.externalMessageSent, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.reviewersAssigned, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.independentReviewStarted, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.independentReviewPassed, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.healthContentApproved, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.contentQaPassed, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(macroAxisInputManifestFreezeEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -1258,7 +1288,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 301);
+    assert.equal(report.schemaValidation.instancesValidated, 302);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3781,6 +3811,64 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("四张宏量轴卡复核输入冻结事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260821-007",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("宏量轴输入冻结提交、算法、数量或引用漂移", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-007").value;
+      event.data.manifestCommit = "0000000000000000000000000000000000000000";
+      event.data.gitBlobOidAlgorithm = "UNKNOWN";
+      event.data.canonicalDigestAlgorithm = "MD5";
+      event.data.manifestEntryCount = 9;
+      event.data.frozenArtifactRefs.pop();
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("宏量轴输入冻结被回退或不再使用原始 Git blob 字节", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-007").value;
+      event.data.inputManifestFrozen = false;
+      event.data.rawGitBlobBytesUsed = false;
+      event.data.packetNext = "MACRO_AXIS_INPUT_FREEZE_REQUIRED";
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_INPUT_MANIFEST_FREEZE_MISMATCH");
+  });
+
+  await t.test("冻结宏量轴输入就越级开放复核、健康、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-007").value;
+      event.data.reviewersAssigned = true;
+      event.data.reviewerIdentityVerified = true;
+      event.data.reviewerIndependenceVerified = true;
+      event.data.conflictOfInterestResolved = true;
+      event.data.independentReviewStarted = true;
+      event.data.independentReviewPassed = true;
+      event.data.healthReviewStillRequired = false;
+      event.data.healthReviewerAssigned = true;
+      event.data.healthContentApproved = true;
+      event.data.contentQaPassed = true;
+      event.data.d063Accepted = true;
+      event.data.d070Accepted = true;
+      event.data.d063OwnerReady = true;
+      event.data.d070OwnerReady = true;
+      event.data.d071OwnerReady = true;
+      event.data.d072OwnerReady = true;
+      event.data.ownerIntakeChanged = true;
+      event.data.ownerCardScheduled = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_MACRO_AXIS_INPUT_MANIFEST_FREEZE_MISMATCH");
   });
 
 });

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET = Object.freeze({
-  id: "PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET",
+export const PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN = Object.freeze({
+  id: "PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 183,
+    events: 184,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 6,
+    "2026-08-21": 7,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3158,6 +3158,71 @@ export const PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    macroAxisInputManifestFreeze: Object.freeze({
+      eventId: "EVT-20260821-007",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-MACRO-AXIS-INPUT-MANIFEST-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-macro-axis-independent-review-input-freeze",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "MACRO_AXIS_INPUT_FREEZE_REQUIRED",
+      to: "MACRO_AXIS_INPUT_MANIFEST_FROZEN",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      packetNext: "MACRO_AXIS_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      reviewPacketReady: true,
+      reviewPacketVersion: "PACKET-001-R1",
+      inputManifestFrozen: true,
+      manifestEntryCount: 10,
+      manifestCommit: "47ba4895dac2535682e8d1a8cb985176d6ad45f7",
+      manifestRecordCommit: "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+      gitBlobOidAlgorithm: "SHA-1",
+      canonicalDigestAlgorithm: "SHA-256",
+      rawGitBlobBytesUsed: true,
+      frozenArtifactRefs: Object.freeze([
+        "docs/03-design/d040-question-allocation.md",
+        "docs/03-design/d040-macronutrient-evidence.md",
+        "docs/03-design/d040-china-macronutrient-standard-input.md",
+        "docs/03-design/d040-macro-target-source-card-spec.md",
+        "docs/03-design/d040-custom-macro-input-shape-card-spec.md",
+        "docs/03-design/d040-macro-display-rounding-card-spec.md",
+        "docs/03-design/d040-hard-stop-record-availability-card-spec.md",
+        "docs/03-design/d040-data-lifecycle-batch-card-spec.md",
+        "docs/03-design/d040-china-support-health-review-input.md",
+        "docs/03-design/d040-china-health-reviewer-intake-packet.md",
+      ]),
+      sourcePacketCreationEventId: "EVT-20260821-006",
+      externalMessageSent: false,
+      reviewersAssigned: false,
+      reviewerIdentityVerified: false,
+      reviewerIndependenceVerified: false,
+      conflictOfInterestResolved: false,
+      independentReviewStarted: false,
+      independentReviewPassed: false,
+      healthReviewStillRequired: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      d063Accepted: false,
+      d070Accepted: false,
+      d063OwnerReady: false,
+      d070OwnerReady: false,
+      d071OwnerReady: false,
+      d072OwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      goalImplementationAuthorized: false,
+      recordingImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3457,7 +3522,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_MACRO_AXIS_REVIEW_PACKET) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6783,6 +6848,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_MACRO_AXIS_REVIEW_PACKET_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-040 四张宏量轴卡复核包必须精确保留 10 份输入、4 张卡、4 个复核域、14 条跨轴不变量、独立性要求，以及健康/Owner/实现均未授权状态",
+    );
+  }
+
+  const macroAxisInputManifestFreezeSpec = baseline.d040Research.macroAxisInputManifestFreeze;
+  const macroAxisInputManifestFreezeEvents = model.events.filter(
+    (record) => record.value?.eventId === macroAxisInputManifestFreezeSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === macroAxisInputManifestFreezeSpec.correlationId),
+  );
+  const macroAxisInputManifestFreezeEvent = macroAxisInputManifestFreezeEvents[0]?.value;
+  const macroAxisInputManifestFreezeData = macroAxisInputManifestFreezeEvent?.data ?? {};
+  const macroAxisInputManifestFreezeFields = Object.keys(macroAxisInputManifestFreezeSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    macroAxisInputManifestFreezeEvents.length !== 1 ||
+    macroAxisInputManifestFreezeEvent?.eventId !== macroAxisInputManifestFreezeSpec.eventId ||
+    macroAxisInputManifestFreezeEvent?.type !== "ARTIFACT_CREATED" ||
+    macroAxisInputManifestFreezeEvent?.actor?.id !== macroAxisInputManifestFreezeSpec.actorId ||
+    macroAxisInputManifestFreezeEvent?.actor?.role !== macroAxisInputManifestFreezeSpec.actorRole ||
+    macroAxisInputManifestFreezeEvent?.subject?.id !== macroAxisInputManifestFreezeSpec.subjectId ||
+    macroAxisInputManifestFreezeEvent?.subject?.role !== macroAxisInputManifestFreezeSpec.subjectRole ||
+    macroAxisInputManifestFreezeEvent?.correlationId !== macroAxisInputManifestFreezeSpec.correlationId ||
+    JSON.stringify(Object.keys(macroAxisInputManifestFreezeData).sort()) !== JSON.stringify(macroAxisInputManifestFreezeFields) ||
+    macroAxisInputManifestFreezeFields.some(
+      (field) => JSON.stringify(macroAxisInputManifestFreezeData[field]) !== JSON.stringify(macroAxisInputManifestFreezeSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_MACRO_AXIS_INPUT_MANIFEST_FREEZE_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-040 四张宏量轴卡复核输入必须精确绑定 10 项同提交原始 Git blob、SHA-256 清单，并保持复核/健康/Owner/实现门禁关闭",
     );
   }
 

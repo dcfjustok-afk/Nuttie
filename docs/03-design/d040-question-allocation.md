@@ -88,7 +88,7 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 [中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。[D-063 宏量目标来源选择卡](d040-macro-target-source-card-spec.md) 已固定三项互斥来源；[D-070 自定义宏量输入形态卡](d040-custom-macro-input-shape-card-spec.md) 已固定三项互斥输入合同；[D-071 宏量展示与舍入卡](d040-macro-display-rounding-card-spec.md) 已固定三项互斥显示策略、来源单位、显式派生、raw/display、十进制舍入和残差披露边界；[D-072 硬停止后纯记录可用性卡](d040-hard-stop-record-availability-card-spec.md) 已固定允许无目标事实或暂停新增二选一、硬停止不可豁免、无目标事实不创建目标、历史不删不回算和数据控制持续可用。四卡完成内部四域自审，但 D-063/D-070 未接受，具名健康评审、前序 D-068/D-069、健康数值边界与文案、Content QA 和独立复核尚未完成，仍为 `NOT_OWNER_READY`。
 
-[四张宏量轴卡独立复核包](d040-macro-axis-independent-review-packet.md) 已把 10 份必读输入、4 个复核域、4 卡逐项处置、14 条跨轴不变量和 P0~P3 标准整理成统一入口。包结构为 `PACKET_READY`，但输入清单尚待下一原子提交冻结，具名复核人、身份/胜任范围/独立性/利益冲突核验和实际复核都未发生。
+[四张宏量轴卡独立复核包](d040-macro-axis-independent-review-packet.md) 已把 10 份必读输入、4 个复核域、4 卡逐项处置、14 条跨轴不变量和 P0~P3 标准整理成统一入口。包结构为 `PACKET_READY`，且 10 项输入清单已冻结到同一提交并记录 blob OID/SHA-256，但具名复核人、身份/胜任范围/独立性/利益冲突核验和实际复核都未发生。
 
 三批卡片与支持输入仍只是内部草案。下一步需要为十三卡复核包指派满足独立性的具名复核人并执行逐卡/跨批复核，同时由 ProjectContentOwner 指派并核验具名中国健康评审人后按健康交接包逐条签署；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
@@ -151,7 +151,11 @@ d072IndependentReviewPassed: false
 d072OwnerReady: false
 macroAxisIndependentReviewPacketReady: true
 macroAxisReviewPacketVersion: PACKET-001-R1
-macroAxisInputManifestFrozen: false
+macroAxisInputManifestFrozen: true
+macroAxisInputManifestEntryCount: 10
+macroAxisInputManifestCommit: 47ba4895dac2535682e8d1a8cb985176d6ad45f7
+macroAxisInputManifestRecordCommit: d8e812f1324590d735f809ea994e8aaa2f6805d8
+macroAxisInputManifestCanonicalDigest: SHA-256
 macroAxisRequiredArtifactCount: 10
 macroAxisRequiredCardCount: 4
 macroAxisRequiredReviewerDomainCount: 4
