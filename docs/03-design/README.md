@@ -29,7 +29,7 @@
 | [D-045 最近使用与收藏选择卡](d045-recent-favorites-card-spec.md) | B03 的三套完整政策包、清除/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-031 媒体与 AI 内容保留选择卡](d031-media-ai-retention-card-spec.md) | B04 的三套完整政策包、临时内容清理、备份/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-033 非标签 AI 上传确认选择卡](d033-nonlabel-ai-confirmation-card-spec.md) | B05 的三套完整政策包、D-014 保留范围、单次绑定/失效和内部四域自审；尚未独立复核或展示给 Owner |
-| [D-034 AI 资源预算选择卡](d034-ai-resource-budget-card-spec.md) | B05 的三套固定预算政策包、19 维硬上限、超限清理和内部四域自审；尚需最低支持 iPhone benchmark，尚未独立复核或展示给 Owner |
+| [D-034 AI 资源预算选择卡](d034-ai-resource-budget-card-spec.md) | B05 的三套固定预算政策包、19 项直接硬上限、超限清理和内部四域自审；[最低支持 iPhone benchmark 协议](../04-engineering/testing/d034-minimum-iphone-benchmark-protocol.md)已准备并覆盖 21 行矩阵，但设备/工具链/harness/fixture/执行/结果仍缺失，尚未独立复核或展示给 Owner |
 | [D-036 AITransport 隔离选择卡](d036-ai-transport-profile-card-spec.md) | B05 的三套 URL/redirect/session 政策包、显式 cache/cookie/credential 隔离和内部四域自审；尚需三 Provider 兼容与原生边界证据，尚未独立复核或展示给 Owner |
 | [D-053 AI Provider 用途准入选择卡](d053-ai-provider-use-admission-card-spec.md) | B05 的三套用途准入政策包、十维 Provider 真相、App Privacy 映射和旧 harness 边界；尚需 OI-07 与逐 Provider 证据，尚未独立复核或展示给 Owner |
 | [d040-prototype-manifest.md](d040-prototype-manifest.md) | D-040 首启资料与目标 A/B/C 原型，以及字段/公式输入缺口 |

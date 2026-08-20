@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN,
+  PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 305,
+    instancesValidated: 306,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 186);
+  assert.equal(report.counts.events, 187);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -826,6 +826,39 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d034CardEvent.value.data.ownerCardScheduled, false);
   assert.equal(d034CardEvent.value.data.d039BlockerState, "OPEN");
   assert.equal(d034CardEvent.value.data.formalImplementationAuthorized, false);
+  const d034BenchmarkProtocolEvent = findEvent(VALID_MODEL, "EVT-20260821-010");
+  assert.equal(d034BenchmarkProtocolEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d034BenchmarkProtocolEvent.value.subject.id,
+    "D034-MINIMUM-IPHONE-BENCHMARK-PROTOCOL-001",
+  );
+  assert.equal(d034BenchmarkProtocolEvent.value.data.protocolState, "PROTOCOL_READY");
+  assert.equal(d034BenchmarkProtocolEvent.value.data.sourcePacketVersion, "PACKET-001-R1");
+  assert.equal(d034BenchmarkProtocolEvent.value.data.sourceCardInputFrozen, true);
+  assert.equal(
+    d034BenchmarkProtocolEvent.value.data.protocolArtifactCommit,
+    "f2084a106d7a8e4c4a612278fb13372c747fa622",
+  );
+  assert.equal(d034BenchmarkProtocolEvent.value.data.profileCount, 3);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.profileMatrixRowCount, 21);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.directHardLimitCount, 19);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.companionControlCount, 2);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.directLimitScenarioMinimum, 38);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.measuredRepetitionMinimum, 10);
+  assert.deepEqual(d034BenchmarkProtocolEvent.value.data.summaryStatisticsRequired, [
+    "minimum", "median", "p95", "maximum",
+  ]);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.minimumPhysicalDeviceResolved, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.macAndSupportedXcodeAvailable, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.isolatedNativeHarnessAuthorized, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.corpusMaterialized, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.benchmarkExecutionStarted, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.benchmarkResultRecorded, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.deviceBenchmarkPassed, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.independentReviewPassed, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.b05Closed, false);
+  assert.equal(d034BenchmarkProtocolEvent.value.data.formalImplementationAuthorized, false);
   const d036CardEvent = findEvent(VALID_MODEL, "EVT-20260820-001");
   assert.equal(d036CardEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d036CardEvent.value.subject.id, "D036-AI-TRANSPORT-PROFILE-CARD-001");
@@ -1364,7 +1397,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 304);
+    assert.equal(report.schemaValidation.instancesValidated, 305);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3077,6 +3110,50 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       model.decisionRegister.decisions.push(candidate);
     });
     assertDiagnostic(report, "OPS_D034_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-034 最低设备 benchmark 协议事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-010");
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-034 benchmark 协议漏测矩阵行或直接上限", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-010").value.data;
+      data.profileMatrixRowCount = 19;
+      data.directHardLimitCount = 17;
+      data.companionControlCount = 0;
+      data.directLimitScenarioMinimum = 34;
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("D-034 benchmark 协议弱化同 corpus、重复采样或原始值要求", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-010").value.data;
+      data.sameCorpusAcrossProfilesRequired = false;
+      data.measuredRepetitionMinimum = 1;
+      data.rawRunValuesRequired = false;
+      data.summaryStatisticsRequired.pop();
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_PROTOCOL_MISMATCH");
+  });
+
+  await t.test("准备 D-034 benchmark 协议就越级伪造设备、结果、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-010").value.data;
+      data.minimumPhysicalDeviceResolved = true;
+      data.benchmarkExecutionStarted = true;
+      data.benchmarkResultRecorded = true;
+      data.deviceBenchmarkPassed = true;
+      data.independentReviewPassed = true;
+      data.ownerReviewAuthorized = true;
+      data.b05Closed = true;
+      data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D034_BENCHMARK_PROTOCOL_MISMATCH");
   });
 
   await t.test("D-036 选择卡工件事件缺失", () => {

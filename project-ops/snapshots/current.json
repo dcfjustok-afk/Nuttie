@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T02:14:42+08:00",
+  "generatedAt": "2026-08-21T02:31:01+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 186
+    "projectEvents": 187
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-034 最低支持 iPhone benchmark 协议已准备并绑定 PACKET-001-R1 的冻结卡输入：三档使用同一 corpus，完整覆盖 21 行矩阵、19 项可直接计数硬上限、2 项伴随控制、至少 38 个边界/加一场景、轮换顺序、3 次 warm-up、至少 10 次实测及原始值/最小值/中位数/p95/最大值报告。最低物理机型、Mac/Xcode、隔离原生 harness、fixture、执行、结果、安全/QA 独立复核、Owner 与实现门禁均未发生或未授权；现有 iPhone 16 Pro Max 仍不能替代最低设备证据",
     "Owner 于 2026-08-15 查看冻结 D-039 原型后明确回复 A；D-039 已进入决定台账并完成 PX-4。PX-5 首次 DoR 评估为 NOT_READY；B01/B02 已关闭，B03 的 D-045 最近/收藏卡、B04 的 D-031 媒体/AI 保留卡与 B05 的 D-033 非标签 AI 上传确认卡、D-034 AI 资源预算卡、D-036 AITransport 隔离卡、D-053 Provider 用途准入卡均完成四域自审。六卡统一独立复核包已准备，固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结并记录 blob OID/SHA-256，复核人未指派，实际复核未开始。D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 与原生边界证据，D-053 另需 OI-07、逐 Provider 十维证据与 App Privacy 映射；B03 至 B07 共 5 个 Owner/环境阻断项仍开放；正式 RN/原生实现、D-032 第二次动作和 D-053 均未获授权",
     "D-032 Android 平台 JavaScript export 已复用与 iOS 同一结构校验核心：自动固定 Android-only Metro metadata、唯一 Hermes bundle、png/ttf/xml 资产策略、声明/实际文件集精确一致、路径越界和原生目录拒绝；Android/iOS 合计 10 个单测与真实 1,652 模块 export 通过。本次 Android bundle/总字节数比旧记录各少 2，进一步证明字节数和 SHA 不得作可复现构建门禁；不构成 Android 原生运行、签名产物或 D-032 接受",
     "D-032 iOS 平台 JavaScript export 已集成导出后自动结构校验：只接受 iOS-only Metro metadata、唯一 Hermes bundle、声明资产与实际文件精确一致，并拒绝额外平台、路径越界、未声明文件和原生目录；5 个单测与真实 export 通过。后续运行的 bundle 与总字节数各比前三次增加 1，所以字节数和 SHA-256 都明确不作可复现构建门禁；不构成原生 iOS 证据或 D-032 接受",

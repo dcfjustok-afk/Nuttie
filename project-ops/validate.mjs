@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN = Object.freeze({
-  id: "PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN",
+export const PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY = Object.freeze({
+  id: "PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 186,
+    events: 187,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN = Object.freez
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 9,
+    "2026-08-21": 10,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2094,6 +2094,67 @@ export const PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN = Object.freez
       ownerIntakeChanged: false,
       d039DecisionStateChanged: false,
     }),
+    benchmarkProtocol: Object.freeze({
+      eventId: "EVT-20260821-010",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D034-MINIMUM-IPHONE-BENCHMARK-PROTOCOL-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d034-minimum-iphone-benchmark-protocol",
+      state: "completed",
+      decisionId: "D-034",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D034_DEVICE_BENCHMARK_PROTOCOL_REQUIRED",
+      to: "D034_DEVICE_BENCHMARK_PROTOCOL_READY",
+      next: "D034_BENCHMARK_AUTHORIZATION_DEVICE_AND_TOOLCHAIN_REQUIRED",
+      protocolState: "PROTOCOL_READY",
+      sourcePacketVersion: "PACKET-001-R1",
+      sourceCardInputFrozen: true,
+      sourceCardCommit: "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+      sourceCardBlobOid: "3d1d7681b0285d65ea5d64a2176bfab4c5d28c5c",
+      sourceCardSha256: "a8e6b5a992854efb92bd30fe477b7deee090ab152976bdb6cf293179c0ac7bf6",
+      sourcePacketManifestEventId: "EVT-20260821-009",
+      protocolArtifactCommit: "f2084a106d7a8e4c4a612278fb13372c747fa622",
+      protocolArtifactBlobOid: "217d89535998b546f702206c166d4b3c5775b7c8",
+      profileCount: 3,
+      profileMatrixRowCount: 21,
+      directHardLimitCount: 19,
+      companionControlCount: 2,
+      directLimitScenarioMinimum: 38,
+      warmupRepetitionCount: 3,
+      measuredRepetitionMinimum: 10,
+      fixtureManifestRequired: true,
+      sameCorpusAcrossProfilesRequired: true,
+      profileOrderRotationRequired: true,
+      rawRunValuesRequired: true,
+      summaryStatisticsRequired: Object.freeze(["minimum", "median", "p95", "maximum"]),
+      minimumPhysicalDeviceResolved: false,
+      currentOi03DeviceIsNotMinimumEvidence: true,
+      macAndSupportedXcodeAvailable: false,
+      isolatedNativeHarnessAuthorized: false,
+      corpusMaterialized: false,
+      benchmarkExecutionStarted: false,
+      benchmarkResultRecorded: false,
+      deviceBenchmarkPassed: false,
+      namedSecurityReviewerAssigned: false,
+      namedQaReviewerAssigned: false,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d034RegisteredInDecisionLedger: false,
+      d034RecordedInOwnerIntake: false,
+      b05Closed: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+    }),
   }),
   d036: Object.freeze({
     cardSpec: Object.freeze({
@@ -3689,7 +3750,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D039_B03_B05_INPUT_MANIFEST_FROZEN) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_PROTOCOL_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -7350,6 +7411,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D034_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-17.jsonl",
       "D-034 必须精确保留三套 AI 资源预算政策包、19 维硬上限、真机 benchmark 门禁、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d034BenchmarkProtocolSpec = baseline.d034.benchmarkProtocol;
+  const d034BenchmarkProtocolEvents = model.events.filter(
+    (record) => record.value?.eventId === d034BenchmarkProtocolSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d034BenchmarkProtocolSpec.correlationId),
+  );
+  const d034BenchmarkProtocolEvent = d034BenchmarkProtocolEvents[0]?.value;
+  const d034BenchmarkProtocolData = d034BenchmarkProtocolEvent?.data ?? {};
+  const d034BenchmarkProtocolFields = Object.keys(d034BenchmarkProtocolSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d034BenchmarkProtocolEvents.length !== 1 ||
+    d034BenchmarkProtocolEvent?.eventId !== d034BenchmarkProtocolSpec.eventId ||
+    d034BenchmarkProtocolEvent?.type !== "ARTIFACT_CREATED" ||
+    d034BenchmarkProtocolEvent?.actor?.id !== d034BenchmarkProtocolSpec.actorId ||
+    d034BenchmarkProtocolEvent?.actor?.role !== d034BenchmarkProtocolSpec.actorRole ||
+    d034BenchmarkProtocolEvent?.subject?.id !== d034BenchmarkProtocolSpec.subjectId ||
+    d034BenchmarkProtocolEvent?.subject?.role !== d034BenchmarkProtocolSpec.subjectRole ||
+    d034BenchmarkProtocolEvent?.correlationId !== d034BenchmarkProtocolSpec.correlationId ||
+    JSON.stringify(Object.keys(d034BenchmarkProtocolData).sort()) !==
+      JSON.stringify(d034BenchmarkProtocolFields) ||
+    d034BenchmarkProtocolFields.some(
+      (field) => JSON.stringify(d034BenchmarkProtocolData[field]) !==
+        JSON.stringify(d034BenchmarkProtocolSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D034_BENCHMARK_PROTOCOL_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-034 benchmark 协议必须绑定冻结卡输入，覆盖三档、21 行矩阵、19 项直接硬上限、两项伴随控制和同 corpus 实测标准，同时保持设备、工具链、harness、执行、复核、Owner、B05 与实现门禁关闭",
     );
   }
 

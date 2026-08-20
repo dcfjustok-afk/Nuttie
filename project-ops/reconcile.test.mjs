@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 186,
+    events: 187,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -164,6 +164,44 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d034.selfReviewPassed, true);
   assert.equal(report.d034.independentReviewPassed, false);
   assert.equal(report.d034.ownerCardScheduled, false);
+  assert.equal(report.d034.benchmarkProtocolEventId, "EVT-20260821-010");
+  assert.equal(report.d034.benchmarkProtocolState, "PROTOCOL_READY");
+  assert.equal(
+    report.d034.benchmarkProtocolNext,
+    "D034_BENCHMARK_AUTHORIZATION_DEVICE_AND_TOOLCHAIN_REQUIRED",
+  );
+  assert.equal(report.d034.benchmarkSourcePacketVersion, "PACKET-001-R1");
+  assert.equal(report.d034.benchmarkSourceCardInputFrozen, true);
+  assert.equal(
+    report.d034.benchmarkSourceCardCommit,
+    "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+  );
+  assert.equal(
+    report.d034.benchmarkProtocolArtifactCommit,
+    "f2084a106d7a8e4c4a612278fb13372c747fa622",
+  );
+  assert.equal(report.d034.benchmarkProfileCount, 3);
+  assert.equal(report.d034.benchmarkProfileMatrixRowCount, 21);
+  assert.equal(report.d034.benchmarkDirectHardLimitCount, 19);
+  assert.equal(report.d034.benchmarkCompanionControlCount, 2);
+  assert.equal(report.d034.benchmarkDirectLimitScenarioMinimum, 38);
+  assert.equal(report.d034.benchmarkMeasuredRepetitionMinimum, 10);
+  assert.equal(report.d034.benchmarkSameCorpusAcrossProfilesRequired, true);
+  assert.equal(report.d034.benchmarkRawRunValuesRequired, true);
+  assert.equal(report.d034.minimumPhysicalDeviceResolved, false);
+  assert.equal(report.d034.macAndSupportedXcodeAvailable, false);
+  assert.equal(report.d034.isolatedNativeHarnessAuthorized, false);
+  assert.equal(report.d034.benchmarkCorpusMaterialized, false);
+  assert.equal(report.d034.benchmarkExecutionStarted, false);
+  assert.equal(report.d034.benchmarkResultRecorded, false);
+  assert.equal(report.d034.benchmarkProtocolDevicePassed, false);
+  assert.equal(report.d034.benchmarkNamedSecurityReviewerAssigned, false);
+  assert.equal(report.d034.benchmarkNamedQaReviewerAssigned, false);
+  assert.equal(report.d034.benchmarkProtocolIndependentReviewPassed, false);
+  assert.equal(report.d034.benchmarkExternalMessageSent, false);
+  assert.equal(report.d034.benchmarkProtocolOwnerReviewAuthorized, false);
+  assert.equal(report.d034.benchmarkB05Closed, false);
+  assert.equal(report.d034.benchmarkProtocolFormalImplementationAuthorized, false);
   assert.equal(report.d034.registeredInDecisionLedger, false);
   assert.equal(report.d034.ownerResponseCount, 0);
   assert.equal(report.d036.eventId, "EVT-20260820-001");
@@ -579,6 +617,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d034Report = reconcileProjectOps(d034Model);
   assert.equal(d034Report.ok, false);
   assert.ok(d034Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_GATE"));
+
+  const d034BenchmarkModel = validModel();
+  d034BenchmarkModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-010",
+  ).value.data.deviceBenchmarkPassed = true;
+  const d034BenchmarkReport = reconcileProjectOps(d034BenchmarkModel);
+  assert.equal(d034BenchmarkReport.ok, false);
+  assert.ok(
+    d034BenchmarkReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_GATE",
+    ),
+  );
 
   const d036Model = validModel();
   d036Model.events.find((record) => record.value.eventId === "EVT-20260820-001").value.data.ephemeralAloneConsideredSufficientIsolation = true;

@@ -103,6 +103,15 @@ function latestD034Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD034BenchmarkProtocolRecord(model) {
+  return model.events
+    .filter(
+      (record) => record.value?.subject?.id === "D034-MINIMUM-IPHONE-BENCHMARK-PROTOCOL-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD036Record(model) {
   return model.events
     .filter((record) => record.value?.subject?.id === "D036-AI-TRANSPORT-PROFILE-CARD-001")
@@ -647,6 +656,7 @@ export function reconcileProjectOps(model) {
   }
 
   const d034Record = latestD034Record(model);
+  const d034BenchmarkProtocolRecord = latestD034BenchmarkProtocolRecord(model);
   const d034 = {
     eventId: d034Record?.eventId ?? null,
     decisionState: d034Record?.data?.decisionState ?? null,
@@ -678,6 +688,57 @@ export function reconcileProjectOps(model) {
     ownerCardScheduled: d034Record?.data?.ownerCardScheduled ?? null,
     ownerReviewAuthorized: d034Record?.data?.ownerReviewAuthorized ?? null,
     formalImplementationAuthorized: d034Record?.data?.formalImplementationAuthorized ?? null,
+    benchmarkProtocolEventId: d034BenchmarkProtocolRecord?.eventId ?? null,
+    benchmarkProtocolState: d034BenchmarkProtocolRecord?.data?.protocolState ?? null,
+    benchmarkProtocolNext: d034BenchmarkProtocolRecord?.data?.next ?? null,
+    benchmarkSourcePacketVersion: d034BenchmarkProtocolRecord?.data?.sourcePacketVersion ?? null,
+    benchmarkSourceCardInputFrozen:
+      d034BenchmarkProtocolRecord?.data?.sourceCardInputFrozen ?? null,
+    benchmarkSourceCardCommit: d034BenchmarkProtocolRecord?.data?.sourceCardCommit ?? null,
+    benchmarkProtocolArtifactCommit:
+      d034BenchmarkProtocolRecord?.data?.protocolArtifactCommit ?? null,
+    benchmarkProfileCount: d034BenchmarkProtocolRecord?.data?.profileCount ?? null,
+    benchmarkProfileMatrixRowCount:
+      d034BenchmarkProtocolRecord?.data?.profileMatrixRowCount ?? null,
+    benchmarkDirectHardLimitCount:
+      d034BenchmarkProtocolRecord?.data?.directHardLimitCount ?? null,
+    benchmarkCompanionControlCount:
+      d034BenchmarkProtocolRecord?.data?.companionControlCount ?? null,
+    benchmarkDirectLimitScenarioMinimum:
+      d034BenchmarkProtocolRecord?.data?.directLimitScenarioMinimum ?? null,
+    benchmarkMeasuredRepetitionMinimum:
+      d034BenchmarkProtocolRecord?.data?.measuredRepetitionMinimum ?? null,
+    benchmarkSameCorpusAcrossProfilesRequired:
+      d034BenchmarkProtocolRecord?.data?.sameCorpusAcrossProfilesRequired ?? null,
+    benchmarkRawRunValuesRequired:
+      d034BenchmarkProtocolRecord?.data?.rawRunValuesRequired ?? null,
+    minimumPhysicalDeviceResolved:
+      d034BenchmarkProtocolRecord?.data?.minimumPhysicalDeviceResolved ?? null,
+    macAndSupportedXcodeAvailable:
+      d034BenchmarkProtocolRecord?.data?.macAndSupportedXcodeAvailable ?? null,
+    isolatedNativeHarnessAuthorized:
+      d034BenchmarkProtocolRecord?.data?.isolatedNativeHarnessAuthorized ?? null,
+    benchmarkCorpusMaterialized:
+      d034BenchmarkProtocolRecord?.data?.corpusMaterialized ?? null,
+    benchmarkExecutionStarted:
+      d034BenchmarkProtocolRecord?.data?.benchmarkExecutionStarted ?? null,
+    benchmarkResultRecorded:
+      d034BenchmarkProtocolRecord?.data?.benchmarkResultRecorded ?? null,
+    benchmarkProtocolDevicePassed:
+      d034BenchmarkProtocolRecord?.data?.deviceBenchmarkPassed ?? null,
+    benchmarkNamedSecurityReviewerAssigned:
+      d034BenchmarkProtocolRecord?.data?.namedSecurityReviewerAssigned ?? null,
+    benchmarkNamedQaReviewerAssigned:
+      d034BenchmarkProtocolRecord?.data?.namedQaReviewerAssigned ?? null,
+    benchmarkProtocolIndependentReviewPassed:
+      d034BenchmarkProtocolRecord?.data?.independentReviewPassed ?? null,
+    benchmarkExternalMessageSent:
+      d034BenchmarkProtocolRecord?.data?.externalMessageSent ?? null,
+    benchmarkProtocolOwnerReviewAuthorized:
+      d034BenchmarkProtocolRecord?.data?.ownerReviewAuthorized ?? null,
+    benchmarkB05Closed: d034BenchmarkProtocolRecord?.data?.b05Closed ?? null,
+    benchmarkProtocolFormalImplementationAuthorized:
+      d034BenchmarkProtocolRecord?.data?.formalImplementationAuthorized ?? null,
     registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-034"),
     ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-034").length,
   };
@@ -699,10 +760,39 @@ export function reconcileProjectOps(model) {
     d034.ownerCardScheduled === false &&
     d034.ownerReviewAuthorized === false &&
     d034.formalImplementationAuthorized === false &&
+    d034.benchmarkProtocolEventId === "EVT-20260821-010" &&
+    d034.benchmarkProtocolState === "PROTOCOL_READY" &&
+    d034.benchmarkProtocolNext === "D034_BENCHMARK_AUTHORIZATION_DEVICE_AND_TOOLCHAIN_REQUIRED" &&
+    d034.benchmarkSourcePacketVersion === "PACKET-001-R1" &&
+    d034.benchmarkSourceCardInputFrozen === true &&
+    d034.benchmarkSourceCardCommit === "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117" &&
+    d034.benchmarkProtocolArtifactCommit === "f2084a106d7a8e4c4a612278fb13372c747fa622" &&
+    d034.benchmarkProfileCount === 3 &&
+    d034.benchmarkProfileMatrixRowCount === 21 &&
+    d034.benchmarkDirectHardLimitCount === 19 &&
+    d034.benchmarkCompanionControlCount === 2 &&
+    d034.benchmarkDirectLimitScenarioMinimum === 38 &&
+    d034.benchmarkMeasuredRepetitionMinimum === 10 &&
+    d034.benchmarkSameCorpusAcrossProfilesRequired === true &&
+    d034.benchmarkRawRunValuesRequired === true &&
+    d034.minimumPhysicalDeviceResolved === false &&
+    d034.macAndSupportedXcodeAvailable === false &&
+    d034.isolatedNativeHarnessAuthorized === false &&
+    d034.benchmarkCorpusMaterialized === false &&
+    d034.benchmarkExecutionStarted === false &&
+    d034.benchmarkResultRecorded === false &&
+    d034.benchmarkProtocolDevicePassed === false &&
+    d034.benchmarkNamedSecurityReviewerAssigned === false &&
+    d034.benchmarkNamedQaReviewerAssigned === false &&
+    d034.benchmarkProtocolIndependentReviewPassed === false &&
+    d034.benchmarkExternalMessageSent === false &&
+    d034.benchmarkProtocolOwnerReviewAuthorized === false &&
+    d034.benchmarkB05Closed === false &&
+    d034.benchmarkProtocolFormalImplementationAuthorized === false &&
     d034.registeredInDecisionLedger === false &&
     d034.ownerResponseCount === 0
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_GATE", "D-034", "D-034 未保持三包 AI 资源预算卡、19 维硬上限、真机 benchmark 门禁、自审和独立复核/Owner/B05/实现待办状态", d034);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_GATE", "D-034", "D-034 未保持三包资源预算卡、21 行/19 项直接上限 benchmark 协议，以及设备/工具链/harness/执行/复核/Owner/B05/实现待办状态", d034);
   }
 
   const d036Record = latestD036Record(model);
