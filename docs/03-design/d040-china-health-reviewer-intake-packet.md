@@ -54,6 +54,24 @@
 
 ProjectContentOwner 在交接时必须记录每个工件的 Git commit、文件 SHA-256 或等价不可变引用。评审期间任一工件语义变化，都必须生成新 `packetVersion` 并让受影响条目重新评审。
 
+### 3.1 冻结输入清单
+
+当前待交接版本为 `PACKET-001-R1`。九份输入统一取自 Git commit `5c32cfb2083bbe904c458b68d92a97e1f8479ce5`；`blobOid` 是仓库对象 ID，`canonicalSha256` 是对该 commit 中 Git blob 原始字节计算的 SHA-256，不受 Windows checkout 换行转换影响。
+
+| 顺序 | 路径 | blobOid | canonicalSha256 |
+| ---: | --- | --- | --- |
+| 1 | `docs/03-design/d040-china-support-health-review-input.md` | `5e6a1484a214e336ba91416015c7daece765dc24` | `791d5c94fe70ac36c2bc9c2c20e1d2891d0c6b0e5f3820f11d78f8328ddcf0cb` |
+| 2 | `docs/03-design/d040-px0-input-research.md` | `f3b9e68d4b181b761e21a57ba476291d7410cf36` | `bf7b4c6e74307b93a15c38c47cf3c81a3c5b45e651fcb4b1b3a02ef9b2a51381` |
+| 3 | `docs/03-design/d040-first-batch-card-spec.md` | `c55e5d73a8cffc31ee81fb9d72dd2c252ea08282` | `8489e99efbdb2f2f410eb1005909dd2b1732d8a8ce69616aca6eec51f8d86ef9` |
+| 4 | `docs/03-design/d040-energy-model-batch-card-spec.md` | `46f3a6b353ebfa9c2ab73f76b291873dbd9f6569` | `e776e8f7ca9aa9649849ef2b6cc814e6e0c461c8b55e7f0f0f6ae4e517373835` |
+| 5 | `docs/03-design/d040-niddk-dynamic-model-feasibility-input.md` | `409119ac4af1691791794a733364d50f847653b2` | `6feeba9bf07991c66254cf42250eefdf5d082de155417d2c7490a59a679b00b0` |
+| 6 | `docs/03-design/d040-macronutrient-evidence.md` | `5aa823ba05f77c5d4188521a08603cbf10730afd` | `31755c1ae43edeec4a5a5fbb922679fa29f17eba2b44b70cc534638f1497b93a` |
+| 7 | `docs/03-design/d040-china-macronutrient-standard-input.md` | `3988aee30da7968f5a6b588ad81cd96714cdbe44` | `0ad612e7b899cce0d9de5c8ca3f07c490d8e4fcab92e4deaa9b4404a9147616d` |
+| 8 | `docs/03-design/d040-data-lifecycle-batch-card-spec.md` | `cbf152542e9c5d6020e311dd2e859e89a7aa3881` | `55cd099d3dad3ddd8244a46e1c78d0d4d31f5426af9b53af73b1f9bf3378a567` |
+| 9 | `docs/03-design/d040-question-allocation.md` | `300504fb4a37fd36b32ee80d08df66da71e1af6d` | `55ccd4d3b895f7d73fd387ee0acedd773e2ba5c84a674aba955b4479fe6faecb` |
+
+正式交接前必须重新计算并逐项比对；任一 `blobOid` 或 `canonicalSha256` 不同都意味着当前 `PACKET-001-R1` 失效，不能只更新表格而沿用既有评审结果。
+
 ## 4. 必答评审问题
 
 评审人必须逐项给出 `APPROVE / APPROVE_WITH_REQUIRED_CHANGE / REJECT / OUT_OF_SCOPE`，不能只给总评“没问题”。`OUT_OF_SCOPE` 必须说明需要哪类其他专业人员。
