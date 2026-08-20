@@ -7,7 +7,7 @@
 | 复核范围 | D-063、D-070、D-071、D-072 四张已形成内部规格的宏量轴卡 |
 | 当前权威状态 | `D-040 = CANDIDATE / PX-0_INPUT_GAP` |
 | 非目标 | 选择 Owner 答案、批准健康内容、把预留 ID 写入决定台账、授权目标/记录/持久化/实现或发布 |
-| 当前下一门禁 | `MACRO_AXIS_INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED` |
+| 当前下一门禁 | `MACRO_AXIS_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED` |
 
 ## 1. 用途与独立性
 
@@ -19,7 +19,7 @@
 - 健康/公式域的卡片复核不能代替 `ChinaQualifiedHealthReviewer` 对人群边界、健康数值、简中文案和支持资源的正式健康签署；
 - 独立复核通过也只让四张卡具备下一步资格，不接受 D-063/D-070，不自动排入 Owner intake，不改变任何授权位。
 
-## 2. 必读输入
+## 2. 必读冻结输入
 
 正式复核必须基于同一 `packetVersion` 的完整输入。交接时为每项记录 Git commit 与 blob OID 或规范 SHA-256；任一语义变化都会使受影响结论失效。
 
@@ -36,7 +36,24 @@
 | 9 | [中国支持文案与健康评审治理输入](d040-china-support-health-review-input.md) | 人群停止、12356/120、文案和复核周期 |
 | 10 | [中国健康评审人交接包](d040-china-health-reviewer-intake-packet.md) | 证明健康签署是另一门禁，当前仍未开始 |
 
-本次原子任务只建立复核包结构。下一原子任务必须把这 10 份输入冻结到同一 Git commit 并记录 blob OID 与规范 SHA-256；冻结清单形成前不得发起可计入门禁的正式复核。
+### 2.1 冻结输入清单
+
+`PACKET-001-R1` 的十份输入冻结在 Git commit `47ba4895dac2535682e8d1a8cb985176d6ad45f7`。下表中的 Git blob OID 与 SHA-256 都基于该提交中的原始 blob 字节计算，不使用工作区换行、文件时间或后续提交内容。正式复核记录必须逐项引用这些值；任一项不一致都视为另一 packet revision，既有签署不能沿用。
+
+| 顺序 | 仓库路径 | Git blob OID | 规范 SHA-256 |
+| ---: | --- | --- | --- |
+| 1 | `docs/03-design/d040-question-allocation.md` | `9316697b78c6271007c4e051092b4b60308521e7` | `cd3a4c7e6b9fe39faee2fdffe06d9343e991c90f8e7395883afc9fb79db6287f` |
+| 2 | `docs/03-design/d040-macronutrient-evidence.md` | `5aa823ba05f77c5d4188521a08603cbf10730afd` | `31755c1ae43edeec4a5a5fbb922679fa29f17eba2b44b70cc534638f1497b93a` |
+| 3 | `docs/03-design/d040-china-macronutrient-standard-input.md` | `3988aee30da7968f5a6b588ad81cd96714cdbe44` | `0ad612e7b899cce0d9de5c8ca3f07c490d8e4fcab92e4deaa9b4404a9147616d` |
+| 4 | `docs/03-design/d040-macro-target-source-card-spec.md` | `0de4da351719d51fdeb1756564652835672a6966` | `b486c8692db07df49dacbb9f64b52bfc1d77a026cf2d25774e0deca514046ad9` |
+| 5 | `docs/03-design/d040-custom-macro-input-shape-card-spec.md` | `80536636d14494d54bfb199464d4b3ab03518a8e` | `dde17d2475113f86f872f62b6feb79993106eca0f895d6422329b6b04c65537b` |
+| 6 | `docs/03-design/d040-macro-display-rounding-card-spec.md` | `16c1c674402825d9c879c688e08c5d06fe6c5216` | `781b2b8329382c4f78f58bcbe740d94ef31645285f2ec7c32af9acd759a47b7c` |
+| 7 | `docs/03-design/d040-hard-stop-record-availability-card-spec.md` | `e81566c8eef70e1421944c3256dba04e70421195` | `66bb4b5d64e33e57c26c0717f1116be62f972361eb316969a860f8a0363f2afd` |
+| 8 | `docs/03-design/d040-data-lifecycle-batch-card-spec.md` | `cbf152542e9c5d6020e311dd2e859e89a7aa3881` | `55cd099d3dad3ddd8244a46e1c78d0d4d31f5426af9b53af73b1f9bf3378a567` |
+| 9 | `docs/03-design/d040-china-support-health-review-input.md` | `5e6a1484a214e336ba91416015c7daece765dc24` | `791d5c94fe70ac36c2bc9c2c20e1d2891d0c6b0e5f3820f11d78f8328ddcf0cb` |
+| 10 | `docs/03-design/d040-china-health-reviewer-intake-packet.md` | `89f66cb38da0cd2865a343ac471e1cbe63de92c8` | `7e48fa29be626429b63c31492d37b710f8f873d5f079aeb5c70dee918bf5f110` |
+
+冻结清单只证明“复核输入是哪一版”，不证明内容正确、评审人合格或复核通过。当前包自身仍是 `REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED`。
 
 ## 3. 复核域与责任
 
@@ -146,7 +163,7 @@ supersedesReviewId
 ```text
 reviewPacketReady: true
 reviewPacketVersion: PACKET-001-R1
-inputManifestFrozen: false
+inputManifestFrozen: true
 requiredArtifactCount: 10
 requiredCardCount: 4
 cardDecisionCount: 4
@@ -185,5 +202,5 @@ goalImplementationAuthorized: false
 recordingImplementationAuthorized: false
 persistenceImplementationAuthorized: false
 formalImplementationAuthorized: false
-next: INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED
+next: REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED
 ```
