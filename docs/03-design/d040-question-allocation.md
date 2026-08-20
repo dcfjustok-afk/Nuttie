@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 工件 ID | `D040-QUESTION-ALLOCATION-001` |
-| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_TWO_BATCHES_SPEC_COMPLETE / PX-0_INPUT_GAP / FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED` |
+| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_THREE_BATCHES_SPEC_COMPLETE / PX-0_INPUT_GAP / FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED` |
 | 日期 | 2026-08-15（Asia/Shanghai） |
 | 输入 | `D040-RESEARCH-001` 的 17 个草案问题；`D040-RESEARCH-002` 的 4 个宏量轴 |
 | 结果 | 保留 D-040 作为最终首启结构；预留 D-054 至 D-072，共 19 个新的候选 ID |
@@ -70,13 +70,15 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 依赖关系不是默认答案。前一项被拒绝或选择“停用自动公式”时，后续不适用卡应跳过并记录 `NOT_APPLICABLE`，不得强迫 Owner 选择无意义选项。
 
-## 5. 前两小批结果与下一门禁
+## 5. 前三小批结果与下一门禁
 
 第一小批 D-054/D-055/D-056/D-058 已形成[选择卡规格](d040-first-batch-card-spec.md)，完成 Product、健康安全、隐私和 QA 四域自审。规格移除了当前没有模型定义和验证证据的“18 岁专用模型”占位选项，固定了稳定问题/选项 ID、互斥选项、`NOT_APPLICABLE` 条件和 `Other` 规范化路径。
 
 第二小批 D-057/D-059/D-060/D-061/D-062 已形成[能量模型选择卡规格](d040-energy-model-batch-card-spec.md)，固定 EER/REE 名称、活动输入/缺失、增减重路径和模型相容性。动态模型与 model-native PAL 方案当前另需模型/许可/保护线/corpus 证据，不能进入 Owner 卡。
 
-两批工件仍只是内部草案。下一步是独立复核；复核关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
+第三小批 D-064/D-065/D-066/D-067 已形成[资料与目标生命周期选择卡规格](d040-data-lifecycle-batch-card-spec.md)，固定 CalculationDraft/CurrentProfile/GoalVersion/IndependentHistory 分层、保存/删除组合、raw/display 舍入分离和 stale/pending/supersede 边界。
+
+三批工件仍只是内部草案。下一步是独立复核；复核关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
 当前继续保持：
 
@@ -85,11 +87,13 @@ D-040 decisionState: CANDIDATE
 authoritativeState: PX-0_INPUT_GAP
 firstBatchCardCount: 4
 energyBatchCardCount: 5
-draftedCardCount: 9
+dataLifecycleBatchCardCount: 4
+draftedCardCount: 13
 firstBatchSelfReviewPassed: true
 energyBatchSelfReviewPassed: true
 dynamicModelEvidencePassed: false
-next: FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED
+dataLifecycleBatchSelfReviewPassed: true
+next: FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED
 formulaEvidenceReviewComplete: true
 formulaChoiceResolved: false
 px1Authorized: false

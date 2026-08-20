@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC,
+  PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 291,
+    instancesValidated: 292,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 172);
+  assert.equal(report.counts.events, 173);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -841,6 +841,34 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040EnergyBatchEvent.value.data.ownerCardScheduled, false);
   assert.equal(d040EnergyBatchEvent.value.data.formulaImplementationAuthorized, false);
   assert.equal(d040EnergyBatchEvent.value.data.formalImplementationAuthorized, false);
+  const d040DataLifecycleBatchEvent = findEvent(VALID_MODEL, "EVT-20260820-004");
+  assert.equal(d040DataLifecycleBatchEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040DataLifecycleBatchEvent.value.subject.id, "D040-DATA-LIFECYCLE-BATCH-CARD-SPEC-001");
+  assert.equal(d040DataLifecycleBatchEvent.value.data.next, "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d040DataLifecycleBatchEvent.value.data.cardDecisionIds, ["D-064", "D-065", "D-066", "D-067"]);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.cardCount, 4);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.draftedCardCount, 13);
+  assert.deepEqual(d040DataLifecycleBatchEvent.value.data.dataLayerIds, [
+    "CalculationDraft",
+    "CurrentProfile",
+    "GoalVersion",
+    "IndependentHistory",
+  ]);
+  assert.deepEqual(d040DataLifecycleBatchEvent.value.data.stableOptionIds["D-064"], [
+    "goal_output_with_provenance_only",
+    "complete_reproducible_input_snapshot",
+    "current_profile_plus_goal_output",
+  ]);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.formulaInputDoesNotImplyPersistence, true);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.rawAndDisplaySeparated, true);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.chainedRoundingAllowed, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.currentProfileDeletionCanSilentlyDeleteIndependentHistory, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.automaticCandidateCanBecomeEffectiveWithoutConfirmation, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.historicalDiaryRecalculationAllowed, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.firstTwoBatchesIndependentReviewPassed, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.persistenceImplementationAuthorized, false);
+  assert.equal(d040DataLifecycleBatchEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -886,7 +914,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 290);
+    assert.equal(report.schemaValidation.instancesValidated, 291);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2890,6 +2918,38 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.ownerReviewAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第三批资料生命周期卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-004",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第三批把显示舍入值冒充审计 raw", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-004").value.data.displayValueCanReplaceAuditRaw = true;
+    });
+    assertDiagnostic(report, "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第三批删除资料时静默级联独立历史", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-004").value.data.currentProfileDeletionCanSilentlyDeleteIndependentHistory = true;
+    });
+    assertDiagnostic(report, "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("第三批把待确认重算候选自动生效", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-004").value;
+      event.data.automaticCandidateCanBecomeEffectiveWithoutConfirmation = true;
+      event.data.persistenceImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH");
   });
 
 });

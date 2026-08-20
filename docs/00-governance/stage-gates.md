@@ -15,8 +15,8 @@
 | G0 | 项目立项 | PASS | 章程、本地硬边界、角色模型、28 项 Owner 决定已接受 |
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
 | G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过；首批 Owner 输入已确认，仍需冻结首个 MVP 增量与后期范围边界 |
-| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-038 四入口导航已接受，D-039 方案 A 已冻结 PX-4，首次 PX-5 DoR 为 NOT_READY，B01/B02 已关闭、B03~B07 开放；B03 的 D-045、B04 的 D-031、B05 的 D-033/D-034/D-036/D-053 三包内部卡与 D-040 前两批九卡均通过自审并等待独立复核，未进入 Owner 评审 |
-| G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受；D-032 隔离 SDK 57 Windows JS Spike 的冻结安装、类型检查、Expo 配置、Doctor 20/20 与 Android 1,652/iOS 条件 1,565 模块 Metro export 已通过，Android/iOS export 共用核心已自动失败关闭额外平台、非批准资产类型、路径越界、未声明文件和原生目录，SQLite/SecureStore/Camera/Notifications/Reanimated/Worklets 六个符号已进入 JS/类型路径且原生调用为零，但 D-032 仍为候选。合并后全库 847/847，ProjectOps 为 5 份 Schema/291 个实例。D-039=A 的 PX-5 仍有 B03~B07 共 5 个 Owner/环境阻断项，D-045、D-031、D-033、D-034、D-036、D-053 与 D-040 卡片自审都不等于独立复核或 Owner 评审授权。D-040 动态模型方案仍缺模型/许可/保护线/corpus 证据。F01/F02/F16 共享 request subject/profile/D-053/check 证据、AI 配置—策略预检、不可信响应、完整候选指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他框架无关合同继续 fail closed，但不证明真实 Provider/schema/营养真值、transport 或发送许可；Windows 平台 JS export 也不证明原生运行或可复现构建。D-033/D-034/D-036/D-053 仅完成内部卡；D-034 benchmark、D-036 三 Provider/原生边界、D-053 OI-07/Provider/App Privacy、正式根工程、SQLCipher/Keychain、Prebuild、Mac/Xcode/CocoaPods、原生真机和 Release 证据仍未关闭 |
+| G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-038 四入口导航已接受，D-039 方案 A 已冻结 PX-4，首次 PX-5 DoR 为 NOT_READY，B01/B02 已关闭、B03~B07 开放；B03 的 D-045、B04 的 D-031、B05 的 D-033/D-034/D-036/D-053 三包内部卡与 D-040 前三批十三卡均通过自审并等待独立复核，未进入 Owner 评审 |
+| G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受；D-032 隔离 SDK 57 Windows JS Spike 的冻结安装、类型检查、Expo 配置、Doctor 20/20 与 Android 1,652/iOS 条件 1,565 模块 Metro export 已通过，Android/iOS export 共用核心已自动失败关闭额外平台、非批准资产类型、路径越界、未声明文件和原生目录，SQLite/SecureStore/Camera/Notifications/Reanimated/Worklets 六个符号已进入 JS/类型路径且原生调用为零，但 D-032 仍为候选。合并后全库 851/851，ProjectOps 为 5 份 Schema/292 个实例。D-039=A 的 PX-5 仍有 B03~B07 共 5 个 Owner/环境阻断项，D-045、D-031、D-033、D-034、D-036、D-053 与 D-040 卡片自审都不等于独立复核或 Owner 评审授权。D-040 动态模型方案仍缺模型/许可/保护线/corpus 证据，生命周期卡也不授权持久化。F01/F02/F16 共享 request subject/profile/D-053/check 证据、AI 配置—策略预检、不可信响应、完整候选指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他框架无关合同继续 fail closed，但不证明真实 Provider/schema/营养真值、transport 或发送许可；Windows 平台 JS export 也不证明原生运行或可复现构建。D-033/D-034/D-036/D-053 仅完成内部卡；D-034 benchmark、D-036 三 Provider/原生边界、D-053 OI-07/Provider/App Privacy、正式根工程、SQLCipher/Keychain、Prebuild、Mac/Xcode/CocoaPods、原生真机和 Release 证据仍未关闭 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
 | G6 | Beta Ready | FAIL | 尚无 Mac/iPhone 构建、真机、迁移与飞行模式证据 |
 | G7 | Release Ready | FAIL | 尚无候选构建、发布授权、回退和分发检查 |
@@ -72,7 +72,7 @@
 - 产品、架构、安全与 QA 审查完成。
 - 视觉方向和关键交互若存在多种实质方案，已提交 Owner 决定。
 
-当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-038 四入口导航已经接受。D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，Owner 已选择 A，PX-4 设计基线已冻结；PX-5 和正式实现仍未授权。D-040 的公式与治理证据复审已归零，20 个决定轴及 D-054~D-072 候选 ID 已分配；前两批九卡完成四域自审，但仍是 `CANDIDATE / PX-0_INPUT_GAP / FIRST_TWO_BATCHES_INDEPENDENT_REVIEW_REQUIRED`，动态模型证据未完成，不得提前提交 Owner。
+当前状态：`IN_PROGRESS`。关键旅程与状态已建立 AT-F01~AT-F24 反向索引；D-038 四入口导航已经接受。D-039 添加餐食首层原型已关闭 D039-QA-001 至 QA-010，Owner 已选择 A，PX-4 设计基线已冻结；PX-5 和正式实现仍未授权。D-040 的公式与治理证据复审已归零，20 个决定轴及 D-054~D-072 候选 ID 已分配；前三批十三卡完成四域自审，但仍是 `CANDIDATE / PX-0_INPUT_GAP / FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED`，动态模型证据未完成，不得提前提交 Owner。
 
 ## G4：Build Ready
 

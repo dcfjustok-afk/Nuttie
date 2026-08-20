@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC",
+export const PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 172,
+    events: 173,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 3,
+    "2026-08-20": 4,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2438,6 +2438,90 @@ export const PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC = Object.freeze({
       formulaImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    dataLifecycleBatchCards: Object.freeze({
+      eventId: "EVT-20260820-004",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-DATA-LIFECYCLE-BATCH-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-data-lifecycle-batch-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "SECOND_BATCH_SPEC_COMPLETE",
+      next: "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED",
+      cardDecisionIds: Object.freeze(["D-064", "D-065", "D-066", "D-067"]),
+      cardQuestionIds: Object.freeze([
+        "d064_profile_goal_storage",
+        "d065_profile_deletion_semantics",
+        "d066_energy_display_rounding",
+        "d067_recalculation_policy",
+      ]),
+      cardCount: 4,
+      draftedCardCount: 13,
+      optionsPerCard: Object.freeze({ "D-064": 3, "D-065": 3, "D-066": 3, "D-067": 3 }),
+      stableOptionIds: Object.freeze({
+        "D-064": Object.freeze([
+          "goal_output_with_provenance_only",
+          "complete_reproducible_input_snapshot",
+          "current_profile_plus_goal_output",
+        ]),
+        "D-065": Object.freeze([
+          "clear_profile_and_goal_input_copies",
+          "profile_only_keep_goal_snapshots",
+          "cascade_profile_and_goal_versions",
+        ]),
+        "D-066": Object.freeze([
+          "nearest_10_kcal_half_up",
+          "whole_kcal_half_up",
+          "nearest_50_kcal_half_up",
+        ]),
+        "D-067": Object.freeze([
+          "user_initiated_difference_candidate",
+          "mark_stale_without_candidate",
+          "automatic_pending_candidate",
+        ]),
+      }),
+      recommendedOptionIds: Object.freeze({
+        "D-064": "goal_output_with_provenance_only",
+        "D-065": "clear_profile_and_goal_input_copies",
+        "D-066": "nearest_10_kcal_half_up",
+        "D-067": "user_initiated_difference_candidate",
+      }),
+      allOptionsMutuallyExclusive: true,
+      allCardsHostNativeOnly: true,
+      otherRequiresNormalization: true,
+      conditionalNotApplicableDefined: true,
+      dataLayerIds: Object.freeze(["CalculationDraft", "CurrentProfile", "GoalVersion", "IndependentHistory"]),
+      dataLayerCount: 4,
+      formulaInputDoesNotImplyPersistence: true,
+      goalOutputProvenanceRequired: true,
+      rawAndDisplaySeparated: true,
+      chainedRoundingAllowed: false,
+      displayValueCanReplaceAuditRaw: false,
+      currentProfileDeletionCanSilentlyDeleteIndependentHistory: false,
+      externalFilesCopiesAppControlled: false,
+      automaticCandidateCanBecomeEffectiveWithoutConfirmation: false,
+      historicalDiaryRecalculationAllowed: false,
+      manualGoalCanBeSilentlyOverwritten: false,
+      zeroWriteFailureBoundary: true,
+      firstTwoBatchesIndependentReviewPassed: false,
+      productSelfReviewPassed: true,
+      privacySecuritySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      reservedIdsOnly: true,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -2737,7 +2821,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_ENERGY_BATCH_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5722,6 +5806,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_ENERGY_BATCH_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 第二批五张能量模型卡必须精确保留 EER/REE 名称、活动输入与缺失、动态模型证据门禁、零写入、自审和 Owner/实现未授权边界",
+    );
+  }
+
+  const dataLifecycleBatchSpec = baseline.d040Research.dataLifecycleBatchCards;
+  const dataLifecycleBatchEvents = model.events.filter(
+    (record) => record.value?.eventId === dataLifecycleBatchSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === dataLifecycleBatchSpec.correlationId),
+  );
+  const dataLifecycleBatchEvent = dataLifecycleBatchEvents[0]?.value;
+  const dataLifecycleBatchData = dataLifecycleBatchEvent?.data ?? {};
+  const dataLifecycleBatchFields = Object.keys(dataLifecycleBatchSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    dataLifecycleBatchEvents.length !== 1 ||
+    dataLifecycleBatchEvent?.eventId !== dataLifecycleBatchSpec.eventId ||
+    dataLifecycleBatchEvent?.type !== "ARTIFACT_CREATED" ||
+    dataLifecycleBatchEvent?.actor?.id !== dataLifecycleBatchSpec.actorId ||
+    dataLifecycleBatchEvent?.actor?.role !== dataLifecycleBatchSpec.actorRole ||
+    dataLifecycleBatchEvent?.subject?.id !== dataLifecycleBatchSpec.subjectId ||
+    dataLifecycleBatchEvent?.subject?.role !== dataLifecycleBatchSpec.subjectRole ||
+    dataLifecycleBatchEvent?.correlationId !== dataLifecycleBatchSpec.correlationId ||
+    JSON.stringify(Object.keys(dataLifecycleBatchData).sort()) !== JSON.stringify(dataLifecycleBatchFields) ||
+    dataLifecycleBatchFields.some(
+      (field) => JSON.stringify(dataLifecycleBatchData[field]) !== JSON.stringify(dataLifecycleBatchSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 第三批四张资料与目标生命周期卡必须精确保留四层分离、保存/删除组合、raw/display、历史不回算、零写入、自审和 Owner/持久化/实现未授权边界",
     );
   }
 
