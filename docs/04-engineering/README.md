@@ -54,6 +54,7 @@
 - [加密备份与恢复](data/encrypted-backup-and-restore.md)：手动导出、加密封装、恢复和默认排除 iCloud。
 - [iOS 原生能力边界](ios/native-capability-boundaries.md)：iOS 17、Expo/Prebuild、权限、后台、扩展、Mac 和分发限制。
 - [测试策略](testing/test-strategy.md)：测试金字塔、真机矩阵、安全测试和发布门禁。
+- [D-034 最低支持 iPhone benchmark 协议](testing/d034-minimum-iphone-benchmark-protocol.md)：固定三档同 corpus、21 行矩阵/19 项直接硬上限口径、真机采样、清理与失败关闭标准；当前只准备协议，未授权或执行 benchmark。
 - [视觉资产契约检查](testing/visual-kit-check.md)：Figma-ready 栗子视觉资产的本地结构与安全边界。
 - [领域合同夹具](testing/domain-contract-harness.md)：七项营养、显式日期、每日汇总与基础内存 CRUD 的框架无关证据。
 - [手工餐食保存合同](testing/manual-meal-entry-harness.md)：状态转换、Repository port、`commandId` 幂等和未知提交结果重放证据。
