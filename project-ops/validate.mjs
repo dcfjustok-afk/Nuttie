@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D070_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_21_D070_CARD_SPEC",
+export const PHASE0_2026_08_21_D071_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_21_D071_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 180,
+    events: 181,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D070_CARD_SPEC = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 3,
+    "2026-08-21": 4,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2963,6 +2963,73 @@ export const PHASE0_2026_08_21_D070_CARD_SPEC = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    d071MacroDisplayRoundingCardSpec: Object.freeze({
+      eventId: "EVT-20260821-004",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-MACRO-DISPLAY-ROUNDING-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-macro-display-rounding-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "D070_CARD_SPEC_COMPLETE_D071_SPEC_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardNext: "D063_D070_ACCEPTANCE_HEALTH_AND_D071_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY",
+      decisionId: "D-071",
+      questionId: "d071_macro_display_rounding",
+      applicableWhen: "D-063 = user_defined_macro_target; reference-band branch uses fixed information-only display",
+      cardCount: 1,
+      optionCount: 3,
+      optionIds: Object.freeze([
+        "source_primary_optional_derived_one_decimal",
+        "source_unit_only_one_decimal",
+        "source_primary_optional_derived_two_decimals",
+      ]),
+      recommendedOptionId: "source_primary_optional_derived_one_decimal",
+      draftedCardCount: 16,
+      referenceBandInformationOnly: true,
+      referenceBandDerivedGramsAllowed: false,
+      sourceUnitAlwaysPreserved: true,
+      derivedUnitRequiresExplicitConversionInputs: true,
+      displayDecimalRoundingMode: "ROUND_HALF_UP",
+      recommendedDecimalPlaces: 1,
+      highPrecisionOptionDecimalPlaces: 2,
+      rawValuesAuthoritative: true,
+      displayValuesPersistedAsGoal: false,
+      conversionsUseDisplayRoundedValues: false,
+      residualAllocatedToMacro: false,
+      displayedPercentTripletForcedTo100: false,
+      roundingDisclosureRequired: true,
+      actualEnergyMismatchTreatedAsRoundingResidual: false,
+      energyRoundingPolicyReused: false,
+      numericHealthBoundsApproved: false,
+      d063Accepted: false,
+      d070Accepted: false,
+      d068D069PrerequisitesPassed: false,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      cardRegisteredInDecisionLedger: false,
+      d071OwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      macroDisplayImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3262,7 +3329,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D070_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D071_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6495,6 +6562,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_D070_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-070 卡片必须精确保留完整克数/完整 100% 比例/显式部分克数三项互斥合同、缺失与换算失败关闭，以及 D-063/健康/独立复核/Owner/实现均未授权状态",
+    );
+  }
+
+  const d071CardSpec = baseline.d040Research.d071MacroDisplayRoundingCardSpec;
+  const d071CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d071CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d071CardSpec.correlationId),
+  );
+  const d071CardEvent = d071CardEvents[0]?.value;
+  const d071CardData = d071CardEvent?.data ?? {};
+  const d071CardFields = Object.keys(d071CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    d071CardEvents.length !== 1 ||
+    d071CardEvent?.eventId !== d071CardSpec.eventId ||
+    d071CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d071CardEvent?.actor?.id !== d071CardSpec.actorId ||
+    d071CardEvent?.actor?.role !== d071CardSpec.actorRole ||
+    d071CardEvent?.subject?.id !== d071CardSpec.subjectId ||
+    d071CardEvent?.subject?.role !== d071CardSpec.subjectRole ||
+    d071CardEvent?.correlationId !== d071CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d071CardData).sort()) !== JSON.stringify(d071CardFields) ||
+    d071CardFields.some(
+      (field) => JSON.stringify(d071CardData[field]) !== JSON.stringify(d071CardSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_D071_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-071 卡片必须精确保留三项互斥显示策略、来源与派生单位、raw/display、十进制舍入、残差披露，以及 D-063/D-070/健康/独立复核/Owner/实现均未授权状态",
     );
   }
 

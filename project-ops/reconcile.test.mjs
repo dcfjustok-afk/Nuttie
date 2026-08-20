@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 180,
+    events: 181,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,13 +152,13 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-003");
+  assert.equal(report.d040.eventId, "EVT-20260821-004");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
   assert.equal(report.d040.dataLifecycleBatchCardCount, 4);
-  assert.equal(report.d040.draftedCardCount, 15);
+  assert.equal(report.d040.draftedCardCount, 16);
   assert.equal(report.d040.firstBatchSelfReviewPassed, true);
   assert.equal(report.d040.energyBatchSelfReviewPassed, true);
   assert.equal(report.d040.dataLifecycleBatchSelfReviewPassed, true);
@@ -278,6 +278,45 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.d070OwnerReviewAuthorized, false);
   assert.equal(report.d040.d070MacroConversionImplementationAuthorized, false);
   assert.equal(report.d040.d070PersistenceImplementationAuthorized, false);
+  assert.equal(report.d040.d071CardState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(report.d040.d071DecisionId, "D-071");
+  assert.equal(report.d040.d071QuestionId, "d071_macro_display_rounding");
+  assert.equal(report.d040.d071CardCount, 1);
+  assert.equal(report.d040.d071OptionCount, 3);
+  assert.deepEqual(report.d040.d071OptionIds, [
+    "source_primary_optional_derived_one_decimal",
+    "source_unit_only_one_decimal",
+    "source_primary_optional_derived_two_decimals",
+  ]);
+  assert.equal(report.d040.d071RecommendedOptionId, "source_primary_optional_derived_one_decimal");
+  assert.equal(report.d040.d071ReferenceBandInformationOnly, true);
+  assert.equal(report.d040.d071ReferenceBandDerivedGramsAllowed, false);
+  assert.equal(report.d040.d071SourceUnitAlwaysPreserved, true);
+  assert.equal(report.d040.d071DerivedUnitRequiresExplicitInputs, true);
+  assert.equal(report.d040.d071DisplayDecimalRoundingMode, "ROUND_HALF_UP");
+  assert.equal(report.d040.d071RecommendedDecimalPlaces, 1);
+  assert.equal(report.d040.d071HighPrecisionDecimalPlaces, 2);
+  assert.equal(report.d040.d071RawValuesAuthoritative, true);
+  assert.equal(report.d040.d071DisplayValuesPersistedAsGoal, false);
+  assert.equal(report.d040.d071ConversionsUseDisplayRoundedValues, false);
+  assert.equal(report.d040.d071ResidualAllocatedToMacro, false);
+  assert.equal(report.d040.d071DisplayedPercentTripletForcedTo100, false);
+  assert.equal(report.d040.d071RoundingDisclosureRequired, true);
+  assert.equal(report.d040.d071ActualEnergyMismatchTreatedAsRoundingResidual, false);
+  assert.equal(report.d040.d071EnergyRoundingPolicyReused, false);
+  assert.equal(report.d040.d071NumericHealthBoundsApproved, false);
+  assert.equal(report.d040.d071D063Accepted, false);
+  assert.equal(report.d040.d071D070Accepted, false);
+  assert.equal(report.d040.d071D068D069PrerequisitesPassed, false);
+  assert.equal(report.d040.d071SelfReviewPassed, true);
+  assert.equal(report.d040.d071HealthContentApproved, false);
+  assert.equal(report.d040.d071ContentQaPassed, false);
+  assert.equal(report.d040.d071IndependentReviewPassed, false);
+  assert.equal(report.d040.d071CardRegisteredInDecisionLedger, false);
+  assert.equal(report.d040.d071OwnerReady, false);
+  assert.equal(report.d040.d071OwnerReviewAuthorized, false);
+  assert.equal(report.d040.d071MacroDisplayImplementationAuthorized, false);
+  assert.equal(report.d040.d071PersistenceImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -449,6 +488,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d070CardReport = reconcileProjectOps(d070CardModel);
   assert.equal(d070CardReport.ok, false);
   assert.ok(d070CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d071CardModel = validModel();
+  d071CardModel.events.find((record) => record.value.eventId === "EVT-20260821-004").value.data.residualAllocatedToMacro = true;
+  const d071CardReport = reconcileProjectOps(d071CardModel);
+  assert.equal(d071CardReport.ok, false);
+  assert.ok(d071CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {
