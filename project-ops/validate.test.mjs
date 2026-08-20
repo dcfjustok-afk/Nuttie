@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_17_D034_CARD_SPEC,
+  PHASE0_2026_08_20_D036_CARD_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_17_D034_CARD_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D036_CARD_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 288,
+    instancesValidated: 289,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 169);
+  assert.equal(report.counts.events, 170);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -750,6 +750,27 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d034CardEvent.value.data.ownerCardScheduled, false);
   assert.equal(d034CardEvent.value.data.d039BlockerState, "OPEN");
   assert.equal(d034CardEvent.value.data.formalImplementationAuthorized, false);
+  const d036CardEvent = findEvent(VALID_MODEL, "EVT-20260820-001");
+  assert.equal(d036CardEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d036CardEvent.value.subject.id, "D036-AI-TRANSPORT-PROFILE-CARD-001");
+  assert.equal(d036CardEvent.value.data.next, "D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.deepEqual(d036CardEvent.value.data.optionIds, [
+    "strict_ephemeral_no_redirect",
+    "confirmed_query_same_origin_redirect",
+    "rn_fetch_after_native_boundary_proof",
+  ]);
+  assert.deepEqual(d036CardEvent.value.data.compatibleProfileRedirectStatuses, [307, 308]);
+  assert.equal(d036CardEvent.value.data.ephemeralAloneConsideredSufficientIsolation, false);
+  assert.equal(d036CardEvent.value.data.explicitUrlCacheDisabled, true);
+  assert.equal(d036CardEvent.value.data.explicitCookieStorageDisabled, true);
+  assert.equal(d036CardEvent.value.data.explicitCredentialStorageDisabled, true);
+  assert.equal(d036CardEvent.value.data.providerCompatibilitySpikePassed, false);
+  assert.equal(d036CardEvent.value.data.nativeBoundaryEvidencePassed, false);
+  assert.equal(d036CardEvent.value.data.realNetworkRequests, 0);
+  assert.equal(d036CardEvent.value.data.independentReviewPassed, false);
+  assert.equal(d036CardEvent.value.data.ownerCardScheduled, false);
+  assert.equal(d036CardEvent.value.data.d039BlockerState, "OPEN");
+  assert.equal(d036CardEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -818,7 +839,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 287);
+    assert.equal(report.schemaValidation.instancesValidated, 288);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2445,6 +2466,39 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       model.decisionRegister.decisions.push(candidate);
     });
     assertDiagnostic(report, "OPS_D034_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-036 选择卡工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260820-001");
+    });
+    assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-036 选择卡稳定选项漂移", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-001").value.data.optionIds[0] = "allow_all_redirects";
+    });
+    assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-036 错误把 ephemeral 当作完整隔离证据", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-001").value.data.ephemeralAloneConsideredSufficientIsolation = true;
+    });
+    assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("D-036 在三 Provider/原生证据前进入决定台账", () => {
+    const report = validateMutation((model) => {
+      const candidate = structuredClone(
+        model.decisionRegister.decisions.find((decision) => decision.id === "D-052"),
+      );
+      candidate.id = "D-036";
+      candidate.title = "AITransport URL、重定向与会话隔离 profile";
+      model.decisionRegister.decisions.push(candidate);
+    });
+    assertDiagnostic(report, "OPS_D036_CARD_SPEC_MISMATCH");
   });
 });
 

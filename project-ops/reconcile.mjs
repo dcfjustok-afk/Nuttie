@@ -91,6 +91,13 @@ function latestD034Record(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD036Record(model) {
+  return model.events
+    .filter((record) => record.value?.subject?.id === "D036-AI-TRANSPORT-PROFILE-CARD-001")
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -524,6 +531,66 @@ export function reconcileProjectOps(model) {
     addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D034_GATE", "D-034", "D-034 未保持三包 AI 资源预算卡、19 维硬上限、真机 benchmark 门禁、自审和独立复核/Owner/B05/实现待办状态", d034);
   }
 
+  const d036Record = latestD036Record(model);
+  const d036 = {
+    eventId: d036Record?.eventId ?? null,
+    decisionState: d036Record?.data?.decisionState ?? null,
+    blockerState: d036Record?.data?.d039BlockerState ?? null,
+    cardState: d036Record?.data?.cardState ?? null,
+    next: d036Record?.data?.next ?? null,
+    optionCount: d036Record?.data?.optionCount ?? null,
+    recommendedOptionId: d036Record?.data?.recommendedOptionId ?? null,
+    strictRedirectBoundary: [
+      d036Record?.data?.strictProfileRejectsAllRedirects,
+      d036Record?.data?.authorizationNeverSentToUnconfirmedOrigin,
+    ].every((value) => value === true),
+    explicitSessionIsolation: [
+      d036Record?.data?.explicitUrlCacheDisabled,
+      d036Record?.data?.explicitCookieStorageDisabled,
+      d036Record?.data?.explicitCredentialStorageDisabled,
+    ].every((value) => value === true) && d036Record?.data?.ephemeralAloneConsideredSufficientIsolation === false,
+    providerCompatibilityTargetCount: d036Record?.data?.providerCompatibilityTargetCount ?? null,
+    providerCompatibilitySpikePassed: d036Record?.data?.providerCompatibilitySpikePassed ?? null,
+    nativeBoundaryEvidencePassed: d036Record?.data?.nativeBoundaryEvidencePassed ?? null,
+    realNetworkRequests: d036Record?.data?.realNetworkRequests ?? null,
+    selfReviewPassed: [
+      d036Record?.data?.productSelfReviewPassed,
+      d036Record?.data?.privacySecuritySelfReviewPassed,
+      d036Record?.data?.dataIntegritySelfReviewPassed,
+      d036Record?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    independentReviewPassed: d036Record?.data?.independentReviewPassed ?? null,
+    ownerCardScheduled: d036Record?.data?.ownerCardScheduled ?? null,
+    ownerReviewAuthorized: d036Record?.data?.ownerReviewAuthorized ?? null,
+    formalImplementationAuthorized: d036Record?.data?.formalImplementationAuthorized ?? null,
+    registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-036"),
+    ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-036").length,
+  };
+  if (!(
+    d036.eventId === "EVT-20260820-001" &&
+    d036.decisionState === "CANDIDATE" &&
+    d036.blockerState === "OPEN" &&
+    d036.cardState === "DRAFT_COMPLETE" &&
+    d036.next === "D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d036.optionCount === 3 &&
+    d036.recommendedOptionId === "strict_ephemeral_no_redirect" &&
+    d036.strictRedirectBoundary === true &&
+    d036.explicitSessionIsolation === true &&
+    d036.providerCompatibilityTargetCount === 3 &&
+    d036.providerCompatibilitySpikePassed === false &&
+    d036.nativeBoundaryEvidencePassed === false &&
+    d036.realNetworkRequests === 0 &&
+    d036.selfReviewPassed === true &&
+    d036.independentReviewPassed === false &&
+    d036.ownerCardScheduled === false &&
+    d036.ownerReviewAuthorized === false &&
+    d036.formalImplementationAuthorized === false &&
+    d036.registeredInDecisionLedger === false &&
+    d036.ownerResponseCount === 0
+  )) {
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D036_GATE", "D-036", "D-036 未保持三包 AITransport 隔离卡、显式 session 隔离、三 Provider/原生证据待办、自审和独立复核/Owner/B05/实现未授权状态", d036);
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -587,6 +654,7 @@ export function reconcileProjectOps(model) {
     d031,
     d033,
     d034,
+    d036,
     d040,
     diagnostics,
   };

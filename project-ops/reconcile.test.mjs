@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 169,
+    events: 170,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -116,6 +116,22 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d034.ownerCardScheduled, false);
   assert.equal(report.d034.registeredInDecisionLedger, false);
   assert.equal(report.d034.ownerResponseCount, 0);
+  assert.equal(report.d036.eventId, "EVT-20260820-001");
+  assert.equal(report.d036.decisionState, "CANDIDATE");
+  assert.equal(report.d036.blockerState, "OPEN");
+  assert.equal(report.d036.next, "D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d036.optionCount, 3);
+  assert.equal(report.d036.strictRedirectBoundary, true);
+  assert.equal(report.d036.explicitSessionIsolation, true);
+  assert.equal(report.d036.providerCompatibilityTargetCount, 3);
+  assert.equal(report.d036.providerCompatibilitySpikePassed, false);
+  assert.equal(report.d036.nativeBoundaryEvidencePassed, false);
+  assert.equal(report.d036.realNetworkRequests, 0);
+  assert.equal(report.d036.selfReviewPassed, true);
+  assert.equal(report.d036.independentReviewPassed, false);
+  assert.equal(report.d036.ownerCardScheduled, false);
+  assert.equal(report.d036.registeredInDecisionLedger, false);
+  assert.equal(report.d036.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.next, "FIRST_BATCH_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
@@ -174,6 +190,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d034Report = reconcileProjectOps(d034Model);
   assert.equal(d034Report.ok, false);
   assert.ok(d034Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D034_GATE"));
+
+  const d036Model = validModel();
+  d036Model.events.find((record) => record.value.eventId === "EVT-20260820-001").value.data.ephemeralAloneConsideredSufficientIsolation = true;
+  const d036Report = reconcileProjectOps(d036Model);
+  assert.equal(d036Report.ok, false);
+  assert.ok(d036Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_17_D034_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_17_D034_CARD_SPEC",
+export const PHASE0_2026_08_20_D036_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_20_D036_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 169,
+    events: 170,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,6 +101,7 @@ export const PHASE0_2026_08_17_D034_CARD_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
+    "2026-08-20": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1926,6 +1927,84 @@ export const PHASE0_2026_08_17_D034_CARD_SPEC = Object.freeze({
       d039DecisionStateChanged: false,
     }),
   }),
+  d036: Object.freeze({
+    cardSpec: Object.freeze({
+      eventId: "EVT-20260820-001",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D036-AI-TRANSPORT-PROFILE-CARD-001",
+      subjectRole: "CandidateProductArtifact",
+      correlationId: "d036-ai-transport-profile-card-spec",
+      state: "completed",
+      decisionId: "D-036",
+      decisionState: "CANDIDATE",
+      d039BlockerId: "D039-PX5-B05",
+      d039BlockerState: "OPEN",
+      from: "D036_CARD_SPEC_REQUIRED",
+      next: "D036_PROVIDER_SPIKE_NATIVE_EVIDENCE_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardState: "DRAFT_COMPLETE",
+      questionId: "d036_ai_transport_profile",
+      optionIds: Object.freeze([
+        "strict_ephemeral_no_redirect",
+        "confirmed_query_same_origin_redirect",
+        "rn_fetch_after_native_boundary_proof",
+      ]),
+      optionCount: 3,
+      recommendedOptionId: "strict_ephemeral_no_redirect",
+      allOptionsMutuallyExclusive: true,
+      completePolicyPackages: true,
+      httpsOnlyBaselinePreserved: true,
+      onlyAiTransportMayNetwork: true,
+      userinfoRejectedAllProfiles: true,
+      fragmentRejectedAllProfiles: true,
+      authorizationNeverSentToUnconfirmedOrigin: true,
+      strictProfileRejectsQuery: true,
+      strictProfileRejectsAllRedirects: true,
+      compatibleProfileAllowsConfirmedNonsecretQuery: true,
+      compatibleProfileRedirectStatuses: Object.freeze([307, 308]),
+      compatibleProfileRedirectSameOriginOnly: true,
+      compatibleProfileMaximumRedirects: 3,
+      ephemeralAloneConsideredSufficientIsolation: false,
+      explicitUrlCacheDisabled: true,
+      explicitCookieStorageDisabled: true,
+      explicitCredentialStorageDisabled: true,
+      backgroundTransportAuthorized: false,
+      webViewOrRemoteImageTransportAuthorized: false,
+      rnFetchRequiresNativeBoundaryProof: true,
+      d053ProviderUseGatePreserved: true,
+      blockedWhenD033D034OrD053Unresolved: true,
+      providerCompatibilityTargetCount: 3,
+      providerCompatibilitySpikePassed: false,
+      nativeBoundaryEvidencePassed: false,
+      currentWindowsJsExportCountsAsNativeTransportEvidence: false,
+      redirectHarnessDefined: true,
+      debugAndReleaseNetworkCaptureRequired: true,
+      realNetworkRequests: 0,
+      productSelfReviewPassed: true,
+      privacySecuritySelfReviewPassed: true,
+      dataIntegritySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      ownerCardScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d036RegisteredInDecisionLedger: false,
+      d036RecordedInOwnerIntake: false,
+      closedD039BlockerIds: Object.freeze(["D039-PX5-B01", "D039-PX5-B02"]),
+      remainingOpenD039BlockerIds: Object.freeze([
+        "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+        "D039-PX5-B06", "D039-PX5-B07",
+      ]),
+      remainingOpenD039BlockerCount: 5,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
+      ownerIntakeChanged: false,
+      d039DecisionStateChanged: false,
+    }),
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -2486,7 +2565,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_17_D034_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D036_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5671,6 +5750,41 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_1
       "OPS_D034_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-17.jsonl",
       "D-034 必须精确保留三套 AI 资源预算政策包、19 维硬上限、真机 benchmark 门禁、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
+    );
+  }
+
+  const d036CardSpec = baseline.d036.cardSpec;
+  const d036CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d036CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d036CardSpec.correlationId),
+  );
+  const d036CardEvent = d036CardEvents[0]?.value;
+  const d036CardData = d036CardEvent?.data ?? {};
+  const d036CardFields = Object.keys(d036CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  const d036Registered = model.decisionRegister.decisions.some((decision) => decision.id === "D-036");
+  const d036OwnerResponses = model.ownerIntake.responses.filter((response) => response.decisionId === "D-036");
+  if (
+    d036CardEvents.length !== 1 ||
+    d036CardEvent?.eventId !== d036CardSpec.eventId ||
+    d036CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d036CardEvent?.actor?.id !== d036CardSpec.actorId ||
+    d036CardEvent?.actor?.role !== d036CardSpec.actorRole ||
+    d036CardEvent?.subject?.id !== d036CardSpec.subjectId ||
+    d036CardEvent?.subject?.role !== d036CardSpec.subjectRole ||
+    d036CardEvent?.correlationId !== d036CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d036CardData).sort()) !== JSON.stringify(d036CardFields) ||
+    d036CardFields.some(
+      (field) => JSON.stringify(d036CardData[field]) !== JSON.stringify(d036CardSpec[field]),
+    ) ||
+    d036Registered ||
+    d036OwnerResponses.length !== 0
+  ) {
+    add(
+      "OPS_D036_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-036 必须精确保留三套 AITransport 隔离政策包、origin/redirect/session/cache/cookie/credential 边界、三 Provider/原生证据门禁、四域自审和独立复核/Owner/B05/实现未授权状态，并且不得提前进入决定台账或 Owner intake",
     );
   }
 

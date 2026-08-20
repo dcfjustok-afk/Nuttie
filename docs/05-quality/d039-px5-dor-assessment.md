@@ -37,7 +37,7 @@ D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of
 | `D039-PX5-B02` | `CLOSED` | 已冻结 [5 个 route、严格参数、43 个静态 testID、2 个动态模式、返回焦点和 6 类非法 deep-link 恢复](../03-design/d039-route-observability-contract.md) | 规格完成；正式 Router、组件、E2E 与真机证据仍待授权后补充 |
 | `D039-PX5-B03` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | D-045 内部卡已固定[三套完整政策包、最近/收藏关系、保留、清除和删除语义](../03-design/d045-recent-favorites-card-spec.md) | 四域自审已通过；独立复核、Owner 展示与选择均未发生 |
 | `D039-PX5-B04` | `OPEN / CARD_INDEPENDENT_REVIEW_REQUIRED` | [D-031 内部卡](../03-design/d031-media-ai-retention-card-spec.md) 已固定三套媒体/AI 保留包、临时清理、备份和删除语义 | 四域自审已通过；独立复核、Owner 展示与选择均未发生；不得从相机权限反推保留许可 |
-| `D039-PX5-B05` | `OPEN / D033_D034_CARD_INDEPENDENT_REVIEW_REQUIRED / OTHER_INPUTS_REQUIRED` | D-033/D-034/D-036/D-053 分别关闭发送确认、资源预算、transport profile 和 Provider 数据用途准入 | D-033 三包与 D-034 三档资源预算卡均已完成四域自审；D-034 仍需最低支持 iPhone benchmark，二者均需独立复核与 Owner 选择；任一未知时 AI 入口只能失败关闭，不得发送 |
+| `D039-PX5-B05` | `OPEN / D033_D034_D036_CARD_INDEPENDENT_REVIEW_REQUIRED / OTHER_INPUTS_REQUIRED` | D-033/D-034/D-036/D-053 分别关闭发送确认、资源预算、transport profile 和 Provider 数据用途准入 | D-033 三包、D-034 三档资源预算与 [D-036 三套 transport 隔离包](../03-design/d036-ai-transport-profile-card-spec.md)均已完成四域自审；D-034 仍需最低支持 iPhone benchmark，D-036 仍需三 Provider 兼容 Spike 与原生边界证据，三者均需独立复核与 Owner 选择；任一未知时 AI 入口只能失败关闭，不得发送 |
 | `D039-PX5-B06` | 需 Owner 第二次动作 | D-032 原生证据返回后冻结最终矩阵，并单独授权正式根工程与 D-039 增量 | Windows JS export 不能替代原生证据或第二次动作 |
 | `D039-PX5-B07` | 需环境 | 获得可用 Mac/Xcode 与目标 iPhone 链路，完成相机、系统媒体、VoiceOver、Dynamic Type、SQLCipher/Keychain 和持久化集成验证 | 当前 OI-03 明确只有 iPhone 16 Pro Max / iOS 26.5、无可用 Mac |
 
@@ -57,7 +57,7 @@ OI-02 的 Bundle ID 仍未创建。它不阻断本地规格工作，但首次正
 
 1. B01 已关闭：PX-4 设计规则已转换为 24 条逐状态、可自动化的验收矩阵。
 2. B02 已关闭：正式 route/参数/testID/返回契约已形成，未创建 RN 页面。
-3. D-045、D-031、D-033 与 D-034 内部卡均已完成四域自审，当前必须先通过独立复核才可展示；D-034 另需最低支持 iPhone benchmark，B05 的 D-036/D-053 决定链仍按小批中立选择卡和证据准备。
+3. D-045、D-031、D-033、D-034 与 D-036 内部卡均已完成四域自审，当前必须先通过独立复核才可展示；D-034 另需最低支持 iPhone benchmark，D-036 另需 OI-07、三 Provider 兼容 Spike 和原生边界证据；B05 的 D-053 决定链继续按小批中立选择卡和证据准备。
 4. 在具备 Mac/Xcode 后补 D-032 原生 Spike，回传证据并请求 Owner 第二次冻结。
 5. 只有 B01 至 B07 全部关闭且出现新的权威 PX-5 通过事件，才可请求对应正式实现授权。
 

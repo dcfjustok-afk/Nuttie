@@ -341,6 +341,6 @@ Owner 必须用一个完整组合回复，例如 `K1+S1` 或 `K2+S2`；只回复
 
 **Shared requirements**：不得通过 WebView 或 remote Image 组件加载 Provider 内容；请求/响应临时文件在成功、失败、取消、超限、wipe 和下次启动均清理；Debug 与 Release 分别做全进程网络捕获。若 JS/RN 层无法证明所选 profile，需实现窄接口 Swift/Expo Module transport，使用独立 `URLSession` 或等价机制。
 
-**Recommended**：严格隔离 profile；先用至少三个目标 OpenAI-compatible Provider 做兼容 Spike，再让 Owner 根据失败证据决定是否采纳受控兼容例外。
+**Recommended**：严格隔离 profile；先用至少三个目标 OpenAI-compatible Provider 做兼容 Spike，再让 Owner 根据失败证据决定是否采纳受控兼容例外。完整 URL 规范化、同源 307/308、显式 cache/cookie/credential storage 禁用、RN `fetch` 证明义务与失败恢复语义见 [D-036 内部选择卡规格](../../03-design/d036-ai-transport-profile-card-spec.md)；该卡只完成四域自审，仍不是 Owner 已接受答案。
 
 **Decision needed before**：把具体 3xx/query/fragment/session 行为写入 accepted ADR，或发布任何 AI 功能。

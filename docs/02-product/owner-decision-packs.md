@@ -169,7 +169,7 @@ Spike 必须覆盖 SQLCipher、Keychain、通知、相机、Prebuild diff、Debu
 | D-030 | 备份恢复语义 | A 全量替换 + 有空间时短期恢复点；B 仅替换无恢复点；C 合并 + 替换 | A | D-027 与空间/kill-point Spike |
 | D-035 | 明文 JSON/CSV | A 首版仅加密备份；B 允许字段选择明文导出；C 延后到真实需求 | A/C | 字段合同、CSV 注入与隐私文案 |
 | D-052 | USDA 境外再分发 | A 获得 USDA/NAL 书面确认前，境外 TestFlight 只内置台湾合规包；B Owner 接受残余风险并分包发布 | A | 官方书面澄清与 NOTICE 测试 |
-| D-036 | AITransport profile | A 严格隔离：拒 query/fragment/userinfo、全部 3xx 终止、ephemeral/no cookie/cache；B 受控同源兼容；C 通用 RN fetch，须先证明边界 | A | 至少三个目标 Provider Spike |
+| D-036 | AITransport profile | A 严格隔离：拒 query/fragment/userinfo、全部 3xx 终止、显式禁用 cache/cookie/credential storage；B 经确认的非秘密 query + 本地规则内同 origin 307/308；C 通用 RN fetch，须先证明原生边界 | A；内部卡已完成自审，仍待三 Provider 兼容 Spike、原生边界证据与独立复核，不可展示 | OI-07、精确 RN/Expo/iOS、Debug/Release 抓包与 redirect/session 证据 |
 | D-053 | 第三方 AI Provider 数据用途准入 | A 只有 terms/policy 能证明保留、训练、人工访问、删除和广告/营销用途与健康/营养载荷相容时才允许发送，未知即阻断；B 每个 Provider 单独隐私/法律复核后由 Owner 接受仍可接受的残余风险，若用途触及 Apple 明确禁项则不能放行；C 任何 OpenAI-compatible HTTPS Provider 均可由用户自行同意 | A；C 不推荐且可能不满足 Apple 审查 | Provider 政策快照、实际数据流和 Apple 5.1.3 复核 |
 | D-026 | 数据包签名 | A Ed25519 + RFC 8785 JCS；B Ed25519 + 原始 manifest bytes；C P-256 + 冻结编码 | A，须互操作 Spike | Swift/发布工具 golden corpus |
 | D-027 | 备份加密 envelope（二维选择） | K1 Argon2id + AES-256-GCM / K2 PBKDF2-HMAC-SHA256 + AES-256-GCM；并另选 S1 两遍认证/解密 / S2 单遍隔离 staging | 先验证 `K1+S1`；Owner 必须各选一个维度 | 最低支持 iPhone 性能、AAD/TOCTOU 与供应链审查 |
