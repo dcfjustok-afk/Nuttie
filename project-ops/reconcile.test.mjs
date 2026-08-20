@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 181,
+    events: 182,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,13 +152,13 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-004");
+  assert.equal(report.d040.eventId, "EVT-20260821-005");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
   assert.equal(report.d040.dataLifecycleBatchCardCount, 4);
-  assert.equal(report.d040.draftedCardCount, 16);
+  assert.equal(report.d040.draftedCardCount, 17);
   assert.equal(report.d040.firstBatchSelfReviewPassed, true);
   assert.equal(report.d040.energyBatchSelfReviewPassed, true);
   assert.equal(report.d040.dataLifecycleBatchSelfReviewPassed, true);
@@ -317,6 +317,37 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.d071OwnerReviewAuthorized, false);
   assert.equal(report.d040.d071MacroDisplayImplementationAuthorized, false);
   assert.equal(report.d040.d071PersistenceImplementationAuthorized, false);
+  assert.equal(report.d040.d072CardState, "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY");
+  assert.equal(report.d040.d072DecisionId, "D-072");
+  assert.equal(report.d040.d072QuestionId, "d072_hard_stop_record_availability");
+  assert.equal(report.d040.d072CardCount, 1);
+  assert.equal(report.d040.d072OptionCount, 2);
+  assert.deepEqual(report.d040.d072OptionIds, [
+    "allow_no_goal_fact_recording",
+    "pause_new_fact_creation_keep_data_controls",
+  ]);
+  assert.equal(report.d040.d072RecommendedOptionId, "allow_no_goal_fact_recording");
+  assert.equal(report.d040.d072HardStopCannotBeWaived, true);
+  assert.equal(report.d040.d072NoGoalRecordingCannotCreateGoal, true);
+  assert.equal(report.d040.d072AutomaticTargetOrFormulaShown, false);
+  assert.equal(report.d040.d072TargetComparisonOrScoringShown, false);
+  assert.equal(report.d040.d072ExistingHistoryRecalculated, false);
+  assert.equal(report.d040.d072ExistingHistoryDeleted, false);
+  assert.equal(report.d040.d072DataAccessAndDeletionRemainAvailable, true);
+  assert.equal(report.d040.d072RecordingChoiceChangesHealthClassification, false);
+  assert.equal(report.d040.d072ConditionInferredByApp, false);
+  assert.equal(report.d040.d072UnknownEligibilityEnablesAutomaticTarget, false);
+  assert.equal(report.d040.d072SupportCopyRequiresHealthApproval, true);
+  assert.equal(report.d040.d072D068D069PrerequisitesPassed, false);
+  assert.equal(report.d040.d072SelfReviewPassed, true);
+  assert.equal(report.d040.d072HealthContentApproved, false);
+  assert.equal(report.d040.d072ContentQaPassed, false);
+  assert.equal(report.d040.d072IndependentReviewPassed, false);
+  assert.equal(report.d040.d072CardRegisteredInDecisionLedger, false);
+  assert.equal(report.d040.d072OwnerReady, false);
+  assert.equal(report.d040.d072OwnerReviewAuthorized, false);
+  assert.equal(report.d040.d072RecordingImplementationAuthorized, false);
+  assert.equal(report.d040.d072PersistenceImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketReady, true);
   assert.equal(report.d040.healthReviewRequiredArtifactCount, 9);
   assert.equal(report.d040.healthReviewRequiredItemCount, 13);
@@ -494,6 +525,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d071CardReport = reconcileProjectOps(d071CardModel);
   assert.equal(d071CardReport.ok, false);
   assert.ok(d071CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d072CardModel = validModel();
+  d072CardModel.events.find((record) => record.value.eventId === "EVT-20260821-005").value.data.hardStopCannotBeWaived = false;
+  const d072CardReport = reconcileProjectOps(d072CardModel);
+  assert.equal(d072CardReport.ok, false);
+  assert.ok(d072CardReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

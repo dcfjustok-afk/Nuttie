@@ -123,6 +123,7 @@ function latestD040Record(model) {
         subjectId === "D040-MACRO-TARGET-SOURCE-CARD-SPEC-001" ||
         subjectId === "D040-CUSTOM-MACRO-INPUT-SHAPE-CARD-SPEC-001" ||
         subjectId === "D040-MACRO-DISPLAY-ROUNDING-CARD-SPEC-001" ||
+        subjectId === "D040-HARD-STOP-RECORD-AVAILABILITY-CARD-SPEC-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -718,6 +719,9 @@ export function reconcileProjectOps(model) {
   const d040D071CardRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260821-004",
   )?.value ?? null;
+  const d040D072CardRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260821-005",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -729,7 +733,7 @@ export function reconcileProjectOps(model) {
     firstBatchCardCount: d040FirstBatchRecord?.data?.cardCount ?? null,
     energyBatchCardCount: d040EnergyBatchRecord?.data?.cardCount ?? null,
     dataLifecycleBatchCardCount: d040DataLifecycleBatchRecord?.data?.cardCount ?? null,
-    draftedCardCount: d040D071CardRecord?.data?.draftedCardCount ?? null,
+    draftedCardCount: d040D072CardRecord?.data?.draftedCardCount ?? null,
     firstBatchSelfReviewPassed: [
       d040FirstBatchRecord?.data?.productSelfReviewPassed,
       d040FirstBatchRecord?.data?.healthEvidenceSelfReviewPassed,
@@ -907,6 +911,40 @@ export function reconcileProjectOps(model) {
     d071OwnerReviewAuthorized: d040D071CardRecord?.data?.ownerReviewAuthorized ?? null,
     d071MacroDisplayImplementationAuthorized: d040D071CardRecord?.data?.macroDisplayImplementationAuthorized ?? null,
     d071PersistenceImplementationAuthorized: d040D071CardRecord?.data?.persistenceImplementationAuthorized ?? null,
+    d072CardState: d040D072CardRecord?.data?.inputState ?? null,
+    d072DecisionId: d040D072CardRecord?.data?.decisionId ?? null,
+    d072QuestionId: d040D072CardRecord?.data?.questionId ?? null,
+    d072ApplicableWhen: d040D072CardRecord?.data?.applicableWhen ?? null,
+    d072CardCount: d040D072CardRecord?.data?.cardCount ?? null,
+    d072OptionCount: d040D072CardRecord?.data?.optionCount ?? null,
+    d072OptionIds: d040D072CardRecord?.data?.optionIds ?? null,
+    d072RecommendedOptionId: d040D072CardRecord?.data?.recommendedOptionId ?? null,
+    d072HardStopCannotBeWaived: d040D072CardRecord?.data?.hardStopCannotBeWaived ?? null,
+    d072NoGoalRecordingCannotCreateGoal: d040D072CardRecord?.data?.noGoalRecordingCannotCreateGoal ?? null,
+    d072AutomaticTargetOrFormulaShown: d040D072CardRecord?.data?.automaticTargetOrFormulaShown ?? null,
+    d072TargetComparisonOrScoringShown: d040D072CardRecord?.data?.targetComparisonOrScoringShown ?? null,
+    d072ExistingHistoryRecalculated: d040D072CardRecord?.data?.existingHistoryRecalculated ?? null,
+    d072ExistingHistoryDeleted: d040D072CardRecord?.data?.existingHistoryDeleted ?? null,
+    d072DataAccessAndDeletionRemainAvailable: d040D072CardRecord?.data?.dataAccessAndDeletionRemainAvailable ?? null,
+    d072RecordingChoiceChangesHealthClassification: d040D072CardRecord?.data?.recordingChoiceChangesHealthClassification ?? null,
+    d072ConditionInferredByApp: d040D072CardRecord?.data?.conditionInferredByApp ?? null,
+    d072UnknownEligibilityEnablesAutomaticTarget: d040D072CardRecord?.data?.unknownEligibilityEnablesAutomaticTarget ?? null,
+    d072SupportCopyRequiresHealthApproval: d040D072CardRecord?.data?.supportCopyRequiresHealthApproval ?? null,
+    d072D068D069PrerequisitesPassed: d040D072CardRecord?.data?.d068D069PrerequisitesPassed ?? null,
+    d072SelfReviewPassed: [
+      d040D072CardRecord?.data?.productSelfReviewPassed,
+      d040D072CardRecord?.data?.healthEvidenceSelfReviewPassed,
+      d040D072CardRecord?.data?.privacySelfReviewPassed,
+      d040D072CardRecord?.data?.qaSelfReviewPassed,
+    ].every((value) => value === true),
+    d072HealthContentApproved: d040D072CardRecord?.data?.healthContentApproved ?? null,
+    d072ContentQaPassed: d040D072CardRecord?.data?.contentQaPassed ?? null,
+    d072IndependentReviewPassed: d040D072CardRecord?.data?.independentReviewPassed ?? null,
+    d072CardRegisteredInDecisionLedger: d040D072CardRecord?.data?.cardRegisteredInDecisionLedger ?? null,
+    d072OwnerReady: d040D072CardRecord?.data?.d072OwnerReady ?? null,
+    d072OwnerReviewAuthorized: d040D072CardRecord?.data?.ownerReviewAuthorized ?? null,
+    d072RecordingImplementationAuthorized: d040D072CardRecord?.data?.recordingImplementationAuthorized ?? null,
+    d072PersistenceImplementationAuthorized: d040D072CardRecord?.data?.persistenceImplementationAuthorized ?? null,
     healthReviewPacketReady: d040ChinaHealthReviewerPacketRecord?.data?.reviewPacketReady ?? null,
     healthReviewRequiredArtifactCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredArtifactCount ?? null,
     healthReviewRequiredItemCount: d040ChinaHealthReviewerPacketRecord?.data?.requiredReviewItemCount ?? null,
@@ -973,7 +1011,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260821-004" &&
+    d040.eventId === "EVT-20260821-005" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -981,7 +1019,7 @@ export function reconcileProjectOps(model) {
     d040.firstBatchCardCount === 4 &&
     d040.energyBatchCardCount === 5 &&
     d040.dataLifecycleBatchCardCount === 4 &&
-    d040.draftedCardCount === 16 &&
+    d040.draftedCardCount === 17 &&
     d040.firstBatchSelfReviewPassed === true &&
     d040.energyBatchSelfReviewPassed === true &&
     d040.dataLifecycleBatchSelfReviewPassed === true &&
@@ -1141,6 +1179,38 @@ export function reconcileProjectOps(model) {
     d040.d071OwnerReviewAuthorized === false &&
     d040.d071MacroDisplayImplementationAuthorized === false &&
     d040.d071PersistenceImplementationAuthorized === false &&
+    d040.d072CardState === "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY" &&
+    d040.d072DecisionId === "D-072" &&
+    d040.d072QuestionId === "d072_hard_stop_record_availability" &&
+    d040.d072ApplicableWhen === "automatic energy/weight-loss/macro target hard stop or conditional stop is active" &&
+    d040.d072CardCount === 1 &&
+    d040.d072OptionCount === 2 &&
+    JSON.stringify(d040.d072OptionIds) === JSON.stringify([
+      "allow_no_goal_fact_recording",
+      "pause_new_fact_creation_keep_data_controls",
+    ]) &&
+    d040.d072RecommendedOptionId === "allow_no_goal_fact_recording" &&
+    d040.d072HardStopCannotBeWaived === true &&
+    d040.d072NoGoalRecordingCannotCreateGoal === true &&
+    d040.d072AutomaticTargetOrFormulaShown === false &&
+    d040.d072TargetComparisonOrScoringShown === false &&
+    d040.d072ExistingHistoryRecalculated === false &&
+    d040.d072ExistingHistoryDeleted === false &&
+    d040.d072DataAccessAndDeletionRemainAvailable === true &&
+    d040.d072RecordingChoiceChangesHealthClassification === false &&
+    d040.d072ConditionInferredByApp === false &&
+    d040.d072UnknownEligibilityEnablesAutomaticTarget === false &&
+    d040.d072SupportCopyRequiresHealthApproval === true &&
+    d040.d072D068D069PrerequisitesPassed === false &&
+    d040.d072SelfReviewPassed === true &&
+    d040.d072HealthContentApproved === false &&
+    d040.d072ContentQaPassed === false &&
+    d040.d072IndependentReviewPassed === false &&
+    d040.d072CardRegisteredInDecisionLedger === false &&
+    d040.d072OwnerReady === false &&
+    d040.d072OwnerReviewAuthorized === false &&
+    d040.d072RecordingImplementationAuthorized === false &&
+    d040.d072PersistenceImplementationAuthorized === false &&
     d040.healthReviewPacketReady === true &&
     d040.healthReviewRequiredArtifactCount === 9 &&
     d040.healthReviewRequiredItemCount === 13 &&
@@ -1196,7 +1266,7 @@ export function reconcileProjectOps(model) {
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063 来源卡、D-070 输入形态卡、D-071 显示舍入卡、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、D-063 来源卡、D-070 输入形态卡、D-071 显示舍入卡、D-072 硬停止纯记录卡、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

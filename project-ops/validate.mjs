@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D071_CARD_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_21_D071_CARD_SPEC",
+export const PHASE0_2026_08_21_D072_CARD_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_21_D072_CARD_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 181,
+    events: 182,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_D071_CARD_SPEC = Object.freeze({
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 4,
+    "2026-08-21": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3030,6 +3030,65 @@ export const PHASE0_2026_08_21_D071_CARD_SPEC = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    d072HardStopRecordAvailabilityCardSpec: Object.freeze({
+      eventId: "EVT-20260821-005",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-HARD-STOP-RECORD-AVAILABILITY-CARD-SPEC-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-hard-stop-record-availability-card-spec",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "D071_CARD_SPEC_COMPLETE_D072_SPEC_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      cardNext: "HEALTH_AND_D072_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "DRAFT_COMPLETE_SELF_REVIEW_PASS_NOT_OWNER_READY",
+      decisionId: "D-072",
+      questionId: "d072_hard_stop_record_availability",
+      applicableWhen: "automatic energy/weight-loss/macro target hard stop or conditional stop is active",
+      cardCount: 1,
+      optionCount: 2,
+      optionIds: Object.freeze([
+        "allow_no_goal_fact_recording",
+        "pause_new_fact_creation_keep_data_controls",
+      ]),
+      recommendedOptionId: "allow_no_goal_fact_recording",
+      draftedCardCount: 17,
+      hardStopCannotBeWaived: true,
+      noGoalRecordingCannotCreateGoal: true,
+      automaticTargetOrFormulaShown: false,
+      targetComparisonOrScoringShown: false,
+      existingHistoryRecalculated: false,
+      existingHistoryDeleted: false,
+      dataAccessAndDeletionRemainAvailable: true,
+      recordingChoiceChangesHealthClassification: false,
+      conditionInferredByApp: false,
+      unknownEligibilityEnablesAutomaticTarget: false,
+      supportCopyRequiresHealthApproval: true,
+      d068D069PrerequisitesPassed: false,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      productSelfReviewPassed: true,
+      healthEvidenceSelfReviewPassed: true,
+      privacySelfReviewPassed: true,
+      qaSelfReviewPassed: true,
+      independentReviewPassed: false,
+      externalMessageSent: false,
+      cardRegisteredInDecisionLedger: false,
+      d072OwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      recordingImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3329,7 +3388,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D071_CARD_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D072_CARD_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6593,6 +6652,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_D071_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-071 卡片必须精确保留三项互斥显示策略、来源与派生单位、raw/display、十进制舍入、残差披露，以及 D-063/D-070/健康/独立复核/Owner/实现均未授权状态",
+    );
+  }
+
+  const d072CardSpec = baseline.d040Research.d072HardStopRecordAvailabilityCardSpec;
+  const d072CardEvents = model.events.filter(
+    (record) => record.value?.eventId === d072CardSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === d072CardSpec.correlationId),
+  );
+  const d072CardEvent = d072CardEvents[0]?.value;
+  const d072CardData = d072CardEvent?.data ?? {};
+  const d072CardFields = Object.keys(d072CardSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    d072CardEvents.length !== 1 ||
+    d072CardEvent?.eventId !== d072CardSpec.eventId ||
+    d072CardEvent?.type !== "ARTIFACT_CREATED" ||
+    d072CardEvent?.actor?.id !== d072CardSpec.actorId ||
+    d072CardEvent?.actor?.role !== d072CardSpec.actorRole ||
+    d072CardEvent?.subject?.id !== d072CardSpec.subjectId ||
+    d072CardEvent?.subject?.role !== d072CardSpec.subjectRole ||
+    d072CardEvent?.correlationId !== d072CardSpec.correlationId ||
+    JSON.stringify(Object.keys(d072CardData).sort()) !== JSON.stringify(d072CardFields) ||
+    d072CardFields.some(
+      (field) => JSON.stringify(d072CardData[field]) !== JSON.stringify(d072CardSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_D072_CARD_SPEC_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-072 卡片必须精确保留两项互斥事实记录策略、硬停止不可豁免、不诊断、不删历史、保留数据控制，以及健康/独立复核/Owner/实现均未授权状态",
     );
   }
 
