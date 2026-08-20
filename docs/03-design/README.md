@@ -38,6 +38,7 @@
 | [d040-first-batch-card-spec.md](d040-first-batch-card-spec.md) | D-054/D-055/D-056/D-058 第一批年龄、保留、表示和分支选择卡；等待独立复核 |
 | [d040-energy-model-batch-card-spec.md](d040-energy-model-batch-card-spec.md) | D-057/D-059/D-060/D-061/D-062 第二批能量、活动、REE 与增减重路径卡；动态模型证据和独立复核仍缺 |
 | [d040-data-lifecycle-batch-card-spec.md](d040-data-lifecycle-batch-card-spec.md) | D-064/D-065/D-066/D-067 第三批保存、删除、舍入与重算卡；等待独立复核 |
+| [d040-china-support-health-review-input.md](d040-china-support-health-review-input.md) | D-040 中国大陆支持称谓、12356/120 用途、候选简中文案与健康评审责任/复核周期；具名健康评审人仍缺失 |
 | [nuttie-visual-direction.md](nuttie-visual-direction.md) | Nuttie 原创卡通栗子视觉方向、状态映射与 Figma 导入合同 |
 | [nuttie-design-system.md](nuttie-design-system.md) | Nuttie 视觉令牌、组件、五个本地优先功能画面、九种状态模式、候选边界与自动验证合同 |
 | [../04-engineering/testing/visual-kit-check.md](../04-engineering/testing/visual-kit-check.md) | 本地视觉原型的源码合同、负向变异测试与浏览器验收边界 |

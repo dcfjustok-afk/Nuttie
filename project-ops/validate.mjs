@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC",
+export const PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC = Object.freeze({
+  id: "PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 173,
+    events: 174,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -101,7 +101,7 @@ export const PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC = Object.freeze({
     "2026-08-14": 22,
     "2026-08-15": 8,
     "2026-08-17": 3,
-    "2026-08-20": 4,
+    "2026-08-20": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2522,6 +2522,79 @@ export const PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC = Object.freeze({
       persistenceImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    chinaSupportHealthReviewInput: Object.freeze({
+      eventId: "EVT-20260820-005",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-china-support-health-review-input",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "DRAFT_COMPLETE",
+      locale: "zh-Hans-CN",
+      officialSourceCheckComplete: true,
+      officialSourceCount: 4,
+      supportTermIds: Object.freeze([
+        "medical_health_professional",
+        "health_weight_management_clinic_or_related_department",
+        "psychological_assistance_hotline_12356",
+        "medical_emergency_120",
+      ]),
+      supportTermCount: 4,
+      copyContextIds: Object.freeze([
+        "general_non_diagnostic_boundary",
+        "chronic_condition_or_medication_yes",
+        "chronic_condition_or_medication_unsure",
+        "eating_disorder_risk_support",
+        "urgent_medical_risk",
+        "estimate_uncertainty",
+      ]),
+      copyContextCount: 6,
+      psychologicalSupportNumber: "12356",
+      medicalEmergencyNumber: "120",
+      psychologicalHotlinePresentedAsMedicalEmergencyReplacement: false,
+      appClaimsDiagnosisOrTreatment: false,
+      appClaimsReferralCompleted: false,
+      appClaimsEmergencyService: false,
+      ambiguousUnqualifiedProfessionalTitleAllowed: false,
+      manualAndNoGoalFallbackPreserved: true,
+      offlineBundledCopyRequired: true,
+      runtimeNetworkRequired: false,
+      locationAccessAuthorized: false,
+      analyticsAuthorized: false,
+      automaticDialAuthorized: false,
+      releaseTimeSourceReverificationRequired: true,
+      maximumRoutineReviewIntervalDays: 90,
+      immediateReviewTriggerIds: Object.freeze([
+        "official_source_change",
+        "resource_availability_change",
+        "health_review_finding",
+        "user_safety_incident_or_complaint",
+        "formula_trigger_or_copy_semantics_change",
+      ]),
+      immediateReviewTriggerCount: 5,
+      namedHealthReviewerRequired: true,
+      healthReviewerQualificationEvidenceRequired: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      d068OwnerReady: false,
+      d069OwnerReady: false,
+      firstThreeBatchesIndependentReviewPassed: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      healthCopyImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -2821,7 +2894,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -5837,6 +5910,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 第三批四张资料与目标生命周期卡必须精确保留四层分离、保存/删除组合、raw/display、历史不回算、零写入、自审和 Owner/持久化/实现未授权边界",
+    );
+  }
+
+  const chinaHealthInputSpec = baseline.d040Research.chinaSupportHealthReviewInput;
+  const chinaHealthInputEvents = model.events.filter(
+    (record) => record.value?.eventId === chinaHealthInputSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === chinaHealthInputSpec.correlationId),
+  );
+  const chinaHealthInputEvent = chinaHealthInputEvents[0]?.value;
+  const chinaHealthInputData = chinaHealthInputEvent?.data ?? {};
+  const chinaHealthInputFields = Object.keys(chinaHealthInputSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    chinaHealthInputEvents.length !== 1 ||
+    chinaHealthInputEvent?.eventId !== chinaHealthInputSpec.eventId ||
+    chinaHealthInputEvent?.type !== "ARTIFACT_CREATED" ||
+    chinaHealthInputEvent?.actor?.id !== chinaHealthInputSpec.actorId ||
+    chinaHealthInputEvent?.actor?.role !== chinaHealthInputSpec.actorRole ||
+    chinaHealthInputEvent?.subject?.id !== chinaHealthInputSpec.subjectId ||
+    chinaHealthInputEvent?.subject?.role !== chinaHealthInputSpec.subjectRole ||
+    chinaHealthInputEvent?.correlationId !== chinaHealthInputSpec.correlationId ||
+    JSON.stringify(Object.keys(chinaHealthInputData).sort()) !== JSON.stringify(chinaHealthInputFields) ||
+    chinaHealthInputFields.some(
+      (field) => JSON.stringify(chinaHealthInputData[field]) !== JSON.stringify(chinaHealthInputSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH",
+      "project-ops/events/2026-08-20.jsonl",
+      "D-040 中国大陆支持与健康治理输入必须精确保留 12356/120 用途分离、候选称谓/文案、90 天及即时复核、具名评审缺口和 Owner/实现未授权边界",
     );
   }
 

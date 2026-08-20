@@ -115,6 +115,7 @@ function latestD040Record(model) {
         subjectId === "D040-FIRST-BATCH-CARD-SPEC-001" ||
         subjectId === "D040-ENERGY-MODEL-BATCH-CARD-SPEC-001" ||
         subjectId === "D040-DATA-LIFECYCLE-BATCH-CARD-SPEC-001" ||
+        subjectId === "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -683,6 +684,12 @@ export function reconcileProjectOps(model) {
   const d040EnergyBatchRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260820-003",
   )?.value ?? null;
+  const d040DataLifecycleBatchRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260820-004",
+  )?.value ?? null;
+  const d040ChinaHealthInputRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260820-005",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -693,8 +700,8 @@ export function reconcileProjectOps(model) {
     newlyReservedIdCount: d040AllocationRecord?.data?.newlyReservedIdCount ?? null,
     firstBatchCardCount: d040FirstBatchRecord?.data?.cardCount ?? null,
     energyBatchCardCount: d040EnergyBatchRecord?.data?.cardCount ?? null,
-    dataLifecycleBatchCardCount: d040Record?.data?.cardCount ?? null,
-    draftedCardCount: d040Record?.data?.draftedCardCount ?? null,
+    dataLifecycleBatchCardCount: d040DataLifecycleBatchRecord?.data?.cardCount ?? null,
+    draftedCardCount: d040DataLifecycleBatchRecord?.data?.draftedCardCount ?? null,
     firstBatchSelfReviewPassed: [
       d040FirstBatchRecord?.data?.productSelfReviewPassed,
       d040FirstBatchRecord?.data?.healthEvidenceSelfReviewPassed,
@@ -708,10 +715,10 @@ export function reconcileProjectOps(model) {
       d040EnergyBatchRecord?.data?.qaSelfReviewPassed,
     ].every((value) => value === true),
     dataLifecycleBatchSelfReviewPassed: [
-      d040Record?.data?.productSelfReviewPassed,
-      d040Record?.data?.privacySecuritySelfReviewPassed,
-      d040Record?.data?.dataIntegritySelfReviewPassed,
-      d040Record?.data?.qaSelfReviewPassed,
+      d040DataLifecycleBatchRecord?.data?.productSelfReviewPassed,
+      d040DataLifecycleBatchRecord?.data?.privacySecuritySelfReviewPassed,
+      d040DataLifecycleBatchRecord?.data?.dataIntegritySelfReviewPassed,
+      d040DataLifecycleBatchRecord?.data?.qaSelfReviewPassed,
     ].every((value) => value === true),
     modelOutputNamesPreserved: d040EnergyBatchRecord?.data?.modelOutputNamesPreserved ?? null,
     reeToDailyTargetStrategyAuthorized: d040EnergyBatchRecord?.data?.reeToDailyTargetStrategyAuthorized ?? null,
@@ -719,14 +726,26 @@ export function reconcileProjectOps(model) {
     dynamicModelEvidencePassed: d040EnergyBatchRecord?.data?.dynamicModelEvidencePassed ?? null,
     dynamicModelOptionOwnerReady: d040EnergyBatchRecord?.data?.dynamicModelOptionCurrentlyOwnerReady ?? null,
     firstBatchIndependentReviewPassed: d040EnergyBatchRecord?.data?.firstBatchIndependentReviewPassed ?? null,
-    dataLayerCount: d040Record?.data?.dataLayerCount ?? null,
-    formulaInputDoesNotImplyPersistence: d040Record?.data?.formulaInputDoesNotImplyPersistence ?? null,
-    rawAndDisplaySeparated: d040Record?.data?.rawAndDisplaySeparated ?? null,
-    chainedRoundingAllowed: d040Record?.data?.chainedRoundingAllowed ?? null,
-    deletionCanSilentlyDeleteIndependentHistory: d040Record?.data?.currentProfileDeletionCanSilentlyDeleteIndependentHistory ?? null,
-    automaticCandidateCanBecomeEffectiveWithoutConfirmation: d040Record?.data?.automaticCandidateCanBecomeEffectiveWithoutConfirmation ?? null,
-    historicalDiaryRecalculationAllowed: d040Record?.data?.historicalDiaryRecalculationAllowed ?? null,
-    firstTwoBatchesIndependentReviewPassed: d040Record?.data?.firstTwoBatchesIndependentReviewPassed ?? null,
+    dataLayerCount: d040DataLifecycleBatchRecord?.data?.dataLayerCount ?? null,
+    formulaInputDoesNotImplyPersistence: d040DataLifecycleBatchRecord?.data?.formulaInputDoesNotImplyPersistence ?? null,
+    rawAndDisplaySeparated: d040DataLifecycleBatchRecord?.data?.rawAndDisplaySeparated ?? null,
+    chainedRoundingAllowed: d040DataLifecycleBatchRecord?.data?.chainedRoundingAllowed ?? null,
+    deletionCanSilentlyDeleteIndependentHistory: d040DataLifecycleBatchRecord?.data?.currentProfileDeletionCanSilentlyDeleteIndependentHistory ?? null,
+    automaticCandidateCanBecomeEffectiveWithoutConfirmation: d040DataLifecycleBatchRecord?.data?.automaticCandidateCanBecomeEffectiveWithoutConfirmation ?? null,
+    historicalDiaryRecalculationAllowed: d040DataLifecycleBatchRecord?.data?.historicalDiaryRecalculationAllowed ?? null,
+    firstTwoBatchesIndependentReviewPassed: d040DataLifecycleBatchRecord?.data?.firstTwoBatchesIndependentReviewPassed ?? null,
+    chinaSupportInputState: d040ChinaHealthInputRecord?.data?.inputState ?? null,
+    chinaOfficialSourceCheckComplete: d040ChinaHealthInputRecord?.data?.officialSourceCheckComplete ?? null,
+    chinaSupportTermCount: d040ChinaHealthInputRecord?.data?.supportTermCount ?? null,
+    chinaCopyContextCount: d040ChinaHealthInputRecord?.data?.copyContextCount ?? null,
+    psychologicalHotlinePresentedAsMedicalEmergencyReplacement: d040ChinaHealthInputRecord?.data?.psychologicalHotlinePresentedAsMedicalEmergencyReplacement ?? null,
+    maximumRoutineReviewIntervalDays: d040ChinaHealthInputRecord?.data?.maximumRoutineReviewIntervalDays ?? null,
+    healthReviewerAssigned: d040ChinaHealthInputRecord?.data?.healthReviewerAssigned ?? null,
+    healthContentApproved: d040ChinaHealthInputRecord?.data?.healthContentApproved ?? null,
+    contentQaPassed: d040ChinaHealthInputRecord?.data?.contentQaPassed ?? null,
+    d068OwnerReady: d040ChinaHealthInputRecord?.data?.d068OwnerReady ?? null,
+    d069OwnerReady: d040ChinaHealthInputRecord?.data?.d069OwnerReady ?? null,
+    firstThreeBatchesIndependentReviewPassed: d040ChinaHealthInputRecord?.data?.firstThreeBatchesIndependentReviewPassed ?? null,
     formulaEvidenceReviewComplete: d040FirstBatchRecord?.data?.formulaEvidenceReviewComplete ?? null,
     firstBatchOwnerReviewAuthorized: d040FirstBatchRecord?.data?.ownerReviewAuthorized ?? null,
     ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
@@ -743,8 +762,8 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260820-004" &&
-    d040.next === "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED" &&
+    d040.eventId === "EVT-20260820-005" &&
+    d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
     d040.newlyReservedIdCount === 19 &&
@@ -769,12 +788,24 @@ export function reconcileProjectOps(model) {
     d040.automaticCandidateCanBecomeEffectiveWithoutConfirmation === false &&
     d040.historicalDiaryRecalculationAllowed === false &&
     d040.firstTwoBatchesIndependentReviewPassed === false &&
+    d040.chinaSupportInputState === "DRAFT_COMPLETE" &&
+    d040.chinaOfficialSourceCheckComplete === true &&
+    d040.chinaSupportTermCount === 4 &&
+    d040.chinaCopyContextCount === 6 &&
+    d040.psychologicalHotlinePresentedAsMedicalEmergencyReplacement === false &&
+    d040.maximumRoutineReviewIntervalDays === 90 &&
+    d040.healthReviewerAssigned === false &&
+    d040.healthContentApproved === false &&
+    d040.contentQaPassed === false &&
+    d040.d068OwnerReady === false &&
+    d040.d069OwnerReady === false &&
+    d040.firstThreeBatchesIndependentReviewPassed === false &&
     d040.formulaEvidenceReviewComplete === true &&
     d040.firstBatchOwnerReviewAuthorized === false &&
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审完成/独立复核待办、动态模型证据与生命周期边界关闭、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、动态模型/生命周期边界、中国支持草案与具名健康评审缺口、独立复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

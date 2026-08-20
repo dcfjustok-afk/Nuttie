@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 工件 ID | `D040-QUESTION-ALLOCATION-001` |
-| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_THREE_BATCHES_SPEC_COMPLETE / PX-0_INPUT_GAP / FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED` |
+| 状态 | `CANDIDATE_ALLOCATION_COMPLETE / FIRST_THREE_BATCHES_SPEC_COMPLETE / CHINA_SUPPORT_INPUT_DRAFT_COMPLETE / PX-0_INPUT_GAP` |
 | 日期 | 2026-08-15（Asia/Shanghai） |
 | 输入 | `D040-RESEARCH-001` 的 17 个草案问题；`D040-RESEARCH-002` 的 4 个宏量轴 |
 | 结果 | 保留 D-040 作为最终首启结构；预留 D-054 至 D-072，共 19 个新的候选 ID |
@@ -70,7 +70,7 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 依赖关系不是默认答案。前一项被拒绝或选择“停用自动公式”时，后续不适用卡应跳过并记录 `NOT_APPLICABLE`，不得强迫 Owner 选择无意义选项。
 
-## 5. 前三小批结果与下一门禁
+## 5. 前三小批与中国支持输入结果
 
 第一小批 D-054/D-055/D-056/D-058 已形成[选择卡规格](d040-first-batch-card-spec.md)，完成 Product、健康安全、隐私和 QA 四域自审。规格移除了当前没有模型定义和验证证据的“18 岁专用模型”占位选项，固定了稳定问题/选项 ID、互斥选项、`NOT_APPLICABLE` 条件和 `Other` 规范化路径。
 
@@ -78,7 +78,9 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 第三小批 D-064/D-065/D-066/D-067 已形成[资料与目标生命周期选择卡规格](d040-data-lifecycle-batch-card-spec.md)，固定 CalculationDraft/CurrentProfile/GoalVersion/IndependentHistory 分层、保存/删除组合、raw/display 舍入分离和 stale/pending/supersede 边界。
 
-三批工件仍只是内部草案。下一步是独立复核；复核关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
+[中国大陆支持文案与健康评审治理输入包](d040-china-support-health-review-input.md) 已区分 `12356` 心理援助与 `120` 医疗急救，形成稳定支持称谓、六条候选文案、责任矩阵、90 天/每次 Release 来源复核和即时失效条件。它只完成输入草案；具名健康评审人、资质证据、健康批准和 Content QA 均缺失，因此 D-068/D-069 仍不能形成 Owner-ready 卡。
+
+三批卡片与支持输入仍只是内部草案。下一步同时需要前三批独立复核和具名中国健康评审人；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
 当前继续保持：
 
@@ -93,7 +95,12 @@ firstBatchSelfReviewPassed: true
 energyBatchSelfReviewPassed: true
 dynamicModelEvidencePassed: false
 dataLifecycleBatchSelfReviewPassed: true
-next: FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED
+chinaSupportCopyDraftComplete: true
+healthReviewGovernanceDraftComplete: true
+healthReviewerAssigned: false
+d068OwnerReady: false
+d069OwnerReady: false
+next: CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED
 formulaEvidenceReviewComplete: true
 formulaChoiceResolved: false
 px1Authorized: false

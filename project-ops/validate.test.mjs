@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC,
+  PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_DATA_LIFECYCLE_BATCH_SPEC.id);
+  assert.equal(report.baseline, PHASE0_2026_08_20_D040_CHINA_HEALTH_INPUT_SPEC.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 292,
+    instancesValidated: 293,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 173);
+  assert.equal(report.counts.events, 174);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -869,6 +869,30 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040DataLifecycleBatchEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040DataLifecycleBatchEvent.value.data.persistenceImplementationAuthorized, false);
   assert.equal(d040DataLifecycleBatchEvent.value.data.formalImplementationAuthorized, false);
+  const d040ChinaHealthInputEvent = findEvent(VALID_MODEL, "EVT-20260820-005");
+  assert.equal(d040ChinaHealthInputEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040ChinaHealthInputEvent.value.subject.id, "D040-CHINA-SUPPORT-HEALTH-REVIEW-INPUT-001");
+  assert.equal(d040ChinaHealthInputEvent.value.data.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(d040ChinaHealthInputEvent.value.data.locale, "zh-Hans-CN");
+  assert.deepEqual(d040ChinaHealthInputEvent.value.data.supportTermIds, [
+    "medical_health_professional",
+    "health_weight_management_clinic_or_related_department",
+    "psychological_assistance_hotline_12356",
+    "medical_emergency_120",
+  ]);
+  assert.equal(d040ChinaHealthInputEvent.value.data.copyContextCount, 6);
+  assert.equal(d040ChinaHealthInputEvent.value.data.psychologicalSupportNumber, "12356");
+  assert.equal(d040ChinaHealthInputEvent.value.data.medicalEmergencyNumber, "120");
+  assert.equal(d040ChinaHealthInputEvent.value.data.psychologicalHotlinePresentedAsMedicalEmergencyReplacement, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.maximumRoutineReviewIntervalDays, 90);
+  assert.equal(d040ChinaHealthInputEvent.value.data.immediateReviewTriggerCount, 5);
+  assert.equal(d040ChinaHealthInputEvent.value.data.healthReviewerAssigned, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.healthContentApproved, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.contentQaPassed, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.d068OwnerReady, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.d069OwnerReady, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.healthCopyImplementationAuthorized, false);
+  assert.equal(d040ChinaHealthInputEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -914,7 +938,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 291);
+    assert.equal(report.schemaValidation.instancesValidated, 292);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2950,6 +2974,40 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.persistenceImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_DATA_LIFECYCLE_BATCH_CARD_SPEC_MISMATCH");
+  });
+
+  await t.test("中国支持与健康评审输入工件事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260820-005",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH");
+  });
+
+  await t.test("把 12356 冒充医疗急救替代", () => {
+    const report = validateMutation((model) => {
+      findEvent(model, "EVT-20260820-005").value.data.psychologicalHotlinePresentedAsMedicalEmergencyReplacement = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH");
+  });
+
+  await t.test("没有健康批准就把 D-068 提交 Owner", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-005").value;
+      event.data.d068OwnerReady = true;
+      event.data.ownerReviewAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH");
+  });
+
+  await t.test("把过期复核周期放宽并授权健康文案实现", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260820-005").value;
+      event.data.maximumRoutineReviewIntervalDays = 365;
+      event.data.healthCopyImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_INPUT_MISMATCH");
   });
 
 });

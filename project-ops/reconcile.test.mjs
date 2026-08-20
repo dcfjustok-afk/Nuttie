@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 173,
+    events: 174,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,8 +152,8 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260820-004");
-  assert.equal(report.d040.next, "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d040.eventId, "EVT-20260820-005");
+  assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
@@ -176,6 +176,18 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.automaticCandidateCanBecomeEffectiveWithoutConfirmation, false);
   assert.equal(report.d040.historicalDiaryRecalculationAllowed, false);
   assert.equal(report.d040.firstTwoBatchesIndependentReviewPassed, false);
+  assert.equal(report.d040.chinaSupportInputState, "DRAFT_COMPLETE");
+  assert.equal(report.d040.chinaOfficialSourceCheckComplete, true);
+  assert.equal(report.d040.chinaSupportTermCount, 4);
+  assert.equal(report.d040.chinaCopyContextCount, 6);
+  assert.equal(report.d040.psychologicalHotlinePresentedAsMedicalEmergencyReplacement, false);
+  assert.equal(report.d040.maximumRoutineReviewIntervalDays, 90);
+  assert.equal(report.d040.healthReviewerAssigned, false);
+  assert.equal(report.d040.healthContentApproved, false);
+  assert.equal(report.d040.contentQaPassed, false);
+  assert.equal(report.d040.d068OwnerReady, false);
+  assert.equal(report.d040.d069OwnerReady, false);
+  assert.equal(report.d040.firstThreeBatchesIndependentReviewPassed, false);
   assert.equal(report.d040.newlyReservedIdCount, 19);
   assert.equal(report.d040.formulaEvidenceReviewComplete, true);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -255,6 +267,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d040LifecycleReport = reconcileProjectOps(d040LifecycleModel);
   assert.equal(d040LifecycleReport.ok, false);
   assert.ok(d040LifecycleReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d040ChinaHealthModel = validModel();
+  d040ChinaHealthModel.events.find((record) => record.value.eventId === "EVT-20260820-005").value.data.healthReviewerAssigned = true;
+  const d040ChinaHealthReport = reconcileProjectOps(d040ChinaHealthModel);
+  assert.equal(d040ChinaHealthReport.ok, false);
+  assert.ok(d040ChinaHealthReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {
