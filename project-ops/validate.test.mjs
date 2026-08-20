@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN,
+  PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 303,
+    instancesValidated: 304,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 184);
+  assert.equal(report.counts.events, 185);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -687,6 +687,44 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039RouteContractEvent.value.data.stableRouteAndTestIdsMapped, true);
   assert.equal(d039RouteContractEvent.value.data.returnDeepLinkContractComplete, true);
   assert.equal(d039RouteContractEvent.value.data.formalImplementationAuthorized, false);
+  const d039B03B05ReviewPacketEvent = findEvent(VALID_MODEL, "EVT-20260821-008");
+  assert.equal(d039B03B05ReviewPacketEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d039B03B05ReviewPacketEvent.value.subject.id,
+    "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
+  );
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.reviewPacketReady, true);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.inputManifestFrozen, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.requiredArtifactCount, 10);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.requiredCardCount, 6);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.requiredBlockerCount, 3);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.requiredReviewerDomainCount, 4);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.requiredCrossCardInvariantCount, 16);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.allowedCardDispositionCount, 4);
+  assert.deepEqual(d039B03B05ReviewPacketEvent.value.data.blockerIds, [
+    "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+  ]);
+  assert.deepEqual(d039B03B05ReviewPacketEvent.value.data.cardDecisionIds, [
+    "D-045", "D-031", "D-033", "D-034", "D-036", "D-053",
+  ]);
+  assert.deepEqual(d039B03B05ReviewPacketEvent.value.data.blockingSeverityIds, ["P0", "P1", "P2"]);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.nonBlockingSeverityId, "P3");
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.namedReviewerRequired, true);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.authorOrPmCanSelfApprove, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.aiOrAgentCanBeIndependentReviewer, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.reviewersAssigned, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.independentReviewStarted, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.independentReviewPassed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.d034DeviceBenchmarkPassed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.d036ProviderCompatibilitySpikePassed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.d053ProviderEvidenceReady, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.b03Closed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.b04Closed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.b05Closed, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.ownerCardsScheduled, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.formalImplementationAuthorized, false);
+  assert.equal(d039B03B05ReviewPacketEvent.value.data.px5ImplementationDorSatisfied, false);
   const d045CardEvent = findEvent(VALID_MODEL, "EVT-20260815-008");
   assert.equal(d045CardEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d045CardEvent.value.subject.id, "D045-RECENT-FAVORITES-CARD-001");
@@ -1288,7 +1326,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 302);
+    assert.equal(report.schemaValidation.instancesValidated, 303);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -2783,6 +2821,52 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       findEvent(model, "EVT-20260815-007").value.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核包事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260821-008");
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核包覆盖范围被静默缩小", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-008").value.data;
+      data.requiredArtifactCount = 9;
+      data.requiredCardCount = 5;
+      data.requiredBlockerCount = 2;
+      data.requiredReviewerDomainCount = 3;
+      data.requiredCrossCardInvariantCount = 15;
+      data.allowedCardDispositionCount = 3;
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核包伪造独立复核", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-008").value.data;
+      data.authorOrPmCanSelfApprove = true;
+      data.aiOrAgentCanBeIndependentReviewer = true;
+      data.reviewersAssigned = true;
+      data.independentReviewPassed = true;
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("D-039 B03~B05 六卡复核包越级关闭证据、Owner 与实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260821-008").value.data;
+      data.d034DeviceBenchmarkPassed = true;
+      data.d036ProviderCompatibilitySpikePassed = true;
+      data.d053ProviderEvidenceReady = true;
+      data.b05Closed = true;
+      data.ownerCardsScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.px5ImplementationDorSatisfied = true;
+      data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH");
   });
 
   await t.test("D-045 选择卡工件事件缺失", () => {

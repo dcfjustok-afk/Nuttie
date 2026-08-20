@@ -63,6 +63,17 @@ function latestD039DorProgress(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD039B03B05ReviewPacket(model) {
+  return model.events
+    .filter((record) =>
+      record.value?.subject?.id === "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
+    )
+    .sort((left, right) =>
+      (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
+    )
+    .at(-1)?.value ?? null;
+}
+
 function latestD045Record(model) {
   return model.events
     .filter((record) => record.value?.subject?.id === "D045-RECENT-FAVORITES-CARD-001")
@@ -301,6 +312,7 @@ export function reconcileProjectOps(model) {
   const d039BaselineEvent = latestD039BaselineEvent(model);
   const d039DorAssessment = latestD039DorAssessment(model);
   const d039DorProgress = latestD039DorProgress(model);
+  const d039B03B05ReviewPacket = latestD039B03B05ReviewPacket(model);
   const d039 = {
     px2EventId: d039Gate?.eventId ?? null,
     px2State: d039Gate?.data?.to ?? null,
@@ -325,6 +337,72 @@ export function reconcileProjectOps(model) {
     designBaselineFrozen: d039BaselineEvent?.data?.designBaselineFrozen ?? null,
     px3FormalImplementationAuthorized: d039DecisionEvent?.data?.formalImplementationAuthorized ?? null,
     formalImplementationAuthorized: d039BaselineEvent?.data?.formalImplementationAuthorized ?? null,
+    b03B05ReviewPacketEventId: d039B03B05ReviewPacket?.eventId ?? null,
+    b03B05ReviewPacketReady: d039B03B05ReviewPacket?.data?.reviewPacketReady ?? null,
+    b03B05ReviewPacketVersion: d039B03B05ReviewPacket?.data?.reviewPacketVersion ?? null,
+    b03B05InputManifestFrozen: d039B03B05ReviewPacket?.data?.inputManifestFrozen ?? null,
+    b03B05RequiredArtifactCount: d039B03B05ReviewPacket?.data?.requiredArtifactCount ?? null,
+    b03B05RequiredCardCount: d039B03B05ReviewPacket?.data?.requiredCardCount ?? null,
+    b03B05RequiredBlockerCount: d039B03B05ReviewPacket?.data?.requiredBlockerCount ?? null,
+    b03B05BlockerIds: d039B03B05ReviewPacket?.data?.blockerIds ?? [],
+    b03B05CardDecisionIds: d039B03B05ReviewPacket?.data?.cardDecisionIds ?? [],
+    b03B05RequiredReviewerDomainCount:
+      d039B03B05ReviewPacket?.data?.requiredReviewerDomainCount ?? null,
+    b03B05ReviewerDomainIds: d039B03B05ReviewPacket?.data?.reviewerDomainIds ?? [],
+    b03B05RequiredCrossCardInvariantCount:
+      d039B03B05ReviewPacket?.data?.requiredCrossCardInvariantCount ?? null,
+    b03B05AllowedCardDispositionCount:
+      d039B03B05ReviewPacket?.data?.allowedCardDispositionCount ?? null,
+    b03B05BlockingSeverityIds: d039B03B05ReviewPacket?.data?.blockingSeverityIds ?? [],
+    b03B05NonBlockingSeverityId: d039B03B05ReviewPacket?.data?.nonBlockingSeverityId ?? null,
+    b03B05NamedReviewerRequired: d039B03B05ReviewPacket?.data?.namedReviewerRequired ?? null,
+    b03B05AuthorOrPmCanSelfApprove:
+      d039B03B05ReviewPacket?.data?.authorOrPmCanSelfApprove ?? null,
+    b03B05AiOrAgentCanBeIndependentReviewer:
+      d039B03B05ReviewPacket?.data?.aiOrAgentCanBeIndependentReviewer ?? null,
+    b03B05ExternalMessageSent: d039B03B05ReviewPacket?.data?.externalMessageSent ?? null,
+    b03B05ReviewersAssigned: d039B03B05ReviewPacket?.data?.reviewersAssigned ?? null,
+    b03B05ReviewerIdentityVerified:
+      d039B03B05ReviewPacket?.data?.reviewerIdentityVerified ?? null,
+    b03B05ReviewerIndependenceVerified:
+      d039B03B05ReviewPacket?.data?.reviewerIndependenceVerified ?? null,
+    b03B05ConflictOfInterestResolved:
+      d039B03B05ReviewPacket?.data?.conflictOfInterestResolved ?? null,
+    b03B05IndependentReviewStarted:
+      d039B03B05ReviewPacket?.data?.independentReviewStarted ?? null,
+    b03B05IndependentReviewPassed:
+      d039B03B05ReviewPacket?.data?.independentReviewPassed ?? null,
+    b03B05CurrentFindingCountsMeasured:
+      d039B03B05ReviewPacket?.data?.currentFindingCountsMeasured ?? null,
+    d034DeviceBenchmarkPassed: d039B03B05ReviewPacket?.data?.d034DeviceBenchmarkPassed ?? null,
+    d036Oi07InputComplete: d039B03B05ReviewPacket?.data?.d036Oi07InputComplete ?? null,
+    d036ProviderCompatibilitySpikePassed:
+      d039B03B05ReviewPacket?.data?.d036ProviderCompatibilitySpikePassed ?? null,
+    d036NativeBoundaryEvidencePassed:
+      d039B03B05ReviewPacket?.data?.d036NativeBoundaryEvidencePassed ?? null,
+    d053Oi07EvidenceComplete: d039B03B05ReviewPacket?.data?.d053Oi07EvidenceComplete ?? null,
+    d053ProviderEvidenceReady: d039B03B05ReviewPacket?.data?.d053ProviderEvidenceReady ?? null,
+    d053AppPrivacyMappingApproved:
+      d039B03B05ReviewPacket?.data?.d053AppPrivacyMappingApproved ?? null,
+    b03Closed: d039B03B05ReviewPacket?.data?.b03Closed ?? null,
+    b04Closed: d039B03B05ReviewPacket?.data?.b04Closed ?? null,
+    b05Closed: d039B03B05ReviewPacket?.data?.b05Closed ?? null,
+    b03B05OwnerIntakeChanged: d039B03B05ReviewPacket?.data?.ownerIntakeChanged ?? null,
+    b03B05OwnerCardsScheduled: d039B03B05ReviewPacket?.data?.ownerCardsScheduled ?? null,
+    b03B05OwnerReviewAuthorized: d039B03B05ReviewPacket?.data?.ownerReviewAuthorized ?? null,
+    b03B05OwnerChoiceRecorded: d039B03B05ReviewPacket?.data?.ownerChoiceRecorded ?? null,
+    b03B05DecisionAcceptedRecorded:
+      d039B03B05ReviewPacket?.data?.decisionAcceptedRecorded ?? null,
+    d032SecondOwnerActionSatisfied:
+      d039B03B05ReviewPacket?.data?.d032SecondOwnerActionSatisfied ?? null,
+    b03B05FormalRootProjectAuthorized:
+      d039B03B05ReviewPacket?.data?.formalRootProjectAuthorized ?? null,
+    b03B05NativeIosWorkAuthorized:
+      d039B03B05ReviewPacket?.data?.nativeIosWorkAuthorized ?? null,
+    b03B05FormalImplementationAuthorized:
+      d039B03B05ReviewPacket?.data?.formalImplementationAuthorized ?? null,
+    b03B05Px5ImplementationDorSatisfied:
+      d039B03B05ReviewPacket?.data?.px5ImplementationDorSatisfied ?? null,
   };
   if (!(
     d039.px2State === "PX-2_PASS" &&
@@ -345,9 +423,62 @@ export function reconcileProjectOps(model) {
     d039.selectedOption === "A" &&
     d039.designBaselineFrozen === true &&
     d039.px3FormalImplementationAuthorized === false &&
-    d039.formalImplementationAuthorized === false
+    d039.formalImplementationAuthorized === false &&
+    d039.b03B05ReviewPacketEventId === "EVT-20260821-008" &&
+    d039.b03B05ReviewPacketReady === true &&
+    d039.b03B05ReviewPacketVersion === "PACKET-001-R1" &&
+    d039.b03B05InputManifestFrozen === false &&
+    d039.b03B05RequiredArtifactCount === 10 &&
+    d039.b03B05RequiredCardCount === 6 &&
+    d039.b03B05RequiredBlockerCount === 3 &&
+    JSON.stringify(d039.b03B05BlockerIds) ===
+      JSON.stringify(["D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05"]) &&
+    JSON.stringify(d039.b03B05CardDecisionIds) ===
+      JSON.stringify(["D-045", "D-031", "D-033", "D-034", "D-036", "D-053"]) &&
+    d039.b03B05RequiredReviewerDomainCount === 4 &&
+    JSON.stringify(d039.b03B05ReviewerDomainIds) === JSON.stringify([
+      "PRODUCT_DECISION_QUALITY",
+      "PRIVACY_DATA_INTEGRITY",
+      "SECURITY_TRANSPORT_RESOURCE_EVIDENCE",
+      "QA_ACCESSIBILITY",
+    ]) &&
+    d039.b03B05RequiredCrossCardInvariantCount === 16 &&
+    d039.b03B05AllowedCardDispositionCount === 4 &&
+    JSON.stringify(d039.b03B05BlockingSeverityIds) === JSON.stringify(["P0", "P1", "P2"]) &&
+    d039.b03B05NonBlockingSeverityId === "P3" &&
+    d039.b03B05NamedReviewerRequired === true &&
+    d039.b03B05AuthorOrPmCanSelfApprove === false &&
+    d039.b03B05AiOrAgentCanBeIndependentReviewer === false &&
+    d039.b03B05ExternalMessageSent === false &&
+    d039.b03B05ReviewersAssigned === false &&
+    d039.b03B05ReviewerIdentityVerified === false &&
+    d039.b03B05ReviewerIndependenceVerified === false &&
+    d039.b03B05ConflictOfInterestResolved === false &&
+    d039.b03B05IndependentReviewStarted === false &&
+    d039.b03B05IndependentReviewPassed === false &&
+    d039.b03B05CurrentFindingCountsMeasured === false &&
+    d039.d034DeviceBenchmarkPassed === false &&
+    d039.d036Oi07InputComplete === false &&
+    d039.d036ProviderCompatibilitySpikePassed === false &&
+    d039.d036NativeBoundaryEvidencePassed === false &&
+    d039.d053Oi07EvidenceComplete === false &&
+    d039.d053ProviderEvidenceReady === false &&
+    d039.d053AppPrivacyMappingApproved === false &&
+    d039.b03Closed === false &&
+    d039.b04Closed === false &&
+    d039.b05Closed === false &&
+    d039.b03B05OwnerIntakeChanged === false &&
+    d039.b03B05OwnerCardsScheduled === false &&
+    d039.b03B05OwnerReviewAuthorized === false &&
+    d039.b03B05OwnerChoiceRecorded === false &&
+    d039.b03B05DecisionAcceptedRecorded === false &&
+    d039.d032SecondOwnerActionSatisfied === false &&
+    d039.b03B05FormalRootProjectAuthorized === false &&
+    d039.b03B05NativeIosWorkAuthorized === false &&
+    d039.b03B05FormalImplementationAuthorized === false &&
+    d039.b03B05Px5ImplementationDorSatisfied === false
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、Owner 依赖待办和正式实现未授权状态", d039);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D039_GATE", "D-039", "D-039 未保持 PX-4、PX-5 NOT_READY、B01/B02 关闭、B03~B05 六卡复核包就绪且输入/复核/证据/Owner/实现门禁关闭状态", d039);
   }
 
   const d045Record = latestD045Record(model);

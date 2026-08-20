@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 184,
+    events: 185,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -64,6 +64,42 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039.choiceKey, "local-search-recent-first");
   assert.equal(report.d039.selectedOption, "A");
   assert.equal(report.d039.designBaselineFrozen, true);
+  assert.equal(report.d039.b03B05ReviewPacketEventId, "EVT-20260821-008");
+  assert.equal(report.d039.b03B05ReviewPacketReady, true);
+  assert.equal(report.d039.b03B05ReviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d039.b03B05InputManifestFrozen, false);
+  assert.equal(report.d039.b03B05RequiredArtifactCount, 10);
+  assert.equal(report.d039.b03B05RequiredCardCount, 6);
+  assert.equal(report.d039.b03B05RequiredBlockerCount, 3);
+  assert.deepEqual(report.d039.b03B05BlockerIds, [
+    "D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05",
+  ]);
+  assert.deepEqual(report.d039.b03B05CardDecisionIds, [
+    "D-045", "D-031", "D-033", "D-034", "D-036", "D-053",
+  ]);
+  assert.equal(report.d039.b03B05RequiredReviewerDomainCount, 4);
+  assert.equal(report.d039.b03B05RequiredCrossCardInvariantCount, 16);
+  assert.equal(report.d039.b03B05AllowedCardDispositionCount, 4);
+  assert.deepEqual(report.d039.b03B05BlockingSeverityIds, ["P0", "P1", "P2"]);
+  assert.equal(report.d039.b03B05NonBlockingSeverityId, "P3");
+  assert.equal(report.d039.b03B05NamedReviewerRequired, true);
+  assert.equal(report.d039.b03B05AuthorOrPmCanSelfApprove, false);
+  assert.equal(report.d039.b03B05AiOrAgentCanBeIndependentReviewer, false);
+  assert.equal(report.d039.b03B05ExternalMessageSent, false);
+  assert.equal(report.d039.b03B05ReviewersAssigned, false);
+  assert.equal(report.d039.b03B05IndependentReviewStarted, false);
+  assert.equal(report.d039.b03B05IndependentReviewPassed, false);
+  assert.equal(report.d039.d034DeviceBenchmarkPassed, false);
+  assert.equal(report.d039.d036ProviderCompatibilitySpikePassed, false);
+  assert.equal(report.d039.d036NativeBoundaryEvidencePassed, false);
+  assert.equal(report.d039.d053ProviderEvidenceReady, false);
+  assert.equal(report.d039.d053AppPrivacyMappingApproved, false);
+  assert.equal(report.d039.b03Closed, false);
+  assert.equal(report.d039.b04Closed, false);
+  assert.equal(report.d039.b05Closed, false);
+  assert.equal(report.d039.b03B05OwnerCardsScheduled, false);
+  assert.equal(report.d039.b03B05FormalImplementationAuthorized, false);
+  assert.equal(report.d039.b03B05Px5ImplementationDorSatisfied, false);
   assert.equal(report.d045.eventId, "EVT-20260815-008");
   assert.equal(report.d045.decisionState, "CANDIDATE");
   assert.equal(report.d045.blockerState, "OPEN");
@@ -493,6 +529,18 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d039Report = reconcileProjectOps(d039Model);
   assert.equal(d039Report.ok, false);
   assert.ok(d039Report.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D039_GATE"));
+
+  const d039B03B05ReviewPacketModel = validModel();
+  d039B03B05ReviewPacketModel.events.find(
+    (record) => record.value.eventId === "EVT-20260821-008",
+  ).value.data.independentReviewPassed = true;
+  const d039B03B05ReviewPacketReport = reconcileProjectOps(d039B03B05ReviewPacketModel);
+  assert.equal(d039B03B05ReviewPacketReport.ok, false);
+  assert.ok(
+    d039B03B05ReviewPacketReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D039_GATE",
+    ),
+  );
 
   const d040Model = validModel();
   d040Model.events.find((record) => record.value.eventId === "EVT-20260815-004").value.data.ownerReviewAuthorized = true;

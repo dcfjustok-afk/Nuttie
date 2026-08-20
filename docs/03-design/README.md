@@ -25,6 +25,7 @@
 | [D-039 PX-5 实现就绪评估](../05-quality/d039-px5-dor-assessment.md) | 首次 DoR 的 1/3/3 结论、B01/B02 关闭与剩余 5 个阻断项 |
 | [D-039 正式验收矩阵](../05-quality/d039-formal-acceptance-matrix.md) | 24 条实现无关验收用例及写入、联网、依赖和原生证据边界 |
 | [D-039 路由与可观测性契约](d039-route-observability-contract.md) | 5 个逻辑 route、严格参数、43 个静态 testID、返回焦点和非法 deep-link 失败关闭规则 |
+| [D-039 B03~B05 六卡独立复核包](d039-b03-b05-independent-review-packet.md) | 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；当前待冻结输入并指派具名复核人 |
 | [D-045 最近使用与收藏选择卡](d045-recent-favorites-card-spec.md) | B03 的三套完整政策包、清除/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-031 媒体与 AI 内容保留选择卡](d031-media-ai-retention-card-spec.md) | B04 的三套完整政策包、临时内容清理、备份/删除语义和内部四域自审；尚未独立复核或展示给 Owner |
 | [D-033 非标签 AI 上传确认选择卡](d033-nonlabel-ai-confirmation-card-spec.md) | B05 的三套完整政策包、D-014 保留范围、单次绑定/失效和内部四域自审；尚未独立复核或展示给 Owner |

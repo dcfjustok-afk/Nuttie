@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN = Object.freeze({
-  id: "PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN",
+export const PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET = Object.freeze({
+  id: "PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 184,
+    events: 185,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,7 +102,7 @@ export const PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN = Object.freeze(
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
-    "2026-08-21": 7,
+    "2026-08-21": 8,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -1657,6 +1657,80 @@ export const PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN = Object.freeze(
       px5ImplementationDorSatisfied: false,
       ownerIntakeChanged: false,
       decisionStateChanged: false,
+    }),
+    b03B05IndependentReviewPacket: Object.freeze({
+      eventId: "EVT-20260821-008",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d039-b03-b05-independent-review-packet",
+      state: "completed",
+      decisionId: "D-039",
+      decisionState: "ACCEPTED",
+      selectedOption: "A",
+      designBaselineState: "PX-4_BASELINE_FROZEN",
+      px5Disposition: "NOT_READY",
+      from: "D039_B03_B04_B05_SIX_CARD_SELF_REVIEW_COMPLETE_PACKET_GAP",
+      next: "D039-PX5-OWNER_DEPENDENCIES_REQUIRED",
+      packetNext: "B03_B05_INPUT_FREEZE_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "PACKET_READY_REVIEWERS_UNASSIGNED",
+      reviewPacketReady: true,
+      reviewPacketVersion: "PACKET-001-R1",
+      inputManifestFrozen: false,
+      requiredArtifactCount: 10,
+      requiredCardCount: 6,
+      requiredBlockerCount: 3,
+      blockerIds: Object.freeze(["D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05"]),
+      cardDecisionIds: Object.freeze(["D-045", "D-031", "D-033", "D-034", "D-036", "D-053"]),
+      requiredReviewerDomainCount: 4,
+      reviewerDomainIds: Object.freeze([
+        "PRODUCT_DECISION_QUALITY",
+        "PRIVACY_DATA_INTEGRITY",
+        "SECURITY_TRANSPORT_RESOURCE_EVIDENCE",
+        "QA_ACCESSIBILITY",
+      ]),
+      requiredCrossCardInvariantCount: 16,
+      allowedCardDispositionCount: 4,
+      blockingSeverityIds: Object.freeze(["P0", "P1", "P2"]),
+      nonBlockingSeverityId: "P3",
+      namedReviewerRequired: true,
+      authorOrPmCanSelfApprove: false,
+      aiOrAgentCanBeIndependentReviewer: false,
+      externalMessageSent: false,
+      reviewersAssigned: false,
+      reviewerIdentityVerified: false,
+      reviewerIndependenceVerified: false,
+      conflictOfInterestResolved: false,
+      independentReviewStarted: false,
+      independentReviewPassed: false,
+      currentFindingCountsMeasured: false,
+      d034DeviceBenchmarkPassed: false,
+      d036Oi07InputComplete: false,
+      d036ProviderCompatibilitySpikePassed: false,
+      d036NativeBoundaryEvidencePassed: false,
+      d053Oi07EvidenceComplete: false,
+      d053ProviderEvidenceReady: false,
+      d053AppPrivacyMappingApproved: false,
+      d045Accepted: false,
+      d031Accepted: false,
+      d033Accepted: false,
+      d034Accepted: false,
+      d036Accepted: false,
+      d053Accepted: false,
+      b03Closed: false,
+      b04Closed: false,
+      b05Closed: false,
+      ownerIntakeChanged: false,
+      ownerCardsScheduled: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      d032SecondOwnerActionSatisfied: false,
+      formalRootProjectAuthorized: false,
+      nativeIosWorkAuthorized: false,
+      formalImplementationAuthorized: false,
+      px5ImplementationDorSatisfied: false,
     }),
     findingsClosed: Object.freeze(
       Array.from(
@@ -3522,7 +3596,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_MACRO_AXIS_INPUT_MANIFEST_FROZEN) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D039_B03_B05_REVIEW_PACKET) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6970,6 +7044,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D039_PX5_B02_ROUTE_CONTRACT_MISMATCH",
       "project-ops/events/2026-08-15.jsonl",
       "D-039 PX-5 B02 必须精确保留 5 个 route、严格参数、43 个静态 testID、失败关闭 deep link、B01/B02 关闭和全部实现授权位关闭",
+    );
+  }
+
+  const d039B03B05ReviewPacketSpec = baseline.d039.b03B05IndependentReviewPacket;
+  const d039B03B05ReviewPacketEvents = model.events.filter(
+    (record) => record.value?.eventId === d039B03B05ReviewPacketSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d039B03B05ReviewPacketSpec.correlationId),
+  );
+  const d039B03B05ReviewPacketEvent = d039B03B05ReviewPacketEvents[0]?.value;
+  const d039B03B05ReviewPacketData = d039B03B05ReviewPacketEvent?.data ?? {};
+  const d039B03B05ReviewPacketFields = Object.keys(d039B03B05ReviewPacketSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d039B03B05ReviewPacketEvents.length !== 1 ||
+    d039B03B05ReviewPacketEvent?.eventId !== d039B03B05ReviewPacketSpec.eventId ||
+    d039B03B05ReviewPacketEvent?.type !== "ARTIFACT_CREATED" ||
+    d039B03B05ReviewPacketEvent?.actor?.id !== d039B03B05ReviewPacketSpec.actorId ||
+    d039B03B05ReviewPacketEvent?.actor?.role !== d039B03B05ReviewPacketSpec.actorRole ||
+    d039B03B05ReviewPacketEvent?.subject?.id !== d039B03B05ReviewPacketSpec.subjectId ||
+    d039B03B05ReviewPacketEvent?.subject?.role !== d039B03B05ReviewPacketSpec.subjectRole ||
+    d039B03B05ReviewPacketEvent?.correlationId !== d039B03B05ReviewPacketSpec.correlationId ||
+    JSON.stringify(Object.keys(d039B03B05ReviewPacketData).sort()) !==
+      JSON.stringify(d039B03B05ReviewPacketFields) ||
+    d039B03B05ReviewPacketFields.some(
+      (field) => JSON.stringify(d039B03B05ReviewPacketData[field]) !==
+        JSON.stringify(d039B03B05ReviewPacketSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_B03_B05_REVIEW_PACKET_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-039 B03~B05 六卡复核包必须精确保留 10 项输入、6 卡、3 阻断项、4 复核域、16 条跨卡不变量、P0~P3 标准，以及输入未冻结、复核/证据/Owner/实现门禁关闭状态",
     );
   }
 
