@@ -119,6 +119,7 @@ function latestD040Record(model) {
         subjectId === "D040-CHINA-MACRONUTRIENT-STANDARD-INPUT-001" ||
         subjectId === "D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001" ||
         subjectId === "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001" ||
+        subjectId === "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -702,6 +703,9 @@ export function reconcileProjectOps(model) {
   const d040ChinaHealthReviewerPacketRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260820-008",
   )?.value ?? null;
+  const d040IndependentReviewPacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260821-001",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
@@ -808,6 +812,31 @@ export function reconcileProjectOps(model) {
     healthReviewPacketFirstThreeBatchesIndependentReviewPassed: d040ChinaHealthReviewerPacketRecord?.data?.firstThreeBatchesIndependentReviewPassed ?? null,
     healthReviewPacketHealthCopyImplementationAuthorized: d040ChinaHealthReviewerPacketRecord?.data?.healthCopyImplementationAuthorized ?? null,
     healthReviewPacketFormulaImplementationAuthorized: d040ChinaHealthReviewerPacketRecord?.data?.formulaImplementationAuthorized ?? null,
+    independentReviewPacketReady: d040IndependentReviewPacketRecord?.data?.reviewPacketReady ?? null,
+    independentReviewRequiredArtifactCount: d040IndependentReviewPacketRecord?.data?.requiredArtifactCount ?? null,
+    independentReviewRequiredCardCount: d040IndependentReviewPacketRecord?.data?.requiredCardCount ?? null,
+    independentReviewCardDecisionCount: d040IndependentReviewPacketRecord?.data?.cardDecisionIds?.length ?? null,
+    independentReviewRequiredDomainCount: d040IndependentReviewPacketRecord?.data?.requiredReviewerDomainCount ?? null,
+    independentReviewDomainCount: d040IndependentReviewPacketRecord?.data?.reviewerDomainIds?.length ?? null,
+    independentReviewRequiredInvariantCount: d040IndependentReviewPacketRecord?.data?.requiredCrossBatchInvariantCount ?? null,
+    independentReviewDispositionCount: d040IndependentReviewPacketRecord?.data?.allowedCardDispositionIds?.length ?? null,
+    independentReviewBlockingSeverityCount: d040IndependentReviewPacketRecord?.data?.blockingSeverityIds?.length ?? null,
+    independentReviewNamedReviewerRequired: d040IndependentReviewPacketRecord?.data?.namedReviewerRequired ?? null,
+    independentReviewAuthorOrPmCanSelfApprove: d040IndependentReviewPacketRecord?.data?.authorOrPmCanSelfApprove ?? null,
+    independentReviewAiOrAgentCanBeReviewer: d040IndependentReviewPacketRecord?.data?.aiOrAgentCanBeIndependentReviewer ?? null,
+    independentReviewExternalMessageSent: d040IndependentReviewPacketRecord?.data?.externalMessageSent ?? null,
+    independentReviewReviewersAssigned: d040IndependentReviewPacketRecord?.data?.reviewersAssigned ?? null,
+    independentReviewIdentityVerified: d040IndependentReviewPacketRecord?.data?.reviewerIdentityVerified ?? null,
+    independentReviewIndependenceVerified: d040IndependentReviewPacketRecord?.data?.reviewerIndependenceVerified ?? null,
+    independentReviewConflictResolved: d040IndependentReviewPacketRecord?.data?.conflictOfInterestResolved ?? null,
+    independentReviewStarted: d040IndependentReviewPacketRecord?.data?.independentReviewStarted ?? null,
+    independentReviewPassed: d040IndependentReviewPacketRecord?.data?.independentReviewPassed ?? null,
+    independentReviewFindingCountsMeasured: d040IndependentReviewPacketRecord?.data?.currentFindingCountsMeasured ?? null,
+    independentReviewDynamicModelOptionOwnerReady: d040IndependentReviewPacketRecord?.data?.dynamicModelOptionOwnerReady ?? null,
+    independentReviewHealthReviewStillRequired: d040IndependentReviewPacketRecord?.data?.healthReviewStillRequired ?? null,
+    independentReviewHealthContentApproved: d040IndependentReviewPacketRecord?.data?.healthContentApproved ?? null,
+    independentReviewFirstThreeBatchesPassed: d040IndependentReviewPacketRecord?.data?.firstThreeBatchesIndependentReviewPassed ?? null,
+    independentReviewPersistenceImplementationAuthorized: d040IndependentReviewPacketRecord?.data?.persistenceImplementationAuthorized ?? null,
     formulaEvidenceReviewComplete: d040FirstBatchRecord?.data?.formulaEvidenceReviewComplete ?? null,
     firstBatchOwnerReviewAuthorized: d040FirstBatchRecord?.data?.ownerReviewAuthorized ?? null,
     ownerCardScheduled: d040Record?.data?.ownerCardScheduled ?? null,
@@ -824,7 +853,7 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260820-008" &&
+    d040.eventId === "EVT-20260821-001" &&
     d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
@@ -912,12 +941,37 @@ export function reconcileProjectOps(model) {
     d040.healthReviewPacketFirstThreeBatchesIndependentReviewPassed === false &&
     d040.healthReviewPacketHealthCopyImplementationAuthorized === false &&
     d040.healthReviewPacketFormulaImplementationAuthorized === false &&
+    d040.independentReviewPacketReady === true &&
+    d040.independentReviewRequiredArtifactCount === 7 &&
+    d040.independentReviewRequiredCardCount === 13 &&
+    d040.independentReviewCardDecisionCount === 13 &&
+    d040.independentReviewRequiredDomainCount === 4 &&
+    d040.independentReviewDomainCount === 4 &&
+    d040.independentReviewRequiredInvariantCount === 12 &&
+    d040.independentReviewDispositionCount === 4 &&
+    d040.independentReviewBlockingSeverityCount === 3 &&
+    d040.independentReviewNamedReviewerRequired === true &&
+    d040.independentReviewAuthorOrPmCanSelfApprove === false &&
+    d040.independentReviewAiOrAgentCanBeReviewer === false &&
+    d040.independentReviewExternalMessageSent === false &&
+    d040.independentReviewReviewersAssigned === false &&
+    d040.independentReviewIdentityVerified === false &&
+    d040.independentReviewIndependenceVerified === false &&
+    d040.independentReviewConflictResolved === false &&
+    d040.independentReviewStarted === false &&
+    d040.independentReviewPassed === false &&
+    d040.independentReviewFindingCountsMeasured === false &&
+    d040.independentReviewDynamicModelOptionOwnerReady === false &&
+    d040.independentReviewHealthReviewStillRequired === true &&
+    d040.independentReviewHealthContentApproved === false &&
+    d040.independentReviewFirstThreeBatchesPassed === false &&
+    d040.independentReviewPersistenceImplementationAuthorized === false &&
     d040.formulaEvidenceReviewComplete === true &&
     d040.firstBatchOwnerReviewAuthorized === false &&
     d040.ownerCardScheduled === false &&
     d040AuthorizationClosed
   )) {
-    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
+    addDiagnostic(diagnostics, "error", "OPS_RECONCILE_D040_GATE", "D-040", "D-040 未保持 20 轴分解、前三批十三卡自审及独立复核包、NIDDK 动态模型采用门禁、生命周期边界、中国支持与宏量现行标准输入、健康评审交接包、具名评审缺口、独立 Content QA/复核待办、PX-0 输入缺口和六项授权位关闭状态", d040);
   }
 
   return {

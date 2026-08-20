@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET = Object.freeze({
-  id: "PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET",
+export const PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET = Object.freeze({
+  id: "PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 177,
+    events: 178,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -102,6 +102,7 @@ export const PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET = Object.freez
     "2026-08-15": 8,
     "2026-08-17": 3,
     "2026-08-20": 8,
+    "2026-08-21": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2761,6 +2762,84 @@ export const PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET = Object.freez
       formulaImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    firstThreeBatchesIndependentReviewPacket: Object.freeze({
+      eventId: "EVT-20260821-001",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-first-three-batches-independent-review-packet",
+      state: "completed",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_PACKET_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      packetNext: "REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_EXECUTION_REQUIRED",
+      inputState: "PACKET_READY_REVIEWERS_UNASSIGNED",
+      reviewPacketReady: true,
+      reviewPacketVersion: "PACKET-001-R1",
+      requiredArtifactCount: 7,
+      requiredCardCount: 13,
+      cardDecisionIds: Object.freeze([
+        "D-054",
+        "D-055",
+        "D-056",
+        "D-058",
+        "D-057",
+        "D-059",
+        "D-060",
+        "D-061",
+        "D-062",
+        "D-064",
+        "D-065",
+        "D-066",
+        "D-067",
+      ]),
+      requiredReviewerDomainCount: 4,
+      reviewerDomainIds: Object.freeze([
+        "PRODUCT_DECISION_QUALITY",
+        "HEALTH_FORMULA_EVIDENCE",
+        "PRIVACY_DATA_INTEGRITY",
+        "QA_ACCESSIBILITY",
+      ]),
+      requiredCrossBatchInvariantCount: 12,
+      allowedCardDispositionIds: Object.freeze([
+        "APPROVE_SPEC",
+        "APPROVE_WITH_REQUIRED_CHANGE",
+        "REJECT_SPEC",
+        "OUT_OF_SCOPE",
+      ]),
+      blockingSeverityIds: Object.freeze(["P0", "P1", "P2"]),
+      nonBlockingSeverityId: "P3",
+      namedReviewerRequired: true,
+      authorOrPmCanSelfApprove: false,
+      aiOrAgentCanBeIndependentReviewer: false,
+      externalMessageSent: false,
+      reviewersAssigned: false,
+      reviewerIdentityVerified: false,
+      reviewerIndependenceVerified: false,
+      conflictOfInterestResolved: false,
+      independentReviewStarted: false,
+      independentReviewPassed: false,
+      currentFindingCountsMeasured: false,
+      dynamicModelOptionOwnerReady: false,
+      modelNativeNumericPalOptionOwnerReady: false,
+      healthReviewStillRequired: true,
+      healthReviewerAssigned: false,
+      healthContentApproved: false,
+      contentQaPassed: false,
+      firstThreeBatchesIndependentReviewPassed: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      persistenceImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+    }),
   }),
 });
 
@@ -3060,7 +3139,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -6200,6 +6279,37 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH",
       "project-ops/events/2026-08-20.jsonl",
       "D-040 中国健康评审人交接包必须精确保留九份输入、十三项逐条签署、具名资质/利益冲突/90 天/独立 Content QA 门禁，以及评审未开始、未批准、未外联和 Owner/实现未授权状态",
+    );
+  }
+
+  const independentReviewPacketSpec = baseline.d040Research.firstThreeBatchesIndependentReviewPacket;
+  const independentReviewPacketEvents = model.events.filter(
+    (record) => record.value?.eventId === independentReviewPacketSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" && record.value?.correlationId === independentReviewPacketSpec.correlationId),
+  );
+  const independentReviewPacketEvent = independentReviewPacketEvents[0]?.value;
+  const independentReviewPacketData = independentReviewPacketEvent?.data ?? {};
+  const independentReviewPacketFields = Object.keys(independentReviewPacketSpec)
+    .filter((field) => !["eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId"].includes(field))
+    .sort();
+  if (
+    independentReviewPacketEvents.length !== 1 ||
+    independentReviewPacketEvent?.eventId !== independentReviewPacketSpec.eventId ||
+    independentReviewPacketEvent?.type !== "ARTIFACT_CREATED" ||
+    independentReviewPacketEvent?.actor?.id !== independentReviewPacketSpec.actorId ||
+    independentReviewPacketEvent?.actor?.role !== independentReviewPacketSpec.actorRole ||
+    independentReviewPacketEvent?.subject?.id !== independentReviewPacketSpec.subjectId ||
+    independentReviewPacketEvent?.subject?.role !== independentReviewPacketSpec.subjectRole ||
+    independentReviewPacketEvent?.correlationId !== independentReviewPacketSpec.correlationId ||
+    JSON.stringify(Object.keys(independentReviewPacketData).sort()) !== JSON.stringify(independentReviewPacketFields) ||
+    independentReviewPacketFields.some(
+      (field) => JSON.stringify(independentReviewPacketData[field]) !== JSON.stringify(independentReviewPacketSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH",
+      "project-ops/events/2026-08-21.jsonl",
+      "D-040 前三批独立复核包必须精确保留十三卡、四域、十二条跨批不变量、P0~P3 标准、动态模型/健康门禁，以及复核人未指派、复核未开始、未外联和 Owner/实现未授权状态",
     );
   }
 

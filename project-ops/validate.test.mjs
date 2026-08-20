@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET,
+  PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_20_D040_HEALTH_REVIEWER_INTAKE_PACKET.id);
+  assert.equal(report.baseline, PHASE0_2026_08_21_D040_INDEPENDENT_REVIEW_PACKET.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 296,
+    instancesValidated: 297,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 177);
+  assert.equal(report.counts.events, 178);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -974,6 +974,43 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.d063OwnerReady, false);
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.data.formalImplementationAuthorized, false);
+  const d040IndependentReviewPacketEvent = findEvent(VALID_MODEL, "EVT-20260821-001");
+  assert.equal(d040IndependentReviewPacketEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(d040IndependentReviewPacketEvent.value.subject.id, "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001");
+  assert.equal(d040IndependentReviewPacketEvent.value.data.inputState, "PACKET_READY_REVIEWERS_UNASSIGNED");
+  assert.equal(d040IndependentReviewPacketEvent.value.data.reviewPacketReady, true);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.requiredArtifactCount, 7);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.requiredCardCount, 13);
+  assert.deepEqual(d040IndependentReviewPacketEvent.value.data.cardDecisionIds, [
+    "D-054", "D-055", "D-056", "D-058", "D-057", "D-059", "D-060",
+    "D-061", "D-062", "D-064", "D-065", "D-066", "D-067",
+  ]);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.requiredReviewerDomainCount, 4);
+  assert.deepEqual(d040IndependentReviewPacketEvent.value.data.reviewerDomainIds, [
+    "PRODUCT_DECISION_QUALITY",
+    "HEALTH_FORMULA_EVIDENCE",
+    "PRIVACY_DATA_INTEGRITY",
+    "QA_ACCESSIBILITY",
+  ]);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.requiredCrossBatchInvariantCount, 12);
+  assert.deepEqual(d040IndependentReviewPacketEvent.value.data.blockingSeverityIds, ["P0", "P1", "P2"]);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.nonBlockingSeverityId, "P3");
+  assert.equal(d040IndependentReviewPacketEvent.value.data.namedReviewerRequired, true);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.authorOrPmCanSelfApprove, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.aiOrAgentCanBeIndependentReviewer, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.externalMessageSent, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.reviewersAssigned, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.reviewerIdentityVerified, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.reviewerIndependenceVerified, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.conflictOfInterestResolved, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.independentReviewPassed, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.currentFindingCountsMeasured, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.dynamicModelOptionOwnerReady, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.healthReviewStillRequired, true);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.firstThreeBatchesIndependentReviewPassed, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040IndependentReviewPacketEvent.value.data.formalImplementationAuthorized, false);
   const mediaPermissionEvent = findEvent(VALID_MODEL, "EVT-20260812-013");
   assert.equal(mediaPermissionEvent.value.subject.id, "media-permission-orchestrator-contract");
   assert.equal(mediaPermissionEvent.value.data.taskExplanationBeforeCameraEffect, true);
@@ -1019,7 +1056,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 295);
+    assert.equal(report.schemaValidation.instancesValidated, 296);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -3215,6 +3252,54 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_HEALTH_REVIEWER_INTAKE_PACKET_MISMATCH");
+  });
+
+  await t.test("前三批独立复核包事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260821-001",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("独立复核包静默减少卡片、复核域或跨批不变量", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-001").value;
+      event.data.requiredCardCount = 12;
+      event.data.cardDecisionIds.pop();
+      event.data.requiredReviewerDomainCount = 1;
+      event.data.requiredCrossBatchInvariantCount = 1;
+    });
+    assertDiagnostic(report, "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("让作者、PM、AI 或 Agent 冒充独立复核人并宣称通过", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-001").value;
+      event.data.authorOrPmCanSelfApprove = true;
+      event.data.aiOrAgentCanBeIndependentReviewer = true;
+      event.data.reviewersAssigned = true;
+      event.data.reviewerIdentityVerified = true;
+      event.data.reviewerIndependenceVerified = true;
+      event.data.independentReviewPassed = true;
+    });
+    assertDiagnostic(report, "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("复核未开始就开放动态模型、健康、Owner 或实现门禁", () => {
+    const report = validateMutation((model) => {
+      const event = findEvent(model, "EVT-20260821-001").value;
+      event.data.currentFindingCountsMeasured = true;
+      event.data.dynamicModelOptionOwnerReady = true;
+      event.data.healthReviewStillRequired = false;
+      event.data.healthContentApproved = true;
+      event.data.firstThreeBatchesIndependentReviewPassed = true;
+      event.data.ownerReviewAuthorized = true;
+      event.data.persistenceImplementationAuthorized = true;
+      event.data.formalImplementationAuthorized = true;
+    });
+    assertDiagnostic(report, "OPS_D040_INDEPENDENT_REVIEW_PACKET_MISMATCH");
   });
 
 });

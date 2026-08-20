@@ -42,6 +42,7 @@
 | [d040-china-macronutrient-standard-input.md](d040-china-macronutrient-standard-input.md) | D-040 中国现行 WS/T 578.1-2017 成人 P/C/F 参考带、4/4/9、修订监视与禁止默认/处方边界；D-063 尚未 Owner-ready |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash 与采用缺口；许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
+| [d040-first-three-batches-independent-review-packet.md](d040-first-three-batches-independent-review-packet.md) | D-040 前三批十三卡的四域独立复核、十二条跨批不变量与 P0~P3 关闭标准；复核人未指派且复核未开始 |
 | [nuttie-visual-direction.md](nuttie-visual-direction.md) | Nuttie 原创卡通栗子视觉方向、状态映射与 Figma 导入合同 |
 | [nuttie-design-system.md](nuttie-design-system.md) | Nuttie 视觉令牌、组件、五个本地优先功能画面、九种状态模式、候选边界与自动验证合同 |
 | [../04-engineering/testing/visual-kit-check.md](../04-engineering/testing/visual-kit-check.md) | 本地视觉原型的源码合同、负向变异测试与浏览器验收边界 |

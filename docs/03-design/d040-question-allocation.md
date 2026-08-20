@@ -84,9 +84,11 @@ ID 预留只建立命名和依赖，不等于候选已进入 `project-ops/decisi
 
 [中国健康评审人交接与签署检查包](d040-china-health-reviewer-intake-packet.md) 已把九份版本化输入、十三个逐条处置项、九项资质字段、利益冲突、90 天复核和独立 Content QA 整理成统一入口。它只把状态推进到 `PACKET_READY`；评审人仍未具名，资质未核验，评审未开始，批准/Content QA 未发生，也没有发送外部消息。
 
+[前三批十三卡独立复核包](d040-first-three-batches-independent-review-packet.md) 已把四个复核域、十三卡逐项结论、十二条跨批不变量和 P0~P3 关闭标准整理成统一入口。它也只推进到 `PACKET_READY`；具名复核人、身份/胜任范围/独立性/利益冲突核验和实际复核都未发生。
+
 [中国宏量营养标准输入包](d040-china-macronutrient-standard-input.md) 已核验 `WS/T 578.1-2017` 的国家卫健委页面/PDF与全国标准平台现行状态，固定健康成人 P/C/F `50–65% / 20–30% / 10–15% E`、`4/4/9` 换算和修订失效边界。中国标准证据缺口已关闭，但具名健康评审、前序 D-068/D-069 与宏量卡自审/独立复核尚未完成，D-063 仍为 `NOT_OWNER_READY`。
 
-三批卡片与支持输入仍只是内部草案。下一步同时需要前三批独立复核，以及由 ProjectContentOwner 指派并核验具名中国健康评审人后按交接包逐条签署；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
+三批卡片与支持输入仍只是内部草案。下一步需要为十三卡复核包指派满足独立性的具名复核人并执行逐卡/跨批复核，同时由 ProjectContentOwner 指派并核验具名中国健康评审人后按健康交接包逐条签署；关闭前不得把任何卡写入 `project-ops/owner-intake.json` 或展示给 Owner。
 
 当前继续保持：
 
@@ -111,6 +113,14 @@ reviewerQualificationVerified: false
 healthReviewStarted: false
 healthContentApproved: false
 contentQaPassed: false
+firstThreeBatchesIndependentReviewPacketReady: true
+requiredIndependentReviewCardCount: 13
+requiredIndependentReviewDomainCount: 4
+requiredCrossBatchInvariantCount: 12
+independentReviewersAssigned: false
+reviewerIndependenceVerified: false
+independentReviewStarted: false
+firstThreeBatchesIndependentReviewPassed: false
 chinaMacroCurrentStandardEvidenceComplete: true
 d063ChinaReferenceBandEvidenceReady: true
 d063OwnerReady: false

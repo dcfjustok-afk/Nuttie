@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 177,
+    events: 178,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -152,7 +152,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260820-008");
+  assert.equal(report.d040.eventId, "EVT-20260821-001");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -238,6 +238,31 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040.healthReviewPacketFirstThreeBatchesIndependentReviewPassed, false);
   assert.equal(report.d040.healthReviewPacketHealthCopyImplementationAuthorized, false);
   assert.equal(report.d040.healthReviewPacketFormulaImplementationAuthorized, false);
+  assert.equal(report.d040.independentReviewPacketReady, true);
+  assert.equal(report.d040.independentReviewRequiredArtifactCount, 7);
+  assert.equal(report.d040.independentReviewRequiredCardCount, 13);
+  assert.equal(report.d040.independentReviewCardDecisionCount, 13);
+  assert.equal(report.d040.independentReviewRequiredDomainCount, 4);
+  assert.equal(report.d040.independentReviewDomainCount, 4);
+  assert.equal(report.d040.independentReviewRequiredInvariantCount, 12);
+  assert.equal(report.d040.independentReviewDispositionCount, 4);
+  assert.equal(report.d040.independentReviewBlockingSeverityCount, 3);
+  assert.equal(report.d040.independentReviewNamedReviewerRequired, true);
+  assert.equal(report.d040.independentReviewAuthorOrPmCanSelfApprove, false);
+  assert.equal(report.d040.independentReviewAiOrAgentCanBeReviewer, false);
+  assert.equal(report.d040.independentReviewExternalMessageSent, false);
+  assert.equal(report.d040.independentReviewReviewersAssigned, false);
+  assert.equal(report.d040.independentReviewIdentityVerified, false);
+  assert.equal(report.d040.independentReviewIndependenceVerified, false);
+  assert.equal(report.d040.independentReviewConflictResolved, false);
+  assert.equal(report.d040.independentReviewStarted, false);
+  assert.equal(report.d040.independentReviewPassed, false);
+  assert.equal(report.d040.independentReviewFindingCountsMeasured, false);
+  assert.equal(report.d040.independentReviewDynamicModelOptionOwnerReady, false);
+  assert.equal(report.d040.independentReviewHealthReviewStillRequired, true);
+  assert.equal(report.d040.independentReviewHealthContentApproved, false);
+  assert.equal(report.d040.independentReviewFirstThreeBatchesPassed, false);
+  assert.equal(report.d040.independentReviewPersistenceImplementationAuthorized, false);
   assert.equal(report.d040.newlyReservedIdCount, 19);
   assert.equal(report.d040.formulaEvidenceReviewComplete, true);
   assert.equal(report.d040.firstBatchCardCount, 4);
@@ -341,6 +366,12 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const d040HealthReviewerPacketReport = reconcileProjectOps(d040HealthReviewerPacketModel);
   assert.equal(d040HealthReviewerPacketReport.ok, false);
   assert.ok(d040HealthReviewerPacketReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+
+  const d040IndependentReviewPacketModel = validModel();
+  d040IndependentReviewPacketModel.events.find((record) => record.value.eventId === "EVT-20260821-001").value.data.independentReviewPassed = true;
+  const d040IndependentReviewPacketReport = reconcileProjectOps(d040IndependentReviewPacketModel);
+  assert.equal(d040IndependentReviewPacketReport.ok, false);
+  assert.ok(d040IndependentReviewPacketReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {
