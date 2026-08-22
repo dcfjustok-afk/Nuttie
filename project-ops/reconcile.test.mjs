@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 201,
+    events: 202,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -814,6 +814,21 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040NiddkLegacyReferenceAudit.dynamicModelEvidencePassed, false);
   assert.equal(report.d040NiddkLegacyReferenceAudit.ownerReviewAuthorized, false);
   assert.equal(report.d040NiddkLegacyReferenceAudit.formalImplementationAuthorized, false);
+  assert.equal(report.mvpIncrementScope.eventId, "EVT-20260822-008");
+  assert.equal(report.mvpIncrementScope.gateId, "G2");
+  assert.equal(report.mvpIncrementScope.gateState, "IN_PROGRESS");
+  assert.equal(report.mvpIncrementScope.optionCount, 3);
+  assert.deepEqual(report.mvpIncrementScope.optionIds, [
+    "MVP-I1-LOCAL-MEAL",
+    "MVP-I1-FULL-MANUAL",
+    "MVP-I1-LOCAL-MEAL-BARCODE",
+  ]);
+  assert.equal(report.mvpIncrementScope.totalFeatureScopeRetained, true);
+  assert.equal(report.mvpIncrementScope.recommendationIsSelection, false);
+  assert.equal(report.mvpIncrementScope.ownerChoiceRecorded, false);
+  assert.equal(report.mvpIncrementScope.mvpIncrementScopeFrozen, false);
+  assert.equal(report.mvpIncrementScope.g2Passed, false);
+  assert.equal(report.mvpIncrementScope.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1486,6 +1501,39 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
   const macroAxisInputManifestFreezeReport = reconcileProjectOps(macroAxisInputManifestFreezeModel);
   assert.equal(macroAxisInputManifestFreezeReport.ok, false);
   assert.ok(macroAxisInputManifestFreezeReport.diagnostics.some((diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE"));
+});
+
+test("对账器拒绝把 G2 范围推荐冒充选择或实现授权", () => {
+  const selectedModel = validModel();
+  const selectedData = selectedModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-008",
+  ).value.data;
+  selectedData.recommendationIsSelection = true;
+  selectedData.ownerChoiceRecorded = true;
+  selectedData.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+  selectedData.mvpIncrementScopeFrozen = true;
+  const selectedReport = reconcileProjectOps(selectedModel);
+  assert.ok(
+    selectedReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_GATE",
+    ),
+  );
+
+  const authorizedModel = validModel();
+  const authorizedData = authorizedModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-008",
+  ).value.data;
+  authorizedData.totalFeatureScopeRetained = false;
+  authorizedData.g2Passed = true;
+  authorizedData.formalRootProjectAuthorized = true;
+  authorizedData.nativeIosWorkAuthorized = true;
+  authorizedData.formalImplementationAuthorized = true;
+  const authorizedReport = reconcileProjectOps(authorizedModel);
+  assert.ok(
+    authorizedReport.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_GATE",
+    ),
+  );
 });
 
 test("命令行诊断器不创建或覆盖快照", () => {

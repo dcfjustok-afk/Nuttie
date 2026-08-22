@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT",
+export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD = Object.freeze({
+  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 201,
+    events: 202,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT = Object.freeze
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 7,
+    "2026-08-22": 8,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3345,6 +3345,54 @@ export const PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT = Object.freeze
     formalImplementationAuthorized: false,
     oi03RemainsNext: true,
   }),
+  mvpIncrementScope: Object.freeze({
+    eventId: "EVT-20260822-008",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "MVP-INCREMENT-SCOPE-CARD-001",
+    subjectRole: "CandidateProductArtifact",
+    correlationId: "mvp-increment-scope-card",
+    state: "completed",
+    artifactStatus: "INTERNAL_CANDIDATE",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "FIRST_MVP_INCREMENT_AND_LATER_SCOPE_BOUNDARY_MISSING",
+    next: "OWNER_SCOPE_REVIEW_REQUIRED",
+    artifactCommit: "b79d3eb30d43865a02c977f52238f927b307ef33",
+    artifactBlobOid: "117b2babffb85fcf91cd8cde5532ce7a37b8d4b2",
+    optionCount: 3,
+    optionIds: Object.freeze([
+      "MVP-I1-LOCAL-MEAL",
+      "MVP-I1-FULL-MANUAL",
+      "MVP-I1-LOCAL-MEAL-BARCODE",
+    ]),
+    recommendedOptionId: "A",
+    recommendationIsSelection: false,
+    otherOptionAllowed: true,
+    sharedInvariantCount: 7,
+    totalFeatureScopeRetained: true,
+    featureCount: 24,
+    laterScopeRetained: true,
+    ownerReviewRequired: true,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    mvpIncrementScopeFrozen: false,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    d039OptionABlockerIds: Object.freeze(["D039-PX5-B03", "D039-PX5-B06"]),
+    d039OptionABlockersClosed: false,
+    d052BlocksLocalSelfUseNoUsdaRedistributionPath: false,
+    d053BlocksLocalNoThirdPartyAiPath: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -4935,7 +4983,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9223,6 +9271,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_NIDDK_LEGACY_REFERENCE_AUDIT_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 NIDDK 旧研究工具审计必须固定两组旧工具、四种表格逻辑、BWP 已取代旧工具及其不是当前源码发行/oracle 的边界，并保持未下载/执行/入库及许可/采用/健康/Owner/PX/实现全关闭",
+    );
+  }
+
+  const mvpIncrementScopeSpec = baseline.mvpIncrementScope;
+  const mvpIncrementScopeEvents = model.events.filter(
+    (record) => record.value?.eventId === mvpIncrementScopeSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === mvpIncrementScopeSpec.correlationId),
+  );
+  const mvpIncrementScopeEvent = mvpIncrementScopeEvents[0]?.value;
+  const mvpIncrementScopeData = mvpIncrementScopeEvent?.data ?? {};
+  const mvpIncrementScopeFields = Object.keys(mvpIncrementScopeSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    mvpIncrementScopeEvents.length !== 1 ||
+    mvpIncrementScopeEvent?.eventId !== mvpIncrementScopeSpec.eventId ||
+    mvpIncrementScopeEvent?.type !== "ARTIFACT_CREATED" ||
+    mvpIncrementScopeEvent?.actor?.id !== mvpIncrementScopeSpec.actorId ||
+    mvpIncrementScopeEvent?.actor?.role !== mvpIncrementScopeSpec.actorRole ||
+    mvpIncrementScopeEvent?.subject?.id !== mvpIncrementScopeSpec.subjectId ||
+    mvpIncrementScopeEvent?.subject?.role !== mvpIncrementScopeSpec.subjectRole ||
+    mvpIncrementScopeEvent?.correlationId !== mvpIncrementScopeSpec.correlationId ||
+    JSON.stringify(Object.keys(mvpIncrementScopeData).sort()) !==
+      JSON.stringify(mvpIncrementScopeFields) ||
+    mvpIncrementScopeFields.some(
+      (field) => JSON.stringify(mvpIncrementScopeData[field]) !==
+        JSON.stringify(mvpIncrementScopeSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "G2 MVP 增量范围卡必须保持三项互斥选择、7 条共享不变量、F01~F24 与后续范围完整，并保持推荐非选择、Owner/决定/范围冻结/G2/正式工程/原生/实现授权全关闭",
     );
   }
 

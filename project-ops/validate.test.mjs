@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT,
+  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 320,
+    instancesValidated: 321,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 201);
+  assert.equal(report.counts.events, 202);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1538,6 +1538,25 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040NiddkLegacyReferenceAuditEvent.value.data.dynamicModelEvidencePassed, false);
   assert.equal(d040NiddkLegacyReferenceAuditEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040NiddkLegacyReferenceAuditEvent.value.data.formalImplementationAuthorized, false);
+  const mvpIncrementScopeEvent = findEvent(VALID_MODEL, "EVT-20260822-008");
+  assert.equal(mvpIncrementScopeEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(mvpIncrementScopeEvent.value.subject.id, "MVP-INCREMENT-SCOPE-CARD-001");
+  assert.equal(mvpIncrementScopeEvent.value.data.gateId, "G2");
+  assert.equal(mvpIncrementScopeEvent.value.data.gateState, "IN_PROGRESS");
+  assert.equal(mvpIncrementScopeEvent.value.data.optionCount, 3);
+  assert.deepEqual(mvpIncrementScopeEvent.value.data.optionIds, [
+    "MVP-I1-LOCAL-MEAL",
+    "MVP-I1-FULL-MANUAL",
+    "MVP-I1-LOCAL-MEAL-BARCODE",
+  ]);
+  assert.equal(mvpIncrementScopeEvent.value.data.sharedInvariantCount, 7);
+  assert.equal(mvpIncrementScopeEvent.value.data.totalFeatureScopeRetained, true);
+  assert.equal(mvpIncrementScopeEvent.value.data.featureCount, 24);
+  assert.equal(mvpIncrementScopeEvent.value.data.recommendationIsSelection, false);
+  assert.equal(mvpIncrementScopeEvent.value.data.ownerChoiceRecorded, false);
+  assert.equal(mvpIncrementScopeEvent.value.data.mvpIncrementScopeFrozen, false);
+  assert.equal(mvpIncrementScopeEvent.value.data.g2Passed, false);
+  assert.equal(mvpIncrementScopeEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1886,7 +1905,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 319);
+    assert.equal(report.schemaValidation.instancesValidated, 320);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -5655,4 +5674,43 @@ test("loader 拒绝 JSONL 中间空行", () => {
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
+});
+
+test("锁定 G2 首个 MVP 增量范围卡的候选与未授权边界", async (t) => {
+  await t.test("范围卡事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-008",
+      );
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH");
+  });
+
+  await t.test("推荐 A 被冒充为 Owner 已选择时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-008").value.data;
+      data.recommendationIsSelection = true;
+      data.ownerChoiceRecorded = true;
+      data.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+      data.mvpIncrementScopeFrozen = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH");
+  });
+
+  await t.test("范围卡越级改变 G2 或实现授权时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-008").value.data;
+      data.totalFeatureScopeRetained = false;
+      data.laterScopeRetained = false;
+      data.ownerReviewAuthorized = true;
+      data.decisionRegistered = true;
+      data.decisionAcceptedRecorded = true;
+      data.g2Passed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH");
+  });
 });

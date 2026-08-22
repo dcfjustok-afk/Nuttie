@@ -2678,6 +2678,73 @@ export function reconcileProjectOps(model) {
       d040NiddkLegacyReferenceAudit,
     );
   }
+  const mvpIncrementScopeRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260822-008",
+  )?.value ?? null;
+  const mvpIncrementScope = {
+    ...(mvpIncrementScopeRecord?.data ?? {}),
+    eventId: mvpIncrementScopeRecord?.eventId ?? null,
+  };
+  const expectedMvpIncrementScope = {
+    state: "completed",
+    artifactStatus: "INTERNAL_CANDIDATE",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "FIRST_MVP_INCREMENT_AND_LATER_SCOPE_BOUNDARY_MISSING",
+    next: "OWNER_SCOPE_REVIEW_REQUIRED",
+    artifactCommit: "b79d3eb30d43865a02c977f52238f927b307ef33",
+    artifactBlobOid: "117b2babffb85fcf91cd8cde5532ce7a37b8d4b2",
+    optionCount: 3,
+    optionIds: [
+      "MVP-I1-LOCAL-MEAL",
+      "MVP-I1-FULL-MANUAL",
+      "MVP-I1-LOCAL-MEAL-BARCODE",
+    ],
+    recommendedOptionId: "A",
+    recommendationIsSelection: false,
+    otherOptionAllowed: true,
+    sharedInvariantCount: 7,
+    totalFeatureScopeRetained: true,
+    featureCount: 24,
+    laterScopeRetained: true,
+    ownerReviewRequired: true,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    mvpIncrementScopeFrozen: false,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    d039OptionABlockerIds: ["D039-PX5-B03", "D039-PX5-B06"],
+    d039OptionABlockersClosed: false,
+    d052BlocksLocalSelfUseNoUsdaRedistributionPath: false,
+    d053BlocksLocalNoThirdPartyAiPath: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    eventId: "EVT-20260822-008",
+  };
+  const mvpIncrementScopeMatches =
+    JSON.stringify(Object.keys(mvpIncrementScope).sort()) ===
+      JSON.stringify(Object.keys(expectedMvpIncrementScope).sort()) &&
+    Object.keys(expectedMvpIncrementScope).every(
+      (field) => JSON.stringify(mvpIncrementScope[field]) ===
+        JSON.stringify(expectedMvpIncrementScope[field]),
+    );
+  if (!mvpIncrementScopeMatches) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_MVP_INCREMENT_SCOPE_GATE",
+      "G2",
+      "G2 MVP 增量范围卡未保持三项互斥选择、F01~F24 与后续范围完整、推荐非选择及 Owner/决定/范围冻结/G2/正式工程/原生/实现授权全关闭边界",
+      mvpIncrementScope,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -3411,6 +3478,7 @@ export function reconcileProjectOps(model) {
     d040NiddkLicenseRoutingEvidence,
     d040NiddkLicenseClarificationTemplate,
     d040NiddkLegacyReferenceAudit,
+    mvpIncrementScope,
     d040,
     diagnostics,
   };
