@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY",
+export const PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEW_RECORD_HARNESS_READY = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEW_RECORD_HARNESS_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 196,
+    events: 197,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY = O
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 2,
+    "2026-08-22": 3,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3082,6 +3082,121 @@ export const PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY = O
     "formalImplementationAuthorized": false,
     "gateStatesChanged": false
   }),
+  d040FirstThreeBatchesIndependentReviewRecordHarness: Object.freeze({
+    "eventId": "EVT-20260822-003",
+    "actorId": "project-manager",
+    "actorRole": "PM",
+    "subjectId": "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-RECORD-HARNESS-001",
+    "subjectRole": "LocalReviewRecordContract",
+    "correlationId": "d040-first-three-batches-independent-review-record-harness",
+    "state": "completed",
+    "contractStatus": "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    "decisionId": "D-040",
+    "decisionState": "CANDIDATE",
+    "authoritativeState": "PX-0_INPUT_GAP",
+    "next": "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    "packetId": "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001",
+    "packetVersion": "PACKET-001-R1",
+    "packetEventId": "EVT-20260821-001",
+    "inputCommit": "b39a8f09ae544d7c3276f532b536c67ade75b446",
+    "packetArtifactCommit": "3d63bafdcf82b588a3d344c9a4185bd8edabadec",
+    "packetArtifactBlobOid": "8ed92648876431cdd30ffc047d83fd6e8a05dd88",
+    "packetArtifactSha256": "1f632603de373ef10af07d1da9513d0822a7b01f4890fcff12d907aaf57e7a06",
+    "contractArtifactCommit": "1dd3a631175fb9abb5813a22e19fee1339cf9517",
+    "contractBlobOid": "c722c789c6300a3934de822c6057d79e7349bf52",
+    "artifactCommit": "f6ac70b7b313fdbffd95061d177013bd28ca34ca",
+    "implementationBlobOid": "e633d7b9646384e50276d4d24e9406f12bca3e60",
+    "testBlobOid": "e14eb86c206658e8c1b362891c77d5beab56d324",
+    "documentationBlobOid": "379e99c825f357303e58744462e810e7001ff17f",
+    "inputSchemaVersion": "D040_FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_BUNDLE_INPUT_V1",
+    "resultSchemaVersion": "D040_FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_RESULT_V1",
+    "boundarySchemaVersion": "D040_FIRST_THREE_BATCHES_INDEPENDENT_REVIEW_BOUNDARY_V1",
+    "topLevelTests": 20,
+    "fullSuitePassed": 1044,
+    "requiredArtifactCount": 7,
+    "requiredReviewerDomainCount": 4,
+    "requiredCardCount": 13,
+    "requiredCrossBatchInvariantCount": 12,
+    "allowedCardDispositionCount": 4,
+    "severityCount": 4,
+    "recordKinds": [
+      "FORMAL_REVIEW_RECORD",
+      "SYNTHETIC_CONTRACT_FIXTURE"
+    ],
+    "overallDispositions": [
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE",
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE"
+    ],
+    "dispositionPriority": [
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE"
+    ],
+    "formalStructuralDisposition": "STRUCTURALLY_COMPLETE_REVIEW_ONLY",
+    "syntheticStructuralDisposition": "SYNTHETIC_STRUCTURALLY_COMPLETE_FIXTURE_ONLY",
+    "syntheticWouldBePassCandidateCovered": true,
+    "syntheticIndependentReviewPassCandidateReturned": false,
+    "formalIndependentReviewPassCandidateCanBeReturned": true,
+    "firstThreeBatchesIndependentReviewPassedReturned": false,
+    "strictDataTreeAndExactFields": true,
+    "frozenArtifactIdentityExact": true,
+    "reviewerDomainCoverageRecomputed": true,
+    "cardAndFindingBidirectionalReferencesRequired": true,
+    "openP0P1P2Block": true,
+    "openP3RequiresOwnerDueAtAndRationale": true,
+    "reviewContentSha256Required": true,
+    "attestationsBindReviewContentSha256": true,
+    "bundleSha256Required": true,
+    "sensitiveLookingMaterialRejectedWithoutEcho": true,
+    "immutableNormalizationAndResultFingerprintBound": true,
+    "reviewerIdentityClaimsCallerAssertedNotVerified": true,
+    "reviewerIndependenceClaimsCallerAssertedNotVerified": true,
+    "reviewerCompetenceClaimsCallerAssertedNotVerified": true,
+    "signatureReferencesCallerAssertedNotVerified": true,
+    "contractValidatorImplemented": true,
+    "harnessReadsCallerSuppliedDataOnly": true,
+    "formalReviewRecordCount": 0,
+    "reviewerAttestationRecordCount": 0,
+    "syntheticFixturePersistedCount": 0,
+    "gitReads": 0,
+    "fileReads": 0,
+    "fileWrites": 0,
+    "identityDocumentReads": 0,
+    "competenceEvidenceReads": 0,
+    "signatureArtifactReads": 0,
+    "networkRequests": 0,
+    "providerRequests": 0,
+    "externalMessagesSent": 0,
+    "businessWrites": 0,
+    "reviewersAssigned": false,
+    "reviewerIdentityVerified": false,
+    "reviewerIndependenceVerified": false,
+    "reviewerCompetenceVerified": false,
+    "reviewerSignatureVerified": false,
+    "independentReviewStarted": false,
+    "firstThreeBatchesIndependentReviewPassed": false,
+    "dynamicModelOptionOwnerReady": false,
+    "modelNativeNumericPalOptionOwnerReady": false,
+    "healthReviewStillRequired": true,
+    "healthContentApproved": false,
+    "contentQaPassed": false,
+    "ownerIntakeChanged": false,
+    "ownerCardScheduled": false,
+    "px1Authorized": false,
+    "px2Authorized": false,
+    "ownerReviewAuthorized": false,
+    "ownerChoiceRecorded": false,
+    "decisionAcceptedRecorded": false,
+    "formulaImplementationAuthorized": false,
+    "persistenceImplementationAuthorized": false,
+    "formalRootProjectAuthorized": false,
+    "nativeIosWorkAuthorized": false,
+    "formalImplementationAuthorized": false,
+    "gateStatesChanged": false
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -4503,7 +4618,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEW_RECORD_HARNESS_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -8596,6 +8711,53 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 中国健康评审回执 validator 必须固定 PACKET-001-R1/9 输入、具名资质/胜任范围/地域/冲突/签署声明、13 项/P0~P3/disposition/90 天/双层摘要、20 项测试、合成 fixture 非证据，并保持正式回执/评审人/资质核验/健康批准/Content QA/Owner/PX/实现全关闭",
+    );
+  }
+
+  const d040FirstThreeBatchesReviewHarnessSpec =
+    baseline.d040FirstThreeBatchesIndependentReviewRecordHarness;
+  const d040FirstThreeBatchesReviewHarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === d040FirstThreeBatchesReviewHarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d040FirstThreeBatchesReviewHarnessSpec.correlationId),
+  );
+  const d040FirstThreeBatchesReviewHarnessEvent =
+    d040FirstThreeBatchesReviewHarnessEvents[0]?.value;
+  const d040FirstThreeBatchesReviewHarnessData =
+    d040FirstThreeBatchesReviewHarnessEvent?.data ?? {};
+  const d040FirstThreeBatchesReviewHarnessFields = Object.keys(
+    d040FirstThreeBatchesReviewHarnessSpec,
+  )
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d040FirstThreeBatchesReviewHarnessEvents.length !== 1 ||
+    d040FirstThreeBatchesReviewHarnessEvent?.eventId !==
+      d040FirstThreeBatchesReviewHarnessSpec.eventId ||
+    d040FirstThreeBatchesReviewHarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    d040FirstThreeBatchesReviewHarnessEvent?.actor?.id !==
+      d040FirstThreeBatchesReviewHarnessSpec.actorId ||
+    d040FirstThreeBatchesReviewHarnessEvent?.actor?.role !==
+      d040FirstThreeBatchesReviewHarnessSpec.actorRole ||
+    d040FirstThreeBatchesReviewHarnessEvent?.subject?.id !==
+      d040FirstThreeBatchesReviewHarnessSpec.subjectId ||
+    d040FirstThreeBatchesReviewHarnessEvent?.subject?.role !==
+      d040FirstThreeBatchesReviewHarnessSpec.subjectRole ||
+    d040FirstThreeBatchesReviewHarnessEvent?.correlationId !==
+      d040FirstThreeBatchesReviewHarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(d040FirstThreeBatchesReviewHarnessData).sort()) !==
+      JSON.stringify(d040FirstThreeBatchesReviewHarnessFields) ||
+    d040FirstThreeBatchesReviewHarnessFields.some(
+      (field) => JSON.stringify(d040FirstThreeBatchesReviewHarnessData[field]) !==
+        JSON.stringify(d040FirstThreeBatchesReviewHarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_FIRST_THREE_BATCHES_REVIEW_RECORD_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 前三批十三卡复核回执 validator 必须固定 PACKET-001-R1/7 输入、4 域/13 卡/12 不变量、P0~P3/disposition/双层摘要、20 项测试、合成 fixture 非证据，并保持正式回执/复核人/胜任独立签署核验/PASS/动态模型/健康 Content QA/Owner/PX/实现全关闭",
     );
   }
 
