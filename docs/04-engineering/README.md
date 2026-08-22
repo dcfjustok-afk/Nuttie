@@ -80,6 +80,7 @@
 - [D-040 中国健康评审回执机器合同](testing/d040-china-health-review-record-contract.md)：固定 `PACKET-001-R1` 的九份不可变输入、具名资质/地域/利益冲突/签署声明、十三项逐条处置、P0~P3、90 天周期、双层摘要和健康 approval candidate 不等于真实健康批准或 Content QA；当前无 reviewer 或正式回执。
 - [D-040 中国健康评审回执本地校验合同](testing/d040-china-health-review-record-harness.md)：以 20 项测试执行 packet/九输入、具名资质/胜任范围/地域/冲突/签署声明、十三项/finding/disposition、90 天周期、双层摘要、合成隔离与零授权边界；不核验现实资质或创建健康批准。
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。
+- [D-036 Provider/原生兼容 run 与报告机器合同](testing/d036-provider-native-compatibility-report-contract.md)：固定同一 OI-07 revision、36-cell 矩阵、三类 raw attempt、九类离线场景、13×3 原生证据、逐 origin 泄露/状态/生命周期计数、disposition 与 SHA-256；当前无 run、报告、Provider/原生证据或执行授权。
 - [D-053 Provider 用途证据与 App Privacy 映射协议](testing/d053-provider-evidence-app-privacy-protocol.md)：固定三个 Provider、五类载荷、15 个最小准入 profile、150 项十维评估与至少 5 行 App Privacy 映射；当前 OI-07、Provider、证据采集、映射、签署、复核、Owner 与准入均未发生。
 - [OI-07 Provider 目标统一输入模板](testing/oi07-provider-target-intake-template.md)：把 D-036/D-053 合并为同一 revision、三个 target、每 target 29 字段的无密钥回填面；当前模板已准备，Owner 输入未收到，全部 target 保持 `UNKNOWN/BLOCKED`。
 - [OI-07 Provider target 本地校验合同](testing/oi07-provider-target-intake-harness.md)：以 11 项测试执行 3 target/29 字段/30 联合字段、UNKNOWN、来源 N/A、HTTPS、敏感材料与零授权边界；只输出计数/指纹，不回显 Provider 输入、不联网或授权。
