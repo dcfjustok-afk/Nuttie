@@ -60,6 +60,7 @@
 - [D-034 benchmark raw run 与报告 bundle 机器合同](testing/d034-benchmark-run-report-contract.md)：固定 raw run 身份/阶段/指标、最低 2,550 measured + 765 warm-up、整组丢弃/重试保留、nearest-rank p95、聚合重算和 measured candidate 不等于 benchmark pass；当前无 run、无报告、无执行授权。
 - [D-034 benchmark raw run/report 本地校验合同](testing/d034-benchmark-run-report-harness.md)：以 17 项测试执行严格身份/阶段/指标、最低采样公式、三轮换整组丢弃、重试保留、聚合重算、disposition、脱敏和零授权边界；合成记录只验证算法，不登记为 benchmark run/report。
 - [D-039 B03~B05 六卡独立复核回执机器合同](testing/d039-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的 10 项不可变输入、四域具名 attestation、六卡、16 条跨卡不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
+- [D-039 B03~B05 六卡独立复核回执本地校验合同](testing/d039-independent-review-record-harness.md)：以 20 项测试执行 packet/10 输入、四域 attestation、六卡/16 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。
 - [D-053 Provider 用途证据与 App Privacy 映射协议](testing/d053-provider-evidence-app-privacy-protocol.md)：固定三个 Provider、五类载荷、15 个最小准入 profile、150 项十维评估与至少 5 行 App Privacy 映射；当前 OI-07、Provider、证据采集、映射、签署、复核、Owner 与准入均未发生。
 - [OI-07 Provider 目标统一输入模板](testing/oi07-provider-target-intake-template.md)：把 D-036/D-053 合并为同一 revision、三个 target、每 target 29 字段的无密钥回填面；当前模板已准备，Owner 输入未收到，全部 target 保持 `UNKNOWN/BLOCKED`。
