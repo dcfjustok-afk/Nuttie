@@ -74,7 +74,7 @@ G3 的反向索引位于 [关键用户旅程](../03-design/key-user-journeys.md)
 
 ## 5. 当前未关闭项
 
-- G2/G3：F09 实现方式、餐食首层、首启资料、餐次默认、提醒/趋势规则等 Owner 候选未处理。
+- G2：F01–F24 总范围与 W1–W4 依赖顺序已保留，但[首个 MVP 增量与后续范围边界](mvp-increment-scope-card.md)仍待 Owner 选择并正式冻结；推荐 A 不等于已选择，也不授权正式工程或实现。G3：D-039 餐食首层已由 Owner 选择 A 并冻结 PX-4，不再列为未处理候选；其 PX-5 B03–B07、F09 实现方式、首启资料、餐次默认、提醒/趋势规则等仍未关闭。
 - G4：D-026/D-027/D-034/D-036/D-053，以及恢复、媒体、AI 预览、明文导出等候选未处理。
 - 数据分发：D-052（原 `DLR-C01`）已正式登记为 `CANDIDATE`，尚未由 Owner 处理；USDA 境外再分发保持阻断。
 - Release：Bundle Identifier、Apple Team/Program、包管理器和精确 SDK/RN/Xcode 矩阵未获 Owner 确认。
