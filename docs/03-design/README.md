@@ -48,6 +48,7 @@
 | [d040-hard-stop-record-availability-card-spec.md](d040-hard-stop-record-availability-card-spec.md) | D-072 硬停止后允许无目标事实或暂停新增的二选一卡；硬停止不可豁免，健康/Content QA/独立复核未通过 |
 | [d040-macro-axis-independent-review-packet.md](d040-macro-axis-independent-review-packet.md) | D-063/D-070/D-071/D-072 四卡、四复核域、十四条跨轴不变量与 P0~P3 标准；十份输入已冻结并记录 blob OID/SHA-256，复核人未指派且复核未开始 |
 | [D-040 四张宏量轴卡独立复核回执合同](../04-engineering/testing/d040-macro-axis-independent-review-record-contract.md) / [20 项本地 validator](../04-engineering/testing/d040-macro-axis-independent-review-record-harness.md) | 固定同一 frozen packet、十输入、四域 attestation、D-063/D-070/D-071/D-072 四卡、十四条跨轴不变量、P0~P3、disposition 与双 SHA-256；合成 fixture 非正式证据，真实回执、复核人核验与权威 PASS 均为 0/false |
+| [D-040 四张宏量轴卡复核人接入与指派检查包](d040-macro-axis-reviewer-intake-packet.md) | 复用同一 frozen packet，固定四域逐域胜任、身份/起草/冲突/覆盖、受控联系人、联络授权、时间与签署接入字段；当前真实候选人、联系人、授权、指派、复核和 PASS 均为 0/false |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash、官方 `TAB-2436 / E-160-2012-0` 许可路径与采用缺口；七项资产覆盖、逐文件许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-niddk-license-clarification-template.md](d040-niddk-license-clarification-template.md) | 未发送的七资产许可澄清模板；固定资产映射、允许动作、条款、外联授权、答复 schema 与失败关闭处置，不授权联系或采用 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
