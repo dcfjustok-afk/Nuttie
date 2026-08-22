@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS",
+export const PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 208,
+    events: 209,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARN
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 14,
+    "2026-08-22": 15,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -4080,6 +4080,157 @@ export const PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARN
     "formalImplementationAuthorized": false,
     "gateStatesChanged": false
   }),
+  d040MacroAxisReviewerAssignmentHarness: Object.freeze({
+      "eventId": "EVT-20260822-015",
+      "actorId": "project-manager",
+      "actorRole": "PM",
+      "subjectId": "D040-MACRO-AXIS-REVIEWER-ASSIGNMENT-HARNESS-001",
+      "subjectRole": "LocalReviewerAssignmentContract",
+      "correlationId": "d040-macro-axis-reviewer-assignment-harness",
+      "state": "completed",
+      "contractStatus": "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+      "decisionId": "D-040",
+      "decisionState": "CANDIDATE",
+      "authoritativeState": "PX-0_INPUT_GAP",
+      "from": "MACRO_AXIS_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      "to": "MACRO_AXIS_REVIEWER_ASSIGNMENT_INTAKE_AND_VALIDATOR_READY",
+      "next": "NAMED_REVIEWER_CANDIDATES_AND_CONTACT_AUTHORIZATION_REQUIRED",
+      "intakePacketId": "D040-MACRO-AXIS-REVIEWER-INTAKE-PACKET-001",
+      "intakePacketArtifactCommit": "0410bb73f68650a021ce37e15f8756d02b5b4a57",
+      "intakePacketBlobOid": "5679945dbbd29777a9ce59964587d98caa5af128",
+      "reviewPacketId": "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001",
+      "reviewPacketVersion": "PACKET-001-R1",
+      "packetEventId": "EVT-20260821-006",
+      "inputManifestEventId": "EVT-20260821-007",
+      "inputCommit": "47ba4895dac2535682e8d1a8cb985176d6ad45f7",
+      "manifestRecordCommit": "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+      "packetArtifactCommit": "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+      "packetArtifactBlobOid": "ffa60df7e2204607780cd6ac4044a9da659bef90",
+      "packetArtifactSha256": "b94af865ab611bc01e4cb75063d45fb65fcc877b207ea9996b4bacb8849bb060",
+      "contractArtifactCommit": "9ada49a6e0dde108945b5cc3d9dc50e657dd24c9",
+      "contractBlobOid": "1763adc4778e8cded0c1c9913556298d92a303ef",
+      "artifactCommit": "3b94ca9210090569261c9f223baeb5f9a03de258",
+      "implementationBlobOid": "3cc051bfccdb022e6d576ebf02fba6995c2560e5",
+      "testBlobOid": "0ba1b19ef27681c9535bb5339f9967ba42db8eae",
+      "documentationBlobOid": "a8b2b9e7345c31534244a973a8f715a13c92f5ac",
+      "inputSchemaVersion": "D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_INPUT_V1",
+      "resultSchemaVersion": "D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_RESULT_V1",
+      "boundarySchemaVersion": "D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_BOUNDARY_V1",
+      "topLevelTests": 21,
+      "fullSuitePassed": 1216,
+      "isolatedSpikeTestsPassed": 10,
+      "markdownFileCount": 160,
+      "localMarkdownLinkCount": 584,
+      "brokenLocalMarkdownLinkCount": 0,
+      "requiredReviewerDomainCount": 4,
+      "maximumReviewerCount": 20,
+      "maximumDomainsPerReviewer": 4,
+      "recordKinds": [
+          "FORMAL_ASSIGNMENT_RECORD",
+          "SYNTHETIC_CONTRACT_FIXTURE"
+      ],
+      "resultDispositions": [
+          "STRUCTURALLY_COMPLETE_ASSIGNMENT_CANDIDATE",
+          "SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY",
+          "ASSIGNMENT_INCOMPLETE"
+      ],
+      "verificationStates": [
+          "VERIFIED",
+          "REJECTED",
+          "PENDING"
+      ],
+      "conflictStates": [
+          "NONE_DECLARED",
+          "RESOLVED",
+          "OPEN"
+      ],
+      "signatureMethods": [
+          "SIGNED_DOCUMENT_REFERENCE",
+          "VERIFIED_WORKFLOW_REFERENCE",
+          "WET_SIGNATURE_REFERENCE"
+      ],
+      "strictDataTreeAndExactFields": true,
+      "formalSyntheticIdentityAndReferenceIsolation": true,
+      "reviewPacketIdentityExact": true,
+      "reviewerDomainOrderExact": true,
+      "competenceEvidenceByDomainRequired": true,
+      "identitySelfVerificationRejected": true,
+      "draftParticipantFailsClosed": true,
+      "conflictResolutionRequired": true,
+      "domainCoverageBidirectional": true,
+      "reviewCanStartRecomputed": true,
+      "assignmentContentSha256Required": true,
+      "rfc3339ActualCalendarDateRequired": true,
+      "sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho": true,
+      "immutableNormalizationAndResultFingerprintBound": true,
+      "inputAuthorityClaimsCallerAssertedNotVerified": true,
+      "identityClaimsCallerAssertedNotVerified": true,
+      "competenceClaimsCallerAssertedNotVerified": true,
+      "independenceClaimsCallerAssertedNotVerified": true,
+      "contactAuthorizationClaimsCallerAssertedNotVerified": true,
+      "formalAssignmentCandidateCanBeReturned": true,
+      "formalAssignmentReadyCandidateCovered": true,
+      "syntheticWouldBeAssignmentReadyCandidateCovered": true,
+      "syntheticAssignmentReadyCandidateReturned": false,
+      "reviewersAssignedReturned": false,
+      "reviewCanStartReturned": false,
+      "contractValidatorImplemented": true,
+      "harnessReadsCallerSuppliedDataOnly": true,
+      "intakePacketReady": true,
+      "reviewPacketReady": true,
+      "inputManifestFrozen": true,
+      "reviewerCandidateCount": 0,
+      "reviewerAssignmentRecordCount": 0,
+      "controlledContactRecordCount": 0,
+      "formalReviewRecordCount": 0,
+      "reviewerAttestationRecordCount": 0,
+      "syntheticFixturePersistedCount": 0,
+      "gitReads": 0,
+      "fileReads": 0,
+      "fileWrites": 0,
+      "identityDocumentReads": 0,
+      "competenceEvidenceReads": 0,
+      "contactRecordReads": 0,
+      "signatureArtifactReads": 0,
+      "networkRequests": 0,
+      "providerRequests": 0,
+      "externalContactAuthorized": false,
+      "externalMessagesSent": 0,
+      "businessWrites": 0,
+      "reviewersAssigned": false,
+      "reviewerIdentityVerified": false,
+      "reviewerCompetenceVerified": false,
+      "reviewerIndependenceVerified": false,
+      "reviewerSignatureVerified": false,
+      "conflictOfInterestResolved": false,
+      "independentReviewStarted": false,
+      "macroAxisIndependentReviewPassed": false,
+      "currentFindingCountsMeasured": false,
+      "healthReviewStillRequired": true,
+      "healthReviewerAssigned": false,
+      "healthContentApproved": false,
+      "contentQaPassed": false,
+      "d063Accepted": false,
+      "d070Accepted": false,
+      "d063OwnerReady": false,
+      "d070OwnerReady": false,
+      "d071OwnerReady": false,
+      "d072OwnerReady": false,
+      "ownerIntakeChanged": false,
+      "ownerCardsScheduled": false,
+      "px1Authorized": false,
+      "px2Authorized": false,
+      "ownerReviewAuthorized": false,
+      "ownerChoiceRecorded": false,
+      "decisionAcceptedRecorded": false,
+      "goalImplementationAuthorized": false,
+      "recordingImplementationAuthorized": false,
+      "persistenceImplementationAuthorized": false,
+      "formalRootProjectAuthorized": false,
+      "nativeIosWorkAuthorized": false,
+      "formalImplementationAuthorized": false,
+      "gateStatesChanged": false
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -5670,7 +5821,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -10224,6 +10375,52 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 前三批十三卡复核人指派 validator 必须固定 PACKET-001-R1、四域逐域胜任/身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256、21 项测试及正式/合成隔离，并保持候选人/联系人/联络授权/正式指派/复核/PASS/动态模型/健康批准/Content QA/Owner/PX-1/PX-2/正式工程/原生/实现全关闭",
+    );
+  }
+
+  const d040MacroAxisReviewerAssignmentSpec =
+    baseline.d040MacroAxisReviewerAssignmentHarness;
+  const d040MacroAxisReviewerAssignmentEvents = model.events.filter(
+    (record) => record.value?.eventId === d040MacroAxisReviewerAssignmentSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d040MacroAxisReviewerAssignmentSpec.correlationId),
+  );
+  const d040MacroAxisReviewerAssignmentEvent =
+    d040MacroAxisReviewerAssignmentEvents[0]?.value;
+  const d040MacroAxisReviewerAssignmentData =
+    d040MacroAxisReviewerAssignmentEvent?.data ?? {};
+  const d040MacroAxisReviewerAssignmentFields =
+    Object.keys(d040MacroAxisReviewerAssignmentSpec)
+      .filter((field) => ![
+        "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+      ].includes(field))
+      .sort();
+  if (
+    d040MacroAxisReviewerAssignmentEvents.length !== 1 ||
+    d040MacroAxisReviewerAssignmentEvent?.eventId !==
+      d040MacroAxisReviewerAssignmentSpec.eventId ||
+    d040MacroAxisReviewerAssignmentEvent?.type !== "ARTIFACT_CREATED" ||
+    d040MacroAxisReviewerAssignmentEvent?.actor?.id !==
+      d040MacroAxisReviewerAssignmentSpec.actorId ||
+    d040MacroAxisReviewerAssignmentEvent?.actor?.role !==
+      d040MacroAxisReviewerAssignmentSpec.actorRole ||
+    d040MacroAxisReviewerAssignmentEvent?.subject?.id !==
+      d040MacroAxisReviewerAssignmentSpec.subjectId ||
+    d040MacroAxisReviewerAssignmentEvent?.subject?.role !==
+      d040MacroAxisReviewerAssignmentSpec.subjectRole ||
+    d040MacroAxisReviewerAssignmentEvent?.correlationId !==
+      d040MacroAxisReviewerAssignmentSpec.correlationId ||
+    JSON.stringify(Object.keys(d040MacroAxisReviewerAssignmentData).sort()) !==
+      JSON.stringify(d040MacroAxisReviewerAssignmentFields) ||
+    d040MacroAxisReviewerAssignmentFields.some(
+      (field) => JSON.stringify(d040MacroAxisReviewerAssignmentData[field]) !==
+        JSON.stringify(d040MacroAxisReviewerAssignmentSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 四张宏量轴卡复核人指派 validator 必须固定 PACKET-001-R1、四域逐域胜任/身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256、21 项测试及正式/合成隔离，并保持候选人/联系人/联络授权/正式指派/复核/PASS/健康批准/Content QA/D-063/D-070 接受/四卡 Owner-ready/Owner/PX-1/PX-2/正式工程/原生/实现全关闭",
     );
   }
 

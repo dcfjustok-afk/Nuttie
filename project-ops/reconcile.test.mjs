@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 208,
+    events: 209,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -996,6 +996,43 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.formalRootProjectAuthorized, false);
   assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.eventId, "EVT-20260822-015");
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.inputManifestEventId, "EVT-20260821-007");
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.topLevelTests, 21);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.fullSuitePassed, 1216);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.requiredReviewerDomainCount, 4);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.formalAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.syntheticWouldBeAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewersAssignedReturned, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewCanStartReturned, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewerCandidateCount, 0);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.controlledContactRecordCount, 0);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewerAssignmentRecordCount, 0);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.externalContactAuthorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.externalMessagesSent, 0);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.reviewersAssigned, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.independentReviewStarted, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.macroAxisIndependentReviewPassed, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.currentFindingCountsMeasured, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.healthReviewStillRequired, true);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.healthReviewerAssigned, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.healthContentApproved, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.contentQaPassed, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d063Accepted, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d070Accepted, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d063OwnerReady, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d070OwnerReady, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d071OwnerReady, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.d072OwnerReady, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.px1Authorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.px2Authorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.d040MacroAxisReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1889,6 +1926,59 @@ test("对账器拒绝把 D-040 十三卡复核人指派 validator 冒充联系�
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 D-040 宏量轴复核人指派 validator 冒充联系人、正式指派、复核、健康批准或四卡就绪", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-015",
+  ).value.data;
+  harnessData.requiredReviewerDomainCount = 3;
+  harnessData.domainCoverageBidirectional = false;
+  harnessData.formalAssignmentReadyCandidateCovered = false;
+  harnessData.syntheticWouldBeAssignmentReadyCandidateCovered = false;
+  harnessData.syntheticAssignmentReadyCandidateReturned = true;
+  harnessData.reviewersAssignedReturned = true;
+  harnessData.reviewCanStartReturned = true;
+  harnessData.reviewerCandidateCount = 4;
+  harnessData.controlledContactRecordCount = 4;
+  harnessData.reviewerAssignmentRecordCount = 1;
+  harnessData.externalContactAuthorized = true;
+  harnessData.externalMessagesSent = 4;
+  harnessData.reviewersAssigned = true;
+  harnessData.independentReviewStarted = true;
+  harnessData.macroAxisIndependentReviewPassed = true;
+  harnessData.currentFindingCountsMeasured = true;
+  harnessData.healthReviewStillRequired = false;
+  harnessData.healthReviewerAssigned = true;
+  harnessData.healthContentApproved = true;
+  harnessData.contentQaPassed = true;
+  harnessData.d063Accepted = true;
+  harnessData.d070Accepted = true;
+  harnessData.d063OwnerReady = true;
+  harnessData.d070OwnerReady = true;
+  harnessData.d071OwnerReady = true;
+  harnessData.d072OwnerReady = true;
+  harnessData.ownerIntakeChanged = true;
+  harnessData.ownerCardsScheduled = true;
+  harnessData.px1Authorized = true;
+  harnessData.px2Authorized = true;
+  harnessData.ownerReviewAuthorized = true;
+  harnessData.ownerChoiceRecorded = true;
+  harnessData.decisionAcceptedRecorded = true;
+  harnessData.goalImplementationAuthorized = true;
+  harnessData.recordingImplementationAuthorized = true;
+  harnessData.persistenceImplementationAuthorized = true;
+  harnessData.formalRootProjectAuthorized = true;
+  harnessData.nativeIosWorkAuthorized = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS_GATE",
     ),
   );
 });
