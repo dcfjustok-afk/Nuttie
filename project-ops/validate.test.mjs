@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS,
+  PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 328,
+    instancesValidated: 329,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 209);
+  assert.equal(report.counts.events, 210);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -125,6 +125,18 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040MacroAxisReviewerAssignmentEvent.value.data.d070Accepted, false);
   assert.equal(d040MacroAxisReviewerAssignmentEvent.value.data.healthContentApproved, false);
   assert.equal(d040MacroAxisReviewerAssignmentEvent.value.data.contentQaPassed, false);
+  const d040ChinaHealthReviewerAssignmentEvent = findEvent(VALID_MODEL, "EVT-20260822-016");
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-ASSIGNMENT-HARNESS-001");
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.packetEventId, "EVT-20260820-008");
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.topLevelTests, 23);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.requiredCompetenceScopeCount, 5);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.formalAssignmentReadyCandidateCovered, true);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.reviewerAssigned, false);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.reviewerQualificationVerified, false);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.healthReviewStarted, false);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.healthContentApproved, false);
+  assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.contentQaPassed, false);
   const aiCredentialEvent = findEvent(VALID_MODEL, "EVT-20260812-001");
   assert.equal(aiCredentialEvent.value.subject.id, "ai-credential-lifecycle-contract");
   assert.equal(aiCredentialEvent.value.data.formalImplementationAuthorized, false);
@@ -2069,7 +2081,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 327);
+    assert.equal(report.schemaValidation.instancesValidated, 328);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -6505,5 +6517,127 @@ test("锁定 D-040 四张宏量轴卡复核人指派 validator", async (t) => {
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+});
+
+test("锁定 D-040 中国健康评审人指派 validator", async (t) => {
+  await t.test("D-040 中国健康评审人指派 validator 登记事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-016",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("健康评审人指派 validator 静默减少测试、范围、候选上限、状态或处置时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-016").value.data;
+      data.topLevelTests = 22;
+      data.fullSuitePassed = 1244;
+      data.requiredCompetenceScopeCount = 4;
+      data.maximumReviewerCount = 19;
+      data.maximumScopesPerReviewer = 4;
+      data.maximumReviewWindowDays = 91;
+      data.recordKinds = ["FORMAL_ASSIGNMENT_RECORD"];
+      data.resultDispositions = ["ASSIGNMENT_INCOMPLETE"];
+      data.verificationStates = ["VERIFIED"];
+      data.qualificationVerificationStates = ["NOT_VERIFIED"];
+      data.localeFitStates = ["FAIL"];
+      data.conflictStates = ["OPEN"];
+      data.signatureMethods = ["VERIFIED_WORKFLOW_REFERENCE"];
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("健康指派 validator 弱化 packet、唯一入选人、资质地域、覆盖、时序、摘要或正式合成隔离时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-016").value.data;
+      data.reviewPacketIdentityExact = false;
+      data.formalSyntheticIdentityAndReferenceIsolation = false;
+      data.singleSelectedReviewerRequired = false;
+      data.selectedReviewerMustCoverAllScopes = false;
+      data.selectedReviewerMustNotSelfAssign = false;
+      data.personNamesCanonicalizedForIdentityComparison = false;
+      data.competenceScopeOrderExact = false;
+      data.competenceEvidenceByScopeRequired = false;
+      data.identitySelfVerificationRejected = false;
+      data.qualificationSelfVerificationRejected = false;
+      data.qualificationObservationCallerAssertedNotVerified = false;
+      data.localeAndRegionFitRequired = false;
+      data.localeAndRegionFitCallerAssertedNotVerified = false;
+      data.draftParticipantFailsClosed = false;
+      data.conflictResolutionRequired = false;
+      data.scopeCoverageBidirectional = false;
+      data.reviewCanStartRecomputed = false;
+      data.assignmentContentSha256Required = false;
+      data.rfc3339ActualCalendarDateRequired = false;
+      data.sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho = false;
+      data.formalAssignmentReadyCandidateCovered = false;
+      data.syntheticWouldBeAssignmentReadyCandidateCovered = false;
+      data.syntheticAssignmentReadyCandidateReturned = true;
+      data.reviewerAssignedReturned = true;
+      data.reviewCanStartReturned = true;
+      data.qualificationClaimsCallerAssertedNotVerified = false;
+      data.contactAuthorizationClaimsCallerAssertedNotVerified = false;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地健康指派 validator 越级伪造候选人、资质、联系人、健康评审、Owner、PX 或实现时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-016").value.data;
+      data.reviewerCandidateCount = 1;
+      data.reviewerAssignmentRecordCount = 1;
+      data.controlledContactRecordCount = 1;
+      data.formalHealthReviewRecordCount = 1;
+      data.reviewerAttestationRecordCount = 1;
+      data.syntheticFixturePersistedCount = 1;
+      data.gitReads = 1;
+      data.fileReads = 1;
+      data.fileWrites = 1;
+      data.identityDocumentReads = 1;
+      data.qualificationRegistryReads = 1;
+      data.competenceEvidenceReads = 1;
+      data.contactRecordReads = 1;
+      data.signatureArtifactReads = 1;
+      data.networkRequests = 1;
+      data.providerRequests = 1;
+      data.externalContactAuthorized = true;
+      data.externalMessagesSent = 1;
+      data.businessWrites = 1;
+      data.reviewerAssigned = true;
+      data.healthReviewerAssigned = true;
+      data.reviewerIdentityVerified = true;
+      data.reviewerQualificationVerified = true;
+      data.reviewerCompetenceVerified = true;
+      data.reviewerLocaleFitVerified = true;
+      data.reviewerIndependenceVerified = true;
+      data.reviewerSignatureVerified = true;
+      data.conflictOfInterestResolved = true;
+      data.healthReviewStarted = true;
+      data.healthReviewStillRequired = false;
+      data.healthContentApproved = true;
+      data.contentQaPassed = true;
+      data.currentFindingCountsMeasured = true;
+      data.d068OwnerReady = true;
+      data.d069OwnerReady = true;
+      data.d063OwnerReady = true;
+      data.firstThreeBatchesIndependentReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardsScheduled = true;
+      data.px1Authorized = true;
+      data.px2Authorized = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.healthCopyImplementationAuthorized = true;
+      data.formulaImplementationAuthorized = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
   });
 });

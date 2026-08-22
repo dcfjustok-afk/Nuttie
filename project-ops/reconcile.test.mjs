@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 209,
+    events: 210,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -1033,6 +1033,43 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040MacroAxisReviewerAssignmentHarness.formalRootProjectAuthorized, false);
   assert.equal(report.d040MacroAxisReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.d040MacroAxisReviewerAssignmentHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.eventId, "EVT-20260822-016");
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.packetEventId, "EVT-20260820-008");
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.topLevelTests, 23);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.fullSuitePassed, 1245);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.requiredCompetenceScopeCount, 5);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.maximumReviewWindowDays, 90);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.formalAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.syntheticWouldBeAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerAssignedReturned, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewCanStartReturned, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerCandidateCount, 0);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.controlledContactRecordCount, 0);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerAssignmentRecordCount, 0);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.qualificationRegistryReads, 0);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.externalContactAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.externalMessagesSent, 0);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerAssigned, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.healthReviewerAssigned, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerQualificationVerified, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.reviewerLocaleFitVerified, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.healthReviewStarted, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.healthReviewStillRequired, true);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.healthContentApproved, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.contentQaPassed, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.d068OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.d069OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.d063OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.firstThreeBatchesIndependentReviewPassed, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.px1Authorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.px2Authorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1979,6 +2016,62 @@ test("对账器拒绝把 D-040 宏量轴复核人指派 validator 冒充联系�
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_D040_MACRO_AXIS_REVIEWER_ASSIGNMENT_HARNESS_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 D-040 中国健康评审人指派 validator 冒充资质、联系人、正式指派、评审或健康批准", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-016",
+  ).value.data;
+  harnessData.requiredCompetenceScopeCount = 4;
+  harnessData.maximumReviewWindowDays = 91;
+  harnessData.singleSelectedReviewerRequired = false;
+  harnessData.selectedReviewerMustCoverAllScopes = false;
+  harnessData.qualificationObservationCallerAssertedNotVerified = false;
+  harnessData.localeAndRegionFitRequired = false;
+  harnessData.scopeCoverageBidirectional = false;
+  harnessData.formalAssignmentReadyCandidateCovered = false;
+  harnessData.syntheticWouldBeAssignmentReadyCandidateCovered = false;
+  harnessData.syntheticAssignmentReadyCandidateReturned = true;
+  harnessData.reviewerAssignedReturned = true;
+  harnessData.reviewCanStartReturned = true;
+  harnessData.reviewerCandidateCount = 1;
+  harnessData.controlledContactRecordCount = 1;
+  harnessData.reviewerAssignmentRecordCount = 1;
+  harnessData.qualificationRegistryReads = 1;
+  harnessData.externalContactAuthorized = true;
+  harnessData.externalMessagesSent = 1;
+  harnessData.reviewerAssigned = true;
+  harnessData.healthReviewerAssigned = true;
+  harnessData.reviewerQualificationVerified = true;
+  harnessData.reviewerLocaleFitVerified = true;
+  harnessData.healthReviewStarted = true;
+  harnessData.healthReviewStillRequired = false;
+  harnessData.healthContentApproved = true;
+  harnessData.contentQaPassed = true;
+  harnessData.d068OwnerReady = true;
+  harnessData.d069OwnerReady = true;
+  harnessData.d063OwnerReady = true;
+  harnessData.firstThreeBatchesIndependentReviewPassed = true;
+  harnessData.ownerIntakeChanged = true;
+  harnessData.ownerCardsScheduled = true;
+  harnessData.px1Authorized = true;
+  harnessData.px2Authorized = true;
+  harnessData.ownerReviewAuthorized = true;
+  harnessData.ownerChoiceRecorded = true;
+  harnessData.decisionAcceptedRecorded = true;
+  harnessData.healthCopyImplementationAuthorized = true;
+  harnessData.formulaImplementationAuthorized = true;
+  harnessData.formalRootProjectAuthorized = true;
+  harnessData.nativeIosWorkAuthorized = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_GATE",
     ),
   );
 });
