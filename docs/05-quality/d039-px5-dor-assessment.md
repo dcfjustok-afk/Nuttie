@@ -41,6 +41,8 @@ D-039 方案 A 的产品层级已经冻结，但尚未达到实现 Definition of
 | `D039-PX5-B06` | 需 Owner 第二次动作 | D-032 原生证据返回后冻结最终矩阵，并单独授权正式根工程与 D-039 增量 | Windows JS export 不能替代原生证据或第二次动作 |
 | `D039-PX5-B07` | 需环境 | 获得可用 Mac/Xcode 与目标 iPhone 链路，完成相机、系统媒体、VoiceOver、Dynamic Type、SQLCipher/Keychain 和持久化集成验证 | 当前 OI-03 明确只有 iPhone 16 Pro Max / iOS 26.5、无可用 Mac |
 
+B03~B05 的[独立复核回执机器合同](../04-engineering/testing/d039-independent-review-record-contract.md)与[20 项本地失败关闭 validator](../04-engineering/testing/d039-independent-review-record-harness.md)已经准备：它精确校验 frozen packet、四域 attestation、六卡、16 条跨卡不变量、P0~P3 finding、处置优先级及 review-content/bundle 双层 SHA-256。合成 fixture 只验证合同算法，不是现实复核证据；正式回执、reviewer attestation、具名复核人、身份/独立性/签署核验、实际复核与权威 PASS 仍为 `0/false`，因此 B03/B04/B05 状态没有改变。
+
 OI-02 的 Bundle ID 仍未创建。它不阻断本地规格工作，但首次正式 Prebuild、签名或真机配置前必须明确，不能生成占位标识冒充 Owner 输入。
 
 ## 4. 可分段实现，但当前没有任何分段获准

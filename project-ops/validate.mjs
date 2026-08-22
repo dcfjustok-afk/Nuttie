@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY = Object.freeze({
-  id: "PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY",
+export const PHASE0_2026_08_22_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_READY = Object.freeze({
+  id: "PHASE0_2026_08_22_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 194,
+    events: 195,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,6 +103,7 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY = Object.
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
+    "2026-08-22": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -2853,6 +2854,113 @@ export const PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY = Object.
     businessWrites: 0,
     gateStatesChanged: false,
   }),
+  d039IndependentReviewRecordHarness: Object.freeze({
+    eventId: "EVT-20260822-001",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "D039-B03-B05-INDEPENDENT-REVIEW-RECORD-HARNESS-001",
+    subjectRole: "LocalReviewRecordContract",
+    correlationId: "d039-b03-b05-independent-review-record-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    decisionId: "D-039",
+    decisionState: "ACCEPTED",
+    selectedOption: "A",
+    designBaselineState: "PX-4_BASELINE_FROZEN",
+    px5Disposition: "NOT_READY",
+    d039BlockerIds: Object.freeze(["D039-PX5-B03", "D039-PX5-B04", "D039-PX5-B05"]),
+    d039BlockerStates: Object.freeze(["OPEN", "OPEN", "OPEN"]),
+    packetId: "D039-B03-B05-INDEPENDENT-REVIEW-PACKET-001",
+    packetVersion: "PACKET-001-R1",
+    inputManifestEventId: "EVT-20260821-009",
+    manifestCommit: "6f7980caa79faa9ce0c1c3cfdb69c16f5ced0117",
+    manifestRecordCommit: "19f2119abcd8ca25bf59b177910a5af1f34e9abb",
+    packetArtifactBlobOid: "d96a28560fa20399260ee3522a0fc2c21465220b",
+    packetArtifactSha256: "580c1a4849e99580127afb47faa0c96407ff8913e6c2dda177c2147135a88ad1",
+    contractArtifactCommit: "8f2d0e00af3284851387b01bd275bf08afffc9ad",
+    contractClarificationCommit: "fbbc1ad0fd8c0ec4a6ba4206238bb02a9591c1c0",
+    artifactCommit: "e590235104d13dcad34521be4b41ea740f801519",
+    implementationBlobOid: "fbb07d4772949c1c783a336700ab81c94747b7f1",
+    testBlobOid: "b066292db53060fda5ef6b72e176f736a6a98e23",
+    documentationBlobOid: "6f30c89bc3630c21077e801a4f48b4cc992c4183",
+    inputSchemaVersion: "D039_B03_B05_INDEPENDENT_REVIEW_BUNDLE_INPUT_V1",
+    resultSchemaVersion: "D039_B03_B05_INDEPENDENT_REVIEW_RESULT_V1",
+    boundarySchemaVersion: "D039_B03_B05_INDEPENDENT_REVIEW_BOUNDARY_V1",
+    topLevelTests: 20,
+    fullSuitePassed: 996,
+    requiredArtifactCount: 10,
+    requiredReviewerDomainCount: 4,
+    requiredCardCount: 6,
+    requiredCrossCardInvariantCount: 16,
+    allowedCardDispositionCount: 4,
+    severityCount: 4,
+    recordKinds: Object.freeze(["FORMAL_REVIEW_RECORD", "SYNTHETIC_CONTRACT_FIXTURE"]),
+    overallDispositions: Object.freeze([
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE",
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+    ]),
+    dispositionPriority: Object.freeze([
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE",
+    ]),
+    formalStructuralDisposition: "STRUCTURALLY_COMPLETE_REVIEW_ONLY",
+    syntheticStructuralDisposition: "SYNTHETIC_STRUCTURALLY_COMPLETE_FIXTURE_ONLY",
+    syntheticWouldBePassCandidateCovered: true,
+    syntheticIndependentReviewPassCandidateReturned: false,
+    formalIndependentReviewPassCandidateCanBeReturned: true,
+    independentReviewPassedReturned: false,
+    strictDataTreeAndExactFields: true,
+    frozenArtifactIdentityExact: true,
+    reviewerDomainCoverageRecomputed: true,
+    cardAndFindingBidirectionalReferencesRequired: true,
+    openP0P1P2Block: true,
+    openP3RequiresOwnerDueAtAndRationale: true,
+    reviewContentSha256Required: true,
+    attestationsBindReviewContentSha256: true,
+    bundleSha256Required: true,
+    sensitiveLookingMaterialRejectedWithoutEcho: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    reviewerIdentityClaimsCallerAssertedNotVerified: true,
+    reviewerIndependenceClaimsCallerAssertedNotVerified: true,
+    signatureReferencesCallerAssertedNotVerified: true,
+    contractValidatorImplemented: true,
+    harnessReadsCallerSuppliedDataOnly: true,
+    formalReviewRecordCount: 0,
+    reviewerAttestationRecordCount: 0,
+    syntheticFixturePersistedCount: 0,
+    gitReads: 0,
+    fileReads: 0,
+    fileWrites: 0,
+    signatureArtifactReads: 0,
+    identityDocumentReads: 0,
+    networkRequests: 0,
+    providerRequests: 0,
+    externalMessagesSent: 0,
+    businessWrites: 0,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerIndependenceVerified: false,
+    reviewerSignatureVerified: false,
+    independentReviewStarted: false,
+    independentReviewPassed: false,
+    ownerIntakeChanged: false,
+    ownerCardsScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    b03Closed: false,
+    b04Closed: false,
+    b05Closed: false,
+    px5ImplementationDorSatisfied: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040: Object.freeze({
     initialFeedbackEventId: "EVT-20260806-002",
     finalFeedbackEventId: "EVT-20260806-005",
@@ -4274,7 +4382,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_21_D034_BENCHMARK_RUN_REPORT_HARNESS_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -8295,6 +8403,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D034_BENCHMARK_RUN_REPORT_HARNESS_MISMATCH",
       "project-ops/events/2026-08-21.jsonl",
       "D-034 raw run/report 本地 validator 必须固定 17 项测试、3/8/14、85 槽位 765/2550 公式、39 条缩小合成记录非证据、三轮换整组丢弃/新 ID 重试、raw 聚合/p95/disposition/脱敏/不可变边界，并保持实际 run/report/corpus/设备/执行/复核/Owner/B05/实现全关闭",
+    );
+  }
+
+  const d039IndependentReviewHarnessSpec = baseline.d039IndependentReviewRecordHarness;
+  const d039IndependentReviewHarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === d039IndependentReviewHarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d039IndependentReviewHarnessSpec.correlationId),
+  );
+  const d039IndependentReviewHarnessEvent = d039IndependentReviewHarnessEvents[0]?.value;
+  const d039IndependentReviewHarnessData = d039IndependentReviewHarnessEvent?.data ?? {};
+  const d039IndependentReviewHarnessFields = Object.keys(d039IndependentReviewHarnessSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    d039IndependentReviewHarnessEvents.length !== 1 ||
+    d039IndependentReviewHarnessEvent?.eventId !== d039IndependentReviewHarnessSpec.eventId ||
+    d039IndependentReviewHarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    d039IndependentReviewHarnessEvent?.actor?.id !== d039IndependentReviewHarnessSpec.actorId ||
+    d039IndependentReviewHarnessEvent?.actor?.role !== d039IndependentReviewHarnessSpec.actorRole ||
+    d039IndependentReviewHarnessEvent?.subject?.id !== d039IndependentReviewHarnessSpec.subjectId ||
+    d039IndependentReviewHarnessEvent?.subject?.role !== d039IndependentReviewHarnessSpec.subjectRole ||
+    d039IndependentReviewHarnessEvent?.correlationId !== d039IndependentReviewHarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(d039IndependentReviewHarnessData).sort()) !==
+      JSON.stringify(d039IndependentReviewHarnessFields) ||
+    d039IndependentReviewHarnessFields.some(
+      (field) => JSON.stringify(d039IndependentReviewHarnessData[field]) !==
+        JSON.stringify(d039IndependentReviewHarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-039 六卡复核回执 validator 必须固定 PACKET-001-R1/10 输入、4 域/6 卡/16 不变量、P0~P3/disposition/双层摘要、20 项测试、合成 fixture 非证据，并保持正式回执/复核人/身份签署核验/复核 PASS/Owner/B03~B05/PX-5/实现全关闭",
     );
   }
 

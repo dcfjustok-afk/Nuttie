@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-21T04:27:00+08:00",
+  "generatedAt": "2026-08-22T17:52:34+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 194
+    "projectEvents": 195
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-039 B03~B05 六卡独立复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、10 个 frozen blob、4 个复核域、6 卡、16 条跨卡不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，B03/B04/B05、Owner、PX-5 与实现门禁均未改变",
     "D-034 benchmark raw run/report 本地失败关闭 validator 已完成 17 项测试：执行严格身份、8 阶段、14 指标、每 fixture/profile 至少 3 warm-up 与 10 measured（85 槽位最低 765/2550）、三轮换整组 thermal 丢弃、重试原记录保留、raw 聚合重算、nearest-rank p95、disposition、脱敏与不可变指纹；39 条缩小合成记录只验证算法且不落盘，不是实际 raw run/report 或 benchmark 证据，corpus、最低设备、Mac/Xcode、原生执行、复核、Owner、B05 与实现均未授权或未发生",
     "D-034 benchmark corpus manifest 本地失败关闭合同已完成 13 项测试：执行 3 档、21 行矩阵、19 项直接硬上限、2 项伴随控制、85 个必需语义槽位和 38 个边界/+1，并锁定 JPEG、摘要、无真实数据/凭据、敏感材料、不可变与顺序无关指纹边界；只验证内存中合成 manifest 的结构，不读取或物化 corpus，最低设备、Mac/Xcode、隔离原生 harness、执行、结果、复核、Owner、B05 与实现仍未授权或未完成",
     "OI-07 Provider target 本地失败关闭校验合同已完成 11 项测试：执行 3 target、每 target 29 字段、30 联合字段、UNKNOWN/N/A/HTTPS/敏感材料/不可变指纹边界，并分别报告 D-036/D-053 结构完整度；只输出计数、状态和指纹，不回显 Provider 输入。合成 fixture 不是 Owner 输入或 Provider 证据，revision/真实 target 仍未取得，凭证、费用、联网、证据、Owner、B05 与实现均未授权",
