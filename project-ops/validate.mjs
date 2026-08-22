@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D039_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze({
-  id: "PHASE0_2026_08_22_D039_REVIEWER_ASSIGNMENT_HARNESS",
+export const PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 207,
+    events: 208,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D039_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze(
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 13,
+    "2026-08-22": 14,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3937,6 +3937,149 @@ export const PHASE0_2026_08_22_D039_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze(
     "formalImplementationAuthorized": false,
     "gateStatesChanged": false
   }),
+  d040FirstThreeBatchesReviewerAssignmentHarness: Object.freeze({
+    "eventId": "EVT-20260822-014",
+    "actorId": "project-manager",
+    "actorRole": "PM",
+    "subjectId": "D040-FIRST-THREE-BATCHES-REVIEWER-ASSIGNMENT-HARNESS-001",
+    "subjectRole": "LocalReviewerAssignmentContract",
+    "correlationId": "d040-first-three-batches-reviewer-assignment-harness",
+    "state": "completed",
+    "contractStatus": "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    "decisionId": "D-040",
+    "decisionState": "CANDIDATE",
+    "authoritativeState": "PX-0_INPUT_GAP",
+    "from": "FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    "to": "FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_INTAKE_AND_VALIDATOR_READY",
+    "next": "NAMED_REVIEWER_CANDIDATES_AND_CONTACT_AUTHORIZATION_REQUIRED",
+    "intakePacketId": "D040-FIRST-THREE-BATCHES-REVIEWER-INTAKE-PACKET-001",
+    "intakePacketArtifactCommit": "2c5323ffd6183bae6aea4563f4cbb584a3d702d9",
+    "intakePacketBlobOid": "2751d09da70765a1c1a6f89eca76cac13a7a76d6",
+    "reviewPacketId": "D040-FIRST-THREE-BATCHES-INDEPENDENT-REVIEW-PACKET-001",
+    "reviewPacketVersion": "PACKET-001-R1",
+    "packetEventId": "EVT-20260821-001",
+    "inputCommit": "b39a8f09ae544d7c3276f532b536c67ade75b446",
+    "packetArtifactCommit": "3d63bafdcf82b588a3d344c9a4185bd8edabadec",
+    "packetArtifactBlobOid": "8ed92648876431cdd30ffc047d83fd6e8a05dd88",
+    "packetArtifactSha256": "1f632603de373ef10af07d1da9513d0822a7b01f4890fcff12d907aaf57e7a06",
+    "contractArtifactCommit": "1c8a5bba001fca639f8e4fcb7847ccceacc36c30",
+    "contractBlobOid": "3ec3626025f343bf34b70f6d1ef5bc4dd3416290",
+    "artifactCommit": "9dabbac55283cfe9ff0fe4eb478b1a024b552b37",
+    "implementationBlobOid": "468303cb7a600cd270f58f0a8678720dfb186711",
+    "testBlobOid": "cbc21f8d534e7791a14a219802a4433cdf20f998",
+    "documentationBlobOid": "54adb960585f825054484d0185f99bf0bf8f1ad1",
+    "inputSchemaVersion": "D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_INPUT_V1",
+    "resultSchemaVersion": "D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_RESULT_V1",
+    "boundarySchemaVersion": "D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_BOUNDARY_V1",
+    "topLevelTests": 21,
+    "fullSuitePassed": 1189,
+    "isolatedSpikeTestsPassed": 10,
+    "markdownFileCount": 157,
+    "localMarkdownLinkCount": 573,
+    "brokenLocalMarkdownLinkCount": 0,
+    "requiredReviewerDomainCount": 4,
+    "maximumReviewerCount": 20,
+    "maximumDomainsPerReviewer": 4,
+    "recordKinds": [
+      "FORMAL_ASSIGNMENT_RECORD",
+      "SYNTHETIC_CONTRACT_FIXTURE"
+    ],
+    "resultDispositions": [
+      "STRUCTURALLY_COMPLETE_ASSIGNMENT_CANDIDATE",
+      "SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY",
+      "ASSIGNMENT_INCOMPLETE"
+    ],
+    "verificationStates": [
+      "VERIFIED",
+      "REJECTED",
+      "PENDING"
+    ],
+    "conflictStates": [
+      "NONE_DECLARED",
+      "RESOLVED",
+      "OPEN"
+    ],
+    "signatureMethods": [
+      "SIGNED_DOCUMENT_REFERENCE",
+      "VERIFIED_WORKFLOW_REFERENCE",
+      "WET_SIGNATURE_REFERENCE"
+    ],
+    "strictDataTreeAndExactFields": true,
+    "formalSyntheticIdentityAndReferenceIsolation": true,
+    "reviewPacketIdentityExact": true,
+    "reviewerDomainOrderExact": true,
+    "competenceEvidenceByDomainRequired": true,
+    "identitySelfVerificationRejected": true,
+    "draftParticipantFailsClosed": true,
+    "conflictResolutionRequired": true,
+    "domainCoverageBidirectional": true,
+    "reviewCanStartRecomputed": true,
+    "assignmentContentSha256Required": true,
+    "rfc3339ActualCalendarDateRequired": true,
+    "sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho": true,
+    "immutableNormalizationAndResultFingerprintBound": true,
+    "inputAuthorityClaimsCallerAssertedNotVerified": true,
+    "identityClaimsCallerAssertedNotVerified": true,
+    "competenceClaimsCallerAssertedNotVerified": true,
+    "independenceClaimsCallerAssertedNotVerified": true,
+    "contactAuthorizationClaimsCallerAssertedNotVerified": true,
+    "formalAssignmentCandidateCanBeReturned": true,
+    "formalAssignmentReadyCandidateCovered": true,
+    "syntheticWouldBeAssignmentReadyCandidateCovered": true,
+    "syntheticAssignmentReadyCandidateReturned": false,
+    "reviewersAssignedReturned": false,
+    "reviewCanStartReturned": false,
+    "contractValidatorImplemented": true,
+    "harnessReadsCallerSuppliedDataOnly": true,
+    "intakePacketReady": true,
+    "reviewPacketReady": true,
+    "inputCommitFrozen": true,
+    "reviewerCandidateCount": 0,
+    "reviewerAssignmentRecordCount": 0,
+    "controlledContactRecordCount": 0,
+    "formalReviewRecordCount": 0,
+    "reviewerAttestationRecordCount": 0,
+    "syntheticFixturePersistedCount": 0,
+    "gitReads": 0,
+    "fileReads": 0,
+    "fileWrites": 0,
+    "identityDocumentReads": 0,
+    "competenceEvidenceReads": 0,
+    "contactRecordReads": 0,
+    "signatureArtifactReads": 0,
+    "networkRequests": 0,
+    "providerRequests": 0,
+    "externalContactAuthorized": false,
+    "externalMessagesSent": 0,
+    "businessWrites": 0,
+    "reviewersAssigned": false,
+    "reviewerIdentityVerified": false,
+    "reviewerCompetenceVerified": false,
+    "reviewerIndependenceVerified": false,
+    "reviewerSignatureVerified": false,
+    "conflictOfInterestResolved": false,
+    "independentReviewStarted": false,
+    "firstThreeBatchesIndependentReviewPassed": false,
+    "dynamicModelOptionOwnerReady": false,
+    "modelNativeNumericPalOptionOwnerReady": false,
+    "healthReviewStillRequired": true,
+    "healthReviewerAssigned": false,
+    "healthContentApproved": false,
+    "contentQaPassed": false,
+    "ownerIntakeChanged": false,
+    "ownerCardsScheduled": false,
+    "px1Authorized": false,
+    "px2Authorized": false,
+    "ownerReviewAuthorized": false,
+    "ownerChoiceRecorded": false,
+    "decisionAcceptedRecorded": false,
+    "formulaImplementationAuthorized": false,
+    "persistenceImplementationAuthorized": false,
+    "formalRootProjectAuthorized": false,
+    "nativeIosWorkAuthorized": false,
+    "formalImplementationAuthorized": false,
+    "gateStatesChanged": false
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -5527,7 +5670,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D039_REVIEWER_ASSIGNMENT_HARNESS) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -10035,6 +10178,52 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D039_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-039 B03~B05 复核人指派 validator 必须固定 PACKET-001-R1、四域逐域胜任/身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256、21 项测试及正式/合成隔离，并保持候选人/联系人/联络授权/正式指派/复核/PASS/六卡接受/B03~B05/PX-5/Owner/正式工程/原生/实现全关闭",
+    );
+  }
+
+  const d040FirstThreeBatchesReviewerAssignmentSpec =
+    baseline.d040FirstThreeBatchesReviewerAssignmentHarness;
+  const d040FirstThreeBatchesReviewerAssignmentEvents = model.events.filter(
+    (record) => record.value?.eventId === d040FirstThreeBatchesReviewerAssignmentSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === d040FirstThreeBatchesReviewerAssignmentSpec.correlationId),
+  );
+  const d040FirstThreeBatchesReviewerAssignmentEvent =
+    d040FirstThreeBatchesReviewerAssignmentEvents[0]?.value;
+  const d040FirstThreeBatchesReviewerAssignmentData =
+    d040FirstThreeBatchesReviewerAssignmentEvent?.data ?? {};
+  const d040FirstThreeBatchesReviewerAssignmentFields =
+    Object.keys(d040FirstThreeBatchesReviewerAssignmentSpec)
+      .filter((field) => ![
+        "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+      ].includes(field))
+      .sort();
+  if (
+    d040FirstThreeBatchesReviewerAssignmentEvents.length !== 1 ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.eventId !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.eventId ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.type !== "ARTIFACT_CREATED" ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.actor?.id !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.actorId ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.actor?.role !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.actorRole ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.subject?.id !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.subjectId ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.subject?.role !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.subjectRole ||
+    d040FirstThreeBatchesReviewerAssignmentEvent?.correlationId !==
+      d040FirstThreeBatchesReviewerAssignmentSpec.correlationId ||
+    JSON.stringify(Object.keys(d040FirstThreeBatchesReviewerAssignmentData).sort()) !==
+      JSON.stringify(d040FirstThreeBatchesReviewerAssignmentFields) ||
+    d040FirstThreeBatchesReviewerAssignmentFields.some(
+      (field) => JSON.stringify(d040FirstThreeBatchesReviewerAssignmentData[field]) !==
+        JSON.stringify(d040FirstThreeBatchesReviewerAssignmentSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 前三批十三卡复核人指派 validator 必须固定 PACKET-001-R1、四域逐域胜任/身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256、21 项测试及正式/合成隔离，并保持候选人/联系人/联络授权/正式指派/复核/PASS/动态模型/健康批准/Content QA/Owner/PX-1/PX-2/正式工程/原生/实现全关闭",
     );
   }
 

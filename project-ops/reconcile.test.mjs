@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 207,
+    events: 208,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -966,6 +966,36 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039ReviewerAssignmentHarness.formalRootProjectAuthorized, false);
   assert.equal(report.d039ReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.d039ReviewerAssignmentHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.eventId, "EVT-20260822-014");
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.packetEventId, "EVT-20260821-001");
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.topLevelTests, 21);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.fullSuitePassed, 1189);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.requiredReviewerDomainCount, 4);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.formalAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.syntheticWouldBeAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewersAssignedReturned, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewCanStartReturned, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewerCandidateCount, 0);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.controlledContactRecordCount, 0);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewerAssignmentRecordCount, 0);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.externalContactAuthorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.externalMessagesSent, 0);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.reviewersAssigned, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.independentReviewStarted, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.firstThreeBatchesIndependentReviewPassed, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.healthReviewStillRequired, true);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.healthReviewerAssigned, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.healthContentApproved, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.contentQaPassed, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.px1Authorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.px2Authorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.d040FirstThreeBatchesReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1816,6 +1846,49 @@ test("对账器拒绝把 D-039 复核人指派 validator 冒充联系人、正�
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_D039_REVIEWER_ASSIGNMENT_HARNESS_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 D-040 十三卡复核人指派 validator 冒充联系人、正式指派、复核或健康批准", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-014",
+  ).value.data;
+  harnessData.requiredReviewerDomainCount = 3;
+  harnessData.domainCoverageBidirectional = false;
+  harnessData.syntheticAssignmentReadyCandidateReturned = true;
+  harnessData.reviewersAssignedReturned = true;
+  harnessData.reviewCanStartReturned = true;
+  harnessData.reviewerCandidateCount = 4;
+  harnessData.controlledContactRecordCount = 4;
+  harnessData.reviewerAssignmentRecordCount = 1;
+  harnessData.externalContactAuthorized = true;
+  harnessData.externalMessagesSent = 4;
+  harnessData.reviewersAssigned = true;
+  harnessData.independentReviewStarted = true;
+  harnessData.firstThreeBatchesIndependentReviewPassed = true;
+  harnessData.healthReviewStillRequired = false;
+  harnessData.healthReviewerAssigned = true;
+  harnessData.healthContentApproved = true;
+  harnessData.contentQaPassed = true;
+  harnessData.ownerIntakeChanged = true;
+  harnessData.ownerCardsScheduled = true;
+  harnessData.px1Authorized = true;
+  harnessData.px2Authorized = true;
+  harnessData.ownerReviewAuthorized = true;
+  harnessData.ownerChoiceRecorded = true;
+  harnessData.decisionAcceptedRecorded = true;
+  harnessData.formulaImplementationAuthorized = true;
+  harnessData.persistenceImplementationAuthorized = true;
+  harnessData.formalRootProjectAuthorized = true;
+  harnessData.nativeIosWorkAuthorized = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D040_FIRST_THREE_BATCHES_REVIEWER_ASSIGNMENT_HARNESS_GATE",
     ),
   );
 });
