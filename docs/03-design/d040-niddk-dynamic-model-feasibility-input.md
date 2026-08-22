@@ -51,6 +51,24 @@ NIDDK Body Weight Planner 是可以继续研究的候选模型来源，但当前
 
 配套的 [NIDDK 动态模型许可澄清模板](d040-niddk-license-clarification-template.md) 已把七项目标资产、允许动作、条款治理、外联授权字段、正式答复 schema 和失败关闭处置固定下来。模板状态为 `NOT_SENT`，不构成外联授权、许可答复或采用证据。
 
+### 2.2 官方旧研究工具补充审计
+
+2026-08-22 对 [NIDDK 官方研究目录](https://www.niddk.nih.gov/research-funding/at-niddk/labs-branches/laboratory-biological-modeling/integrative-physiology-section/research) 的补充只读审计还定位到两组旧研究工具：
+
+- 2010 年详细人体代谢模型对应一份 `Computational model code` ZIP；官方页面说明它需要 Berkeley Madonna 动力系统仿真软件运行；
+- 2008 年体重维持模型对应 [四种 Excel 电子表格说明](https://www.niddk.nih.gov/-/media/Files/Labs-Branches-Sections/laboratory-biological-modeling/integrative-physiology-section/Spreadsheet-Descriptions_508.pdf)，分别覆盖初始体脂已知/未知以及“由体重变化反推能量摄入变化”/“由能量与活动变化预测稳态体重变化”；官方设置说明要求 Excel 宏与 Solver；
+- 同一官方目录明确说明 Body Weight Planner 已取代这些研究工具。这些旧工具的论文、模型目标、运行环境和当前七项网页 JavaScript 资产并不相同。
+
+这些发现证明 NIDDK 曾公开可执行研究材料，但不能证明：
+
+1. 旧 ZIP 或 Excel 文件是当前 Body Weight Planner 的源码发行版、参考实现或依赖包；
+2. 旧工具输出是当前七项 JavaScript 资产的规范 oracle；
+3. 旧文件具有语义版本、changelog、签名 manifest、当前维护承诺或跨实现回归容差；
+4. 旧工具的许可可以外推到当前网页资产，或其 Excel 宏适合在未经安全审查时执行；
+5. `TAB-2436` 所称“使用已发表人体数据完成验证”等于发布了机器可读、版本化的验证 corpus。
+
+因此旧工具只能登记为 `LEGACY_OFFICIAL_REFERENCE_SURFACE`。未来如需研究，必须另行固定模型身份、文件 hash、许可、安全隔离和与 D-062 的适用性；本次没有下载、解压、运行、vendoring 或从中生成答案。`stableSemanticReleaseFound`、`officialVersionedOracleCorpusFound` 和 `dynamicModelEvidencePassed` 继续为 `false`。
+
 ## 3. 当前网页代码表面
 
 下表来自 2026-08-20 对 `https://www.niddk.nih.gov/bwp/` 页面实际引用资产的只读 GET。未把源码写入仓库、未 vendoring、未执行模型代码，也没有向模型提交任何用户数据。
@@ -123,6 +141,12 @@ technologyTransferDevelopmentStatus: PROTOTYPE
 technologyTransferCollaborationRoute: LICENSING
 currentSevenAssetsCoverageConfirmed: false
 licensingClarificationRequested: false
+officialLegacyResearchArtifactSurfaceFound: true
+legacyArtifactsSupersededByBodyWeightPlanner: true
+legacyArtifactsCurrentBwpRelease: false
+legacyArtifactsOfficialOracle: false
+legacyArtifactsDownloaded: false
+legacyArtifactsExecuted: false
 stableSemanticReleaseFound: false
 officialVersionedOracleCorpusFound: false
 regressionToleranceDefined: false
