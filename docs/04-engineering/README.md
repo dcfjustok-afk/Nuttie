@@ -64,6 +64,7 @@
 - [D-040 前三批十三卡独立复核回执机器合同](testing/d040-first-three-batches-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的七份不可变输入、四域具名 attestation、十三卡、12 条跨批不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
 - [D-040 前三批十三卡独立复核回执本地校验合同](testing/d040-first-three-batches-independent-review-record-harness.md)：以 20 项测试执行 packet/七输入、四域 attestation、十三卡/12 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-040 四张宏量轴卡独立复核回执机器合同](testing/d040-macro-axis-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的十份不可变输入、四域具名 attestation、D-063/D-070/D-071/D-072 四卡、14 条跨轴不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
+- [D-040 四张宏量轴卡独立复核回执本地校验合同](testing/d040-macro-axis-independent-review-record-harness.md)：以 20 项测试执行 packet/十输入、四域 attestation、四卡/14 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-040 中国健康评审回执机器合同](testing/d040-china-health-review-record-contract.md)：固定 `PACKET-001-R1` 的九份不可变输入、具名资质/地域/利益冲突/签署声明、十三项逐条处置、P0~P3、90 天周期、双层摘要和健康 approval candidate 不等于真实健康批准或 Content QA；当前无 reviewer 或正式回执。
 - [D-040 中国健康评审回执本地校验合同](testing/d040-china-health-review-record-harness.md)：以 20 项测试执行 packet/九输入、具名资质/胜任范围/地域/冲突/签署声明、十三项/finding/disposition、90 天周期、双层摘要、合成隔离与零授权边界；不核验现实资质或创建健康批准。
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。
