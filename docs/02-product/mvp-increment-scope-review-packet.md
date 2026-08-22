@@ -3,7 +3,7 @@
 | 字段 | 内容 |
 | --- | --- |
 | 工件 ID | `MVP-INCREMENT-SCOPE-REVIEW-PACKET-001` |
-| 状态 | `PACKET_READY / REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED` |
+| 状态 | `PACKET_READY / INPUT_MANIFEST_FROZEN / REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED` |
 | 对应范围卡 | `MVP-INCREMENT-SCOPE-CARD-001` |
 | 对应门禁 | `G2 产品基线` |
 | 复核对象 | A/B/C 三项首增量边界、7 条共享不变量、总范围与后续范围保留 |
@@ -22,7 +22,7 @@ G2 要求产品、设计、架构、安全和 QA 完成跨角色审查。范围�
 - 推荐 A 仍只是推荐，Owner 选择、决定登记、范围冻结与全部实现授权仍为 `false`；
 - 本包不发送外部消息，不改变 `owner-intake.json`，也不抢占仍在前置评审中的 D-040 队列占位。
 
-## 2. 必读输入
+## 2. 必读冻结输入
 
 正式复核必须基于同一 packet revision 的完整输入。任一输入发生语义变化后，受影响结论必须失效并重新复核。
 
@@ -40,7 +40,25 @@ G2 要求产品、设计、架构、安全和 QA 完成跨角色审查。范围�
 | 10 | [D-039 PX-5 DoR 评估](../05-quality/d039-px5-dor-assessment.md) | A/C 依赖的 B03–B07 状态与实现就绪边界 |
 | 11 | [安全终审](../05-quality/security-review.md) | 数据、密码学、AI、网络与 Release 阻断条件 |
 
-本包就绪不代表这些输入中的候选规则已获接受，也不把计划测试、框架无关 harness、Windows JS export 或历史原型当成正式实现证据。
+### 2.1 冻结输入清单
+
+`PACKET-001-R1` 的十一份输入冻结在 Git commit `9891e6ac75d02df3d85a6b13cb094cd80e7fe808`。下表中的 Git blob OID 与 SHA-256 都基于该提交中的原始 blob 字节计算，不使用工作区换行、文件时间或后续提交内容。正式复核记录必须逐项引用这些值；任一项不一致都视为另一 packet revision，既有签署不能沿用。
+
+| 顺序 | 仓库路径 | Git blob OID | 规范 SHA-256 |
+| ---: | --- | --- | --- |
+| 1 | `docs/00-governance/project-charter.md` | `ac4f3a5f13d00bd4180e69157eea9db446ca33e7` | `2273d63a56fb57fda8dc44d79864b18a8cce3b61958591103509df84ab76c1cb` |
+| 2 | `docs/02-product/scope-baseline.md` | `99d476df2634cc59a463692cd304fdf95388918f` | `ea27092b2a1feae54a9f325adfcd459c0a994bdce5063c5102c813e43b24f808` |
+| 3 | `docs/02-product/requirements-and-phasing.md` | `73c805674b7ffb99435b7e03f3a8bd4546b0ecf2` | `ef0ee4e873e5ca8f14c3daa2e572f7af17527ea32ae5b74f9d68553e639d3a67` |
+| 4 | `docs/02-product/acceptance-traceability.md` | `b02c8431bbc2b20354c333b70716b5426548991e` | `d9b95b8cc10912ad132308f396fd9ecce3e585fba62a0a58453a71bca6a0325d` |
+| 5 | `docs/02-product/mvp-increment-scope-card.md` | `117b2babffb85fcf91cd8cde5532ce7a37b8d4b2` | `abb359732d22bd49d26068678af85773328d0f5a0453eeb9d5e4664e96339208` |
+| 6 | `docs/03-design/key-user-journeys.md` | `317452c6baa0f8cba5aea6337e3205c70abb8e57` | `d29949fafc878acc7877b1bb03d0e45b3111591f40e34e30d9d79de7a2d2cb82` |
+| 7 | `docs/03-design/states-content-accessibility.md` | `3acd3f87a038f0a471d71777b938cb3867f8449a` | `a774f32aee8577b7921559e0aa49ec3097603fbc59aefcb180ea7ee0ebde121c` |
+| 8 | `docs/04-engineering/architecture/feature-boundary-map.md` | `ecd4b144349313b9042d06ee23a053de21cd6025` | `4bcfa1ac7a44e0a8f4739d42d560857a69438f28d090e8066ca8e3bd70492721` |
+| 9 | `docs/04-engineering/testing/feature-contract-coverage.md` | `9eab3e4b5e760f44867ed6c859202c1fd6219891` | `26579a33c119676c76947b3d62efa21946acbd865dec86f8b4701076c07982c5` |
+| 10 | `docs/05-quality/d039-px5-dor-assessment.md` | `e260d56f755dc3194b10e46df05783fece9d6099` | `af0d11cd2f005fff8aec7962d509f57a252aefea91c3b2c8951de2fb73c64ec4` |
+| 11 | `docs/05-quality/security-review.md` | `60912529f5a4cbabfe01647da26ecf449145fab4` | `12176c3dad8d96e72d522b3dc670f9b02bec277dab65edf041cfa2af04c8ff08` |
+
+冻结清单只证明“复核输入是哪一版”，不证明这些输入中的候选规则已获接受，也不把计划测试、框架无关 harness、Windows JS export 或历史原型当成正式实现证据。当前包自身仍是 `REVIEWERS_UNASSIGNED / REVIEW_NOT_STARTED / NOT_PASSED`。
 
 ## 3. 复核域与责任
 
@@ -127,6 +145,12 @@ supersedesReviewId
 ```text
 reviewPacketReady: true
 reviewPacketVersion: PACKET-001-R1
+inputManifestFrozen: true
+manifestEntryCount: 11
+manifestCommit: 9891e6ac75d02df3d85a6b13cb094cd80e7fe808
+gitBlobOidAlgorithm: SHA-1
+canonicalDigestAlgorithm: SHA-256
+rawGitBlobBytesUsed: true
 requiredArtifactCount: 11
 requiredOptionCount: 3
 requiredReviewerDomainCount: 5
