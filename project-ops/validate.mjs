@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY",
+export const PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 198,
+    events: 199,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY = Obj
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 4,
+    "2026-08-22": 5,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3927,6 +3927,61 @@ export const PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY = Obj
       formulaImplementationAuthorized: false,
       formalImplementationAuthorized: false,
     }),
+    niddkLicenseRoutingEvidence: Object.freeze({
+      eventId: "EVT-20260822-005",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-NIDDK-LICENSE-ROUTING-EVIDENCE-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-niddk-license-routing-evidence",
+      state: "completed",
+      decisionId: "D-040",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "NIDDK_LICENSE_ROUTING_EVIDENCE_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      inputState: "LICENSE_ROUTE_LOCATED_ASSET_COVERAGE_UNCONFIRMED",
+      modelFamily: "NIDDK_BODY_WEIGHT_PLANNER_ADULT_DYNAMIC_MODEL",
+      artifactCommit: "b5c16332ac42437b019383bff4b93733d0a729fe",
+      artifactBlobOid: "15b1a664e1db490697eaa85d8fd56b0f5e7af174",
+      officialSourceCount: 3,
+      technologyTransferRecordFound: true,
+      technologyTransferId: "TAB-2436",
+      technologyEId: "E-160-2012-0",
+      leadIc: "NIDDK",
+      leadInventor: "Kevin Hall",
+      developmentStatus: "PROTOTYPE",
+      collaborationRoute: "LICENSING",
+      officialLicensingContactRoutePresent: true,
+      currentSevenAssetCount: 7,
+      technologyRecordMapsCurrentSevenAssets: false,
+      currentSevenAssetsCoverageConfirmed: false,
+      explicitPerFileSoftwareLicenseFound: false,
+      stableSemanticReleaseFound: false,
+      officialVersionedOracleCorpusFound: false,
+      regressionToleranceDefined: false,
+      productGuardrailsApproved: false,
+      healthReviewerAssigned: false,
+      licensingClarificationRequested: false,
+      externalMessagesSent: 0,
+      formsSubmitted: 0,
+      commercialTermsAccepted: false,
+      niddkSourceCodeVendored: false,
+      niddkRemoteCodeExecuted: false,
+      dynamicModelEvidencePassed: false,
+      dynamicModelOptionOwnerReady: false,
+      modelNativeNumericPalOptionOwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+      gateStatesChanged: false,
+    }),
     chinaHealthReviewerIntakePacket: Object.freeze({
       eventId: "EVT-20260820-008",
       actorId: "project-manager",
@@ -4742,7 +4797,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -8918,6 +8973,42 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 四张宏量轴卡复核回执 validator 必须固定 PACKET-001-R1/10 输入、4 域/4 卡/14 不变量、P0~P3/disposition/双层摘要、20 项测试、合成 fixture 非证据，并保持正式回执/复核人/胜任独立签署核验/PASS/健康 Content QA/D-063/D-070/四卡 Owner-ready/Owner/PX/实现全关闭",
+    );
+  }
+
+  const niddkLicenseRoutingSpec = baseline.d040Research.niddkLicenseRoutingEvidence;
+  const niddkLicenseRoutingEvents = model.events.filter(
+    (record) => record.value?.eventId === niddkLicenseRoutingSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === niddkLicenseRoutingSpec.correlationId),
+  );
+  const niddkLicenseRoutingEvent = niddkLicenseRoutingEvents[0]?.value;
+  const niddkLicenseRoutingData = niddkLicenseRoutingEvent?.data ?? {};
+  const niddkLicenseRoutingFields = Object.keys(niddkLicenseRoutingSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    niddkLicenseRoutingEvents.length !== 1 ||
+    niddkLicenseRoutingEvent?.eventId !== niddkLicenseRoutingSpec.eventId ||
+    niddkLicenseRoutingEvent?.type !== "ARTIFACT_CREATED" ||
+    niddkLicenseRoutingEvent?.actor?.id !== niddkLicenseRoutingSpec.actorId ||
+    niddkLicenseRoutingEvent?.actor?.role !== niddkLicenseRoutingSpec.actorRole ||
+    niddkLicenseRoutingEvent?.subject?.id !== niddkLicenseRoutingSpec.subjectId ||
+    niddkLicenseRoutingEvent?.subject?.role !== niddkLicenseRoutingSpec.subjectRole ||
+    niddkLicenseRoutingEvent?.correlationId !== niddkLicenseRoutingSpec.correlationId ||
+    JSON.stringify(Object.keys(niddkLicenseRoutingData).sort()) !==
+      JSON.stringify(niddkLicenseRoutingFields) ||
+    niddkLicenseRoutingFields.some(
+      (field) => JSON.stringify(niddkLicenseRoutingData[field]) !==
+        JSON.stringify(niddkLicenseRoutingSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 NIDDK 许可路径证据必须固定 TAB-2436/E-160-2012-0、Prototype/Licensing 与 7 资产未映射边界，并保持未外联、逐文件许可/稳定版本/oracle/容差/保护线/健康/Owner/PX/采用/实现全关闭",
     );
   }
 

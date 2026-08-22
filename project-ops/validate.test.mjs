@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY,
+  PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 317,
+    instancesValidated: 318,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 198);
+  assert.equal(report.counts.events, 199);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1474,6 +1474,28 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.formulaImplementationAuthorized, false);
   assert.equal(d040NiddkDynamicModelInputEvent.value.data.formalImplementationAuthorized, false);
+  const d040NiddkLicenseRoutingEvent = findEvent(VALID_MODEL, "EVT-20260822-005");
+  assert.equal(d040NiddkLicenseRoutingEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d040NiddkLicenseRoutingEvent.value.subject.id,
+    "D040-NIDDK-LICENSE-ROUTING-EVIDENCE-001",
+  );
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.technologyTransferId, "TAB-2436");
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.technologyEId, "E-160-2012-0");
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.developmentStatus, "PROTOTYPE");
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.collaborationRoute, "LICENSING");
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.currentSevenAssetCount, 7);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.technologyRecordMapsCurrentSevenAssets, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.currentSevenAssetsCoverageConfirmed, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.explicitPerFileSoftwareLicenseFound, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.licensingClarificationRequested, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.externalMessagesSent, 0);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.formsSubmitted, 0);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.dynamicModelEvidencePassed, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.dynamicModelOptionOwnerReady, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.formulaImplementationAuthorized, false);
+  assert.equal(d040NiddkLicenseRoutingEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1822,7 +1844,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 316);
+    assert.equal(report.schemaValidation.instancesValidated, 317);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -4876,6 +4898,63 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       event.data.formalImplementationAuthorized = true;
     });
     assertDiagnostic(report, "OPS_D040_NIDDK_DYNAMIC_MODEL_FEASIBILITY_MISMATCH");
+  });
+
+  await t.test("NIDDK 官方许可路径补充事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-005",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH");
+  });
+
+  await t.test("把 TAB-2436 冒充当前七项资产逐文件许可", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-005").value.data;
+      data.technologyRecordMapsCurrentSevenAssets = true;
+      data.currentSevenAssetsCoverageConfirmed = true;
+      data.explicitPerFileSoftwareLicenseFound = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH");
+  });
+
+  await t.test("伪造已发起 NIDDK 许可外联或接受商业条款", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-005").value.data;
+      data.licensingClarificationRequested = true;
+      data.externalMessagesSent = 1;
+      data.formsSubmitted = 1;
+      data.commercialTermsAccepted = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH");
+  });
+
+  await t.test("定位许可路径就越级通过采用 Owner 与实现门禁", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-005").value.data;
+      data.stableSemanticReleaseFound = true;
+      data.officialVersionedOracleCorpusFound = true;
+      data.regressionToleranceDefined = true;
+      data.productGuardrailsApproved = true;
+      data.healthReviewerAssigned = true;
+      data.niddkSourceCodeVendored = true;
+      data.niddkRemoteCodeExecuted = true;
+      data.dynamicModelEvidencePassed = true;
+      data.dynamicModelOptionOwnerReady = true;
+      data.modelNativeNumericPalOptionOwnerReady = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.px1Authorized = true;
+      data.px2Authorized = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.formulaImplementationAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH");
   });
 
   await t.test("中国健康评审人交接包事件缺失", () => {

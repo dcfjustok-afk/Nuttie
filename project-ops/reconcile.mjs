@@ -247,6 +247,18 @@ function latestD040MacroAxisIndependentReviewRecordHarness(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD040NiddkLicenseRoutingEvidence(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D040-NIDDK-LICENSE-ROUTING-EVIDENCE-001",
+    )
+    .sort((left, right) =>
+      (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
+    )
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -2402,6 +2414,76 @@ export function reconcileProjectOps(model) {
       d040MacroAxisIndependentReviewRecordHarness,
     );
   }
+  const d040NiddkLicenseRoutingEvidenceRecord = latestD040NiddkLicenseRoutingEvidence(model);
+  const d040NiddkLicenseRoutingEvidence = {
+    ...(d040NiddkLicenseRoutingEvidenceRecord?.data ?? {}),
+    eventId: d040NiddkLicenseRoutingEvidenceRecord?.eventId ?? null,
+  };
+  const expectedD040NiddkLicenseRoutingEvidence = {
+    eventId: "EVT-20260822-005",
+    state: "completed",
+    decisionId: "D-040",
+    decisionState: "CANDIDATE",
+    authoritativeState: "PX-0_INPUT_GAP",
+    from: "NIDDK_LICENSE_ROUTING_EVIDENCE_GAP",
+    next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    inputState: "LICENSE_ROUTE_LOCATED_ASSET_COVERAGE_UNCONFIRMED",
+    modelFamily: "NIDDK_BODY_WEIGHT_PLANNER_ADULT_DYNAMIC_MODEL",
+    artifactCommit: "b5c16332ac42437b019383bff4b93733d0a729fe",
+    artifactBlobOid: "15b1a664e1db490697eaa85d8fd56b0f5e7af174",
+    officialSourceCount: 3,
+    technologyTransferRecordFound: true,
+    technologyTransferId: "TAB-2436",
+    technologyEId: "E-160-2012-0",
+    leadIc: "NIDDK",
+    leadInventor: "Kevin Hall",
+    developmentStatus: "PROTOTYPE",
+    collaborationRoute: "LICENSING",
+    officialLicensingContactRoutePresent: true,
+    currentSevenAssetCount: 7,
+    technologyRecordMapsCurrentSevenAssets: false,
+    currentSevenAssetsCoverageConfirmed: false,
+    explicitPerFileSoftwareLicenseFound: false,
+    stableSemanticReleaseFound: false,
+    officialVersionedOracleCorpusFound: false,
+    regressionToleranceDefined: false,
+    productGuardrailsApproved: false,
+    healthReviewerAssigned: false,
+    licensingClarificationRequested: false,
+    externalMessagesSent: 0,
+    formsSubmitted: 0,
+    commercialTermsAccepted: false,
+    niddkSourceCodeVendored: false,
+    niddkRemoteCodeExecuted: false,
+    dynamicModelEvidencePassed: false,
+    dynamicModelOptionOwnerReady: false,
+    modelNativeNumericPalOptionOwnerReady: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    px1Authorized: false,
+    px2Authorized: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    formulaImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  };
+  if (
+    Object.entries(expectedD040NiddkLicenseRoutingEvidence).some(
+      ([key, value]) =>
+        JSON.stringify(d040NiddkLicenseRoutingEvidence[key]) !== JSON.stringify(value),
+    )
+  ) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_D040_NIDDK_LICENSE_ROUTING_GATE",
+      "D-040",
+      "D-040 NIDDK 许可路径证据未保持 TAB-2436/E-160-2012-0、Prototype/Licensing、七资产未映射、未外联及采用/Owner/实现全关闭边界",
+      d040NiddkLicenseRoutingEvidence,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -3132,6 +3214,7 @@ export function reconcileProjectOps(model) {
     d040ChinaHealthReviewRecordHarness,
     d040FirstThreeBatchesIndependentReviewRecordHarness,
     d040MacroAxisIndependentReviewRecordHarness,
+    d040NiddkLicenseRoutingEvidence,
     d040,
     diagnostics,
   };

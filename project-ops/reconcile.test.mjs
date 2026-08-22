@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 198,
+    events: 199,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -767,6 +767,21 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.recordingImplementationAuthorized, false);
   assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.persistenceImplementationAuthorized, false);
   assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.eventId, "EVT-20260822-005");
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.technologyTransferId, "TAB-2436");
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.technologyEId, "E-160-2012-0");
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.developmentStatus, "PROTOTYPE");
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.collaborationRoute, "LICENSING");
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.currentSevenAssetCount, 7);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.technologyRecordMapsCurrentSevenAssets, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.currentSevenAssetsCoverageConfirmed, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.explicitPerFileSoftwareLicenseFound, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.licensingClarificationRequested, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.externalMessagesSent, 0);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.dynamicModelEvidencePassed, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.dynamicModelOptionOwnerReady, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.ownerReviewAuthorized, false);
+  assert.equal(report.d040NiddkLicenseRoutingEvidence.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1314,6 +1329,19 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
     d040MacroAxisIndependentReviewRecordHarnessReport.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_GATE",
+    ),
+  );
+
+  const d040NiddkLicenseRoutingModel = validModel();
+  d040NiddkLicenseRoutingModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-005",
+  ).value.data.explicitPerFileSoftwareLicenseFound = true;
+  const d040NiddkLicenseRoutingReport = reconcileProjectOps(d040NiddkLicenseRoutingModel);
+  assert.equal(d040NiddkLicenseRoutingReport.ok, false);
+  assert.ok(
+    d040NiddkLicenseRoutingReport.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D040_NIDDK_LICENSE_ROUTING_GATE",
     ),
   );
 
