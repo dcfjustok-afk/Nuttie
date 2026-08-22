@@ -5,9 +5,9 @@
 | 工件 ID | `D040-NIDDK-DYNAMIC-MODEL-FEASIBILITY-INPUT-001` |
 | 范围 | D-062 `validated_dynamic_change_model` 与 D-059 `model_native_numeric_pal` 的采用前置 |
 | 状态 | `RESEARCH_COMPLETE / ADOPTION_EVIDENCE_NOT_PASSED / NOT_OWNER_READY` |
-| 核验时间 | 2026-08-20（Asia/Shanghai） |
+| 核验时间 | 2026-08-22（Asia/Shanghai）；网页代码资产 hash 观察点仍为 2026-08-20 |
 | 权威状态 | D-040 仍为 `CANDIDATE / PX-0_INPUT_GAP` |
-| 结论 | 模型身份、方程和当前网页代码表面可定位；许可澄清、稳定版本、产品保护线、官方 oracle corpus、回归容差与具名健康评审均未关闭 |
+| 结论 | 模型身份、方程、当前网页代码表面与 NIH 官方许可联络路径可定位；当前七项资产的许可覆盖、稳定版本、产品保护线、官方 oracle corpus、回归容差与具名健康评审均未关闭 |
 | 授权 | 将源码入库或 vendoring、执行远端模型代码、D-062 Owner 展示、公式实现、正式工程与发布均为 `false` |
 
 ## 1. 结论
@@ -16,6 +16,7 @@ NIDDK Body Weight Planner 是可以继续研究的候选模型来源，但当前
 
 - NIDDK 已公开模型研究页、2011 年论文和同行评审方程附录，可以定位模型家族与科学语境；
 - 当前网页会从 NIDDK 域名直接加载七个与模型/控制器有关的 JavaScript 资产，2026-08-20 只读 HTTP 核验已记录字节数与 SHA-256；
+- NIH 官方 Technology Transfer 目录存在 `TAB-2436 / E-160-2012-0`，把相关 Java Applet/动态模型列为 `Prototype` 并给出 `Licensing` 合作路径；这只定位了许可澄清入口，不证明当前七个 JavaScript 资产落入同一技术、具备逐文件许可或已经授权 Nuttie 使用；
 - 这些资产没有逐文件许可证、发布版本或 changelog；HTTP 元数据只证明当前可获取内容，不能充当稳定软件发行版；
 - NIDDK 通用版权页说明多数站点信息可自由下载和复制，但同时列明例外，并要求存疑时联系；该通用说明不足以替代产品代码采用所需的明确复用结论；
 - 在本次核验的一手材料中未找到版本化官方输入/输出测试向量、跨实现 oracle corpus 或数值回归容差；网页当前结果不能自行升级为规范测试集；
@@ -31,10 +32,22 @@ NIDDK Body Weight Planner 是可以继续研究的候选模型来源，但当前
 | [Hall 等 2011 论文](https://pubmed.ncbi.nlm.nih.gov/21872751/) | 论文身份、DOI `10.1016/S0140-6736(11)60812-X` 与成人动态能量失衡研究 | 当前网页实现与论文逐行等价，或对 Nuttie 个体结果作保证 |
 | [NIDDK 方程附录](https://www.niddk.nih.gov/-/media/Files/BWP/Hall_Lancet_Web_Appendix.pdf) | 给出成人动态体重模型方程、参数语境，并说明曾用未参与开发的人体喂养研究验证 | 网页当前代码版本、完整 UI 保护线、产品适用性或可执行测试 corpus |
 | [Body Weight Planner](https://www.niddk.nih.gov/bwp) | 当前工具要求年龄、公式分支、身高、体重、PAL、目标体重/时间；仅供 18+ 成人，排除未成年人、孕期与哺乳期 | Nuttie 可以采用 `PAL 1.6`、`1000 kcal/day`、BMI 提示或任何默认值 |
+| [NIH Technology Transfer `TAB-2436`](https://www.techtransfer.nih.gov/tech/tab-2436) | 官方目录记录 `E-160-2012-0`、NIDDK/Hall、`Prototype`、Java Applet/网页实现语境、许可联系人和 `Licensing` 合作路径 | 当前七个 JavaScript 文件属于该技术、已获得复用/修改/分发授权，或独立重实现不需要进一步审查 |
 | [NIDDK Copyright](https://www.niddk.nih.gov/copyright) | 多数站点信息通常可复制并要求署名；存在联合赞助、第三方图形等例外；编辑内容不得暗示背书，存疑需联系 | 七个 JavaScript 资产具有明确 OSI 软件许可证，或修改后可直接随 App 分发 |
 | [NIDDK Disclaimers](https://www.niddk.nih.gov/disclaimers) | 内容是公共摘要，不替代专业医疗建议；NIDDK 不背书商业产品 | Nuttie 获得医学批准、政府背书或个体诊疗能力 |
 
-研究页还展示另一个加入专利跟踪/反馈技术的 `Personalized Body Weight Management System` 可许可项目。它与基础 Body Weight Planner 不是同一个采用结论，本工件不把该许可邀约外推为“基础网页代码必然受同一许可约束”，也不反向推导“基础网页代码无需澄清”。
+研究页还展示另一个加入专利跟踪/反馈技术的 `Personalized Body Weight Management System` 可许可项目。它与 `TAB-2436` 及基础 Body Weight Planner 的边界不能仅凭网页摘要合并。本工件不把任一许可邀约外推为“当前网页代码必然受同一许可约束”，也不反向推导“当前网页代码无需澄清”。
+
+### 2.1 许可路径补充核验
+
+2026-08-22 仅使用 NIH/NIDDK 官方页面完成以下只读核验：
+
+- `TAB-2436` 的公开条目仍可访问，记录技术编号 `E-160-2012-0`、开发状态 `Prototype`、Lead IC `NIDDK`、Lead Inventor `Kevin Hall`，并把合作类型列为 `Licensing`；
+- 条目正文描述 Java Applet、已发表方程和网页实现，但没有列出当前 `services/*.js`、`constants/constants.js`、`controllers/appController.js` 的文件名、hash、版本、许可证文本或当前实现与该条目的映射；
+- NIDDK 版权页仍明确“多数信息”可下载和复制，同时保留例外并要求存疑时联系；它不是当前七项资产的逐文件软件许可证；
+- 本次没有向许可联系人、NIDDK 或其他外部主体发送消息，也没有提交表单、声明使用目的、接受费用或创建许可关系。
+
+因此许可缺口由“没有路径”收敛为“官方路径已定位，但适用资产、允许动作和条款未确认”。下一次对外澄清必须由 Owner 或获授权责任人决定是否联系，并至少取得可归档的：目标资产清单、技术/版权归属映射、允许的复制/修改/分发或独立重实现范围、署名要求、费用/地域/期限、版本与后续更新处理。没有书面答复前，`explicitPerFileSoftwareLicenseFound` 和 `dynamicModelEvidencePassed` 继续为 `false`。
 
 ## 3. 当前网页代码表面
 
@@ -101,6 +114,13 @@ dynamicModelSourceAssessmentComplete: true
 observedPublicCodeAssetCount: 7
 publicCodeAssetHashesRecorded: true
 explicitPerFileSoftwareLicenseFound: false
+officialTechnologyTransferRecordFound: true
+technologyTransferId: TAB-2436
+technologyEId: E-160-2012-0
+technologyTransferDevelopmentStatus: PROTOTYPE
+technologyTransferCollaborationRoute: LICENSING
+currentSevenAssetsCoverageConfirmed: false
+licensingClarificationRequested: false
 stableSemanticReleaseFound: false
 officialVersionedOracleCorpusFound: false
 regressionToleranceDefined: false
