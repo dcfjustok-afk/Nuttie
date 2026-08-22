@@ -271,6 +271,18 @@ function latestD040NiddkLicenseClarificationTemplate(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD040NiddkLegacyReferenceAudit(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D040-NIDDK-LEGACY-REFERENCE-AUDIT-001",
+    )
+    .sort((left, right) =>
+      (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
+    )
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -2587,6 +2599,85 @@ export function reconcileProjectOps(model) {
       d040NiddkLicenseClarificationTemplate,
     );
   }
+  const d040NiddkLegacyReferenceAuditRecord =
+    latestD040NiddkLegacyReferenceAudit(model);
+  const d040NiddkLegacyReferenceAudit = {
+    ...(d040NiddkLegacyReferenceAuditRecord?.data ?? {}),
+    eventId: d040NiddkLegacyReferenceAuditRecord?.eventId ?? null,
+  };
+  const expectedD040NiddkLegacyReferenceAudit = {
+    eventId: "EVT-20260822-007",
+    state: "completed",
+    decisionId: "D-040",
+    decisionState: "CANDIDATE",
+    authoritativeState: "PX-0_INPUT_GAP",
+    from: "NIDDK_STABLE_RELEASE_AND_ORACLE_EVIDENCE_GAP",
+    next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    researchNext: "EXTERNAL_CONTACT_AUTHORIZATION_OR_ALTERNATIVE_MODEL_RESEARCH_REQUIRED",
+    inputState: "LEGACY_REFERENCE_SURFACE_LOCATED_NOT_CURRENT_RELEASE_OR_ORACLE",
+    artifactCommit: "6c76dac5f8ad0b723bd24d7ce4b85e1299ca580b",
+    artifactBlobOid: "abb4a70f8627c97176412e3b5df809ad0a6657fd",
+    officialSourceCount: 3,
+    officialResearchDirectoryLocated: true,
+    bodyWeightPlannerSupersedesLegacyTools: true,
+    legacyToolGroupCount: 2,
+    detailedComputationalModelCodeZipListed: true,
+    detailedComputationalModelPublicationYear: 2010,
+    detailedComputationalModelRequiresBerkeleyMadonna: true,
+    weightMaintenanceSpreadsheetLogicalToolCount: 4,
+    weightMaintenanceModelPublicationYear: 2008,
+    weightMaintenanceSpreadsheetRequiresExcelMacro: true,
+    weightMaintenanceSpreadsheetRequiresSolver: true,
+    legacyArtifactsCurrentBwpSourceRelease: false,
+    legacyArtifactsMapCurrentSevenWebAssets: false,
+    legacyArtifactsOfficialVersionedOracle: false,
+    technologyRecordMentionsValidationWithPublishedHumanData: true,
+    machineReadableVersionedValidationCorpusFound: false,
+    currentSevenAssetsCoverageConfirmed: false,
+    explicitPerFileSoftwareLicenseFound: false,
+    stableSemanticReleaseFound: false,
+    officialVersionedOracleCorpusFound: false,
+    regressionToleranceDefined: false,
+    productGuardrailsApproved: false,
+    healthReviewerAssigned: false,
+    legacyArtifactFilesDownloaded: 0,
+    legacyArtifactsExecuted: false,
+    legacyArtifactsVendored: false,
+    niddkSourceCodeVendored: false,
+    niddkRemoteCodeExecuted: false,
+    licensingClarificationRequested: false,
+    externalMessagesSent: 0,
+    formsSubmitted: 0,
+    commercialTermsAccepted: false,
+    dynamicModelEvidencePassed: false,
+    dynamicModelOptionOwnerReady: false,
+    modelNativeNumericPalOptionOwnerReady: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    px1Authorized: false,
+    px2Authorized: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    formulaImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  };
+  if (
+    Object.entries(expectedD040NiddkLegacyReferenceAudit).some(
+      ([key, value]) =>
+        JSON.stringify(d040NiddkLegacyReferenceAudit[key]) !== JSON.stringify(value),
+    )
+  ) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_D040_NIDDK_LEGACY_REFERENCE_AUDIT_GATE",
+      "D-040",
+      "D-040 NIDDK 旧研究工具审计未保持旧工具已被 BWP 取代、非当前发行/oracle、未下载/执行/入库及许可/采用/Owner/实现全关闭边界",
+      d040NiddkLegacyReferenceAudit,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -3319,6 +3410,7 @@ export function reconcileProjectOps(model) {
     d040MacroAxisIndependentReviewRecordHarness,
     d040NiddkLicenseRoutingEvidence,
     d040NiddkLicenseClarificationTemplate,
+    d040NiddkLegacyReferenceAudit,
     d040,
     diagnostics,
   };

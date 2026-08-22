@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-22T19:35:07+08:00",
+  "generatedAt": "2026-08-22T19:43:56+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 200
+    "projectEvents": 201
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 benchmark 协议、13 项 corpus manifest 本地校验、raw run/report bundle 机器合同与 17 项本地失败关闭 validator 已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1、最低 765 warm-up/2550 measured、8 阶段/14 指标、整组丢弃/重试保留与聚合重算；39 条缩小合成记录只验证算法，真实 raw run/report 仍为 0，真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性与官方 `TAB-2436 / E-160-2012-0` 许可路径已核验，但七项资产覆盖/逐文件许可/稳定版本/oracle corpus/保护线门禁未通过；D-032 等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 benchmark 协议、13 项 corpus manifest 本地校验、raw run/report bundle 机器合同与 17 项本地失败关闭 validator 已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1、最低 765 warm-up/2550 measured、8 阶段/14 指标、整组丢弃/重试保留与聚合重算；39 条缩小合成记录只验证算法，真实 raw run/report 仍为 0，真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性、官方 `TAB-2436 / E-160-2012-0` 许可路径及旧研究工具边界已核验，旧 ZIP/Excel 已被 BWP 取代且不是当前发行或 oracle，七项资产覆盖/逐文件许可/稳定版本/oracle corpus/保护线门禁仍未通过；D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-040 NIDDK 官方旧研究工具补充审计已完成：官方目录列出 2010 年计算模型代码 ZIP 和 2008 年四种 Excel 逻辑工具，同时明确 Body Weight Planner 已取代这些工具；旧工具不是当前 7 个网页资产的稳定源码发行版或官方版本化 oracle。未下载、执行或入库旧工具，也未外联；许可、容差、保护线、健康、Owner、PX 与实现状态全部保持 false/0",
     "D-040 NIDDK 动态模型许可澄清模板已就绪但未发送：精确绑定 TAB-2436/E-160-2012-0、7 个观察资产及 hash、3 类问题、6 类允许动作、12 项外联授权字段、30 项正式答复字段和 5 种失败关闭处置。模板不能发送消息或代替权威答复；联系授权、外联、表单、商业条款、文件下载、七资产覆盖、逐文件许可、稳定版本、oracle、容差、保护线、健康、Owner、PX 与实现状态全部保持 false/0",
     "D-040 NIDDK 动态模型许可路径补充核验已定位 NIH 官方 TAB-2436 / E-160-2012-0：相关 Java Applet/动态模型在技术转移目录中为 Prototype，并存在 Licensing 联络路径；公开条目未把当前 7 个网页 JavaScript 资产映射到该技术，也没有逐文件许可、稳定版本、官方 oracle corpus、回归容差或产品保护线。本次未发送外部消息、提交表单、接受商业条款、vendoring 或执行代码，D-059/D-062 Owner-ready、健康评审、Owner、PX 与实现授权全部保持 false",
     "D-040 四张宏量轴卡独立复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、10 个 frozen blob、4 个复核域、D-063/D-070/D-071/D-072 四卡、14 条跨轴不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/胜任依据/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/胜任范围/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，健康批准、Content QA、D-063/D-070 接受、四卡 Owner-ready、Owner、PX-1/PX-2 与实现门禁均未改变",

@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 200,
+    events: 201,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -799,6 +799,21 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040NiddkLicenseClarificationTemplate.dynamicModelEvidencePassed, false);
   assert.equal(report.d040NiddkLicenseClarificationTemplate.ownerReviewAuthorized, false);
   assert.equal(report.d040NiddkLicenseClarificationTemplate.formalImplementationAuthorized, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.eventId, "EVT-20260822-007");
+  assert.equal(report.d040NiddkLegacyReferenceAudit.officialSourceCount, 3);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.bodyWeightPlannerSupersedesLegacyTools, true);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyToolGroupCount, 2);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.detailedComputationalModelCodeZipListed, true);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.weightMaintenanceSpreadsheetLogicalToolCount, 4);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyArtifactsCurrentBwpSourceRelease, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyArtifactsOfficialVersionedOracle, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.machineReadableVersionedValidationCorpusFound, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyArtifactFilesDownloaded, 0);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyArtifactsExecuted, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.legacyArtifactsVendored, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.dynamicModelEvidencePassed, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.ownerReviewAuthorized, false);
+  assert.equal(report.d040NiddkLegacyReferenceAudit.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1375,6 +1390,22 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
       (diagnostic) =>
         diagnostic.code ===
         "OPS_RECONCILE_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_GATE",
+    ),
+  );
+
+  const d040NiddkLegacyReferenceAuditModel = validModel();
+  d040NiddkLegacyReferenceAuditModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-007",
+  ).value.data.legacyArtifactsCurrentBwpSourceRelease = true;
+  const d040NiddkLegacyReferenceAuditReport = reconcileProjectOps(
+    d040NiddkLegacyReferenceAuditModel,
+  );
+  assert.equal(d040NiddkLegacyReferenceAuditReport.ok, false);
+  assert.ok(
+    d040NiddkLegacyReferenceAuditReport.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code ===
+        "OPS_RECONCILE_D040_NIDDK_LEGACY_REFERENCE_AUDIT_GATE",
     ),
   );
 

@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY",
+export const PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 200,
+    events: 201,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY = Object.
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 6,
+    "2026-08-22": 7,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -4057,6 +4057,69 @@ export const PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY = Object.
       formalImplementationAuthorized: false,
       gateStatesChanged: false,
     }),
+    niddkLegacyReferenceAudit: Object.freeze({
+      eventId: "EVT-20260822-007",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-NIDDK-LEGACY-REFERENCE-AUDIT-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-niddk-legacy-reference-audit",
+      state: "completed",
+      decisionId: "D-040",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "NIDDK_STABLE_RELEASE_AND_ORACLE_EVIDENCE_GAP",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      researchNext: "EXTERNAL_CONTACT_AUTHORIZATION_OR_ALTERNATIVE_MODEL_RESEARCH_REQUIRED",
+      inputState: "LEGACY_REFERENCE_SURFACE_LOCATED_NOT_CURRENT_RELEASE_OR_ORACLE",
+      artifactCommit: "6c76dac5f8ad0b723bd24d7ce4b85e1299ca580b",
+      artifactBlobOid: "abb4a70f8627c97176412e3b5df809ad0a6657fd",
+      officialSourceCount: 3,
+      officialResearchDirectoryLocated: true,
+      bodyWeightPlannerSupersedesLegacyTools: true,
+      legacyToolGroupCount: 2,
+      detailedComputationalModelCodeZipListed: true,
+      detailedComputationalModelPublicationYear: 2010,
+      detailedComputationalModelRequiresBerkeleyMadonna: true,
+      weightMaintenanceSpreadsheetLogicalToolCount: 4,
+      weightMaintenanceModelPublicationYear: 2008,
+      weightMaintenanceSpreadsheetRequiresExcelMacro: true,
+      weightMaintenanceSpreadsheetRequiresSolver: true,
+      legacyArtifactsCurrentBwpSourceRelease: false,
+      legacyArtifactsMapCurrentSevenWebAssets: false,
+      legacyArtifactsOfficialVersionedOracle: false,
+      technologyRecordMentionsValidationWithPublishedHumanData: true,
+      machineReadableVersionedValidationCorpusFound: false,
+      currentSevenAssetsCoverageConfirmed: false,
+      explicitPerFileSoftwareLicenseFound: false,
+      stableSemanticReleaseFound: false,
+      officialVersionedOracleCorpusFound: false,
+      regressionToleranceDefined: false,
+      productGuardrailsApproved: false,
+      healthReviewerAssigned: false,
+      legacyArtifactFilesDownloaded: 0,
+      legacyArtifactsExecuted: false,
+      legacyArtifactsVendored: false,
+      niddkSourceCodeVendored: false,
+      niddkRemoteCodeExecuted: false,
+      licensingClarificationRequested: false,
+      externalMessagesSent: 0,
+      formsSubmitted: 0,
+      commercialTermsAccepted: false,
+      dynamicModelEvidencePassed: false,
+      dynamicModelOptionOwnerReady: false,
+      modelNativeNumericPalOptionOwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+      gateStatesChanged: false,
+    }),
     chinaHealthReviewerIntakePacket: Object.freeze({
       eventId: "EVT-20260820-008",
       actorId: "project-manager",
@@ -4872,7 +4935,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_LEGACY_REFERENCE_AUDIT) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9122,6 +9185,44 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 NIDDK 许可澄清模板必须固定 7 资产/3 问题类/6 动作/12 授权字段/30 答复字段/5 处置，并保持模板不可发送、未获联系授权、未收答复及许可/采用/健康/Owner/PX/实现全关闭",
+    );
+  }
+
+  const niddkLegacyReferenceAuditSpec =
+    baseline.d040Research.niddkLegacyReferenceAudit;
+  const niddkLegacyReferenceAuditEvents = model.events.filter(
+    (record) => record.value?.eventId === niddkLegacyReferenceAuditSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === niddkLegacyReferenceAuditSpec.correlationId),
+  );
+  const niddkLegacyReferenceAuditEvent = niddkLegacyReferenceAuditEvents[0]?.value;
+  const niddkLegacyReferenceAuditData = niddkLegacyReferenceAuditEvent?.data ?? {};
+  const niddkLegacyReferenceAuditFields = Object.keys(niddkLegacyReferenceAuditSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    niddkLegacyReferenceAuditEvents.length !== 1 ||
+    niddkLegacyReferenceAuditEvent?.eventId !== niddkLegacyReferenceAuditSpec.eventId ||
+    niddkLegacyReferenceAuditEvent?.type !== "ARTIFACT_CREATED" ||
+    niddkLegacyReferenceAuditEvent?.actor?.id !== niddkLegacyReferenceAuditSpec.actorId ||
+    niddkLegacyReferenceAuditEvent?.actor?.role !== niddkLegacyReferenceAuditSpec.actorRole ||
+    niddkLegacyReferenceAuditEvent?.subject?.id !== niddkLegacyReferenceAuditSpec.subjectId ||
+    niddkLegacyReferenceAuditEvent?.subject?.role !== niddkLegacyReferenceAuditSpec.subjectRole ||
+    niddkLegacyReferenceAuditEvent?.correlationId !==
+      niddkLegacyReferenceAuditSpec.correlationId ||
+    JSON.stringify(Object.keys(niddkLegacyReferenceAuditData).sort()) !==
+      JSON.stringify(niddkLegacyReferenceAuditFields) ||
+    niddkLegacyReferenceAuditFields.some(
+      (field) => JSON.stringify(niddkLegacyReferenceAuditData[field]) !==
+        JSON.stringify(niddkLegacyReferenceAuditSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_NIDDK_LEGACY_REFERENCE_AUDIT_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 NIDDK 旧研究工具审计必须固定两组旧工具、四种表格逻辑、BWP 已取代旧工具及其不是当前源码发行/oracle 的边界，并保持未下载/执行/入库及许可/采用/健康/Owner/PX/实现全关闭",
     );
   }
 
