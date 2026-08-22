@@ -157,7 +157,7 @@ findingIds[]
 requiredChange
 ```
 
-六个 `COPY-*` 的 kind 必须为 `COPY`，七个 `BOUNDARY-*` 必须为 `BOUNDARY`。每项至少一个 competence scope 和 evidence 引用，且 scope 必须存在于 attestation。`APPROVE` 的 `requiredChange=null`；其他处置必须引用与该 item 反向相连的 finding。required-change 和 reject 必须给出 `requiredChange`；out-of-scope 必须把所需专业范围放入 `competenceScopeRefs`，不能由 PM 改成通过。
+六个 `COPY-*` 的 kind 必须为 `COPY`，七个 `BOUNDARY-*` 必须为 `BOUNDARY`。每项至少一个 competence scope 和 evidence 引用。`APPROVE / APPROVE_WITH_REQUIRED_CHANGE / REJECT` 的 scope 必须全部存在于 attestation；`OUT_OF_SCOPE` 必须至少列出一个不在该 reviewer 声明范围中的所需专业 scope，不能由 PM 改成通过。`APPROVE` 的 `requiredChange=null`；其他处置必须引用与该 item 反向相连的 finding。required-change 和 reject 必须给出 `requiredChange`，out-of-scope 的 `requiredChange` 必须为 `null`。
 
 ## 6. Finding 与关闭规则
 
