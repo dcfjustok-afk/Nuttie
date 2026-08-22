@@ -46,6 +46,7 @@
 | [d040-macro-display-rounding-card-spec.md](d040-macro-display-rounding-card-spec.md) | D-071 三项互斥显示策略、来源/派生单位、raw/display、十进制舍入与残差披露卡；D-063/D-070/健康/独立复核未通过 |
 | [d040-hard-stop-record-availability-card-spec.md](d040-hard-stop-record-availability-card-spec.md) | D-072 硬停止后允许无目标事实或暂停新增的二选一卡；硬停止不可豁免，健康/Content QA/独立复核未通过 |
 | [d040-macro-axis-independent-review-packet.md](d040-macro-axis-independent-review-packet.md) | D-063/D-070/D-071/D-072 四卡、四复核域、十四条跨轴不变量与 P0~P3 标准；十份输入已冻结并记录 blob OID/SHA-256，复核人未指派且复核未开始 |
+| [D-040 四张宏量轴卡独立复核回执合同](../04-engineering/testing/d040-macro-axis-independent-review-record-contract.md) / [20 项本地 validator](../04-engineering/testing/d040-macro-axis-independent-review-record-harness.md) | 固定同一 frozen packet、十输入、四域 attestation、D-063/D-070/D-071/D-072 四卡、十四条跨轴不变量、P0~P3、disposition 与双 SHA-256；合成 fixture 非正式证据，真实回执、复核人核验与权威 PASS 均为 0/false |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash 与采用缺口；许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
 | [D-040 健康评审回执合同](../04-engineering/testing/d040-china-health-review-record-contract.md) / [20 项本地 validator](../04-engineering/testing/d040-china-health-review-record-harness.md) | 固定同一 frozen packet、九输入、十三项、资质/范围/地域/冲突/签署声明、90 天、P0~P3、disposition 与双 SHA-256；合成 fixture 非正式证据，真实回执、评审人核验、健康批准和 Content QA 均为 0/false |

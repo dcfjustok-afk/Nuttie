@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-22T18:47:41+08:00",
+  "generatedAt": "2026-08-22T19:09:42+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 197
+    "projectEvents": 198
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-040 四张宏量轴卡独立复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、10 个 frozen blob、4 个复核域、D-063/D-070/D-071/D-072 四卡、14 条跨轴不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/胜任依据/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/胜任范围/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，健康批准、Content QA、D-063/D-070 接受、四卡 Owner-ready、Owner、PX-1/PX-2 与实现门禁均未改变",
     "D-040 前三批十三卡独立复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、7 个 frozen blob、4 个复核域、13 卡、12 条跨批不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/胜任依据/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/胜任范围/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，动态模型两项 Owner-ready、健康批准、Content QA、Owner、PX-1/PX-2 与实现门禁均未改变",
     "D-040 中国健康评审回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、9 个 frozen blob、具名资质/胜任范围/地域/冲突/签署声明、13 项逐条处置、P0~P3、90 天周期、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/资质/签署引用只存在于测试进程，不是现实健康评审证据。正式回执、reviewer attestation、具名评审人、身份/资质/胜任/地域/签署核验、健康批准与 Content QA 仍为 0/false，D-068/D-069/D-063、Owner、PX-1/PX-2 与实现门禁均未改变",
     "D-039 B03~B05 六卡独立复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、10 个 frozen blob、4 个复核域、6 卡、16 条跨卡不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，B03/B04/B05、Owner、PX-5 与实现门禁均未改变",

@@ -234,6 +234,19 @@ function latestD040FirstThreeBatchesIndependentReviewRecordHarness(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD040MacroAxisIndependentReviewRecordHarness(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id ===
+        "D040-MACRO-AXIS-INDEPENDENT-REVIEW-RECORD-HARNESS-001",
+    )
+    .sort((left, right) =>
+      (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
+    )
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -2248,6 +2261,147 @@ export function reconcileProjectOps(model) {
     );
   }
 
+  const d040MacroAxisIndependentReviewRecordHarnessRecord =
+    latestD040MacroAxisIndependentReviewRecordHarness(model);
+  const d040MacroAxisIndependentReviewRecordHarness = {
+    ...(d040MacroAxisIndependentReviewRecordHarnessRecord?.data ?? {}),
+    eventId: d040MacroAxisIndependentReviewRecordHarnessRecord?.eventId ?? null,
+  };
+  const expectedD040MacroAxisIndependentReviewRecordHarness = {
+    "eventId": "EVT-20260822-004",
+    "state": "completed",
+    "contractStatus": "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    "decisionId": "D-040",
+    "decisionState": "CANDIDATE",
+    "authoritativeState": "PX-0_INPUT_GAP",
+    "next": "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    "packetId": "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001",
+    "packetVersion": "PACKET-001-R1",
+    "packetEventId": "EVT-20260821-006",
+    "inputManifestEventId": "EVT-20260821-007",
+    "inputCommit": "47ba4895dac2535682e8d1a8cb985176d6ad45f7",
+    "manifestRecordCommit": "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+    "packetArtifactCommit": "d8e812f1324590d735f809ea994e8aaa2f6805d8",
+    "packetArtifactBlobOid": "ffa60df7e2204607780cd6ac4044a9da659bef90",
+    "packetArtifactSha256": "b94af865ab611bc01e4cb75063d45fb65fcc877b207ea9996b4bacb8849bb060",
+    "contractArtifactCommit": "bbb38808d43c4d427759ec3b25d22b11fd5f5e75",
+    "contractBlobOid": "f36b6834d747c032b06230a76dc4ec2a689a0e8b",
+    "artifactCommit": "eddf66b371e0d037f6781e7d6871c25d88f906f6",
+    "implementationBlobOid": "137813c3d628764888da18a89eba57deafdd0ccf",
+    "testBlobOid": "afedb6411da53653c580951d5790794a73994c89",
+    "documentationBlobOid": "cd9d89188325544a7431153f58689d252f65be87",
+    "inputSchemaVersion": "D040_MACRO_AXIS_INDEPENDENT_REVIEW_BUNDLE_INPUT_V1",
+    "resultSchemaVersion": "D040_MACRO_AXIS_INDEPENDENT_REVIEW_RESULT_V1",
+    "boundarySchemaVersion": "D040_MACRO_AXIS_INDEPENDENT_REVIEW_BOUNDARY_V1",
+    "topLevelTests": 20,
+    "combinedReviewValidatorTests": 80,
+    "fullSuitePassed": 1058,
+    "requiredArtifactCount": 10,
+    "requiredReviewerDomainCount": 4,
+    "requiredCardCount": 4,
+    "requiredCrossAxisInvariantCount": 14,
+    "allowedCardDispositionCount": 4,
+    "severityCount": 4,
+    "recordKinds": [
+      "FORMAL_REVIEW_RECORD",
+      "SYNTHETIC_CONTRACT_FIXTURE"
+    ],
+    "overallDispositions": [
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE",
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE"
+    ],
+    "dispositionPriority": [
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "INDEPENDENT_REVIEW_PASS_CANDIDATE"
+    ],
+    "formalStructuralDisposition": "STRUCTURALLY_COMPLETE_REVIEW_ONLY",
+    "syntheticStructuralDisposition": "SYNTHETIC_STRUCTURALLY_COMPLETE_FIXTURE_ONLY",
+    "syntheticWouldBePassCandidateCovered": true,
+    "syntheticIndependentReviewPassCandidateReturned": false,
+    "formalIndependentReviewPassCandidateCanBeReturned": true,
+    "macroAxisIndependentReviewPassedReturned": false,
+    "strictDataTreeAndExactFields": true,
+    "frozenArtifactIdentityExact": true,
+    "reviewerDomainCoverageRecomputed": true,
+    "cardAndFindingBidirectionalReferencesRequired": true,
+    "openP0P1P2Block": true,
+    "openP3RequiresOwnerDueAtAndRationale": true,
+    "reviewContentSha256Required": true,
+    "attestationsBindReviewContentSha256": true,
+    "bundleSha256Required": true,
+    "sensitiveLookingMaterialRejectedWithoutEcho": true,
+    "immutableNormalizationAndResultFingerprintBound": true,
+    "reviewerIdentityClaimsCallerAssertedNotVerified": true,
+    "reviewerIndependenceClaimsCallerAssertedNotVerified": true,
+    "reviewerCompetenceClaimsCallerAssertedNotVerified": true,
+    "signatureReferencesCallerAssertedNotVerified": true,
+    "contractValidatorImplemented": true,
+    "harnessReadsCallerSuppliedDataOnly": true,
+    "formalReviewRecordCount": 0,
+    "reviewerAttestationRecordCount": 0,
+    "syntheticFixturePersistedCount": 0,
+    "gitReads": 0,
+    "fileReads": 0,
+    "fileWrites": 0,
+    "identityDocumentReads": 0,
+    "competenceEvidenceReads": 0,
+    "signatureArtifactReads": 0,
+    "networkRequests": 0,
+    "providerRequests": 0,
+    "externalMessagesSent": 0,
+    "businessWrites": 0,
+    "reviewersAssigned": false,
+    "reviewerIdentityVerified": false,
+    "reviewerIndependenceVerified": false,
+    "reviewerCompetenceVerified": false,
+    "reviewerSignatureVerified": false,
+    "independentReviewStarted": false,
+    "macroAxisIndependentReviewPassed": false,
+    "healthReviewStillRequired": true,
+    "healthReviewerAssigned": false,
+    "healthContentApproved": false,
+    "contentQaPassed": false,
+    "d063Accepted": false,
+    "d070Accepted": false,
+    "d063OwnerReady": false,
+    "d070OwnerReady": false,
+    "d071OwnerReady": false,
+    "d072OwnerReady": false,
+    "ownerIntakeChanged": false,
+    "ownerCardScheduled": false,
+    "px1Authorized": false,
+    "px2Authorized": false,
+    "ownerReviewAuthorized": false,
+    "ownerChoiceRecorded": false,
+    "decisionAcceptedRecorded": false,
+    "goalImplementationAuthorized": false,
+    "recordingImplementationAuthorized": false,
+    "persistenceImplementationAuthorized": false,
+    "formalRootProjectAuthorized": false,
+    "nativeIosWorkAuthorized": false,
+    "formalImplementationAuthorized": false,
+    "gateStatesChanged": false
+  };
+  if (
+    Object.entries(expectedD040MacroAxisIndependentReviewRecordHarness).some(
+      ([key, value]) =>
+        JSON.stringify(d040MacroAxisIndependentReviewRecordHarness[key]) !==
+        JSON.stringify(value),
+    )
+  ) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_GATE",
+      "D-040",
+      "D-040 四张宏量轴卡独立复核回执 validator 未保持 frozen packet/十输入/四域/四卡/十四不变量/P0~P3/disposition/双 SHA-256 合同、合成 fixture 非证据，以及正式回执/复核人/独立胜任签署/PASS/健康 Content QA/D-063/D-070/四卡 Owner-ready/Owner/PX/实现全关闭状态",
+      d040MacroAxisIndependentReviewRecordHarness,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -2977,6 +3131,7 @@ export function reconcileProjectOps(model) {
     d039IndependentReviewRecordHarness,
     d040ChinaHealthReviewRecordHarness,
     d040FirstThreeBatchesIndependentReviewRecordHarness,
+    d040MacroAxisIndependentReviewRecordHarness,
     d040,
     diagnostics,
   };

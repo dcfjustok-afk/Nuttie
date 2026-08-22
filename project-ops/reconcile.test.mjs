@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 197,
+    events: 198,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -721,6 +721,52 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     report.d040FirstThreeBatchesIndependentReviewRecordHarness.formalImplementationAuthorized,
     false,
   );
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.eventId, "EVT-20260822-004");
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.packetVersion, "PACKET-001-R1");
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.inputManifestEventId, "EVT-20260821-007");
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.topLevelTests, 20);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.combinedReviewValidatorTests, 80);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.requiredArtifactCount, 10);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.requiredReviewerDomainCount, 4);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.requiredCardCount, 4);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.requiredCrossAxisInvariantCount, 14);
+  assert.deepEqual(report.d040MacroAxisIndependentReviewRecordHarness.dispositionPriority, [
+    "REJECTED", "CHANGES_REQUIRED", "INCOMPLETE", "INDEPENDENT_REVIEW_PASS_CANDIDATE",
+  ]);
+  assert.equal(
+    report.d040MacroAxisIndependentReviewRecordHarness.syntheticIndependentReviewPassCandidateReturned,
+    false,
+  );
+  assert.equal(
+    report.d040MacroAxisIndependentReviewRecordHarness.formalIndependentReviewPassCandidateCanBeReturned,
+    true,
+  );
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.macroAxisIndependentReviewPassedReturned, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.contractValidatorImplemented, true);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.formalReviewRecordCount, 0);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewerAttestationRecordCount, 0);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewersAssigned, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewerIdentityVerified, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewerIndependenceVerified, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewerCompetenceVerified, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.reviewerSignatureVerified, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.independentReviewStarted, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.macroAxisIndependentReviewPassed, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.healthReviewStillRequired, true);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.healthReviewerAssigned, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.healthContentApproved, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.contentQaPassed, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.d063Accepted, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.d070Accepted, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.d063OwnerReady, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.d072OwnerReady, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.px1Authorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.px2Authorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.goalImplementationAuthorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.recordingImplementationAuthorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.persistenceImplementationAuthorized, false);
+  assert.equal(report.d040MacroAxisIndependentReviewRecordHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1253,6 +1299,21 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
       (diagnostic) =>
         diagnostic.code ===
         "OPS_RECONCILE_D040_FIRST_THREE_BATCHES_REVIEW_RECORD_HARNESS_GATE",
+    ),
+  );
+
+  const d040MacroAxisIndependentReviewRecordHarnessModel = validModel();
+  d040MacroAxisIndependentReviewRecordHarnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-004",
+  ).value.data.formalReviewRecordCount = 1;
+  const d040MacroAxisIndependentReviewRecordHarnessReport = reconcileProjectOps(
+    d040MacroAxisIndependentReviewRecordHarnessModel,
+  );
+  assert.equal(d040MacroAxisIndependentReviewRecordHarnessReport.ok, false);
+  assert.ok(
+    d040MacroAxisIndependentReviewRecordHarnessReport.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D040_MACRO_AXIS_REVIEW_RECORD_HARNESS_GATE",
     ),
   );
 
