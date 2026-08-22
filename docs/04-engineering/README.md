@@ -62,6 +62,7 @@
 - [D-039 B03~B05 六卡独立复核回执机器合同](testing/d039-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的 10 项不可变输入、四域具名 attestation、六卡、16 条跨卡不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
 - [D-039 B03~B05 六卡独立复核回执本地校验合同](testing/d039-independent-review-record-harness.md)：以 20 项测试执行 packet/10 输入、四域 attestation、六卡/16 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-039 B03~B05 六卡独立复核人指派机器合同](testing/d039-reviewer-assignment-contract.md)：固定具名候选人、四域逐域胜任、身份/起草/冲突/联络授权、覆盖矩阵、真实公历时间与 assignment SHA-256；完整正式输入只产生结构 candidate，当前无联系人、指派、复核或 PASS。
+- [D-039 B03~B05 六卡独立复核人指派本地校验合同](testing/d039-reviewer-assignment-harness.md)：以 21 项测试执行 frozen packet、候选身份/逐域胜任/起草/冲突、四域覆盖、联络/时序/签署、SHA-256、敏感信息与正式/合成隔离；不读取联系人或创建正式指派。
 - [首个 MVP 增量范围跨角色复核回执机器合同](testing/mvp-increment-scope-cross-role-review-record-contract.md)：固定 `PACKET-001-R1` 的 11 项不可变输入、五域具名 attestation、A/B/C 三项处置、12 条跨选项不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
 - [首个 MVP 增量范围跨角色复核回执本地校验合同](testing/mvp-increment-scope-cross-role-review-record-harness.md)：以 20 项测试执行 packet/11 输入、五域 attestation、A/B/C/12 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [首个 MVP 增量范围跨角色复核人指派机器合同](testing/mvp-increment-scope-reviewer-assignment-contract.md)：固定具名候选人、五域逐域胜任、身份/起草/冲突/联络授权、覆盖矩阵、时间与 assignment SHA-256；完整正式输入只产生结构 candidate，当前无联系人、指派、复核或 PASS。
