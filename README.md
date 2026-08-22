@@ -62,6 +62,7 @@ Nuttie 是一款面向自己与朋友使用的本地优先 iOS 营养、自律�
 - [D-040 D-072 硬停止后纯记录可用性选择卡规格](docs/03-design/d040-hard-stop-record-availability-card-spec.md)
 - [D-040 四张宏量轴卡独立复核包](docs/03-design/d040-macro-axis-independent-review-packet.md)
 - [D-040 NIDDK 动态模型采用可行性输入](docs/03-design/d040-niddk-dynamic-model-feasibility-input.md)
+- [D-040 NIDDK 动态模型许可澄清模板](docs/03-design/d040-niddk-license-clarification-template.md)
 - [D-040 中国健康评审人交接与签署检查包](docs/03-design/d040-china-health-reviewer-intake-packet.md)
 - [D-040 前三批十三卡独立复核包](docs/03-design/d040-first-three-batches-independent-review-packet.md)
 - [Nuttie 视觉方向与 Figma 导入合同](docs/03-design/nuttie-visual-direction.md)

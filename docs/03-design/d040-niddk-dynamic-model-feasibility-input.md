@@ -49,6 +49,8 @@ NIDDK Body Weight Planner 是可以继续研究的候选模型来源，但当前
 
 因此许可缺口由“没有路径”收敛为“官方路径已定位，但适用资产、允许动作和条款未确认”。下一次对外澄清必须由 Owner 或获授权责任人决定是否联系，并至少取得可归档的：目标资产清单、技术/版权归属映射、允许的复制/修改/分发或独立重实现范围、署名要求、费用/地域/期限、版本与后续更新处理。没有书面答复前，`explicitPerFileSoftwareLicenseFound` 和 `dynamicModelEvidencePassed` 继续为 `false`。
 
+配套的 [NIDDK 动态模型许可澄清模板](d040-niddk-license-clarification-template.md) 已把七项目标资产、允许动作、条款治理、外联授权字段、正式答复 schema 和失败关闭处置固定下来。模板状态为 `NOT_SENT`，不构成外联授权、许可答复或采用证据。
+
 ## 3. 当前网页代码表面
 
 下表来自 2026-08-20 对 `https://www.niddk.nih.gov/bwp/` 页面实际引用资产的只读 GET。未把源码写入仓库、未 vendoring、未执行模型代码，也没有向模型提交任何用户数据。
