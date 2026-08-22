@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 202,
+    events: 203,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -829,6 +829,20 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.mvpIncrementScope.mvpIncrementScopeFrozen, false);
   assert.equal(report.mvpIncrementScope.g2Passed, false);
   assert.equal(report.mvpIncrementScope.formalImplementationAuthorized, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.eventId, "EVT-20260822-009");
+  assert.equal(report.mvpIncrementScopeReviewPacket.reviewPacketReady, true);
+  assert.equal(report.mvpIncrementScopeReviewPacket.requiredArtifactCount, 11);
+  assert.equal(report.mvpIncrementScopeReviewPacket.requiredOptionCount, 3);
+  assert.deepEqual(report.mvpIncrementScopeReviewPacket.optionKeys, ["A", "B", "C"]);
+  assert.equal(report.mvpIncrementScopeReviewPacket.requiredReviewerDomainCount, 5);
+  assert.equal(report.mvpIncrementScopeReviewPacket.requiredCrossOptionInvariantCount, 12);
+  assert.equal(report.mvpIncrementScopeReviewPacket.reviewersAssigned, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.crossRoleReviewStarted, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.crossRoleReviewPassed, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.ownerChoiceRecorded, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.mvpIncrementScopeFrozen, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.g2Passed, false);
+  assert.equal(report.mvpIncrementScopeReviewPacket.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1532,6 +1546,29 @@ test("对账器拒绝把 G2 范围推荐冒充选择或实现授权", () => {
   assert.ok(
     authorizedReport.diagnostics.some(
       (diagnostic) => diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 G2 范围复核包就绪冒充复核或授权", () => {
+  const reviewModel = validModel();
+  const reviewData = reviewModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-009",
+  ).value.data;
+  reviewData.requiredReviewerDomainCount = 4;
+  reviewData.reviewersAssigned = true;
+  reviewData.crossRoleReviewStarted = true;
+  reviewData.crossRoleReviewPassed = true;
+  reviewData.ownerChoiceRecorded = true;
+  reviewData.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+  reviewData.mvpIncrementScopeFrozen = true;
+  reviewData.g2Passed = true;
+  reviewData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(reviewModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEW_PACKET_GATE",
     ),
   );
 });

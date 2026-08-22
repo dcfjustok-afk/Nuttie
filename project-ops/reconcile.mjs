@@ -2745,6 +2745,96 @@ export function reconcileProjectOps(model) {
       mvpIncrementScope,
     );
   }
+  const mvpIncrementScopeReviewPacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260822-009",
+  )?.value ?? null;
+  const mvpIncrementScopeReviewPacket = {
+    ...(mvpIncrementScopeReviewPacketRecord?.data ?? {}),
+    eventId: mvpIncrementScopeReviewPacketRecord?.eventId ?? null,
+  };
+  const expectedMvpIncrementScopeReviewPacket = {
+    state: "completed",
+    artifactStatus: "INTERNAL_REVIEW_PACKET",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "OWNER_SCOPE_REVIEW_REQUIRED",
+    next: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    artifactCommit: "b4f1a8bf231cff8b5c5e7cc6b33c4498179eb1d8",
+    artifactBlobOid: "1cac524ec2997749cbde9bf714ec1684f5533d20",
+    sourceScopeCardEventId: "EVT-20260822-008",
+    reviewPacketReady: true,
+    reviewPacketVersion: "PACKET-001-R1",
+    requiredArtifactCount: 11,
+    requiredOptionCount: 3,
+    optionKeys: ["A", "B", "C"],
+    optionIds: [
+      "MVP-I1-LOCAL-MEAL",
+      "MVP-I1-FULL-MANUAL",
+      "MVP-I1-LOCAL-MEAL-BARCODE",
+    ],
+    requiredReviewerDomainCount: 5,
+    reviewerDomainIds: [
+      "PRODUCT_SCOPE",
+      "DESIGN_EXPERIENCE",
+      "ARCHITECTURE_DATA",
+      "SECURITY_PRIVACY",
+      "QA_TRACEABILITY",
+    ],
+    requiredCrossOptionInvariantCount: 12,
+    allowedOptionDispositionCount: 4,
+    allowedOptionDispositionIds: [
+      "APPROVE_SCOPE_OPTION",
+      "APPROVE_WITH_REQUIRED_CHANGE",
+      "REJECT_SCOPE_OPTION",
+      "OUT_OF_SCOPE",
+    ],
+    blockingSeverityIds: ["P0", "P1", "P2"],
+    nonBlockingSeverityId: "P3",
+    namedReviewerRequired: true,
+    authorOrPmCanSelfApprove: false,
+    aiOrAgentCanBeIndependentReviewer: false,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerIndependenceVerified: false,
+    conflictOfInterestResolved: false,
+    crossRoleReviewStarted: false,
+    crossRoleReviewPassed: false,
+    currentFindingCountsMeasured: false,
+    externalMessageSent: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    mvpIncrementScopeFrozen: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    eventId: "EVT-20260822-009",
+  };
+  const mvpIncrementScopeReviewPacketMatches =
+    JSON.stringify(Object.keys(mvpIncrementScopeReviewPacket).sort()) ===
+      JSON.stringify(Object.keys(expectedMvpIncrementScopeReviewPacket).sort()) &&
+    Object.keys(expectedMvpIncrementScopeReviewPacket).every(
+      (field) => JSON.stringify(mvpIncrementScopeReviewPacket[field]) ===
+        JSON.stringify(expectedMvpIncrementScopeReviewPacket[field]),
+    );
+  if (!mvpIncrementScopeReviewPacketMatches) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEW_PACKET_GATE",
+      "G2",
+      "G2 MVP 增量范围复核包未保持 11 输入、3 选项、5 域、12 条不变量与复核/Owner/决定/范围冻结/G2/实现全关闭边界",
+      mvpIncrementScopeReviewPacket,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -3479,6 +3569,7 @@ export function reconcileProjectOps(model) {
     d040NiddkLicenseClarificationTemplate,
     d040NiddkLegacyReferenceAudit,
     mvpIncrementScope,
+    mvpIncrementScopeReviewPacket,
     d040,
     diagnostics,
   };

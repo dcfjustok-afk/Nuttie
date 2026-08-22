@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD = Object.freeze({
-  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD",
+export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET = Object.freeze({
+  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 202,
+    events: 203,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD = Object.freeze({
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 8,
+    "2026-08-22": 9,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3393,6 +3393,77 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD = Object.freeze({
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
   }),
+  mvpIncrementScopeReviewPacket: Object.freeze({
+    eventId: "EVT-20260822-009",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "MVP-INCREMENT-SCOPE-REVIEW-PACKET-001",
+    subjectRole: "CandidateReviewPacket",
+    correlationId: "mvp-increment-scope-cross-role-review",
+    state: "completed",
+    artifactStatus: "INTERNAL_REVIEW_PACKET",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "OWNER_SCOPE_REVIEW_REQUIRED",
+    next: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    artifactCommit: "b4f1a8bf231cff8b5c5e7cc6b33c4498179eb1d8",
+    artifactBlobOid: "1cac524ec2997749cbde9bf714ec1684f5533d20",
+    sourceScopeCardEventId: "EVT-20260822-008",
+    reviewPacketReady: true,
+    reviewPacketVersion: "PACKET-001-R1",
+    requiredArtifactCount: 11,
+    requiredOptionCount: 3,
+    optionKeys: Object.freeze(["A", "B", "C"]),
+    optionIds: Object.freeze([
+      "MVP-I1-LOCAL-MEAL",
+      "MVP-I1-FULL-MANUAL",
+      "MVP-I1-LOCAL-MEAL-BARCODE",
+    ]),
+    requiredReviewerDomainCount: 5,
+    reviewerDomainIds: Object.freeze([
+      "PRODUCT_SCOPE",
+      "DESIGN_EXPERIENCE",
+      "ARCHITECTURE_DATA",
+      "SECURITY_PRIVACY",
+      "QA_TRACEABILITY",
+    ]),
+    requiredCrossOptionInvariantCount: 12,
+    allowedOptionDispositionCount: 4,
+    allowedOptionDispositionIds: Object.freeze([
+      "APPROVE_SCOPE_OPTION",
+      "APPROVE_WITH_REQUIRED_CHANGE",
+      "REJECT_SCOPE_OPTION",
+      "OUT_OF_SCOPE",
+    ]),
+    blockingSeverityIds: Object.freeze(["P0", "P1", "P2"]),
+    nonBlockingSeverityId: "P3",
+    namedReviewerRequired: true,
+    authorOrPmCanSelfApprove: false,
+    aiOrAgentCanBeIndependentReviewer: false,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerIndependenceVerified: false,
+    conflictOfInterestResolved: false,
+    crossRoleReviewStarted: false,
+    crossRoleReviewPassed: false,
+    currentFindingCountsMeasured: false,
+    externalMessageSent: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    mvpIncrementScopeFrozen: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -4983,7 +5054,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9307,6 +9378,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "G2 MVP 增量范围卡必须保持三项互斥选择、7 条共享不变量、F01~F24 与后续范围完整，并保持推荐非选择、Owner/决定/范围冻结/G2/正式工程/原生/实现授权全关闭",
+    );
+  }
+
+  const mvpIncrementScopeReviewPacketSpec = baseline.mvpIncrementScopeReviewPacket;
+  const mvpIncrementScopeReviewPacketEvents = model.events.filter(
+    (record) => record.value?.eventId === mvpIncrementScopeReviewPacketSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === mvpIncrementScopeReviewPacketSpec.correlationId),
+  );
+  const mvpIncrementScopeReviewPacketEvent = mvpIncrementScopeReviewPacketEvents[0]?.value;
+  const mvpIncrementScopeReviewPacketData = mvpIncrementScopeReviewPacketEvent?.data ?? {};
+  const mvpIncrementScopeReviewPacketFields = Object.keys(mvpIncrementScopeReviewPacketSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    mvpIncrementScopeReviewPacketEvents.length !== 1 ||
+    mvpIncrementScopeReviewPacketEvent?.eventId !== mvpIncrementScopeReviewPacketSpec.eventId ||
+    mvpIncrementScopeReviewPacketEvent?.type !== "ARTIFACT_CREATED" ||
+    mvpIncrementScopeReviewPacketEvent?.actor?.id !== mvpIncrementScopeReviewPacketSpec.actorId ||
+    mvpIncrementScopeReviewPacketEvent?.actor?.role !== mvpIncrementScopeReviewPacketSpec.actorRole ||
+    mvpIncrementScopeReviewPacketEvent?.subject?.id !== mvpIncrementScopeReviewPacketSpec.subjectId ||
+    mvpIncrementScopeReviewPacketEvent?.subject?.role !== mvpIncrementScopeReviewPacketSpec.subjectRole ||
+    mvpIncrementScopeReviewPacketEvent?.correlationId !==
+      mvpIncrementScopeReviewPacketSpec.correlationId ||
+    JSON.stringify(Object.keys(mvpIncrementScopeReviewPacketData).sort()) !==
+      JSON.stringify(mvpIncrementScopeReviewPacketFields) ||
+    mvpIncrementScopeReviewPacketFields.some(
+      (field) => JSON.stringify(mvpIncrementScopeReviewPacketData[field]) !==
+        JSON.stringify(mvpIncrementScopeReviewPacketSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_MVP_INCREMENT_SCOPE_REVIEW_PACKET_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "G2 MVP 增量范围复核包必须保持 11 输入、3 选项、5 复核域、12 条跨选项不变量与 P0~P3 标准，并保持复核人/复核/PASS/Owner/决定/范围冻结/G2/正式工程/原生/实现全关闭",
     );
   }
 

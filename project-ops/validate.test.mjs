@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD,
+  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_CARD.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 321,
+    instancesValidated: 322,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 202);
+  assert.equal(report.counts.events, 203);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1557,6 +1557,31 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(mvpIncrementScopeEvent.value.data.mvpIncrementScopeFrozen, false);
   assert.equal(mvpIncrementScopeEvent.value.data.g2Passed, false);
   assert.equal(mvpIncrementScopeEvent.value.data.formalImplementationAuthorized, false);
+  const mvpIncrementScopeReviewPacketEvent = findEvent(VALID_MODEL, "EVT-20260822-009");
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    mvpIncrementScopeReviewPacketEvent.value.subject.id,
+    "MVP-INCREMENT-SCOPE-REVIEW-PACKET-001",
+  );
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.reviewPacketReady, true);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.requiredArtifactCount, 11);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.requiredOptionCount, 3);
+  assert.deepEqual(mvpIncrementScopeReviewPacketEvent.value.data.optionKeys, ["A", "B", "C"]);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.requiredReviewerDomainCount, 5);
+  assert.deepEqual(mvpIncrementScopeReviewPacketEvent.value.data.reviewerDomainIds, [
+    "PRODUCT_SCOPE",
+    "DESIGN_EXPERIENCE",
+    "ARCHITECTURE_DATA",
+    "SECURITY_PRIVACY",
+    "QA_TRACEABILITY",
+  ]);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.requiredCrossOptionInvariantCount, 12);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.reviewersAssigned, false);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.crossRoleReviewStarted, false);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.crossRoleReviewPassed, false);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.ownerChoiceRecorded, false);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.g2Passed, false);
+  assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1905,7 +1930,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 320);
+    assert.equal(report.schemaValidation.instancesValidated, 321);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -5712,5 +5737,50 @@ test("锁定 G2 首个 MVP 增量范围卡的候选与未授权边界", async (t
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_CARD_MISMATCH");
+  });
+});
+
+test("锁定 G2 首个 MVP 增量范围跨角色复核包的未评审边界", async (t) => {
+  await t.test("复核包事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-009",
+      );
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("复核包覆盖缩水或伪造跨角色 PASS 时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-009").value.data;
+      data.requiredArtifactCount = 10;
+      data.requiredReviewerDomainCount = 4;
+      data.requiredCrossOptionInvariantCount = 11;
+      data.reviewersAssigned = true;
+      data.crossRoleReviewStarted = true;
+      data.crossRoleReviewPassed = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_PACKET_MISMATCH");
+  });
+
+  await t.test("材料就绪越级产生 Owner 选择、范围冻结或实现授权时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-009").value.data;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+      data.decisionIdAllocated = true;
+      data.decisionRegistered = true;
+      data.decisionAcceptedRecorded = true;
+      data.mvpIncrementScopeFrozen = true;
+      data.g2Passed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_PACKET_MISMATCH");
   });
 });
