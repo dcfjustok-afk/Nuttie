@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET,
+  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_PACKET.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 322,
+    instancesValidated: 323,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 203);
+  assert.equal(report.counts.events, 204);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1582,6 +1582,34 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.ownerChoiceRecorded, false);
   assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.g2Passed, false);
   assert.equal(mvpIncrementScopeReviewPacketEvent.value.data.formalImplementationAuthorized, false);
+  const mvpIncrementScopeInputManifestEvent = findEvent(VALID_MODEL, "EVT-20260822-010");
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    mvpIncrementScopeInputManifestEvent.value.subject.id,
+    "MVP-INCREMENT-SCOPE-INPUT-MANIFEST-001",
+  );
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.inputManifestFrozen, true);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.manifestEntryCount, 11);
+  assert.equal(
+    mvpIncrementScopeInputManifestEvent.value.data.manifestCommit,
+    "9891e6ac75d02df3d85a6b13cb094cd80e7fe808",
+  );
+  assert.equal(
+    mvpIncrementScopeInputManifestEvent.value.data.manifestRecordCommit,
+    "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+  );
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.gitBlobOidAlgorithm, "SHA-1");
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.canonicalDigestAlgorithm, "SHA-256");
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.rawGitBlobBytesUsed, true);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.frozenArtifactRefs.length, 11);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.sourcePacketCreationEventId, "EVT-20260822-009");
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.reviewersAssigned, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.crossRoleReviewStarted, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.crossRoleReviewPassed, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.ownerChoiceRecorded, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.mvpIncrementScopeFrozen, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.g2Passed, false);
+  assert.equal(mvpIncrementScopeInputManifestEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1930,7 +1958,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 321);
+    assert.equal(report.schemaValidation.instancesValidated, 322);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -5782,5 +5810,61 @@ test("锁定 G2 首个 MVP 增量范围跨角色复核包的未评审边界", as
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_PACKET_MISMATCH");
+  });
+});
+
+test("锁定 G2 首个 MVP 增量范围复核输入冻结清单", async (t) => {
+  await t.test("输入冻结事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-010",
+      );
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH");
+  });
+
+  await t.test("冻结提交、记录提交或清单数量漂移时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-010").value.data;
+      data.manifestCommit = "0000000000000000000000000000000000000000";
+      data.manifestRecordCommit = "1111111111111111111111111111111111111111";
+      data.manifestEntryCount = 10;
+      data.frozenArtifactRefs = data.frozenArtifactRefs.slice(0, 10);
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH");
+  });
+
+  await t.test("冻结清单不再绑定原始 Git blob 或规范 SHA-256 时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-010").value.data;
+      data.gitBlobOidAlgorithm = "WORKTREE_PATH";
+      data.canonicalDigestAlgorithm = "SHA-1";
+      data.rawGitBlobBytesUsed = false;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH");
+  });
+
+  await t.test("冻结输入越级产生复核、Owner、范围或实现授权时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-010").value.data;
+      data.reviewersAssigned = true;
+      data.crossRoleReviewStarted = true;
+      data.crossRoleReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+      data.decisionIdAllocated = true;
+      data.decisionRegistered = true;
+      data.decisionAcceptedRecorded = true;
+      data.mvpIncrementScopeFrozen = true;
+      data.g2Passed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH");
   });
 });

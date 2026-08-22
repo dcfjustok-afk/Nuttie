@@ -2835,6 +2835,117 @@ export function reconcileProjectOps(model) {
       mvpIncrementScopeReviewPacket,
     );
   }
+  const mvpIncrementScopeInputManifestRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260822-010",
+  )?.value ?? null;
+  const mvpIncrementScopeInputManifest = {
+    ...(mvpIncrementScopeInputManifestRecord?.data ?? {}),
+    eventId: mvpIncrementScopeInputManifestRecord?.eventId ?? null,
+  };
+  const expectedMvpIncrementScopeInputManifest = {
+    state: "completed",
+    artifactStatus: "INTERNAL_REVIEW_INPUT_MANIFEST",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "MVP_INCREMENT_SCOPE_INPUT_FREEZE_REQUIRED",
+    to: "MVP_INCREMENT_SCOPE_INPUT_MANIFEST_FROZEN",
+    next: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    packetNext: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    reviewPacketReady: true,
+    reviewPacketVersion: "PACKET-001-R1",
+    inputManifestFrozen: true,
+    manifestEntryCount: 11,
+    manifestCommit: "9891e6ac75d02df3d85a6b13cb094cd80e7fe808",
+    manifestRecordCommit: "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+    manifestRecordBlobOid: "3b232045cdf791454ef269d0f7a1e632e72ef1c0",
+    gitBlobOidAlgorithm: "SHA-1",
+    canonicalDigestAlgorithm: "SHA-256",
+    rawGitBlobBytesUsed: true,
+    frozenArtifactRefs: [
+      "docs/00-governance/project-charter.md",
+      "docs/02-product/scope-baseline.md",
+      "docs/02-product/requirements-and-phasing.md",
+      "docs/02-product/acceptance-traceability.md",
+      "docs/02-product/mvp-increment-scope-card.md",
+      "docs/03-design/key-user-journeys.md",
+      "docs/03-design/states-content-accessibility.md",
+      "docs/04-engineering/architecture/feature-boundary-map.md",
+      "docs/04-engineering/testing/feature-contract-coverage.md",
+      "docs/05-quality/d039-px5-dor-assessment.md",
+      "docs/05-quality/security-review.md",
+    ],
+    sourcePacketCreationEventId: "EVT-20260822-009",
+    requiredArtifactCount: 11,
+    requiredOptionCount: 3,
+    optionKeys: ["A", "B", "C"],
+    optionIds: [
+      "MVP-I1-LOCAL-MEAL",
+      "MVP-I1-FULL-MANUAL",
+      "MVP-I1-LOCAL-MEAL-BARCODE",
+    ],
+    requiredReviewerDomainCount: 5,
+    reviewerDomainIds: [
+      "PRODUCT_SCOPE",
+      "DESIGN_EXPERIENCE",
+      "ARCHITECTURE_DATA",
+      "SECURITY_PRIVACY",
+      "QA_TRACEABILITY",
+    ],
+    requiredCrossOptionInvariantCount: 12,
+    allowedOptionDispositionCount: 4,
+    allowedOptionDispositionIds: [
+      "APPROVE_SCOPE_OPTION",
+      "APPROVE_WITH_REQUIRED_CHANGE",
+      "REJECT_SCOPE_OPTION",
+      "OUT_OF_SCOPE",
+    ],
+    blockingSeverityIds: ["P0", "P1", "P2"],
+    nonBlockingSeverityId: "P3",
+    namedReviewerRequired: true,
+    authorOrPmCanSelfApprove: false,
+    aiOrAgentCanBeIndependentReviewer: false,
+    externalMessageSent: false,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerIndependenceVerified: false,
+    conflictOfInterestResolved: false,
+    crossRoleReviewStarted: false,
+    crossRoleReviewPassed: false,
+    currentFindingCountsMeasured: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    mvpIncrementScopeFrozen: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+    eventId: "EVT-20260822-010",
+  };
+  const mvpIncrementScopeInputManifestMatches =
+    JSON.stringify(Object.keys(mvpIncrementScopeInputManifest).sort()) ===
+      JSON.stringify(Object.keys(expectedMvpIncrementScopeInputManifest).sort()) &&
+    Object.keys(expectedMvpIncrementScopeInputManifest).every(
+      (field) => JSON.stringify(mvpIncrementScopeInputManifest[field]) ===
+        JSON.stringify(expectedMvpIncrementScopeInputManifest[field]),
+    );
+  if (!mvpIncrementScopeInputManifestMatches) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_GATE",
+      "G2",
+      "G2 MVP 增量范围复核输入未保持 11 项同提交原始 Git blob/SHA-256 冻结及复核/Owner/决定/范围冻结/G2/实现全关闭边界",
+      mvpIncrementScopeInputManifest,
+    );
+  }
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -3570,6 +3681,7 @@ export function reconcileProjectOps(model) {
     d040NiddkLegacyReferenceAudit,
     mvpIncrementScope,
     mvpIncrementScopeReviewPacket,
+    mvpIncrementScopeInputManifest,
     d040,
     diagnostics,
   };

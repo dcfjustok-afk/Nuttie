@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 203,
+    events: 204,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -843,6 +843,29 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.mvpIncrementScopeReviewPacket.mvpIncrementScopeFrozen, false);
   assert.equal(report.mvpIncrementScopeReviewPacket.g2Passed, false);
   assert.equal(report.mvpIncrementScopeReviewPacket.formalImplementationAuthorized, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.eventId, "EVT-20260822-010");
+  assert.equal(report.mvpIncrementScopeInputManifest.inputManifestFrozen, true);
+  assert.equal(report.mvpIncrementScopeInputManifest.manifestEntryCount, 11);
+  assert.equal(
+    report.mvpIncrementScopeInputManifest.manifestCommit,
+    "9891e6ac75d02df3d85a6b13cb094cd80e7fe808",
+  );
+  assert.equal(
+    report.mvpIncrementScopeInputManifest.manifestRecordCommit,
+    "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+  );
+  assert.equal(report.mvpIncrementScopeInputManifest.gitBlobOidAlgorithm, "SHA-1");
+  assert.equal(report.mvpIncrementScopeInputManifest.canonicalDigestAlgorithm, "SHA-256");
+  assert.equal(report.mvpIncrementScopeInputManifest.rawGitBlobBytesUsed, true);
+  assert.equal(report.mvpIncrementScopeInputManifest.frozenArtifactRefs.length, 11);
+  assert.equal(report.mvpIncrementScopeInputManifest.sourcePacketCreationEventId, "EVT-20260822-009");
+  assert.equal(report.mvpIncrementScopeInputManifest.reviewersAssigned, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.crossRoleReviewStarted, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.crossRoleReviewPassed, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.ownerChoiceRecorded, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.mvpIncrementScopeFrozen, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.g2Passed, false);
+  assert.equal(report.mvpIncrementScopeInputManifest.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1569,6 +1592,30 @@ test("对账器拒绝把 G2 范围复核包就绪冒充复核或授权", () => {
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEW_PACKET_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 G2 范围输入冻结冒充复核或授权", () => {
+  const manifestModel = validModel();
+  const manifestData = manifestModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-010",
+  ).value.data;
+  manifestData.manifestEntryCount = 10;
+  manifestData.rawGitBlobBytesUsed = false;
+  manifestData.reviewersAssigned = true;
+  manifestData.crossRoleReviewStarted = true;
+  manifestData.crossRoleReviewPassed = true;
+  manifestData.ownerChoiceRecorded = true;
+  manifestData.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+  manifestData.mvpIncrementScopeFrozen = true;
+  manifestData.g2Passed = true;
+  manifestData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(manifestModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_GATE",
     ),
   );
 });
