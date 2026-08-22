@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED,
+  PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 318,
+    instancesValidated: 319,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 199);
+  assert.equal(report.counts.events, 200);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1496,6 +1496,28 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040NiddkLicenseRoutingEvent.value.data.ownerReviewAuthorized, false);
   assert.equal(d040NiddkLicenseRoutingEvent.value.data.formulaImplementationAuthorized, false);
   assert.equal(d040NiddkLicenseRoutingEvent.value.data.formalImplementationAuthorized, false);
+  const d040NiddkClarificationTemplateEvent = findEvent(VALID_MODEL, "EVT-20260822-006");
+  assert.equal(d040NiddkClarificationTemplateEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d040NiddkClarificationTemplateEvent.value.subject.id,
+    "D040-NIDDK-LICENSE-CLARIFICATION-TEMPLATE-001",
+  );
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.targetAssetCount, 7);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.requiredQuestionSectionCount, 3);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.requiredActionCount, 6);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.authorizationFieldCount, 12);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.responseRecordRequiredFieldCount, 30);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.dispositionCount, 5);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.templateBindsObservedHashes, true);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.templateCanSend, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.licenseClarificationAuthorized, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.licensingClarificationRequested, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.responseReceived, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.externalMessagesSent, 0);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.fileDownloads, 0);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.dynamicModelEvidencePassed, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040NiddkClarificationTemplateEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1844,7 +1866,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 317);
+    assert.equal(report.schemaValidation.instancesValidated, 318);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -4955,6 +4977,80 @@ test("拒绝改写 D-040 输入研究、独立审查与 Owner 门禁归档", asy
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH");
+  });
+
+  await t.test("NIDDK 许可澄清模板事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-006",
+      );
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("许可澄清模板静默减少资产、问题、动作、授权、答复或处置覆盖", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-006").value.data;
+      data.targetAssetCount = 6;
+      data.requiredQuestionSectionCount = 2;
+      data.requiredActionCount = 5;
+      data.authorizationFieldCount = 11;
+      data.responseRecordRequiredFieldCount = 29;
+      data.dispositionCount = 4;
+      data.dispositions = ["LICENSE_EVIDENCE_CANDIDATE"];
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("许可澄清模板允许自动发送、笼统许可或 AI 代替权威核验", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-006").value.data;
+      data.templateBindsObservedHashes = false;
+      data.assetSpecificAnswersRequired = false;
+      data.generalPermissionInsufficient = false;
+      data.separateContactAndCommercialAuthorization = false;
+      data.responseOriginalOrVerifiableReferenceRequired = false;
+      data.namedAuthorityVerificationRequired = false;
+      data.aiOrAgentCanAuthorizeOrVerify = true;
+      data.templateCanSend = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH");
+  });
+
+  await t.test("准备许可澄清模板就伪造外联答复、许可、Owner 或实现通过", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-006").value.data;
+      data.licenseClarificationAuthorized = true;
+      data.licensingClarificationRequested = true;
+      data.responseReceived = true;
+      data.currentSevenAssetsCoverageConfirmed = true;
+      data.explicitPerFileSoftwareLicenseFound = true;
+      data.stableSemanticReleaseFound = true;
+      data.officialVersionedOracleCorpusFound = true;
+      data.regressionToleranceDefined = true;
+      data.productGuardrailsApproved = true;
+      data.healthReviewerAssigned = true;
+      data.externalMessagesSent = 1;
+      data.formsSubmitted = 1;
+      data.commercialTermsAccepted = true;
+      data.fileDownloads = 7;
+      data.niddkSourceCodeVendored = true;
+      data.niddkRemoteCodeExecuted = true;
+      data.dynamicModelEvidencePassed = true;
+      data.dynamicModelOptionOwnerReady = true;
+      data.modelNativeNumericPalOptionOwnerReady = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.px1Authorized = true;
+      data.px2Authorized = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.formulaImplementationAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH");
   });
 
   await t.test("中国健康评审人交接包事件缺失", () => {

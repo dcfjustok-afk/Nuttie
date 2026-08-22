@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 199,
+    events: 200,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -782,6 +782,23 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040NiddkLicenseRoutingEvidence.dynamicModelOptionOwnerReady, false);
   assert.equal(report.d040NiddkLicenseRoutingEvidence.ownerReviewAuthorized, false);
   assert.equal(report.d040NiddkLicenseRoutingEvidence.formalImplementationAuthorized, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.eventId, "EVT-20260822-006");
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.targetAssetCount, 7);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.requiredQuestionSectionCount, 3);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.requiredActionCount, 6);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.authorizationFieldCount, 12);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.responseRecordRequiredFieldCount, 30);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.dispositionCount, 5);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.templateBindsObservedHashes, true);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.templateCanSend, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.licenseClarificationAuthorized, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.licensingClarificationRequested, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.responseReceived, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.externalMessagesSent, 0);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.fileDownloads, 0);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.dynamicModelEvidencePassed, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.ownerReviewAuthorized, false);
+  assert.equal(report.d040NiddkLicenseClarificationTemplate.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1342,6 +1359,22 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
     d040NiddkLicenseRoutingReport.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_D040_NIDDK_LICENSE_ROUTING_GATE",
+    ),
+  );
+
+  const d040NiddkLicenseClarificationTemplateModel = validModel();
+  d040NiddkLicenseClarificationTemplateModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-006",
+  ).value.data.templateCanSend = true;
+  const d040NiddkLicenseClarificationTemplateReport = reconcileProjectOps(
+    d040NiddkLicenseClarificationTemplateModel,
+  );
+  assert.equal(d040NiddkLicenseClarificationTemplateReport.ok, false);
+  assert.ok(
+    d040NiddkLicenseClarificationTemplateReport.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code ===
+        "OPS_RECONCILE_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_GATE",
     ),
   );
 

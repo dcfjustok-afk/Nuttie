@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED = Object.freeze({
-  id: "PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED",
+export const PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY = Object.freeze({
+  id: "PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 199,
+    events: 200,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED = Object.freeze(
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 5,
+    "2026-08-22": 6,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3982,6 +3982,81 @@ export const PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED = Object.freeze(
       formalImplementationAuthorized: false,
       gateStatesChanged: false,
     }),
+    niddkLicenseClarificationTemplate: Object.freeze({
+      eventId: "EVT-20260822-006",
+      actorId: "project-manager",
+      actorRole: "PM",
+      subjectId: "D040-NIDDK-LICENSE-CLARIFICATION-TEMPLATE-001",
+      subjectRole: "CandidateResearchArtifact",
+      correlationId: "d040-niddk-license-clarification-template",
+      state: "completed",
+      decisionId: "D-040",
+      decisionState: "CANDIDATE",
+      authoritativeState: "PX-0_INPUT_GAP",
+      from: "NIDDK_LICENSE_ROUTE_LOCATED_ASSET_COVERAGE_UNCONFIRMED",
+      next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+      templateNext: "EXTERNAL_CONTACT_AUTHORIZATION_OR_ALTERNATIVE_MODEL_RESEARCH_REQUIRED",
+      inputState: "CLARIFICATION_TEMPLATE_READY_NOT_SENT",
+      templateState: "DRAFT_READY_NOT_SENT_RESPONSE_NOT_RECEIVED",
+      technologyTransferId: "TAB-2436",
+      technologyEId: "E-160-2012-0",
+      developmentStatus: "PROTOTYPE",
+      collaborationRoute: "LICENSING",
+      artifactCommit: "ff8c23a5fbacca6ae77ab5303b792c84f1c1db5d",
+      artifactBlobOid: "ae363f388b50bf0eeb979dc4b4b4e35b72338568",
+      sourceEvidenceCommit: "b5c16332ac42437b019383bff4b93733d0a729fe",
+      sourceEvidenceBlobOid: "15b1a664e1db490697eaa85d8fd56b0f5e7af174",
+      targetAssetCount: 7,
+      requiredQuestionSectionCount: 3,
+      requiredActionCount: 6,
+      authorizationFieldCount: 12,
+      responseRecordRequiredFieldCount: 30,
+      dispositionCount: 5,
+      dispositions: Object.freeze([
+        "CLARIFICATION_NOT_AUTHORIZED",
+        "CLARIFICATION_INCOMPLETE",
+        "USE_NOT_PERMITTED",
+        "LICENSE_EVIDENCE_CANDIDATE",
+        "INDEPENDENT_REIMPLEMENTATION_EVIDENCE_CANDIDATE",
+      ]),
+      templateBindsObservedHashes: true,
+      assetSpecificAnswersRequired: true,
+      generalPermissionInsufficient: true,
+      separateContactAndCommercialAuthorization: true,
+      responseOriginalOrVerifiableReferenceRequired: true,
+      namedAuthorityVerificationRequired: true,
+      aiOrAgentCanAuthorizeOrVerify: false,
+      templateCanSend: false,
+      licenseClarificationAuthorized: false,
+      licensingClarificationRequested: false,
+      responseReceived: false,
+      currentSevenAssetsCoverageConfirmed: false,
+      explicitPerFileSoftwareLicenseFound: false,
+      stableSemanticReleaseFound: false,
+      officialVersionedOracleCorpusFound: false,
+      regressionToleranceDefined: false,
+      productGuardrailsApproved: false,
+      healthReviewerAssigned: false,
+      externalMessagesSent: 0,
+      formsSubmitted: 0,
+      commercialTermsAccepted: false,
+      fileDownloads: 0,
+      niddkSourceCodeVendored: false,
+      niddkRemoteCodeExecuted: false,
+      dynamicModelEvidencePassed: false,
+      dynamicModelOptionOwnerReady: false,
+      modelNativeNumericPalOptionOwnerReady: false,
+      ownerIntakeChanged: false,
+      ownerCardScheduled: false,
+      px1Authorized: false,
+      px2Authorized: false,
+      ownerReviewAuthorized: false,
+      ownerChoiceRecorded: false,
+      decisionAcceptedRecorded: false,
+      formulaImplementationAuthorized: false,
+      formalImplementationAuthorized: false,
+      gateStatesChanged: false,
+    }),
     chinaHealthReviewerIntakePacket: Object.freeze({
       eventId: "EVT-20260820-008",
       actorId: "project-manager",
@@ -4797,7 +4872,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_LICENSE_ROUTE_LOCATED) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_D040_NIDDK_CLARIFICATION_TEMPLATE_READY) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9009,6 +9084,44 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_D040_NIDDK_LICENSE_ROUTING_EVIDENCE_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "D-040 NIDDK 许可路径证据必须固定 TAB-2436/E-160-2012-0、Prototype/Licensing 与 7 资产未映射边界，并保持未外联、逐文件许可/稳定版本/oracle/容差/保护线/健康/Owner/PX/采用/实现全关闭",
+    );
+  }
+
+  const niddkClarificationTemplateSpec =
+    baseline.d040Research.niddkLicenseClarificationTemplate;
+  const niddkClarificationTemplateEvents = model.events.filter(
+    (record) => record.value?.eventId === niddkClarificationTemplateSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === niddkClarificationTemplateSpec.correlationId),
+  );
+  const niddkClarificationTemplateEvent = niddkClarificationTemplateEvents[0]?.value;
+  const niddkClarificationTemplateData = niddkClarificationTemplateEvent?.data ?? {};
+  const niddkClarificationTemplateFields = Object.keys(niddkClarificationTemplateSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    niddkClarificationTemplateEvents.length !== 1 ||
+    niddkClarificationTemplateEvent?.eventId !== niddkClarificationTemplateSpec.eventId ||
+    niddkClarificationTemplateEvent?.type !== "ARTIFACT_CREATED" ||
+    niddkClarificationTemplateEvent?.actor?.id !== niddkClarificationTemplateSpec.actorId ||
+    niddkClarificationTemplateEvent?.actor?.role !== niddkClarificationTemplateSpec.actorRole ||
+    niddkClarificationTemplateEvent?.subject?.id !== niddkClarificationTemplateSpec.subjectId ||
+    niddkClarificationTemplateEvent?.subject?.role !== niddkClarificationTemplateSpec.subjectRole ||
+    niddkClarificationTemplateEvent?.correlationId !==
+      niddkClarificationTemplateSpec.correlationId ||
+    JSON.stringify(Object.keys(niddkClarificationTemplateData).sort()) !==
+      JSON.stringify(niddkClarificationTemplateFields) ||
+    niddkClarificationTemplateFields.some(
+      (field) => JSON.stringify(niddkClarificationTemplateData[field]) !==
+        JSON.stringify(niddkClarificationTemplateSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_D040_NIDDK_LICENSE_CLARIFICATION_TEMPLATE_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "D-040 NIDDK 许可澄清模板必须固定 7 资产/3 问题类/6 动作/12 授权字段/30 答复字段/5 处置，并保持模板不可发送、未获联系授权、未收答复及许可/采用/健康/Owner/PX/实现全关闭",
     );
   }
 
