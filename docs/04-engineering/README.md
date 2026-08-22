@@ -76,6 +76,7 @@
 - [D-040 四张宏量轴卡独立复核人指派机器合同](testing/d040-macro-axis-reviewer-assignment-contract.md)：固定具名候选人、四域逐域胜任、身份/起草/冲突/联络授权、覆盖矩阵、真实公历时间与 assignment SHA-256；完整正式输入只产生结构 candidate，当前无联系人、指派、复核或 PASS。
 - [D-040 四张宏量轴卡独立复核人指派本地校验合同](testing/d040-macro-axis-reviewer-assignment-harness.md)：以 21 项测试执行 frozen packet、候选身份/逐域胜任/起草/冲突、四域覆盖、联络/时序/签署、SHA-256、敏感信息与正式/合成隔离；不读取联系人或创建正式指派。
 - [D-040 中国健康评审人指派机器合同](testing/d040-china-health-reviewer-assignment-contract.md)：复用既有 `PACKET-001-R1` 接入与复核包，固定唯一入选候选人、五项胜任范围、身份/资质/地域/起草/冲突/联络授权、90 天时序与 assignment SHA-256；完整正式输入只产生结构 candidate，当前无联系人、指派、评审或健康批准。
+- [D-040 中国健康评审人指派本地校验合同](testing/d040-china-health-reviewer-assignment-harness.md)：以 23 项测试执行 frozen packet、唯一入选候选人、身份/资质/五项胜任/地域适配、起草/冲突、联络/90 天时序/签署、SHA-256、敏感信息与正式/合成隔离；不读取联系人、执业注册或创建正式指派。
 - [D-040 中国健康评审回执机器合同](testing/d040-china-health-review-record-contract.md)：固定 `PACKET-001-R1` 的九份不可变输入、具名资质/地域/利益冲突/签署声明、十三项逐条处置、P0~P3、90 天周期、双层摘要和健康 approval candidate 不等于真实健康批准或 Content QA；当前无 reviewer 或正式回执。
 - [D-040 中国健康评审回执本地校验合同](testing/d040-china-health-review-record-harness.md)：以 20 项测试执行 packet/九输入、具名资质/胜任范围/地域/冲突/签署声明、十三项/finding/disposition、90 天周期、双层摘要、合成隔离与零授权边界；不核验现实资质或创建健康批准。
 - [D-036 三 Provider/原生边界 Spike 协议](testing/d036-provider-native-compatibility-spike-protocol.md)：固定无密钥 OI-07 输入、36 个 Provider/profile/build/runtime 兼容单元与 13 个原生证据面；当前 Provider、Mac/Xcode、harness、联网和执行均未授权或未发生。

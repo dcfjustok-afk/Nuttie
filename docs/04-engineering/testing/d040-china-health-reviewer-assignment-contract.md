@@ -172,9 +172,9 @@ CHINA_MACRONUTRIENT_REFERENCE_AND_NON_PRESCRIPTION
 ZH_HANS_CN_SUPPORT_COPY_AND_EMERGENCY_RESOURCE_CONTEXT
 ```
 
-`competenceScopeIds` 必须非空、去重并按上述顺序排列；`competenceVerificationByScope` 必须与之逐项、双向一一对应。每项 `state` 只允许 `VERIFIED / REJECTED / PENDING`，证明字段语义与身份核验相同。入选候选人必须声明并通过全部五项，不能由多人拼接后写成一个健康评审回执；未入选候选人允许仍有待核验项，但不能被计入覆盖。
+`competenceScopeIds` 必须非空、去重并按上述顺序排列；`competenceVerificationByScope` 必须与之逐项、双向一一对应。每项 `state` 只允许 `VERIFIED / REJECTED / PENDING`，证明字段语义与身份核验相同。入选候选人必须声明并通过全部五项，不能由多人拼接后写成一个健康评审回执；未入选候选人允许仍有待核验项，其中状态仍待核验的范围不得被计入覆盖，已核验范围仍按下文精确列出。
 
-`requiredScopeCoverage` 必须按同一顺序恰好包含五项 `{ competenceScopeId, candidateIds[] }`。每项只能引用已声明该范围且该范围核验为 `VERIFIED` 的候选人；入选候选人必须出现在全部五项中。矩阵不得静默遗漏候选人已声明的范围，也不得添加候选人未声明的范围。
+`requiredScopeCoverage` 必须按同一顺序恰好包含五项 `{ competenceScopeId, candidateIds[] }`。每项必须按 `reviewerCandidates` 顺序精确列出已声明该范围且该范围核验为 `VERIFIED` 的候选人；没有已核验候选人时数组必须为空，入选候选人必须出现在全部五项中。矩阵不得静默遗漏已核验范围，也不得添加候选人未声明或未通过核验的范围。
 
 `localeAndRegionFit.state` 只允许 `PASS / FAIL / NOT_VERIFIED`。三类都必须有非敏感 `rationaleRef`；`PASS/FAIL` 还必须有具名非本人核验人、核验引用和时间，`NOT_VERIFIED` 的三个证明字段必须为 `null`。只有 `PASS` 能计入结构完整候选人。
 
@@ -186,9 +186,9 @@ ZH_HANS_CN_SUPPORT_COPY_AND_EMERGENCY_RESOURCE_CONTEXT
 
 ## 6. 指派、联络授权与 90 天时序
 
-`assignedByName` 必须是具名人员形态，不能只写 `PM/Owner/Agent` 或合成角色。正式记录的 `externalContactAuthorized=true` 必须同时具备顶层授权引用、入选候选人的同类引用和至少一个 assignment 证据引用；false 时不得产生结构完整 candidate，`reviewCanStart` 必须为 false。
+`assignedByName` 必须是具名人员形态，不能只写 `PM/Owner/Agent` 或合成角色，也不能与入选健康评审人相同。正式记录的 `externalContactAuthorized=true` 必须同时具备顶层授权引用、入选候选人的同类引用和至少一个 assignment 证据引用；false 时不得产生结构完整 candidate，`reviewCanStart` 必须为 false。
 
-`assignedAt` 必须不早于入选候选人的 packet 接受、assignment 接受、身份/资质/五项胜任/地域核验时间和 `qualificationObservedValidAt`，并早于 `expectedReviewDueAt`。`expectedReviewDueAt - assignedAt` 按绝对时间差不得超过 `90 × 24` 小时。所有时间必须是带显式时区的有效 RFC 3339，日期部分必须构成真实公历日期。
+入选候选人的 packet 接受时间必须不晚于 assignment 接受时间；`assignedAt` 必须不早于两项接受时间、身份/资质/五项胜任/地域核验时间和 `qualificationObservedValidAt`，并早于 `expectedReviewDueAt`。`expectedReviewDueAt - assignedAt` 按绝对时间差不得超过 `90 × 24` 小时。所有时间必须是带显式时区的有效 RFC 3339，日期部分必须构成真实公历日期。
 
 合同只检查调用方声明的引用与时序，不证明指派人现实权限、候选人实际同意、资质当前有效、联系人可达、邀请已送达或评审已经开始。
 
@@ -201,7 +201,7 @@ STRUCTURALLY_COMPLETE_HEALTH_REVIEWER_ASSIGNMENT_CANDIDATE
 healthReviewerAssignmentReadyCandidate: true
 reviewerAssignedReturned: false
 reviewCanStartReturned: false
-CALLER_ASSERTED_IDENTITY_QUALIFICATION_COMPETENCE_LOCALE_INDEPENDENCE_AND_AUTHORIZATION_NOT_VERIFIED
+IDENTITY_QUALIFICATION_COMPETENCE_LOCALE_INDEPENDENCE_CALLER_ASSERTED_NOT_VERIFIED
 ```
 
 任一缺口返回 `ASSIGNMENT_INCOMPLETE`，candidate 必须为 false。合成完整路径返回 `SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY`；它只覆盖算法，`healthReviewerAssignmentReadyCandidate` 必须仍为 false，不能保存、登记或外联。
