@@ -48,6 +48,7 @@
 | [d040-macro-axis-independent-review-packet.md](d040-macro-axis-independent-review-packet.md) | D-063/D-070/D-071/D-072 四卡、四复核域、十四条跨轴不变量与 P0~P3 标准；十份输入已冻结并记录 blob OID/SHA-256，复核人未指派且复核未开始 |
 | [d040-niddk-dynamic-model-feasibility-input.md](d040-niddk-dynamic-model-feasibility-input.md) | NIDDK 动态模型的论文/方程/当前网页代码表面、hash 与采用缺口；许可、稳定版本、oracle corpus、保护线和健康评审未通过 |
 | [d040-china-health-reviewer-intake-packet.md](d040-china-health-reviewer-intake-packet.md) | D-040 中国健康评审九工件/十三项签署交接包、具名资质/利益冲突与独立 Content QA 门禁；评审尚未开始或批准 |
+| [D-040 健康评审回执合同](../04-engineering/testing/d040-china-health-review-record-contract.md) / [20 项本地 validator](../04-engineering/testing/d040-china-health-review-record-harness.md) | 固定同一 frozen packet、九输入、十三项、资质/范围/地域/冲突/签署声明、90 天、P0~P3、disposition 与双 SHA-256；合成 fixture 非正式证据，真实回执、评审人核验、健康批准和 Content QA 均为 0/false |
 | [d040-first-three-batches-independent-review-packet.md](d040-first-three-batches-independent-review-packet.md) | D-040 前三批十三卡的四域独立复核、十二条跨批不变量与 P0~P3 关闭标准；复核人未指派且复核未开始 |
 | [nuttie-visual-direction.md](nuttie-visual-direction.md) | Nuttie 原创卡通栗子视觉方向、状态映射与 Figma 导入合同 |
 | [nuttie-design-system.md](nuttie-design-system.md) | Nuttie 视觉令牌、组件、五个本地优先功能画面、九种状态模式、候选边界与自动验证合同 |

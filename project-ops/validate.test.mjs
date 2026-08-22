@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_READY,
+  PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_READY.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_READY.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 314,
+    instancesValidated: 315,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 195);
+  assert.equal(report.counts.events, 196);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1212,6 +1212,38 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d039IndependentReviewHarnessEvent.value.data.b04Closed, false);
   assert.equal(d039IndependentReviewHarnessEvent.value.data.b05Closed, false);
   assert.equal(d039IndependentReviewHarnessEvent.value.data.formalImplementationAuthorized, false);
+  const d040HealthReviewHarnessEvent = findEvent(VALID_MODEL, "EVT-20260822-002");
+  assert.equal(d040HealthReviewHarnessEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    d040HealthReviewHarnessEvent.value.subject.id,
+    "D040-CHINA-HEALTH-REVIEW-RECORD-HARNESS-001",
+  );
+  assert.equal(d040HealthReviewHarnessEvent.value.data.packetVersion, "PACKET-001-R1");
+  assert.equal(d040HealthReviewHarnessEvent.value.data.packetEventId, "EVT-20260820-008");
+  assert.equal(d040HealthReviewHarnessEvent.value.data.topLevelTests, 20);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.fullSuitePassed, 1020);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.requiredArtifactCount, 9);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.requiredReviewItemCount, 13);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.copyReviewItemCount, 6);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.boundaryReviewItemCount, 7);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.maximumReviewIntervalDays, 90);
+  assert.deepEqual(d040HealthReviewHarnessEvent.value.data.dispositionPriority, [
+    "REJECTED", "CHANGES_REQUIRED", "INCOMPLETE", "HEALTH_REVIEW_APPROVAL_CANDIDATE",
+  ]);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.syntheticWouldBeApprovalCandidateCovered, true);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.syntheticHealthReviewApprovalCandidateReturned, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.formalHealthReviewRecordCount, 0);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.reviewerAttestationRecordCount, 0);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.reviewerAssigned, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.reviewerQualificationVerified, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.reviewerSignatureVerified, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.healthReviewStarted, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.healthContentApproved, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.contentQaPassed, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.d068OwnerReady, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.d069OwnerReady, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.d063OwnerReady, false);
+  assert.equal(d040HealthReviewHarnessEvent.value.data.formalImplementationAuthorized, false);
   const d040AllocationEvent = findEvent(VALID_MODEL, "EVT-20260815-003");
   assert.equal(d040AllocationEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040AllocationEvent.value.subject.id, "D040-QUESTION-ALLOCATION-001");
@@ -1707,7 +1739,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 313);
+    assert.equal(report.schemaValidation.instancesValidated, 314);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -4031,6 +4063,96 @@ test("锁定 D-039 历史 PX-2、Owner A 接受与实现未授权边界", async 
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-040 健康评审回执 validator 事件缺失", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter((record) => record.value.eventId !== "EVT-20260822-002");
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-040 健康评审回执 validator 静默减少 frozen 输入、逐项处置、测试或周期", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-002").value.data;
+      data.topLevelTests = 19;
+      data.requiredArtifactCount = 8;
+      data.requiredReviewItemCount = 12;
+      data.copyReviewItemCount = 5;
+      data.boundaryReviewItemCount = 6;
+      data.allowedItemDispositionCount = 3;
+      data.severityCount = 3;
+      data.maximumReviewIntervalDays = 91;
+      data.overallDispositions = ["HEALTH_REVIEW_APPROVAL_CANDIDATE"];
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("D-040 健康评审回执 validator 弱化资质、越域、finding、摘要、合成隔离或调用方声明边界", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-002").value.data;
+      data.frozenArtifactIdentityExact = false;
+      data.qualificationObservationNullSemanticsExact = false;
+      data.reviewerScopeAndOutOfScopeBoundaryExact = false;
+      data.itemAndFindingBidirectionalReferencesRequired = false;
+      data.openP0P1P2Block = false;
+      data.openP3RequiresOwnerDueAtAndRationale = false;
+      data.reviewIntervalMaximumHours = 2161;
+      data.reviewContentSha256Required = false;
+      data.attestationBindsReviewContentSha256 = false;
+      data.bundleSha256Required = false;
+      data.syntheticHealthReviewApprovalCandidateReturned = true;
+      data.healthContentApprovedReturned = true;
+      data.contentQaPassedReturned = true;
+      data.sensitiveLookingMaterialRejectedWithoutEcho = false;
+      data.reviewerQualificationClaimsCallerAssertedNotVerified = false;
+      data.signatureReferencesCallerAssertedNotVerified = false;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地 D-040 健康评审回执 validator 越级伪造正式回执、评审人、资质、健康批准、Content QA、Owner 或实现", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-002").value.data;
+      data.formalHealthReviewRecordCount = 1;
+      data.reviewerAttestationRecordCount = 1;
+      data.syntheticFixturePersistedCount = 1;
+      data.gitReads = 9;
+      data.fileReads = 9;
+      data.fileWrites = 1;
+      data.identityDocumentReads = 1;
+      data.qualificationRegistryReads = 1;
+      data.signatureArtifactReads = 1;
+      data.networkRequests = 1;
+      data.providerRequests = 1;
+      data.externalMessagesSent = 1;
+      data.businessWrites = 1;
+      data.reviewerAssigned = true;
+      data.reviewerIdentityVerified = true;
+      data.reviewerQualificationVerified = true;
+      data.reviewerCompetenceVerified = true;
+      data.reviewerLocaleFitVerified = true;
+      data.reviewerSignatureVerified = true;
+      data.healthReviewStarted = true;
+      data.healthContentApproved = true;
+      data.contentQaPassed = true;
+      data.d068OwnerReady = true;
+      data.d069OwnerReady = true;
+      data.d063OwnerReady = true;
+      data.firstThreeBatchesIndependentReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.px1Authorized = true;
+      data.px2Authorized = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.decisionAcceptedRecorded = true;
+      data.healthCopyImplementationAuthorized = true;
+      data.formulaImplementationAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_MISMATCH");
   });
 });
 

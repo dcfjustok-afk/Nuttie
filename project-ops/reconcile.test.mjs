@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 195,
+    events: 196,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -528,6 +528,63 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d039IndependentReviewRecordHarness.b04Closed, false);
   assert.equal(report.d039IndependentReviewRecordHarness.b05Closed, false);
   assert.equal(report.d039IndependentReviewRecordHarness.formalImplementationAuthorized, false);
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.eventId,
+    "EVT-20260822-002",
+  );
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.packetVersion,
+    "PACKET-001-R1",
+  );
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.topLevelTests, 20);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.requiredArtifactCount, 9);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.requiredReviewItemCount, 13);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.copyReviewItemCount, 6);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.boundaryReviewItemCount, 7);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.maximumReviewIntervalDays, 90);
+  assert.deepEqual(
+    report.d040ChinaHealthReviewRecordHarness.dispositionPriority,
+    [
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "HEALTH_REVIEW_APPROVAL_CANDIDATE",
+    ],
+  );
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.syntheticHealthReviewApprovalCandidateReturned,
+    false,
+  );
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.formalHealthReviewApprovalCandidateCanBeReturned,
+    true,
+  );
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.healthContentApprovedReturned,
+    false,
+  );
+  assert.equal(
+    report.d040ChinaHealthReviewRecordHarness.contentQaPassedReturned,
+    false,
+  );
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.contractValidatorImplemented, true);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.formalHealthReviewRecordCount, 0);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.reviewerAttestationRecordCount, 0);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.reviewerAssigned, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.reviewerQualificationVerified, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.reviewerSignatureVerified, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.healthReviewStarted, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.healthContentApproved, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.contentQaPassed, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.d068OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.d069OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.d063OwnerReady, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.px1Authorized, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.px2Authorized, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.healthCopyImplementationAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.formulaImplementationAuthorized, false);
+  assert.equal(report.d040ChinaHealthReviewRecordHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1028,6 +1085,22 @@ test("D-039 正式实现或 D-040 未授权门禁越级时失败关闭", () => {
       (diagnostic) =>
         diagnostic.code ===
         "OPS_RECONCILE_D039_INDEPENDENT_REVIEW_RECORD_HARNESS_GATE",
+    ),
+  );
+
+  const d040ChinaHealthReviewRecordHarnessModel = validModel();
+  d040ChinaHealthReviewRecordHarnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-002",
+  ).value.data.formalHealthReviewRecordCount = 1;
+  const d040ChinaHealthReviewRecordHarnessReport = reconcileProjectOps(
+    d040ChinaHealthReviewRecordHarnessModel,
+  );
+  assert.equal(d040ChinaHealthReviewRecordHarnessReport.ok, false);
+  assert.ok(
+    d040ChinaHealthReviewRecordHarnessReport.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code ===
+        "OPS_RECONCILE_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_GATE",
     ),
   );
 

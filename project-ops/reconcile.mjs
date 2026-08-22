@@ -209,6 +209,18 @@ function latestD039IndependentReviewRecordHarness(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD040ChinaHealthReviewRecordHarness(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D040-CHINA-HEALTH-REVIEW-RECORD-HARNESS-001",
+    )
+    .sort((left, right) =>
+      (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0),
+    )
+    .at(-1)?.value ?? null;
+}
+
 function latestD040Record(model) {
   return model.events
     .filter((record) => {
@@ -1955,6 +1967,141 @@ export function reconcileProjectOps(model) {
     );
   }
 
+  const d040ChinaHealthReviewRecordHarnessRecord =
+    latestD040ChinaHealthReviewRecordHarness(model);
+  const d040ChinaHealthReviewRecordHarness = {
+    ...(d040ChinaHealthReviewRecordHarnessRecord?.data ?? {}),
+    eventId: d040ChinaHealthReviewRecordHarnessRecord?.eventId ?? null,
+  };
+  const expectedD040ChinaHealthReviewRecordHarness = {
+    eventId: "EVT-20260822-002",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    decisionId: "D-040",
+    decisionState: "CANDIDATE",
+    authoritativeState: "PX-0_INPUT_GAP",
+    next: "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
+    packetId: "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001",
+    packetVersion: "PACKET-001-R1",
+    packetEventId: "EVT-20260820-008",
+    inputCommit: "5c32cfb2083bbe904c458b68d92a97e1f8479ce5",
+    packetArtifactCommit: "0fd261ebf886a6d4c71042655ec1e28c9ba85bb0",
+    packetArtifactBlobOid: "89f66cb38da0cd2865a343ac471e1cbe63de92c8",
+    packetArtifactSha256: "7e48fa29be626429b63c31492d37b710f8f873d5f079aeb5c70dee918bf5f110",
+    contractArtifactCommit: "d12568d666afde6c92898e87eff6b9e31afc7737",
+    partialQualificationClarificationCommit: "f2fce28553e0a95fb24e1ea8af2cea29c79db185",
+    outOfScopeClarificationCommit: "8be3081fd351724711dfa6d80732155ff2b0ca7e",
+    contractBlobOid: "af1cf592e00311e00565d8c064ba46dcf0c67cc8",
+    artifactCommit: "37a50eb2b2fec448ee205707f204dfca16ae1c6c",
+    implementationBlobOid: "800576171f2173afdd897f39763a8cc9d3d44f8c",
+    testBlobOid: "b260d59823bba23101b90284b05c0fe6118bfec1",
+    documentationBlobOid: "fb388df4149b02b86fa582d6adcebfc9e990ab5f",
+    inputSchemaVersion: "D040_CHINA_HEALTH_REVIEW_BUNDLE_INPUT_V1",
+    resultSchemaVersion: "D040_CHINA_HEALTH_REVIEW_RESULT_V1",
+    boundarySchemaVersion: "D040_CHINA_HEALTH_REVIEW_BOUNDARY_V1",
+    topLevelTests: 20,
+    fullSuitePassed: 1020,
+    requiredArtifactCount: 9,
+    requiredReviewItemCount: 13,
+    copyReviewItemCount: 6,
+    boundaryReviewItemCount: 7,
+    allowedItemDispositionCount: 4,
+    severityCount: 4,
+    maximumReviewIntervalDays: 90,
+    recordKinds: ["FORMAL_HEALTH_REVIEW_RECORD", "SYNTHETIC_CONTRACT_FIXTURE"],
+    overallDispositions: [
+      "HEALTH_REVIEW_APPROVAL_CANDIDATE",
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+    ],
+    dispositionPriority: [
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "HEALTH_REVIEW_APPROVAL_CANDIDATE",
+    ],
+    formalStructuralDisposition: "STRUCTURALLY_COMPLETE_HEALTH_REVIEW_ONLY",
+    syntheticStructuralDisposition: "SYNTHETIC_STRUCTURALLY_COMPLETE_FIXTURE_ONLY",
+    syntheticWouldBeApprovalCandidateCovered: true,
+    syntheticHealthReviewApprovalCandidateReturned: false,
+    formalHealthReviewApprovalCandidateCanBeReturned: true,
+    healthContentApprovedReturned: false,
+    contentQaPassedReturned: false,
+    strictDataTreeAndExactFields: true,
+    frozenArtifactIdentityExact: true,
+    qualificationObservationNullSemanticsExact: true,
+    reviewerScopeAndOutOfScopeBoundaryExact: true,
+    itemAndFindingBidirectionalReferencesRequired: true,
+    openP0P1P2Block: true,
+    openP3RequiresOwnerDueAtAndRationale: true,
+    reviewIntervalMaximumHours: 2160,
+    reviewContentSha256Required: true,
+    attestationBindsReviewContentSha256: true,
+    bundleSha256Required: true,
+    sensitiveLookingMaterialRejectedWithoutEcho: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    reviewerIdentityClaimsCallerAssertedNotVerified: true,
+    reviewerQualificationClaimsCallerAssertedNotVerified: true,
+    reviewerCompetenceClaimsCallerAssertedNotVerified: true,
+    reviewerLocaleFitClaimsCallerAssertedNotVerified: true,
+    signatureReferencesCallerAssertedNotVerified: true,
+    contractValidatorImplemented: true,
+    harnessReadsCallerSuppliedDataOnly: true,
+    formalHealthReviewRecordCount: 0,
+    reviewerAttestationRecordCount: 0,
+    syntheticFixturePersistedCount: 0,
+    gitReads: 0,
+    fileReads: 0,
+    fileWrites: 0,
+    identityDocumentReads: 0,
+    qualificationRegistryReads: 0,
+    signatureArtifactReads: 0,
+    networkRequests: 0,
+    providerRequests: 0,
+    externalMessagesSent: 0,
+    businessWrites: 0,
+    reviewerAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerQualificationVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerLocaleFitVerified: false,
+    reviewerSignatureVerified: false,
+    healthReviewStarted: false,
+    healthContentApproved: false,
+    contentQaPassed: false,
+    d068OwnerReady: false,
+    d069OwnerReady: false,
+    d063OwnerReady: false,
+    firstThreeBatchesIndependentReviewPassed: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    px1Authorized: false,
+    px2Authorized: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    decisionAcceptedRecorded: false,
+    healthCopyImplementationAuthorized: false,
+    formulaImplementationAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  };
+  if (
+    Object.entries(expectedD040ChinaHealthReviewRecordHarness).some(
+      ([key, value]) =>
+        JSON.stringify(d040ChinaHealthReviewRecordHarness[key]) !== JSON.stringify(value),
+    )
+  ) {
+    addDiagnostic(
+      diagnostics,
+      "error",
+      "OPS_RECONCILE_D040_CHINA_HEALTH_REVIEW_RECORD_HARNESS_GATE",
+      "D-040",
+      "D-040 中国健康评审回执 validator 未保持 frozen packet/九输入/具名资质/胜任范围/地域/冲突/签署声明/十三项/P0~P3/90 天/disposition/双 SHA-256 合同、合成 fixture 非证据，以及正式回执/评审人/健康批准/Content QA/Owner/PX/实现全关闭状态",
+      d040ChinaHealthReviewRecordHarness,
+    );
+  }
+
   const d040Record = latestD040Record(model);
   const d040AllocationRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260815-003",
@@ -2682,6 +2829,7 @@ export function reconcileProjectOps(model) {
     d034RunReportContract,
     d034RunReportHarness,
     d039IndependentReviewRecordHarness,
+    d040ChinaHealthReviewRecordHarness,
     d040,
     diagnostics,
   };
