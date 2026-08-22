@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS = Object.freeze({
-  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS",
+export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS = Object.freeze({
+  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 205,
+    events: 206,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS = Objec
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 11,
+    "2026-08-22": 12,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3669,6 +3669,123 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS = Objec
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
   }),
+  mvpIncrementScopeReviewerAssignmentHarness: Object.freeze({
+    eventId: "EVT-20260822-012",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "MVP-INCREMENT-SCOPE-REVIEWER-ASSIGNMENT-HARNESS-001",
+    subjectRole: "LocalReviewerAssignmentContract",
+    correlationId: "mvp-increment-scope-reviewer-assignment-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    from: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    to: "REVIEWER_ASSIGNMENT_INTAKE_AND_VALIDATOR_READY",
+    next: "NAMED_REVIEWER_CANDIDATES_AND_CONTACT_AUTHORIZATION_REQUIRED",
+    intakePacketId: "MVP-INCREMENT-SCOPE-REVIEWER-INTAKE-PACKET-001",
+    intakePacketArtifactCommit: "490bae42e7c07c14c1cddc6072b8bc63a54a04e3",
+    intakePacketBlobOid: "76e2c366aaee4db99f29c66390eed31172aa78fd",
+    reviewPacketId: "MVP-INCREMENT-SCOPE-REVIEW-PACKET-001",
+    reviewPacketVersion: "PACKET-001-R1",
+    inputManifestEventId: "EVT-20260822-010",
+    packetArtifactCommit: "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+    packetArtifactBlobOid: "3b232045cdf791454ef269d0f7a1e632e72ef1c0",
+    packetArtifactSha256: "d17ae5fa7567486e14741a3fecf252abf0b13414bb50c935403cc206b5b59a0e",
+    contractArtifactCommit: "22203401a8e28a402ae708a523eb9b70b293ebfc",
+    contractBlobOid: "d15660d53e2154bcd81125adefd26efa8a333020",
+    artifactCommit: "b9b19022e757ca432566330298a608141426552b",
+    implementationBlobOid: "952ebcd0006f249bd1148010c9123eaa96811d5e",
+    testBlobOid: "88284fe03a353950e85d88f5d5edda1811aa9310",
+    documentationBlobOid: "b67510a07e203bcfae401ca7e3dd970cbae0e447",
+    inputSchemaVersion: "MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_INPUT_V1",
+    resultSchemaVersion: "MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_RESULT_V1",
+    boundarySchemaVersion: "MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_BOUNDARY_V1",
+    topLevelTests: 20,
+    fullSuitePassed: 1135,
+    isolatedSpikeTestsPassed: 10,
+    requiredReviewerDomainCount: 5,
+    maximumReviewerCount: 20,
+    maximumDomainsPerReviewer: 5,
+    recordKinds: Object.freeze(["FORMAL_ASSIGNMENT_RECORD","SYNTHETIC_CONTRACT_FIXTURE"]),
+    resultDispositions: Object.freeze([
+      "STRUCTURALLY_COMPLETE_ASSIGNMENT_CANDIDATE",
+      "SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY",
+      "ASSIGNMENT_INCOMPLETE",
+    ]),
+    verificationStates: Object.freeze(["VERIFIED","REJECTED","PENDING"]),
+    conflictStates: Object.freeze(["NONE_DECLARED","RESOLVED","OPEN"]),
+    signatureMethods: Object.freeze(["SIGNED_DOCUMENT_REFERENCE","VERIFIED_WORKFLOW_REFERENCE","WET_SIGNATURE_REFERENCE"]),
+    strictDataTreeAndExactFields: true,
+    formalSyntheticIdentityAndReferenceIsolation: true,
+    reviewPacketIdentityExact: true,
+    reviewerDomainOrderExact: true,
+    competenceEvidenceByDomainRequired: true,
+    identitySelfVerificationRejected: true,
+    draftParticipantFailsClosed: true,
+    conflictResolutionRequired: true,
+    domainCoverageBidirectional: true,
+    reviewCanStartRecomputed: true,
+    assignmentContentSha256Required: true,
+    rfc3339ActualCalendarDateRequired: true,
+    sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    inputAuthorityClaimsCallerAssertedNotVerified: true,
+    identityClaimsCallerAssertedNotVerified: true,
+    competenceClaimsCallerAssertedNotVerified: true,
+    independenceClaimsCallerAssertedNotVerified: true,
+    contactAuthorizationClaimsCallerAssertedNotVerified: true,
+    formalAssignmentCandidateCanBeReturned: true,
+    syntheticWouldBeAssignmentReadyCandidateCovered: true,
+    syntheticAssignmentReadyCandidateReturned: false,
+    reviewersAssignedReturned: false,
+    reviewCanStartReturned: false,
+    contractValidatorImplemented: true,
+    harnessReadsCallerSuppliedDataOnly: true,
+    intakePacketReady: true,
+    reviewPacketReady: true,
+    inputManifestFrozen: true,
+    reviewerCandidateCount: 0,
+    reviewerAssignmentRecordCount: 0,
+    controlledContactRecordCount: 0,
+    formalReviewRecordCount: 0,
+    reviewerAttestationRecordCount: 0,
+    syntheticFixturePersistedCount: 0,
+    gitReads: 0,
+    fileReads: 0,
+    fileWrites: 0,
+    identityDocumentReads: 0,
+    competenceEvidenceReads: 0,
+    contactRecordReads: 0,
+    signatureArtifactReads: 0,
+    networkRequests: 0,
+    providerRequests: 0,
+    externalContactAuthorized: false,
+    externalMessagesSent: 0,
+    businessWrites: 0,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerIndependenceVerified: false,
+    reviewerSignatureVerified: false,
+    conflictOfInterestResolved: false,
+    crossRoleReviewStarted: false,
+    crossRoleReviewPassed: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    mvpIncrementScopeFrozen: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -5259,7 +5376,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9694,6 +9811,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "G2 MVP 增量范围跨角色复核回执 validator 必须固定 PACKET-001-R1/11 输入、5 域/A-B-C/12 不变量、P0~P3/disposition/双层摘要、20 项测试与合成 fixture 非证据，并保持正式回执/attestation/复核人/身份胜任独立签署核验/PASS/Owner/决定/范围冻结/G2/正式工程/原生/实现全关闭",
+    );
+  }
+
+  const mvpIncrementScopeReviewerAssignmentSpec = baseline.mvpIncrementScopeReviewerAssignmentHarness;
+  const mvpIncrementScopeReviewerAssignmentEvents = model.events.filter(
+    (record) => record.value?.eventId === mvpIncrementScopeReviewerAssignmentSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === mvpIncrementScopeReviewerAssignmentSpec.correlationId),
+  );
+  const mvpIncrementScopeReviewerAssignmentEvent = mvpIncrementScopeReviewerAssignmentEvents[0]?.value;
+  const mvpIncrementScopeReviewerAssignmentData = mvpIncrementScopeReviewerAssignmentEvent?.data ?? {};
+  const mvpIncrementScopeReviewerAssignmentFields = Object.keys(mvpIncrementScopeReviewerAssignmentSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    mvpIncrementScopeReviewerAssignmentEvents.length !== 1 ||
+    mvpIncrementScopeReviewerAssignmentEvent?.eventId !== mvpIncrementScopeReviewerAssignmentSpec.eventId ||
+    mvpIncrementScopeReviewerAssignmentEvent?.type !== "ARTIFACT_CREATED" ||
+    mvpIncrementScopeReviewerAssignmentEvent?.actor?.id !== mvpIncrementScopeReviewerAssignmentSpec.actorId ||
+    mvpIncrementScopeReviewerAssignmentEvent?.actor?.role !== mvpIncrementScopeReviewerAssignmentSpec.actorRole ||
+    mvpIncrementScopeReviewerAssignmentEvent?.subject?.id !== mvpIncrementScopeReviewerAssignmentSpec.subjectId ||
+    mvpIncrementScopeReviewerAssignmentEvent?.subject?.role !== mvpIncrementScopeReviewerAssignmentSpec.subjectRole ||
+    mvpIncrementScopeReviewerAssignmentEvent?.correlationId !==
+      mvpIncrementScopeReviewerAssignmentSpec.correlationId ||
+    JSON.stringify(Object.keys(mvpIncrementScopeReviewerAssignmentData).sort()) !==
+      JSON.stringify(mvpIncrementScopeReviewerAssignmentFields) ||
+    mvpIncrementScopeReviewerAssignmentFields.some(
+      (field) => JSON.stringify(mvpIncrementScopeReviewerAssignmentData[field]) !==
+        JSON.stringify(mvpIncrementScopeReviewerAssignmentSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "G2 MVP 增量复核人指派 validator 必须固定 PACKET-001-R1、五域逐域胜任/身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256、20 项测试和合成隔离，并保持候选人/联系人/联络授权/正式指派/复核/PASS/Owner/范围冻结/G2/正式工程/原生/实现全关闭",
     );
   }
 

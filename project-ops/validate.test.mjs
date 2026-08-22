@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS,
+  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 324,
+    instancesValidated: 325,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 205);
+  assert.equal(report.counts.events, 206);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1646,6 +1646,51 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.formalRootProjectAuthorized, false);
   assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.nativeIosWorkAuthorized, false);
   assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.formalImplementationAuthorized, false);
+  const mvpIncrementScopeReviewerAssignmentEvent = findEvent(VALID_MODEL, "EVT-20260822-012");
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    mvpIncrementScopeReviewerAssignmentEvent.value.subject.id,
+    "MVP-INCREMENT-SCOPE-REVIEWER-ASSIGNMENT-HARNESS-001",
+  );
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.inputManifestEventId, "EVT-20260822-010");
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.topLevelTests, 20);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.fullSuitePassed, 1135);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.isolatedSpikeTestsPassed, 10);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.requiredReviewerDomainCount, 5);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.maximumReviewerCount, 20);
+  assert.deepEqual(mvpIncrementScopeReviewerAssignmentEvent.value.data.resultDispositions, [
+    "STRUCTURALLY_COMPLETE_ASSIGNMENT_CANDIDATE",
+    "SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY",
+    "ASSIGNMENT_INCOMPLETE",
+  ]);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewCanStartRecomputed, true);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.assignmentContentSha256Required, true);
+  assert.equal(
+    mvpIncrementScopeReviewerAssignmentEvent.value.data.syntheticWouldBeAssignmentReadyCandidateCovered,
+    true,
+  );
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewersAssignedReturned, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewCanStartReturned, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerAssignmentRecordCount, 0);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.controlledContactRecordCount, 0);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.externalContactAuthorized, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.externalMessagesSent, 0);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewersAssigned, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerIdentityVerified, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerCompetenceVerified, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerIndependenceVerified, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.reviewerSignatureVerified, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.crossRoleReviewStarted, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.crossRoleReviewPassed, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.ownerChoiceRecorded, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.mvpIncrementScopeFrozen, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.g2Passed, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.formalRootProjectAuthorized, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.nativeIosWorkAuthorized, false);
+  assert.equal(mvpIncrementScopeReviewerAssignmentEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1994,7 +2039,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 323);
+    assert.equal(report.schemaValidation.instancesValidated, 324);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -5994,5 +6039,107 @@ test("锁定 G2 首个 MVP 增量范围跨角色复核回执 validator", async (
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+});
+
+test("锁定 G2 首个 MVP 增量范围复核人指派 validator", async (t) => {
+  await t.test("复核人指派 validator 登记事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-012",
+      );
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("指派 validator 静默减少测试、域、候选上限、状态或处置时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-012").value.data;
+      data.topLevelTests = 19;
+      data.fullSuitePassed = 1134;
+      data.requiredReviewerDomainCount = 4;
+      data.maximumReviewerCount = 19;
+      data.maximumDomainsPerReviewer = 4;
+      data.recordKinds = ["FORMAL_ASSIGNMENT_RECORD"];
+      data.resultDispositions = ["ASSIGNMENT_INCOMPLETE"];
+      data.verificationStates = ["VERIFIED"];
+      data.conflictStates = ["OPEN"];
+      data.signatureMethods = ["VERIFIED_WORKFLOW_REFERENCE"];
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("指派 validator 弱化 packet、逐域核验、覆盖、时序、摘要、脱敏或合成隔离时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-012").value.data;
+      data.reviewPacketIdentityExact = false;
+      data.formalSyntheticIdentityAndReferenceIsolation = false;
+      data.reviewerDomainOrderExact = false;
+      data.competenceEvidenceByDomainRequired = false;
+      data.identitySelfVerificationRejected = false;
+      data.draftParticipantFailsClosed = false;
+      data.conflictResolutionRequired = false;
+      data.domainCoverageBidirectional = false;
+      data.reviewCanStartRecomputed = false;
+      data.assignmentContentSha256Required = false;
+      data.rfc3339ActualCalendarDateRequired = false;
+      data.sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho = false;
+      data.syntheticAssignmentReadyCandidateReturned = true;
+      data.reviewersAssignedReturned = true;
+      data.reviewCanStartReturned = true;
+      data.inputAuthorityClaimsCallerAssertedNotVerified = false;
+      data.identityClaimsCallerAssertedNotVerified = false;
+      data.competenceClaimsCallerAssertedNotVerified = false;
+      data.independenceClaimsCallerAssertedNotVerified = false;
+      data.contactAuthorizationClaimsCallerAssertedNotVerified = false;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地指派 validator 越级伪造候选人、联系人、外联、正式指派、复核、Owner、G2 或实现时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-012").value.data;
+      data.reviewerCandidateCount = 5;
+      data.reviewerAssignmentRecordCount = 1;
+      data.controlledContactRecordCount = 5;
+      data.formalReviewRecordCount = 1;
+      data.reviewerAttestationRecordCount = 5;
+      data.syntheticFixturePersistedCount = 1;
+      data.gitReads = 1;
+      data.fileReads = 1;
+      data.fileWrites = 1;
+      data.identityDocumentReads = 5;
+      data.competenceEvidenceReads = 5;
+      data.contactRecordReads = 5;
+      data.signatureArtifactReads = 5;
+      data.networkRequests = 1;
+      data.providerRequests = 1;
+      data.externalContactAuthorized = true;
+      data.externalMessagesSent = 5;
+      data.businessWrites = 1;
+      data.reviewersAssigned = true;
+      data.reviewerIdentityVerified = true;
+      data.reviewerCompetenceVerified = true;
+      data.reviewerIndependenceVerified = true;
+      data.reviewerSignatureVerified = true;
+      data.conflictOfInterestResolved = true;
+      data.crossRoleReviewStarted = true;
+      data.crossRoleReviewPassed = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+      data.decisionIdAllocated = true;
+      data.decisionRegistered = true;
+      data.decisionAcceptedRecorded = true;
+      data.mvpIncrementScopeFrozen = true;
+      data.g2Passed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
   });
 });

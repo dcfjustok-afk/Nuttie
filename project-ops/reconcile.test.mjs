@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 205,
+    events: 206,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -902,6 +902,42 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.formalRootProjectAuthorized, false);
   assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.formalImplementationAuthorized, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.eventId, "EVT-20260822-012");
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.inputManifestEventId, "EVT-20260822-010");
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.topLevelTests, 20);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.fullSuitePassed, 1135);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.requiredReviewerDomainCount, 5);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.maximumReviewerCount, 20);
+  assert.deepEqual(report.mvpIncrementScopeReviewerAssignmentHarness.resultDispositions, [
+    "STRUCTURALLY_COMPLETE_ASSIGNMENT_CANDIDATE",
+    "SYNTHETIC_STRUCTURALLY_COMPLETE_ASSIGNMENT_FIXTURE_ONLY",
+    "ASSIGNMENT_INCOMPLETE",
+  ]);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewCanStartRecomputed, true);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.assignmentContentSha256Required, true);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewersAssignedReturned, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewCanStartReturned, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerCandidateCount, 0);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerAssignmentRecordCount, 0);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.controlledContactRecordCount, 0);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.externalContactAuthorized, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.externalMessagesSent, 0);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewersAssigned, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerIdentityVerified, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerCompetenceVerified, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerIndependenceVerified, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.reviewerSignatureVerified, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.crossRoleReviewStarted, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.crossRoleReviewPassed, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.ownerChoiceRecorded, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.mvpIncrementScopeFrozen, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.g2Passed, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1679,6 +1715,38 @@ test("对账器拒绝把 G2 范围回执 validator 冒充正式复核或授权",
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 G2 复核人指派 validator 冒充联系人、正式指派或授权", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-012",
+  ).value.data;
+  harnessData.requiredReviewerDomainCount = 4;
+  harnessData.domainCoverageBidirectional = false;
+  harnessData.syntheticAssignmentReadyCandidateReturned = true;
+  harnessData.reviewersAssignedReturned = true;
+  harnessData.reviewCanStartReturned = true;
+  harnessData.reviewerCandidateCount = 5;
+  harnessData.controlledContactRecordCount = 5;
+  harnessData.reviewerAssignmentRecordCount = 1;
+  harnessData.externalContactAuthorized = true;
+  harnessData.externalMessagesSent = 5;
+  harnessData.reviewersAssigned = true;
+  harnessData.crossRoleReviewStarted = true;
+  harnessData.crossRoleReviewPassed = true;
+  harnessData.ownerChoiceRecorded = true;
+  harnessData.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+  harnessData.mvpIncrementScopeFrozen = true;
+  harnessData.g2Passed = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_GATE",
     ),
   );
 });
