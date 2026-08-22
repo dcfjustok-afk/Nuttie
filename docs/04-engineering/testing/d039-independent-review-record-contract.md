@@ -103,9 +103,9 @@ participatedInDrafting
 identityVerification { state, verifiedByName, verificationRef, verifiedAt }
 conflictOfInterest { state, disclosureRef, resolutionRef }
 reviewContentSha256
-signedAt
+signedAt = RFC3339 | null
 signatureMethod
-signatureReference { referenceId, sha256 }
+signatureReference = null | { referenceId, sha256 }
 supersedesAttestationId
 ```
 
@@ -130,6 +130,8 @@ QA_ACCESSIBILITY
 - attestation ID、reviewer reference 和 signature reference 在 bundle 内唯一。
 
 四域的并集必须完整；域可由多人重复覆盖，但不能用多个角色名代替具名人员。`signatureReference` 只保存外部签署工件的非敏感引用和摘要，不保存签名图、证件、邮箱、电话、住址或资质文件正文。
+
+未完成签署的部分回执使用 `signatureMethod=NOT_SIGNED`，且 `signedAt` 与 `signatureReference` 都必须为 `null`；该 attestation 可以保留在 bundle 中，但不计入域覆盖。identity 尚未核验或 conflict 尚未披露/解决时同理：相关详情使用显式 `null`，整体只能推导 `INCOMPLETE`，不能丢弃该部分进度后假装完整。
 
 ## 5. 六卡逐项处置
 
