@@ -62,6 +62,7 @@
 - [D-039 B03~B05 六卡独立复核回执机器合同](testing/d039-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的 10 项不可变输入、四域具名 attestation、六卡、16 条跨卡不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
 - [D-039 B03~B05 六卡独立复核回执本地校验合同](testing/d039-independent-review-record-harness.md)：以 20 项测试执行 packet/10 输入、四域 attestation、六卡/16 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [首个 MVP 增量范围跨角色复核回执机器合同](testing/mvp-increment-scope-cross-role-review-record-contract.md)：固定 `PACKET-001-R1` 的 11 项不可变输入、五域具名 attestation、A/B/C 三项处置、12 条跨选项不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
+- [首个 MVP 增量范围跨角色复核回执本地校验合同](testing/mvp-increment-scope-cross-role-review-record-harness.md)：以 20 项测试执行 packet/11 输入、五域 attestation、A/B/C/12 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-040 前三批十三卡独立复核回执机器合同](testing/d040-first-three-batches-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的七份不可变输入、四域具名 attestation、十三卡、12 条跨批不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
 - [D-040 前三批十三卡独立复核回执本地校验合同](testing/d040-first-three-batches-independent-review-record-harness.md)：以 20 项测试执行 packet/七输入、四域 attestation、十三卡/12 不变量、finding、disposition、双层摘要、合成隔离与零授权边界；不核验现实身份或创建正式回执。
 - [D-040 四张宏量轴卡独立复核回执机器合同](testing/d040-macro-axis-independent-review-record-contract.md)：固定 `PACKET-001-R1` 的十份不可变输入、四域具名 attestation、D-063/D-070/D-071/D-072 四卡、14 条跨轴不变量、P0~P3、双层摘要和 PASS candidate 不等于真实复核通过；当前无 reviewer 或正式回执。
