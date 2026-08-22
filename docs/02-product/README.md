@@ -11,6 +11,7 @@ Owner：项目发起人
 2. [需求分层与分期](./requirements-and-phasing.md)：完整范围的需求层级、交付波次与阶段门禁。
 3. [验收与追踪](./acceptance-traceability.md)：能力、证据、需求、验收和安全测试之间的稳定映射。
 4. [Owner 分批决策包](./owner-decision-packs.md)：对 UXD、工程、发布与数据候选去重后的全局队列；未获批准前不执行。
+5. [首个 MVP 增量与后续范围边界决策卡](./mvp-increment-scope-card.md)：把 G2 尚缺的首个纵向切片与明确后置范围整理为三项互斥选择；当前仍待 Owner 审查，不构成实现授权。
 
 研究权威来源：
 
