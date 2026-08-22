@@ -117,7 +117,7 @@ supersedesAttestationId
 
 `qualificationVerification.state` 只允许 `NOT_VERIFIED` 或 `CALLER_ASSERTED_VERIFIED_BY_NAMED_NON_SELF`。后者必须同时提供具名非本人核验人、引用和时间；validator 仍只能把名称、机构、资质、胜任范围、地域适配和核验引用标为调用方声明。
 
-`qualificationVerifiedAt` 与 `qualificationValidAt` 都使用 RFC 3339，且不得晚于 `reviewedAt`；前者表示调用方声明的核验发生时间，后者表示调用方声明“外部来源在该观察时间显示资质有效”。单个时间戳不是执业有效期，validator 不得从中推断现实资质持续有效。
+`qualificationVerification.state=NOT_VERIFIED` 时，`qualificationVerifiedAt` 与 `qualificationValidAt` 必须都为 `null`；部分回执仍可保留，但不计为结构完整。状态为 `CALLER_ASSERTED_VERIFIED_BY_NAMED_NON_SELF` 时，两者必须是 RFC 3339 且不得晚于 `reviewedAt`：前者表示调用方声明的核验发生时间，后者表示调用方声明“外部来源在该观察时间显示资质有效”。单个时间戳不是执业有效期，validator 不得从中推断现实资质持续有效。
 
 利益冲突只允许 `UNDISCLOSED / NONE_DECLARED / RESOLVED / UNRESOLVED`。`RESOLVED` 必须同时提供 disclosure 和 resolution 引用；`NONE_DECLARED` 只需 disclosure 引用；未披露或未解决时不能形成 structurally complete candidate。
 
