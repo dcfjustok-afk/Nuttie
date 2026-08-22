@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-22T20:43:37+08:00",
+  "generatedAt": "2026-08-22T21:09:44+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 204
+    "projectEvents": 205
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "G2 首个 MVP 增量范围跨角色复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、11 个 frozen blob、5 个复核域、A/B/C、12 条跨选项不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/胜任依据/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/胜任/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，Owner 选择、决定登记、范围冻结、G2、正式根工程、原生与实现门禁均未改变",
     "G2 首个 MVP 增量范围跨角色复核包的 11 项输入清单已冻结到同一提交的原始 Git blob，并逐项记录 SHA-1 blob OID 与规范 SHA-256。冻结只证明复核输入版本；具名复核人、身份/胜任/独立性/利益冲突核验、实际 finding、逐项结论和跨角色 PASS 均未发生，Owner 选择、决定登记、范围冻结、G2 PASS、正式根工程、原生与实现授权保持 false/未发生",
     "G2 首个 MVP 增量范围跨角色复核包已准备：固定 11 份必读输入、A/B/C 三项逐项处置、产品/设计/架构/安全/QA 五个复核域、12 条跨选项不变量与 P0~P3 关闭标准。当前只达到 PACKET_READY；具名复核人、身份/胜任/独立性/利益冲突核验、实际 finding、逐项结论和跨角色 PASS 均未发生，Owner 选择、决定登记、范围冻结、G2 PASS、正式根工程、原生与实现授权保持 false/未发生",
     "G2 首个 MVP 增量与后续范围边界决策卡已准备：A 本地餐食纵向闭环、B 完整手工本地 MVP、C 本地餐食加离线条码三项互斥选择及 7 条共享不变量已固定，推荐 A 不等于 Owner 选择；F01~F24 总范围与后续波次保留，Owner 选择、决定登记、范围冻结、G2 PASS、正式根工程、原生与实现授权均为 false/未发生",

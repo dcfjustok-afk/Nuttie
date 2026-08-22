@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST,
+  PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST.id);
+  assert.equal(report.baseline, PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 323,
+    instancesValidated: 324,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 204);
+  assert.equal(report.counts.events, 205);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -1610,6 +1610,42 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(mvpIncrementScopeInputManifestEvent.value.data.mvpIncrementScopeFrozen, false);
   assert.equal(mvpIncrementScopeInputManifestEvent.value.data.g2Passed, false);
   assert.equal(mvpIncrementScopeInputManifestEvent.value.data.formalImplementationAuthorized, false);
+  const mvpIncrementScopeReviewHarnessEvent = findEvent(VALID_MODEL, "EVT-20260822-011");
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.type, "ARTIFACT_CREATED");
+  assert.equal(
+    mvpIncrementScopeReviewHarnessEvent.value.subject.id,
+    "MVP-INCREMENT-SCOPE-CROSS-ROLE-REVIEW-RECORD-HARNESS-001",
+  );
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.packetVersion, "PACKET-001-R1");
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.inputManifestEventId, "EVT-20260822-010");
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.topLevelTests, 20);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.fullSuitePassed, 1109);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.isolatedSpikeTestsPassed, 10);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.requiredArtifactCount, 11);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.requiredReviewerDomainCount, 5);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.requiredOptionCount, 3);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.requiredCrossOptionInvariantCount, 12);
+  assert.deepEqual(mvpIncrementScopeReviewHarnessEvent.value.data.dispositionPriority, [
+    "REJECTED", "CHANGES_REQUIRED", "INCOMPLETE", "CROSS_ROLE_REVIEW_PASS_CANDIDATE",
+  ]);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.syntheticWouldBePassCandidateCovered, true);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.syntheticCrossRoleReviewPassCandidateReturned, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.crossRoleReviewPassedReturned, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.formalReviewRecordCount, 0);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewerAttestationRecordCount, 0);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewersAssigned, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewerIdentityVerified, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewerCompetenceVerified, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewerIndependenceVerified, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.reviewerSignatureVerified, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.crossRoleReviewStarted, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.crossRoleReviewPassed, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.ownerChoiceRecorded, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.mvpIncrementScopeFrozen, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.g2Passed, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.formalRootProjectAuthorized, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.nativeIosWorkAuthorized, false);
+  assert.equal(mvpIncrementScopeReviewHarnessEvent.value.data.formalImplementationAuthorized, false);
   const d040ChinaHealthReviewerPacketEvent = findEvent(VALID_MODEL, "EVT-20260820-008");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(d040ChinaHealthReviewerPacketEvent.value.subject.id, "D040-CHINA-HEALTH-REVIEWER-INTAKE-PACKET-001");
@@ -1958,7 +1994,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 322);
+    assert.equal(report.schemaValidation.instancesValidated, 323);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -5866,5 +5902,97 @@ test("锁定 G2 首个 MVP 增量范围复核输入冻结清单", async (t) => {
       data.gateStatesChanged = true;
     });
     assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH");
+  });
+});
+
+test("锁定 G2 首个 MVP 增量范围跨角色复核回执 validator", async (t) => {
+  await t.test("回执 validator 登记事件缺失时失败关闭", () => {
+    const report = validateMutation((model) => {
+      model.events = model.events.filter(
+        (record) => record.value.eventId !== "EVT-20260822-011",
+      );
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("回执 validator 静默减少 frozen 输入、域、选项、不变量、测试或 disposition 时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-011").value.data;
+      data.topLevelTests = 19;
+      data.fullSuitePassed = 1108;
+      data.requiredArtifactCount = 10;
+      data.requiredReviewerDomainCount = 4;
+      data.requiredOptionCount = 2;
+      data.requiredCrossOptionInvariantCount = 11;
+      data.allowedOptionDispositionCount = 3;
+      data.severityCount = 3;
+      data.overallDispositions = ["CROSS_ROLE_REVIEW_PASS_CANDIDATE"];
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("回执 validator 弱化 frozen 身份、域覆盖、finding、摘要、合成隔离或调用方声明边界时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-011").value.data;
+      data.frozenArtifactIdentityExact = false;
+      data.reviewerDomainCoverageRecomputed = false;
+      data.optionAndFindingBidirectionalReferencesRequired = false;
+      data.openP0P1P2Block = false;
+      data.openP3RequiresOwnerDueAtAndRationale = false;
+      data.reviewContentSha256Required = false;
+      data.attestationsBindReviewContentSha256 = false;
+      data.bundleSha256Required = false;
+      data.sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho = false;
+      data.syntheticCrossRoleReviewPassCandidateReturned = true;
+      data.crossRoleReviewPassedReturned = true;
+      data.reviewerIdentityClaimsCallerAssertedNotVerified = false;
+      data.reviewerCompetenceClaimsCallerAssertedNotVerified = false;
+      data.reviewerIndependenceClaimsCallerAssertedNotVerified = false;
+      data.signatureReferencesCallerAssertedNotVerified = false;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH");
+  });
+
+  await t.test("本地回执 validator 越级伪造正式回执、复核人、PASS、Owner、范围、G2 或实现时失败关闭", () => {
+    const report = validateMutation((model) => {
+      const data = findEvent(model, "EVT-20260822-011").value.data;
+      data.formalReviewRecordCount = 1;
+      data.reviewerAttestationRecordCount = 5;
+      data.syntheticFixturePersistedCount = 1;
+      data.gitReads = 11;
+      data.fileReads = 11;
+      data.fileWrites = 1;
+      data.identityDocumentReads = 5;
+      data.competenceEvidenceReads = 5;
+      data.signatureArtifactReads = 5;
+      data.networkRequests = 1;
+      data.providerRequests = 1;
+      data.externalMessagesSent = 1;
+      data.businessWrites = 1;
+      data.reviewersAssigned = true;
+      data.reviewerIdentityVerified = true;
+      data.reviewerCompetenceVerified = true;
+      data.reviewerIndependenceVerified = true;
+      data.reviewerSignatureVerified = true;
+      data.conflictOfInterestResolved = true;
+      data.crossRoleReviewStarted = true;
+      data.crossRoleReviewPassed = true;
+      data.currentFindingCountsMeasured = true;
+      data.ownerIntakeChanged = true;
+      data.ownerCardScheduled = true;
+      data.ownerReviewAuthorized = true;
+      data.ownerChoiceRecorded = true;
+      data.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+      data.decisionIdAllocated = true;
+      data.decisionRegistered = true;
+      data.decisionAcceptedRecorded = true;
+      data.mvpIncrementScopeFrozen = true;
+      data.g2Passed = true;
+      data.formalRootProjectAuthorized = true;
+      data.nativeIosWorkAuthorized = true;
+      data.formalImplementationAuthorized = true;
+      data.gateStatesChanged = true;
+    });
+    assertDiagnostic(report, "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH");
   });
 });

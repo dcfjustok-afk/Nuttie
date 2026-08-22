@@ -58,14 +58,14 @@ const PROJECT_OPS_SCHEMA_TARGETS = Object.freeze([
   }),
 ]);
 
-export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST = Object.freeze({
-  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST",
+export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS = Object.freeze({
+  id: "PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS",
   counts: Object.freeze({
     schemas: 5,
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 204,
+    events: 205,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -103,7 +103,7 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST = Object.freez
     "2026-08-17": 3,
     "2026-08-20": 8,
     "2026-08-21": 17,
-    "2026-08-22": 10,
+    "2026-08-22": 11,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -3556,6 +3556,119 @@ export const PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST = Object.freez
     formalImplementationAuthorized: false,
     gateStatesChanged: false,
   }),
+  mvpIncrementScopeCrossRoleReviewRecordHarness: Object.freeze({
+    eventId: "EVT-20260822-011",
+    actorId: "project-manager",
+    actorRole: "PM",
+    subjectId: "MVP-INCREMENT-SCOPE-CROSS-ROLE-REVIEW-RECORD-HARNESS-001",
+    subjectRole: "LocalReviewRecordContract",
+    correlationId: "mvp-increment-scope-cross-role-review-record-harness",
+    state: "completed",
+    contractStatus: "SPIKE / LOCAL_ONLY / NON_PRODUCTION",
+    gateId: "G2",
+    gateState: "IN_PROGRESS",
+    next: "CROSS_ROLE_REVIEWER_ASSIGNMENT_AND_REVIEW_REQUIRED",
+    packetId: "MVP-INCREMENT-SCOPE-REVIEW-PACKET-001",
+    packetVersion: "PACKET-001-R1",
+    inputManifestEventId: "EVT-20260822-010",
+    manifestCommit: "9891e6ac75d02df3d85a6b13cb094cd80e7fe808",
+    manifestRecordCommit: "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+    packetArtifactCommit: "6be59e5df3c1d06416f87950308bcb9a5df2aab0",
+    packetArtifactBlobOid: "3b232045cdf791454ef269d0f7a1e632e72ef1c0",
+    packetArtifactSha256: "d17ae5fa7567486e14741a3fecf252abf0b13414bb50c935403cc206b5b59a0e",
+    contractArtifactCommit: "afbf079eae9ad88c9bf0bb21b25327fea0eb8147",
+    contractBlobOid: "c262805138145eeebebe16293c57e1d2b5f19fab",
+    artifactCommit: "2fe1b4b06db10d58a184bb717105f2e687911e83",
+    implementationBlobOid: "b2b8bf13074c2021ce77189246f0259a5cd73612",
+    testBlobOid: "e34111cb22a451a3d06c74313940620453eeb1eb",
+    documentationBlobOid: "ca6c331307179398f09768dec0446fd0bb412ceb",
+    inputSchemaVersion: "MVP_INCREMENT_SCOPE_CROSS_ROLE_REVIEW_BUNDLE_INPUT_V1",
+    resultSchemaVersion: "MVP_INCREMENT_SCOPE_CROSS_ROLE_REVIEW_RESULT_V1",
+    boundarySchemaVersion: "MVP_INCREMENT_SCOPE_CROSS_ROLE_REVIEW_BOUNDARY_V1",
+    topLevelTests: 20,
+    fullSuitePassed: 1109,
+    isolatedSpikeTestsPassed: 10,
+    requiredArtifactCount: 11,
+    requiredReviewerDomainCount: 5,
+    requiredOptionCount: 3,
+    requiredCrossOptionInvariantCount: 12,
+    allowedOptionDispositionCount: 4,
+    severityCount: 4,
+    recordKinds: Object.freeze(["FORMAL_REVIEW_RECORD", "SYNTHETIC_CONTRACT_FIXTURE"]),
+    overallDispositions: Object.freeze([
+      "CROSS_ROLE_REVIEW_PASS_CANDIDATE",
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+    ]),
+    dispositionPriority: Object.freeze([
+      "REJECTED",
+      "CHANGES_REQUIRED",
+      "INCOMPLETE",
+      "CROSS_ROLE_REVIEW_PASS_CANDIDATE",
+    ]),
+    formalStructuralDisposition: "STRUCTURALLY_COMPLETE_REVIEW_ONLY",
+    syntheticStructuralDisposition: "SYNTHETIC_STRUCTURALLY_COMPLETE_FIXTURE_ONLY",
+    syntheticWouldBePassCandidateCovered: true,
+    syntheticCrossRoleReviewPassCandidateReturned: false,
+    formalCrossRoleReviewPassCandidateCanBeReturned: true,
+    crossRoleReviewPassedReturned: false,
+    strictDataTreeAndExactFields: true,
+    frozenArtifactIdentityExact: true,
+    reviewerDomainCoverageRecomputed: true,
+    optionAndFindingBidirectionalReferencesRequired: true,
+    openP0P1P2Block: true,
+    openP3RequiresOwnerDueAtAndRationale: true,
+    reviewContentSha256Required: true,
+    attestationsBindReviewContentSha256: true,
+    bundleSha256Required: true,
+    sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho: true,
+    immutableNormalizationAndResultFingerprintBound: true,
+    reviewerIdentityClaimsCallerAssertedNotVerified: true,
+    reviewerCompetenceClaimsCallerAssertedNotVerified: true,
+    reviewerIndependenceClaimsCallerAssertedNotVerified: true,
+    signatureReferencesCallerAssertedNotVerified: true,
+    contractValidatorImplemented: true,
+    harnessReadsCallerSuppliedDataOnly: true,
+    reviewPacketReady: true,
+    inputManifestFrozen: true,
+    formalReviewRecordCount: 0,
+    reviewerAttestationRecordCount: 0,
+    syntheticFixturePersistedCount: 0,
+    gitReads: 0,
+    fileReads: 0,
+    fileWrites: 0,
+    identityDocumentReads: 0,
+    competenceEvidenceReads: 0,
+    signatureArtifactReads: 0,
+    networkRequests: 0,
+    providerRequests: 0,
+    externalMessagesSent: 0,
+    businessWrites: 0,
+    reviewersAssigned: false,
+    reviewerIdentityVerified: false,
+    reviewerCompetenceVerified: false,
+    reviewerIndependenceVerified: false,
+    reviewerSignatureVerified: false,
+    conflictOfInterestResolved: false,
+    crossRoleReviewStarted: false,
+    crossRoleReviewPassed: false,
+    currentFindingCountsMeasured: false,
+    ownerIntakeChanged: false,
+    ownerCardScheduled: false,
+    ownerReviewAuthorized: false,
+    ownerChoiceRecorded: false,
+    selectedIncrementId: null,
+    decisionIdAllocated: false,
+    decisionRegistered: false,
+    decisionAcceptedRecorded: false,
+    mvpIncrementScopeFrozen: false,
+    g2Passed: false,
+    formalRootProjectAuthorized: false,
+    nativeIosWorkAuthorized: false,
+    formalImplementationAuthorized: false,
+    gateStatesChanged: false,
+  }),
   d040Research: Object.freeze({
     formula: Object.freeze({
       reviewerId: "d040_formula_evidence_audit",
@@ -5146,7 +5259,7 @@ function validateProjectOpsSchemas(model, add) {
   });
 }
 
-export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_INPUT_MANIFEST) {
+export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_22_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS) {
   const diagnostics = [];
   const add = (code, diagnosticPath, message, details = undefined) => {
     diagnostics.push({
@@ -9544,6 +9657,43 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       "OPS_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_MISMATCH",
       "project-ops/events/2026-08-22.jsonl",
       "G2 MVP 增量范围复核输入必须精确绑定 11 项同提交原始 Git blob 与规范 SHA-256，并保持复核人/复核/PASS/Owner/决定/范围冻结/G2/正式工程/原生/实现全关闭",
+    );
+  }
+
+  const mvpIncrementScopeReviewHarnessSpec = baseline.mvpIncrementScopeCrossRoleReviewRecordHarness;
+  const mvpIncrementScopeReviewHarnessEvents = model.events.filter(
+    (record) => record.value?.eventId === mvpIncrementScopeReviewHarnessSpec.eventId ||
+      (record.value?.type === "ARTIFACT_CREATED" &&
+        record.value?.correlationId === mvpIncrementScopeReviewHarnessSpec.correlationId),
+  );
+  const mvpIncrementScopeReviewHarnessEvent = mvpIncrementScopeReviewHarnessEvents[0]?.value;
+  const mvpIncrementScopeReviewHarnessData = mvpIncrementScopeReviewHarnessEvent?.data ?? {};
+  const mvpIncrementScopeReviewHarnessFields = Object.keys(mvpIncrementScopeReviewHarnessSpec)
+    .filter((field) => ![
+      "eventId", "actorId", "actorRole", "subjectId", "subjectRole", "correlationId",
+    ].includes(field))
+    .sort();
+  if (
+    mvpIncrementScopeReviewHarnessEvents.length !== 1 ||
+    mvpIncrementScopeReviewHarnessEvent?.eventId !== mvpIncrementScopeReviewHarnessSpec.eventId ||
+    mvpIncrementScopeReviewHarnessEvent?.type !== "ARTIFACT_CREATED" ||
+    mvpIncrementScopeReviewHarnessEvent?.actor?.id !== mvpIncrementScopeReviewHarnessSpec.actorId ||
+    mvpIncrementScopeReviewHarnessEvent?.actor?.role !== mvpIncrementScopeReviewHarnessSpec.actorRole ||
+    mvpIncrementScopeReviewHarnessEvent?.subject?.id !== mvpIncrementScopeReviewHarnessSpec.subjectId ||
+    mvpIncrementScopeReviewHarnessEvent?.subject?.role !== mvpIncrementScopeReviewHarnessSpec.subjectRole ||
+    mvpIncrementScopeReviewHarnessEvent?.correlationId !==
+      mvpIncrementScopeReviewHarnessSpec.correlationId ||
+    JSON.stringify(Object.keys(mvpIncrementScopeReviewHarnessData).sort()) !==
+      JSON.stringify(mvpIncrementScopeReviewHarnessFields) ||
+    mvpIncrementScopeReviewHarnessFields.some(
+      (field) => JSON.stringify(mvpIncrementScopeReviewHarnessData[field]) !==
+        JSON.stringify(mvpIncrementScopeReviewHarnessSpec[field]),
+    )
+  ) {
+    add(
+      "OPS_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_MISMATCH",
+      "project-ops/events/2026-08-22.jsonl",
+      "G2 MVP 增量范围跨角色复核回执 validator 必须固定 PACKET-001-R1/11 输入、5 域/A-B-C/12 不变量、P0~P3/disposition/双层摘要、20 项测试与合成 fixture 非证据，并保持正式回执/attestation/复核人/身份胜任独立签署核验/PASS/Owner/决定/范围冻结/G2/正式工程/原生/实现全关闭",
     );
   }
 

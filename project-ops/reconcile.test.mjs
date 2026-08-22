@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 204,
+    events: 205,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -866,6 +866,42 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.mvpIncrementScopeInputManifest.mvpIncrementScopeFrozen, false);
   assert.equal(report.mvpIncrementScopeInputManifest.g2Passed, false);
   assert.equal(report.mvpIncrementScopeInputManifest.formalImplementationAuthorized, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.eventId, "EVT-20260822-011");
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.packetVersion, "PACKET-001-R1");
+  assert.equal(
+    report.mvpIncrementScopeCrossRoleReviewRecordHarness.inputManifestEventId,
+    "EVT-20260822-010",
+  );
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.topLevelTests, 20);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.fullSuitePassed, 1109);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.requiredArtifactCount, 11);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.requiredReviewerDomainCount, 5);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.requiredOptionCount, 3);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.requiredCrossOptionInvariantCount, 12);
+  assert.deepEqual(report.mvpIncrementScopeCrossRoleReviewRecordHarness.dispositionPriority, [
+    "REJECTED", "CHANGES_REQUIRED", "INCOMPLETE", "CROSS_ROLE_REVIEW_PASS_CANDIDATE",
+  ]);
+  assert.equal(
+    report.mvpIncrementScopeCrossRoleReviewRecordHarness.syntheticCrossRoleReviewPassCandidateReturned,
+    false,
+  );
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.crossRoleReviewPassedReturned, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.formalReviewRecordCount, 0);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewerAttestationRecordCount, 0);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewersAssigned, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewerIdentityVerified, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewerCompetenceVerified, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewerIndependenceVerified, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.reviewerSignatureVerified, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.crossRoleReviewStarted, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.crossRoleReviewPassed, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.ownerChoiceRecorded, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.mvpIncrementScopeFrozen, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.g2Passed, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.mvpIncrementScopeCrossRoleReviewRecordHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1616,6 +1652,33 @@ test("对账器拒绝把 G2 范围输入冻结冒充复核或授权", () => {
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_INPUT_MANIFEST_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 G2 范围回执 validator 冒充正式复核或授权", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-011",
+  ).value.data;
+  harnessData.requiredArtifactCount = 10;
+  harnessData.reviewerDomainCoverageRecomputed = false;
+  harnessData.syntheticCrossRoleReviewPassCandidateReturned = true;
+  harnessData.formalReviewRecordCount = 1;
+  harnessData.reviewerAttestationRecordCount = 5;
+  harnessData.reviewersAssigned = true;
+  harnessData.crossRoleReviewStarted = true;
+  harnessData.crossRoleReviewPassed = true;
+  harnessData.ownerChoiceRecorded = true;
+  harnessData.selectedIncrementId = "MVP-I1-LOCAL-MEAL";
+  harnessData.mvpIncrementScopeFrozen = true;
+  harnessData.g2Passed = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEW_RECORD_HARNESS_GATE",
     ),
   );
 });
