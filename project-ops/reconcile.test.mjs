@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 206,
+    events: 207,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -938,6 +938,34 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.formalRootProjectAuthorized, false);
   assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.mvpIncrementScopeReviewerAssignmentHarness.formalImplementationAuthorized, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.eventId, "EVT-20260822-013");
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d039ReviewerAssignmentHarness.inputManifestEventId, "EVT-20260821-009");
+  assert.equal(report.d039ReviewerAssignmentHarness.topLevelTests, 21);
+  assert.equal(report.d039ReviewerAssignmentHarness.fullSuitePassed, 1162);
+  assert.equal(report.d039ReviewerAssignmentHarness.isolatedSpikeTestsPassed, 10);
+  assert.equal(report.d039ReviewerAssignmentHarness.requiredReviewerDomainCount, 4);
+  assert.equal(report.d039ReviewerAssignmentHarness.formalAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d039ReviewerAssignmentHarness.syntheticWouldBeAssignmentReadyCandidateCovered, true);
+  assert.equal(report.d039ReviewerAssignmentHarness.syntheticAssignmentReadyCandidateReturned, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewersAssignedReturned, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewCanStartReturned, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewerCandidateCount, 0);
+  assert.equal(report.d039ReviewerAssignmentHarness.controlledContactRecordCount, 0);
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewerAssignmentRecordCount, 0);
+  assert.equal(report.d039ReviewerAssignmentHarness.externalContactAuthorized, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.externalMessagesSent, 0);
+  assert.equal(report.d039ReviewerAssignmentHarness.reviewersAssigned, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.independentReviewStarted, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.independentReviewPassed, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.b03Closed, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.b04Closed, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.b05Closed, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.ownerReviewAuthorized, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.px5ImplementationDorSatisfied, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.formalRootProjectAuthorized, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
+  assert.equal(report.d039ReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
   assert.equal(report.d040.eventId, "EVT-20260821-007");
   assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
@@ -1747,6 +1775,47 @@ test("对账器拒绝把 G2 复核人指派 validator 冒充联系人、正式�
     report.diagnostics.some(
       (diagnostic) =>
         diagnostic.code === "OPS_RECONCILE_MVP_INCREMENT_SCOPE_REVIEWER_ASSIGNMENT_HARNESS_GATE",
+    ),
+  );
+});
+
+test("对账器拒绝把 D-039 复核人指派 validator 冒充联系人、正式指派或关闭 B03~B05", () => {
+  const harnessModel = validModel();
+  const harnessData = harnessModel.events.find(
+    (record) => record.value.eventId === "EVT-20260822-013",
+  ).value.data;
+  harnessData.requiredReviewerDomainCount = 3;
+  harnessData.domainCoverageBidirectional = false;
+  harnessData.syntheticAssignmentReadyCandidateReturned = true;
+  harnessData.reviewersAssignedReturned = true;
+  harnessData.reviewCanStartReturned = true;
+  harnessData.reviewerCandidateCount = 4;
+  harnessData.controlledContactRecordCount = 4;
+  harnessData.reviewerAssignmentRecordCount = 1;
+  harnessData.externalContactAuthorized = true;
+  harnessData.externalMessagesSent = 4;
+  harnessData.reviewersAssigned = true;
+  harnessData.independentReviewStarted = true;
+  harnessData.independentReviewPassed = true;
+  harnessData.d045Accepted = true;
+  harnessData.d031Accepted = true;
+  harnessData.d033Accepted = true;
+  harnessData.d034Accepted = true;
+  harnessData.d036Accepted = true;
+  harnessData.d053Accepted = true;
+  harnessData.b03Closed = true;
+  harnessData.b04Closed = true;
+  harnessData.b05Closed = true;
+  harnessData.ownerReviewAuthorized = true;
+  harnessData.px5ImplementationDorSatisfied = true;
+  harnessData.formalRootProjectAuthorized = true;
+  harnessData.nativeIosWorkAuthorized = true;
+  harnessData.formalImplementationAuthorized = true;
+  const report = reconcileProjectOps(harnessModel);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "OPS_RECONCILE_D039_REVIEWER_ASSIGNMENT_HARNESS_GATE",
     ),
   );
 });

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-22T21:39:37+08:00",
+  "generatedAt": "2026-08-22T22:04:02+08:00",
   "project": {
     "name": "栗子自律",
     "englishName": "Nuttie",
@@ -19,7 +19,7 @@
     "agentRosterSize": 25,
     "activeAgents": 1,
     "agentMessages": 116,
-    "projectEvents": 206
+    "projectEvents": 207
   },
   "gates": [
     { "id": "G0", "name": "项目立项", "state": "PASS" },
@@ -38,7 +38,7 @@
       "id": "root",
       "role": "项目经理 / PM",
       "state": "active",
-      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，具名复核人、实际复核和外部证据均未发生。D-034 benchmark 协议、13 项 corpus manifest 本地校验、raw run/report bundle 机器合同与 17 项本地失败关闭 validator 已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1、最低 765 warm-up/2550 measured、8 阶段/14 指标、整组丢弃/重试保留与聚合重算；39 条缩小合成记录只验证算法，真实 raw run/report 仍为 0，真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性、官方 `TAB-2436 / E-160-2012-0` 许可路径及旧研究工具边界已核验，旧 ZIP/Excel 已被 BWP 取代且不是当前发行或 oracle，七项资产覆盖/逐文件许可/稳定版本/oracle corpus/保护线门禁仍未通过；D-032 等待第二次 Owner 动作与原生证据",
+      "workPackage": "D-039 PX-5 B01/B02 已关闭；B03 的 D-045、B04 的 D-031 与 B05 的 D-033/D-034/D-036/D-053 六张内部卡完成自审，统一独立复核包已准备并固定 10 份输入、6 卡逐项处置、3 个阻断项、4 个复核域、16 条跨卡不变量与 P0~P3 标准；10 项输入清单已冻结到同一提交并记录原始 blob OID/SHA-256，复核人接入包、指派机器合同与 21 项本地 validator 也已准备并固定同一 packet、四域逐域胜任、身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256 与正式/合成隔离；但真实候选人、受控联系人、联络授权、正式指派、实际复核、权威 PASS 与 B03~B05 关闭仍为 0/false。D-034 benchmark 协议、13 项 corpus manifest 本地校验、raw run/report bundle 机器合同与 17 项本地失败关闭 validator 已准备，固定 3 档/21 行/85 必需槽位/38 边界与 +1、最低 765 warm-up/2550 measured、8 阶段/14 指标、整组丢弃/重试保留与聚合重算；39 条缩小合成记录只验证算法，真实 raw run/report 仍为 0，真实 corpus、最低设备、Mac/Xcode、隔离原生 harness、实测与独立复核仍缺失；D-036/D-053 共用的 OI-07 无密钥模板与 11 项本地失败关闭校验已准备并固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入、Provider 解析、凭证、费用、联网与证据采集均未发生；D-036 Provider/原生兼容协议已准备并固定 36 个兼容单元、13 个原生边界面和重复标准，但仍需 OI-07/Provider/工具链/harness/corpus/凭证/联网授权/执行结果；D-053 证据/App Privacy 协议已准备并固定 15 个最小 profile、150 项十维评估和至少 5 行映射，但仍需 OI-07/Provider/证据采集/映射/签署/独立复核；B06/B07 仍为 Owner/环境依赖。D-040 前三批十三卡的独立复核包、中国健康评审交接包与四张宏量轴卡独立复核包均已就绪，其中宏量包 10 份输入已冻结并记录 blob OID/SHA-256，且两类具名评审未开始；D-063 来源、D-070 输入、D-071 显示舍入和 D-072 硬停止纯记录卡完成内部自审，但前置接受、D-068/D-069、健康数值边界、Content QA 与独立复核未完成，均未 Owner-ready；NIDDK 动态模型来源可行性、官方 `TAB-2436 / E-160-2012-0` 许可路径及旧研究工具边界已核验，旧 ZIP/Excel 已被 BWP 取代且不是当前发行或 oracle，七项资产覆盖/逐文件许可/稳定版本/oracle corpus/保护线门禁仍未通过；D-032 等待第二次 Owner 动作与原生证据",
       "gate": "Phase 0",
       "requiredHandoffs": ["owner"]
     },
@@ -236,6 +236,7 @@
     }
   ],
   "currentWork": [
+    "D-039 B03~B05 六卡复核人接入包、指派机器合同与 21 项本地失败关闭 validator 已完成：精确绑定 PACKET-001-R1、四域逐域胜任、身份/起草/冲突/覆盖、联络授权、接受/指派/截止时序、签署计划、assignment SHA-256、敏感信息与正式/合成隔离。validator 只返回调用方声明的结构完整候选；真实候选人、受控联系人、联络授权、外部消息、正式指派、身份/胜任/独立性/签署核验、实际复核、权威 PASS 与 B03~B05 关闭仍为 0/false，Owner、PX-5、正式根工程、原生与实现门禁均未改变",
     "G2 首个 MVP 增量范围复核人接入包、指派机器合同与 20 项本地失败关闭 validator 已完成：精确绑定 PACKET-001-R1、五域逐域胜任、身份/起草/冲突/覆盖、联络授权、接受/指派/截止时序、签署计划、assignment SHA-256、敏感信息与合成隔离。Example 候选人与 .example.test 引用只存在于测试进程；真实候选人、受控联系人、联络授权、外部消息、正式指派、身份/胜任/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，Owner 选择、决定登记、范围冻结、G2、正式根工程、原生与实现门禁均未改变",
     "G2 首个 MVP 增量范围跨角色复核回执机器合同与本地失败关闭 validator 已完成 20 项测试：精确绑定 PACKET-001-R1、11 个 frozen blob、5 个复核域、A/B/C、12 条跨选项不变量、P0~P3、disposition 优先级与 review-content/bundle 双层 SHA-256；合成 Example reviewer/胜任依据/签署引用只存在于测试进程，不是现实复核证据。正式回执、reviewer attestation、具名复核人、身份/胜任/独立性/签署核验、实际复核和权威 PASS 仍为 0/false，Owner 选择、决定登记、范围冻结、G2、正式根工程、原生与实现门禁均未改变",
     "G2 首个 MVP 增量范围跨角色复核包的 11 项输入清单已冻结到同一提交的原始 Git blob，并逐项记录 SHA-1 blob OID 与规范 SHA-256。冻结只证明复核输入版本；具名复核人、身份/胜任/独立性/利益冲突核验、实际 finding、逐项结论和跨角色 PASS 均未发生，Owner 选择、决定登记、范围冻结、G2 PASS、正式根工程、原生与实现授权保持 false/未发生",
