@@ -129,6 +129,26 @@ function latestD036CompatibilityProtocolRecord(model) {
     .at(-1)?.value ?? null;
 }
 
+function latestD036CompatibilityReportContractRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D036-PROVIDER-NATIVE-COMPATIBILITY-REPORT-CONTRACT-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
+function latestD036CompatibilityReportHarnessRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D036-PROVIDER-NATIVE-COMPATIBILITY-REPORT-HARNESS-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
 function latestD053Record(model) {
   return model.events
     .filter((record) => record.value?.subject?.id === "D053-AI-PROVIDER-USE-ADMISSION-CARD-001")
@@ -141,6 +161,26 @@ function latestD053EvidenceProtocolRecord(model) {
     .filter(
       (record) =>
         record.value?.subject?.id === "D053-PROVIDER-EVIDENCE-APP-PRIVACY-PROTOCOL-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
+function latestD053EvidenceReportContractRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D053-PROVIDER-EVIDENCE-APP-PRIVACY-REPORT-CONTRACT-001",
+    )
+    .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
+    .at(-1)?.value ?? null;
+}
+
+function latestD053EvidenceReportHarnessRecord(model) {
+  return model.events
+    .filter(
+      (record) =>
+        record.value?.subject?.id === "D053-PROVIDER-EVIDENCE-APP-PRIVACY-REPORT-HARNESS-001",
     )
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
     .at(-1)?.value ?? null;
@@ -304,6 +344,7 @@ function latestD040Record(model) {
         subjectId === "D040-HARD-STOP-RECORD-AVAILABILITY-CARD-SPEC-001" ||
         subjectId === "D040-MACRO-AXIS-INDEPENDENT-REVIEW-PACKET-001" ||
         subjectId === "D040-MACRO-AXIS-INPUT-MANIFEST-001" ||
+        subjectId === "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-CARD-SPEC-001" ||
         correlationId === "d040-macronutrient-governance-audit";
     })
     .sort((left, right) => (parseTime(left.value.recordedAt) ?? 0) - (parseTime(right.value.recordedAt) ?? 0))
@@ -954,6 +995,8 @@ export function reconcileProjectOps(model) {
 
   const d036Record = latestD036Record(model);
   const d036ProtocolRecord = latestD036CompatibilityProtocolRecord(model);
+  const d036ReportContractRecord = latestD036CompatibilityReportContractRecord(model);
+  const d036ReportHarnessRecord = latestD036CompatibilityReportHarnessRecord(model);
   const d036 = {
     eventId: d036Record?.eventId ?? null,
     decisionState: d036Record?.data?.decisionState ?? null,
@@ -1016,6 +1059,71 @@ export function reconcileProjectOps(model) {
     protocolRealNetworkAuthorized: d036ProtocolRecord?.data?.realNetworkAuthorized ?? null,
     protocolFormalImplementationAuthorized:
       d036ProtocolRecord?.data?.formalImplementationAuthorized ?? null,
+    reportContractEventId: d036ReportContractRecord?.eventId ?? null,
+    reportContractStatus: d036ReportContractRecord?.data?.contractStatus ?? null,
+    reportContractArtifactCommit:
+      d036ReportContractRecord?.data?.contractArtifactCommit ?? null,
+    reportContractRequiredCompatibilityCellCount:
+      d036ReportContractRecord?.data?.requiredCompatibilityCellCount ?? null,
+    reportContractRequiredFormalAttemptMinimum:
+      d036ReportContractRecord?.data?.requiredFormalAttemptMinimum ?? null,
+    reportContractRequiredFormalOfflineResultCount:
+      d036ReportContractRecord?.data?.requiredFormalOfflineResultCount ?? null,
+    reportContractRequiredFormalNativeBoundaryResultCount:
+      d036ReportContractRecord?.data?.requiredFormalNativeBoundaryResultCount ?? null,
+    reportContractValidatorImplemented:
+      d036ReportContractRecord?.data?.reportValidatorImplemented ?? null,
+    reportContractAttemptRecordCount:
+      d036ReportContractRecord?.data?.attemptRecordCount ?? null,
+    reportContractCompatibilityReportRecorded:
+      d036ReportContractRecord?.data?.compatibilityReportRecorded ?? null,
+    reportContractNativeBoundaryEvidenceRecorded:
+      d036ReportContractRecord?.data?.nativeBoundaryEvidenceRecorded ?? null,
+    reportHarnessEventId: d036ReportHarnessRecord?.eventId ?? null,
+    reportHarnessStatus: d036ReportHarnessRecord?.data?.contractStatus ?? null,
+    reportHarnessArtifactState: d036ReportHarnessRecord?.data?.artifactState ?? null,
+    reportHarnessArtifactCommitRecorded:
+      d036ReportHarnessRecord?.data?.artifactCommitRecorded ?? null,
+    reportHarnessTopLevelTests: d036ReportHarnessRecord?.data?.topLevelTests ?? null,
+    reportHarnessToolSuitePassed: d036ReportHarnessRecord?.data?.toolSuitePassed ?? null,
+    reportHarnessRequiredCompatibilityCellCount:
+      d036ReportHarnessRecord?.data?.requiredCompatibilityCellCount ?? null,
+    reportHarnessRequiredFormalAttemptMinimum:
+      d036ReportHarnessRecord?.data?.requiredFormalAttemptMinimum ?? null,
+    reportHarnessRequiredFormalOfflineResultCount:
+      d036ReportHarnessRecord?.data?.requiredFormalOfflineResultCount ?? null,
+    reportHarnessRequiredFormalNativeBoundaryResultCount:
+      d036ReportHarnessRecord?.data?.requiredFormalNativeBoundaryResultCount ?? null,
+    reportHarnessContractValidatorImplemented:
+      d036ReportHarnessRecord?.data?.contractValidatorImplemented ?? null,
+    reportHarnessOi07Reads: d036ReportHarnessRecord?.data?.oi07Reads ?? null,
+    reportHarnessProviderDocumentReads:
+      d036ReportHarnessRecord?.data?.providerDocumentReads ?? null,
+    reportHarnessAttemptRecordReads:
+      d036ReportHarnessRecord?.data?.attemptRecordReads ?? null,
+    reportHarnessAttemptRecordWrites:
+      d036ReportHarnessRecord?.data?.attemptRecordWrites ?? null,
+    reportHarnessNetworkRequests: d036ReportHarnessRecord?.data?.networkRequests ?? null,
+    reportHarnessProviderRequests: d036ReportHarnessRecord?.data?.providerRequests ?? null,
+    reportHarnessAttemptRecordCount:
+      d036ReportHarnessRecord?.data?.attemptRecordCount ?? null,
+    reportHarnessCompatibilityReportRecorded:
+      d036ReportHarnessRecord?.data?.compatibilityReportRecorded ?? null,
+    reportHarnessNativeBoundaryEvidenceRecorded:
+      d036ReportHarnessRecord?.data?.nativeBoundaryEvidenceRecorded ?? null,
+    reportHarnessExecutionStarted:
+      d036ReportHarnessRecord?.data?.spikeExecutionStarted ?? null,
+    reportHarnessCompatibilityPassed:
+      d036ReportHarnessRecord?.data?.providerCompatibilitySpikePassed ?? null,
+    reportHarnessNativeEvidencePassed:
+      d036ReportHarnessRecord?.data?.nativeBoundaryEvidencePassed ?? null,
+    reportHarnessIndependentReviewPassed:
+      d036ReportHarnessRecord?.data?.independentReviewPassed ?? null,
+    reportHarnessOwnerReviewAuthorized:
+      d036ReportHarnessRecord?.data?.ownerReviewAuthorized ?? null,
+    reportHarnessB05Closed: d036ReportHarnessRecord?.data?.b05Closed ?? null,
+    reportHarnessFormalImplementationAuthorized:
+      d036ReportHarnessRecord?.data?.formalImplementationAuthorized ?? null,
     registeredInDecisionLedger: model.decisionRegister.decisions.some((decision) => decision.id === "D-036"),
     ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-036").length,
   };
@@ -1063,6 +1171,45 @@ export function reconcileProjectOps(model) {
     d036.protocolB05Closed === false &&
     d036.protocolRealNetworkAuthorized === false &&
     d036.protocolFormalImplementationAuthorized === false &&
+    d036.reportContractEventId === "EVT-20260827-001" &&
+    d036.reportContractStatus ===
+      "CONTRACT_READY / OI07_REQUIRED / NO_RUNS / NO_REPORT / EXECUTION_NOT_AUTHORIZED" &&
+    d036.reportContractArtifactCommit === "458d81e5feec32fee9ebc887dc3f4d65e5724f40" &&
+    d036.reportContractRequiredCompatibilityCellCount === 36 &&
+    d036.reportContractRequiredFormalAttemptMinimum === 324 &&
+    d036.reportContractRequiredFormalOfflineResultCount === 108 &&
+    d036.reportContractRequiredFormalNativeBoundaryResultCount === 39 &&
+    d036.reportContractValidatorImplemented === false &&
+    d036.reportContractAttemptRecordCount === 0 &&
+    d036.reportContractCompatibilityReportRecorded === false &&
+    d036.reportContractNativeBoundaryEvidenceRecorded === false &&
+    d036.reportHarnessEventId === "EVT-20260827-002" &&
+    d036.reportHarnessStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    d036.reportHarnessArtifactState === "WORKTREE_UNCOMMITTED" &&
+    d036.reportHarnessArtifactCommitRecorded === false &&
+    d036.reportHarnessTopLevelTests === 20 &&
+    d036.reportHarnessToolSuitePassed === 909 &&
+    d036.reportHarnessRequiredCompatibilityCellCount === 36 &&
+    d036.reportHarnessRequiredFormalAttemptMinimum === 324 &&
+    d036.reportHarnessRequiredFormalOfflineResultCount === 108 &&
+    d036.reportHarnessRequiredFormalNativeBoundaryResultCount === 39 &&
+    d036.reportHarnessContractValidatorImplemented === true &&
+    d036.reportHarnessOi07Reads === 0 &&
+    d036.reportHarnessProviderDocumentReads === 0 &&
+    d036.reportHarnessAttemptRecordReads === 0 &&
+    d036.reportHarnessAttemptRecordWrites === 0 &&
+    d036.reportHarnessNetworkRequests === 0 &&
+    d036.reportHarnessProviderRequests === 0 &&
+    d036.reportHarnessAttemptRecordCount === 0 &&
+    d036.reportHarnessCompatibilityReportRecorded === false &&
+    d036.reportHarnessNativeBoundaryEvidenceRecorded === false &&
+    d036.reportHarnessExecutionStarted === false &&
+    d036.reportHarnessCompatibilityPassed === false &&
+    d036.reportHarnessNativeEvidencePassed === false &&
+    d036.reportHarnessIndependentReviewPassed === false &&
+    d036.reportHarnessOwnerReviewAuthorized === false &&
+    d036.reportHarnessB05Closed === false &&
+    d036.reportHarnessFormalImplementationAuthorized === false &&
     d036.registeredInDecisionLedger === false &&
     d036.ownerResponseCount === 0
   )) {
@@ -1071,6 +1218,8 @@ export function reconcileProjectOps(model) {
 
   const d053Record = latestD053Record(model);
   const d053EvidenceProtocolRecord = latestD053EvidenceProtocolRecord(model);
+  const d053ReportContractRecord = latestD053EvidenceReportContractRecord(model);
+  const d053ReportHarnessRecord = latestD053EvidenceReportHarnessRecord(model);
   const d053LedgerDecision = model.decisionRegister.decisions.find((decision) => decision.id === "D-053") ?? null;
   const d053 = {
     eventId: d053Record?.eventId ?? null,
@@ -1184,6 +1333,93 @@ export function reconcileProjectOps(model) {
       d053EvidenceProtocolRecord?.data?.realNetworkAuthorized ?? null,
     protocolFormalImplementationAuthorized:
       d053EvidenceProtocolRecord?.data?.formalImplementationAuthorized ?? null,
+    reportContractEventId: d053ReportContractRecord?.eventId ?? null,
+    reportContractStatus: d053ReportContractRecord?.data?.contractStatus ?? null,
+    reportContractArtifactState: d053ReportContractRecord?.data?.artifactState ?? null,
+    reportContractArtifactCommitRecorded:
+      d053ReportContractRecord?.data?.artifactCommitRecorded ?? null,
+    reportContractProviderTargetCount:
+      d053ReportContractRecord?.data?.providerTargetCount ?? null,
+    reportContractPayloadClassCount:
+      d053ReportContractRecord?.data?.payloadClassCount ?? null,
+    reportContractAdmissionProfileCount:
+      d053ReportContractRecord?.data?.admissionProfileCount ?? null,
+    reportContractRequiredDimensionAssessmentCount:
+      d053ReportContractRecord?.data?.requiredDimensionAssessmentCount ?? null,
+    reportContractRequiredPolicyPackageComparisonCount:
+      d053ReportContractRecord?.data?.requiredPolicyPackageComparisonCount ?? null,
+    reportContractFormalCompleteStillRequiresEvidenceReview:
+      d053ReportContractRecord?.data?.formalCompleteStillRequiresEvidenceReview ?? null,
+    reportContractProviderEvidenceCollectionStarted:
+      d053ReportContractRecord?.data?.providerEvidenceCollectionStarted ?? null,
+    reportContractAppPrivacyMappingSigned:
+      d053ReportContractRecord?.data?.appPrivacyMappingSigned ?? null,
+    reportContractIndependentReviewPassed:
+      d053ReportContractRecord?.data?.independentReviewPassed ?? null,
+    reportContractD053Accepted: d053ReportContractRecord?.data?.d053Accepted ?? null,
+    reportContractProviderAdmissionGranted:
+      d053ReportContractRecord?.data?.providerAdmissionGranted ?? null,
+    reportContractSendAuthorization:
+      d053ReportContractRecord?.data?.sendAuthorization ?? null,
+    reportContractB05Closed: d053ReportContractRecord?.data?.b05Closed ?? null,
+    reportContractFormalImplementationAuthorized:
+      d053ReportContractRecord?.data?.formalImplementationAuthorized ?? null,
+    reportHarnessEventId: d053ReportHarnessRecord?.eventId ?? null,
+    reportHarnessStatus: d053ReportHarnessRecord?.data?.contractStatus ?? null,
+    reportHarnessArtifactState: d053ReportHarnessRecord?.data?.artifactState ?? null,
+    reportHarnessArtifactCommitRecorded:
+      d053ReportHarnessRecord?.data?.artifactCommitRecorded ?? null,
+    reportHarnessTopLevelTests: d053ReportHarnessRecord?.data?.topLevelTests ?? null,
+    reportHarnessProviderTargetCount: d053ReportHarnessRecord?.data?.providerTargetCount ?? null,
+    reportHarnessPayloadClassCount: d053ReportHarnessRecord?.data?.payloadClassCount ?? null,
+    reportHarnessAdmissionProfileCount:
+      d053ReportHarnessRecord?.data?.admissionProfileCount ?? null,
+    reportHarnessRequiredDimensionAssessmentCount:
+      d053ReportHarnessRecord?.data?.requiredDimensionAssessmentCount ?? null,
+    reportHarnessRequiredPolicyPackageComparisonCount:
+      d053ReportHarnessRecord?.data?.requiredPolicyPackageComparisonCount ?? null,
+    reportHarnessSupportedIncompatibleDerivationEnforced:
+      d053ReportHarnessRecord?.data?.supportedIncompatibleDerivationEnforced ?? null,
+    reportHarnessOpenConflictKeepsUnknown:
+      d053ReportHarnessRecord?.data?.openConflictKeepsUnknown ?? null,
+    reportHarnessAExpiryWindowDays:
+      d053ReportHarnessRecord?.data?.aExpiryWindowDays ?? null,
+    reportHarnessBExpiryWindowDays:
+      d053ReportHarnessRecord?.data?.bExpiryWindowDays ?? null,
+    reportHarnessCNotOwnerReadyAndNotAssessed:
+      d053ReportHarnessRecord?.data?.cNotOwnerReadyAndNotAssessed ?? null,
+    reportHarnessProviderValuesReturned:
+      d053ReportHarnessRecord?.data?.providerUrlSignerAndBodyValuesReturned ?? null,
+    reportHarnessOi07Reads: d053ReportHarnessRecord?.data?.oi07Reads ?? null,
+    reportHarnessProviderDocumentReads:
+      d053ReportHarnessRecord?.data?.providerDocumentReads ?? null,
+    reportHarnessSourceSnapshotReads:
+      d053ReportHarnessRecord?.data?.sourceSnapshotReads ?? null,
+    reportHarnessSignatureReads:
+      d053ReportHarnessRecord?.data?.signatureReads ?? null,
+    reportHarnessIndependentReviewReads:
+      d053ReportHarnessRecord?.data?.independentReviewReads ?? null,
+    reportHarnessReportWrites: d053ReportHarnessRecord?.data?.reportWrites ?? null,
+    reportHarnessNetworkRequests: d053ReportHarnessRecord?.data?.networkRequests ?? null,
+    reportHarnessProviderRequests: d053ReportHarnessRecord?.data?.providerRequests ?? null,
+    reportHarnessProviderEvidenceCollectionStarted:
+      d053ReportHarnessRecord?.data?.providerEvidenceCollectionStarted ?? null,
+    reportHarnessAppPrivacyMappingSigned:
+      d053ReportHarnessRecord?.data?.appPrivacyMappingSigned ?? null,
+    reportHarnessNamedSignersVerified:
+      d053ReportHarnessRecord?.data?.namedSignersVerified ?? null,
+    reportHarnessIndependentReviewPassed:
+      d053ReportHarnessRecord?.data?.independentReviewPassed ?? null,
+    reportHarnessD053Accepted: d053ReportHarnessRecord?.data?.d053Accepted ?? null,
+    reportHarnessD053PassCandidate:
+      d053ReportHarnessRecord?.data?.d053PassCandidate ?? null,
+    reportHarnessProviderAdmissionGranted:
+      d053ReportHarnessRecord?.data?.providerAdmissionGranted ?? null,
+    reportHarnessSendAuthorization:
+      d053ReportHarnessRecord?.data?.sendAuthorization ?? null,
+    reportHarnessB05Closed: d053ReportHarnessRecord?.data?.b05Closed ?? null,
+    reportHarnessFormalImplementationAuthorized:
+      d053ReportHarnessRecord?.data?.formalImplementationAuthorized ?? null,
     registeredInDecisionLedger: d053LedgerDecision !== null,
     ownerResponseCount: model.ownerIntake.responses.filter((response) => response.decisionId === "D-053").length,
   };
@@ -1246,6 +1482,59 @@ export function reconcileProjectOps(model) {
     d053.protocolB05Closed === false &&
     d053.protocolRealNetworkAuthorized === false &&
     d053.protocolFormalImplementationAuthorized === false &&
+    d053.reportContractEventId === "EVT-20260827-003" &&
+    d053.reportContractStatus ===
+      "CONTRACT_READY / OI07_REQUIRED / NO_PROVIDER_EVIDENCE / NO_MAPPING / NO_ADMISSION" &&
+    d053.reportContractArtifactState === "WORKTREE_UNCOMMITTED" &&
+    d053.reportContractArtifactCommitRecorded === false &&
+    d053.reportContractProviderTargetCount === 3 &&
+    d053.reportContractPayloadClassCount === 5 &&
+    d053.reportContractAdmissionProfileCount === 15 &&
+    d053.reportContractRequiredDimensionAssessmentCount === 150 &&
+    d053.reportContractRequiredPolicyPackageComparisonCount === 45 &&
+    d053.reportContractFormalCompleteStillRequiresEvidenceReview === true &&
+    d053.reportContractProviderEvidenceCollectionStarted === false &&
+    d053.reportContractAppPrivacyMappingSigned === false &&
+    d053.reportContractIndependentReviewPassed === false &&
+    d053.reportContractD053Accepted === false &&
+    d053.reportContractProviderAdmissionGranted === false &&
+    d053.reportContractSendAuthorization === "NOT_GRANTED" &&
+    d053.reportContractB05Closed === false &&
+    d053.reportContractFormalImplementationAuthorized === false &&
+    d053.reportHarnessEventId === "EVT-20260827-004" &&
+    d053.reportHarnessStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION / NO_ADMISSION" &&
+    d053.reportHarnessArtifactState === "WORKTREE_UNCOMMITTED" &&
+    d053.reportHarnessArtifactCommitRecorded === false &&
+    d053.reportHarnessTopLevelTests === 19 &&
+    d053.reportHarnessProviderTargetCount === 3 &&
+    d053.reportHarnessPayloadClassCount === 5 &&
+    d053.reportHarnessAdmissionProfileCount === 15 &&
+    d053.reportHarnessRequiredDimensionAssessmentCount === 150 &&
+    d053.reportHarnessRequiredPolicyPackageComparisonCount === 45 &&
+    d053.reportHarnessSupportedIncompatibleDerivationEnforced === true &&
+    d053.reportHarnessOpenConflictKeepsUnknown === true &&
+    d053.reportHarnessAExpiryWindowDays === 90 &&
+    d053.reportHarnessBExpiryWindowDays === 30 &&
+    d053.reportHarnessCNotOwnerReadyAndNotAssessed === true &&
+    d053.reportHarnessProviderValuesReturned === false &&
+    d053.reportHarnessOi07Reads === 0 &&
+    d053.reportHarnessProviderDocumentReads === 0 &&
+    d053.reportHarnessSourceSnapshotReads === 0 &&
+    d053.reportHarnessSignatureReads === 0 &&
+    d053.reportHarnessIndependentReviewReads === 0 &&
+    d053.reportHarnessReportWrites === 0 &&
+    d053.reportHarnessNetworkRequests === 0 &&
+    d053.reportHarnessProviderRequests === 0 &&
+    d053.reportHarnessProviderEvidenceCollectionStarted === false &&
+    d053.reportHarnessAppPrivacyMappingSigned === false &&
+    d053.reportHarnessNamedSignersVerified === false &&
+    d053.reportHarnessIndependentReviewPassed === false &&
+    d053.reportHarnessD053Accepted === false &&
+    d053.reportHarnessD053PassCandidate === false &&
+    d053.reportHarnessProviderAdmissionGranted === false &&
+    d053.reportHarnessSendAuthorization === "NOT_GRANTED" &&
+    d053.reportHarnessB05Closed === false &&
+    d053.reportHarnessFormalImplementationAuthorized === false &&
     d053.registeredInDecisionLedger === true &&
     d053.ownerResponseCount === 0
   )) {
@@ -3950,11 +4239,1119 @@ export function reconcileProjectOps(model) {
   const d040MacroAxisInputManifestFreezeRecord = model.events.find(
     (record) => record.value?.eventId === "EVT-20260821-007",
   )?.value ?? null;
+  const d040NonDiagnosticBoundaryCardSpecRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-005",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryCardHarnessRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-006",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewPacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-007",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewRecordHarnessRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-008",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-009",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewerIntakePacketRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-010",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewHandoffChecklistRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-011",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewStartGapRegisterRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-012",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-013",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-014",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-015",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-016",
+  )?.value ?? null;
+  const d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord = model.events.find(
+    (record) => record.value?.eventId === "EVT-20260827-017",
+  )?.value ?? null;
   const d040 = {
     eventId: d040Record?.eventId ?? null,
     decisionState: d040Record?.data?.decisionState ?? null,
     authoritativeState: d040Record?.data?.authoritativeState ?? null,
     next: d040Record?.data?.next ?? null,
+    nonDiagnosticBoundaryEventId: d040NonDiagnosticBoundaryCardSpecRecord?.eventId ?? null,
+    nonDiagnosticBoundaryStatus:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.contractStatus ?? null,
+    nonDiagnosticBoundaryCardDecisionIds:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.cardDecisionIds ?? null,
+    nonDiagnosticBoundaryCardCount:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.cardCount ?? null,
+    d068QuestionId: d040NonDiagnosticBoundaryCardSpecRecord?.data?.d068QuestionId ?? null,
+    d069QuestionId: d040NonDiagnosticBoundaryCardSpecRecord?.data?.d069QuestionId ?? null,
+    d068OptionCount: d040NonDiagnosticBoundaryCardSpecRecord?.data?.d068OptionCount ?? null,
+    d069OptionCount: d040NonDiagnosticBoundaryCardSpecRecord?.data?.d069OptionCount ?? null,
+    d068RecommendedOptionId:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.d068RecommendedOptionId ?? null,
+    d069RecommendedOptionId:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.d069RecommendedOptionId ?? null,
+    nonDiagnosticYesOrUnsurePausesAutomaticEstimates:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data
+        ?.chronicConditionOrMedicationYesPausesAutomaticEstimates ?? null,
+    nonDiagnosticUnsureCannotBecomeNoRisk:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.unsureCannotBecomeNoRisk ?? null,
+    nonDiagnosticEatingDisorderRiskPausesTargets:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data
+        ?.eatingDisorderRiskPausesWeightLossAndMacroTargets ?? null,
+    nonDiagnosticPlainLanguageUncertaintyRecommended:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.plainLanguageUncertaintyRecommended ?? null,
+    nonDiagnosticNumericUncertaintyRequiresEvidence:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data
+        ?.numericUncertaintyRequiresValidatedEvidence ?? null,
+    nonDiagnosticPopulationErrorNotPersonalBounds:
+      d040NonDiagnosticBoundaryCardSpecRecord?.data
+        ?.populationErrorCannotBecomePersonalBounds ?? null,
+    nonDiagnosticNoSideEffects: [
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthKitWriteAuthorized === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewAndOwnerClosed: [
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.decisionAcceptedRecorded === false,
+    ].every((value) => value === true),
+    nonDiagnosticPxAndImplementationClosed: [
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardSpecRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticHarnessEventId: d040NonDiagnosticBoundaryCardHarnessRecord?.eventId ?? null,
+    nonDiagnosticHarnessStatus:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.contractStatus ?? null,
+    nonDiagnosticHarnessTopLevelTests:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.topLevelTests ?? null,
+    nonDiagnosticHarnessCardSpecEventId:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticHarnessRecommendationsNotOwnerChoices:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.optionRecommendationsAreNotOwnerChoices ?? null,
+    nonDiagnosticHarnessSyntheticIsNotEvidence:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.syntheticFixtureIsNotEvidence ?? null,
+    nonDiagnosticHarnessCallerHealthContextIsNotDiagnosis:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.callerHealthContextIsNotDiagnosis ?? null,
+    nonDiagnosticHarnessNumericEvidenceCallerAsserted:
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data
+        ?.numericUncertaintyEvidenceCallerAssertedNotVerified ?? null,
+    nonDiagnosticHarnessFailClosedSemantics: [
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.yesOrUnsurePausesAutomaticEstimates === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.unsureCannotBecomeNoRisk === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.eatingDisorderRiskPausesWeightLossAndMacroTargets === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.plainLanguageUncertaintyNoNumericBounds === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.validatedNumericUncertaintyStructuralOnly === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.populationErrorCannotBecomePersonalBounds === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.notApplicableIsConditionalSkipNotOwnerChoice === true,
+    ].every((value) => value === true),
+    nonDiagnosticHarnessNoSideEffects: [
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.harnessReadsCallerSuppliedDataOnly === true,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.gitReads === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.fileReads === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.fileWrites === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.networkRequests === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.providerRequests === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.credentialReads === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.businessWrites === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.healthDataWrites === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.ownerIntakeWrites === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.automaticDialEffects === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.locationReads === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.contactsReads === 0,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.healthKitWrites === 0,
+    ].every((value) => value === true),
+    nonDiagnosticHarnessReviewOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryCardHarnessRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewPacketEventId: d040NonDiagnosticBoundaryReviewPacketRecord?.eventId ?? null,
+    nonDiagnosticReviewPacketStatus:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.packetStatus ?? null,
+    nonDiagnosticReviewPacketVersion:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.packetVersion ?? null,
+    nonDiagnosticReviewPacketCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewPacketCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewPacketRequiredInputCount:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.requiredInputCount ?? null,
+    nonDiagnosticReviewPacketRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewPacketRequiredCardDispositionCount:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.requiredCardDispositionCount ?? null,
+    nonDiagnosticReviewPacketRequiredInvariantCount:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.requiredCrossCardInvariantCount ?? null,
+    nonDiagnosticReviewPacketNamedReviewerRequired:
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.namedReviewerRequired ?? null,
+    nonDiagnosticReviewPacketCannotSelfApprove: [
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.authorOrPmCanSelfApprove === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.aiOrAgentCanBeIndependentReviewer === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewPacketFailClosedSemantics: [
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.recommendationsAreNotOwnerChoices === true,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.notApplicableIsConditionalSkipNotOwnerChoice === true,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.yesOrUnsureFailClosedRequired === true,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.eatingDisorderRiskPausesTargetsRequired === true,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.numericUncertaintyRequiresValidatedEvidence === true,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.populationErrorCannotBecomePersonalBounds === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewPacketNoSideEffects: [
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.externalMessageSent === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewPacketReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewPacketRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.eventId ?? null,
+    nonDiagnosticReviewRecordHarnessStatus:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.contractStatus ?? null,
+    nonDiagnosticReviewRecordHarnessReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewRecordHarnessCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewRecordHarnessCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewRecordHarnessTopLevelTests:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.topLevelTests ?? null,
+    nonDiagnosticReviewRecordHarnessRequiredInputCount:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.requiredInputCount ?? null,
+    nonDiagnosticReviewRecordHarnessRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewRecordHarnessRequiredCardDispositionCount:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.requiredCardDispositionCount ?? null,
+    nonDiagnosticReviewRecordHarnessRequiredInvariantCount:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.requiredCrossCardInvariantCount ?? null,
+    nonDiagnosticReviewRecordHarnessDoubleSha256:
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewContentSha256Required === true &&
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.bundleSha256Required === true,
+    nonDiagnosticReviewRecordHarnessStrictAndFailClosed: [
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.strictDataTreeAndExactFields === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.formalSyntheticIdentityAndReferenceIsolation === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewPacketIdentityExact === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewerDomainOrderExact === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.competenceEvidenceByDomainRequired === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.identitySelfVerificationRejected === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.draftParticipantFailsClosed === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.conflictResolutionRequired === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.domainCoverageBidirectional === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.findingBidirectionalLinksRequired === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.blockingFindingPriorityEnforced === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.openP3RequiresOwnerDueDateAndRationale === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data
+        ?.sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data
+        ?.immutableNormalizationAndResultFingerprintBound === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewRecordHarnessSyntheticIsNotEvidence: [
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.syntheticContractFixtureOnly === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.syntheticWouldBeReviewPassCandidateCovered === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.syntheticReviewPassCandidateReturned === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.formalCompleteStillRequiresAuthoritativeReviewEvent === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewRecordHarnessNoSideEffects: [
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.harnessReadsCallerSuppliedDataOnly === true,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.gitReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.fileReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.fileWrites === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.identityDocumentReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.competenceEvidenceReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.signatureArtifactReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.networkRequests === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.providerRequests === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.credentialReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.businessWrites === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthDataWrites === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.ownerIntakeWrites === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.automaticDialEffects === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.locationReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.contactsReads === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthKitWrites === 0,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.externalMessagesSent === 0,
+    ].every((value) => value === true),
+    nonDiagnosticReviewRecordHarnessReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.d063Accepted === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.d070Accepted === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewRecordHarnessRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.eventId ?? null,
+    nonDiagnosticReviewerAssignmentHarnessStatus:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.contractStatus ?? null,
+    nonDiagnosticReviewerAssignmentHarnessReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewerAssignmentHarnessReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewerAssignmentHarnessCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewerAssignmentHarnessCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewerAssignmentHarnessTopLevelTests:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.topLevelTests ?? null,
+    nonDiagnosticReviewerAssignmentHarnessRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewerAssignmentHarnessCandidateMinCount:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.candidateReviewerMinCount ?? null,
+    nonDiagnosticReviewerAssignmentHarnessCandidateMaxCount:
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.candidateReviewerMaxCount ?? null,
+    nonDiagnosticReviewerAssignmentHarnessStrictAndFailClosed: [
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewPacketIdentityExact === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.domainCoverageBidirectional === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.competenceEvidenceByDomainRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.identitySelfVerificationRejected === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.roleNameReviewerRejected === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.draftParticipantFailsClosed === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.conflictResolutionRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.externalContactAuthorizationRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.assignmentEvidenceRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.signaturePlanRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.calendarDueAfterAssignmentRequired === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data
+        ?.sensitiveLookingFieldNamesAndValuesRejectedWithoutEcho === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data
+        ?.immutableNormalizationAndResultFingerprintBound === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerAssignmentHarnessSyntheticIsNotEvidence: [
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewerAssignmentReadyCandidateReturned === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.syntheticAssignmentReadyCandidateReturned === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewCanStartReturned === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerAssignmentHarnessNoSideEffects: [
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.harnessReadsCallerSuppliedDataOnly === true,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.gitReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.fileReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.fileWrites === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.identityDocumentReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.competenceEvidenceReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.contactRecordReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.signatureArtifactReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.networkRequests === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.providerRequests === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.credentialReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.businessWrites === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthDataWrites === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.ownerIntakeWrites === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.automaticDialEffects === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.locationReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.contactsReads === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthKitWrites === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.externalMessagesSent === 0,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerAssignmentHarnessReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.formalAssignmentRecords === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.controlledContactRecords === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.realReviewerCandidatesRecorded === 0,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerAssignmentHarnessRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.eventId ?? null,
+    nonDiagnosticReviewerIntakePacketStatus:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.contractStatus ?? null,
+    nonDiagnosticReviewerIntakePacketReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewerIntakePacketReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewerIntakePacketReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticReviewerIntakePacketCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewerIntakePacketCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewerIntakePacketRequiredInputCount:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.requiredInputCount ?? null,
+    nonDiagnosticReviewerIntakePacketRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewerIntakePacketCandidateMinCount:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.candidateReviewerMinCount ?? null,
+    nonDiagnosticReviewerIntakePacketCandidateMaxCount:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.candidateReviewerMaxCount ?? null,
+    nonDiagnosticReviewerIntakePacketContractCorrected:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.contractPacketIdentityCorrected ?? null,
+    nonDiagnosticReviewerIntakePacketTemplateResidueRemoved:
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.contractMacroAxisTemplateResidueRemoved ?? null,
+    nonDiagnosticReviewerIntakePacketHandoffReady: [
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.unsentRequestTemplateIncluded === true,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.sensitiveStorageBoundaryDocumented === true,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.assignmentRecordMinimumFieldsDocumented === true,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewHandoffRulesDocumented === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerIntakePacketReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.realReviewerCandidatesRecorded === 0,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.controlledContactRecords === 0,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.formalAssignmentRecords === 0,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerIntakePacketRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.eventId ?? null,
+    nonDiagnosticReviewHandoffChecklistStatus:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.checklistStatus ?? null,
+    nonDiagnosticReviewHandoffChecklistReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewHandoffChecklistRequiredInputCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.requiredInputCount ?? null,
+    nonDiagnosticReviewHandoffChecklistRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewHandoffChecklistRequiredPrerequisiteCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.requiredPrerequisiteCount ?? null,
+    nonDiagnosticReviewHandoffChecklistStartGateConditionCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.startGateConditionCount ?? null,
+    nonDiagnosticReviewHandoffChecklistFailClosedConditionCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.failClosedConditionCount ?? null,
+    nonDiagnosticReviewHandoffChecklistSensitiveClassCount:
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.forbiddenStoredSensitiveClassCount ?? null,
+    nonDiagnosticReviewHandoffChecklistBindingsReady: [
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewPacketReady === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerIntakePacketReady === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.assignmentContractReady === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewRecordContractReady === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.handoffChecklistReady === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.startGateRulesDocumented === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.forbiddenHandoffCasesDocumented === true,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.minimumStateVectorDocumented === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewHandoffChecklistReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewHandoffChecklistRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.eventId ?? null,
+    nonDiagnosticReviewStartGapRegisterStatus:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.gapRegisterStatus ?? null,
+    nonDiagnosticReviewStartGapRegisterReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewStartGapRegisterGapCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.gapCount ?? null,
+    nonDiagnosticReviewStartGapRegisterOpenGapCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.openGapCount ?? null,
+    nonDiagnosticReviewStartGapRegisterClosedGapCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.closedGapCount ?? null,
+    nonDiagnosticReviewStartGapRegisterStartBlockerCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.startBlockerCount ?? null,
+    nonDiagnosticReviewStartGapRegisterRequiredPrerequisiteCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.requiredPrerequisiteCount ?? null,
+    nonDiagnosticReviewStartGapRegisterRequiredDomainCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.requiredReviewDomainCount ?? null,
+    nonDiagnosticReviewStartGapRegisterRequiredInputCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.requiredInputCount ?? null,
+    nonDiagnosticReviewStartGapRegisterFailClosedConditionCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.failClosedConditionCount ?? null,
+    nonDiagnosticReviewStartGapRegisterSensitiveClassCount:
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.forbiddenStoredSensitiveClassCount ?? null,
+    nonDiagnosticReviewStartGapRegisterBindingsReady: [
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.gapRegisterReady === true,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.handoffChecklistReady === true,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.allGapsOpen === true,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.closureRequiresSeparateAuthorizedRecords === true,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.syntheticContractFixtureOnly === true,
+    ].every((value) => value === true),
+    nonDiagnosticReviewStartGapRegisterReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewStartGapRegisterRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticFormalAssignmentTemplateEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.eventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateStatus:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.templateStatus ?? null,
+    nonDiagnosticFormalAssignmentTemplateReviewPacketEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewStartGapRegisterEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateCardSpecEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateCardHarnessEventId:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticFormalAssignmentTemplateSectionCount:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.templateSectionCount ?? null,
+    nonDiagnosticFormalAssignmentTemplateRequiredBindingCount:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.requiredBindingCount ?? null,
+    nonDiagnosticFormalAssignmentTemplateRequiredFutureRecordSectionCount:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.requiredFutureRecordSectionCount ?? null,
+    nonDiagnosticFormalAssignmentTemplateSensitiveClassCount:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.sensitiveStorageForbiddenClassCount ?? null,
+    nonDiagnosticFormalAssignmentTemplateStartGateConditionCount:
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.startGateConditionCount ?? null,
+    nonDiagnosticFormalAssignmentTemplateBindingsReady: [
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.assignmentTemplateReady === true,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.emptyRecordOnly === true,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.gapRegisterReady === true,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.closureRequiresSeparateAuthorizedRecords === true,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.syntheticContractFixtureOnly === true,
+    ].every((value) => value === true),
+    nonDiagnosticFormalAssignmentTemplateReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryFormalAssignmentRecordTemplateRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticAssignmentAuthorizationPreflightEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.eventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightStatus:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.preflightStatus ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightReviewPacketEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewStartGapRegisterEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightFormalTemplateEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formalAssignmentRecordTemplateEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightCardSpecEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightCardHarnessEventId:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightItemCount:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.preflightItemCount ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightMissingItemCount:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.missingPreflightItemCount ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightClosedItemCount:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.closedPreflightItemCount ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightScopeBindingCount:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.authorizationScopeBindingCount ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightStartGateConditionCount:
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.startGateConditionCount ?? null,
+    nonDiagnosticAssignmentAuthorizationPreflightBindingsReady: [
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.authorizationPreflightChecklistReady === true,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.authorizationNotGranted === true,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.contactAuthorizationCanBeInferred === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.assignmentTemplateReady === true,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.emptyRecordOnly === true,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.closureRequiresSeparateAuthorizedRecords === true,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.syntheticContractFixtureOnly === true,
+    ].every((value) => value === true),
+    nonDiagnosticAssignmentAuthorizationPreflightReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.materialPacketSent === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryAssignmentAuthorizationPreflightChecklistRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticContactAuthorizationRecordContractEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.eventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractStatus:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.contractStatus ?? null,
+    nonDiagnosticContactAuthorizationRecordContractReviewPacketEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewStartGapRegisterEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractFormalTemplateEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formalAssignmentRecordTemplateEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractPreflightChecklistEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.assignmentAuthorizationPreflightChecklistEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractCardSpecEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractCardHarnessEventId:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticContactAuthorizationRecordContractSchemaFieldCount:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationRecordSchemaFieldCount ?? null,
+    nonDiagnosticContactAuthorizationRecordContractRequiredBoundPriorEventCount:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.requiredBoundPriorEventCount ?? null,
+    nonDiagnosticContactAuthorizationRecordContractSensitiveClassCount:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.sensitiveStorageForbiddenClassCount ?? null,
+    nonDiagnosticContactAuthorizationRecordContractAcceptanceRuleCount:
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.acceptanceRuleCount ?? null,
+    nonDiagnosticContactAuthorizationRecordContractBindingsReady: [
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationRecordContractReady === true,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationRecordCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationPreflightChecklistReady === true,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationNotGranted === true,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.contactAuthorizationCanBeInferred === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.authorizationRecordCanBeInferred === false,
+    ].every((value) => value === true),
+    nonDiagnosticContactAuthorizationRecordContractReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.materialPacketSent === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryContactAuthorizationRecordContractRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerCandidateRosterContractEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.eventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractStatus:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.contractStatus ?? null,
+    nonDiagnosticReviewerCandidateRosterContractReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewStartGapRegisterEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractFormalTemplateEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formalAssignmentRecordTemplateEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractPreflightChecklistEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.assignmentAuthorizationPreflightChecklistEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractContactAuthorizationRecordContractEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.contactAuthorizationRecordContractEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewerCandidateRosterContractSchemaFieldCount:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCandidateRosterSchemaFieldCount ?? null,
+    nonDiagnosticReviewerCandidateRosterContractRequiredBoundPriorEventCount:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.requiredBoundPriorEventCount ?? null,
+    nonDiagnosticReviewerCandidateRosterContractSensitiveClassCount:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.sensitiveStorageForbiddenClassCount ?? null,
+    nonDiagnosticReviewerCandidateRosterContractAcceptanceRuleCount:
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.acceptanceRuleCount ?? null,
+    nonDiagnosticReviewerCandidateRosterContractBindingsReady: [
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCandidateRosterContractReady === true,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCandidateRosterCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.authorizationRecordContractReady === true,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.authorizationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.authorizationNotGranted === true,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.contactAuthorizationCanBeInferred === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.authorizationRecordCanBeInferred === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCandidateCanBeInferred === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewerCandidateRosterContractReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.materialPacketSent === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewerCandidateRosterContractRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewMaterialPacketRecordContractEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.eventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractStatus:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.contractStatus ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractReviewPacketEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewPacketEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractReviewRecordHarnessEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewRecordHarnessEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractReviewerAssignmentHarnessEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerAssignmentHarnessEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractReviewerIntakePacketEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerIntakePacketEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractHandoffChecklistEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewHandoffChecklistEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractStartGapRegisterEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewStartGapRegisterEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractFormalTemplateEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formalAssignmentRecordTemplateEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractPreflightChecklistEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.assignmentAuthorizationPreflightChecklistEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractContactAuthorizationRecordContractEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.contactAuthorizationRecordContractEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractReviewerCandidateRosterContractEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCandidateRosterContractEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractCardSpecEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.cardSpecEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractCardHarnessEventId:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.cardHarnessEventId ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractSchemaFieldCount:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewMaterialPacketRecordSchemaFieldCount ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractRequiredBoundPriorEventCount:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.requiredBoundPriorEventCount ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractSensitiveClassCount:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.sensitiveStorageForbiddenClassCount ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractAcceptanceRuleCount:
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.acceptanceRuleCount ?? null,
+    nonDiagnosticReviewMaterialPacketRecordContractBindingsReady: [
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewMaterialPacketRecordContractReady === true,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewMaterialPacketRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCandidateRosterContractReady === true,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCandidateRosterCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.authorizationRecordContractReady === true,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.authorizationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.authorizationNotGranted === true,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.materialPacketSent === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.materialPacketRecordCanBeInferred === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCandidateCanBeInferred === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.contactAuthorizationCanBeInferred === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.authorizationRecordCanBeInferred === false,
+    ].every((value) => value === true),
+    nonDiagnosticReviewMaterialPacketRecordContractReviewHealthOwnerPxImplementationClosed: [
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCandidateCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.controlledContactRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formalAssignmentRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formalReviewRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerAttestationRecordCount === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.externalContactAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.externalMessagesSent === 0,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.materialPacketSent === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewCanStart === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewersAssigned === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerIdentityVerified === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerCompetenceVerified === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerIndependenceVerified === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.reviewerSignatureVerified === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.conflictOfInterestResolved === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.independentReviewStarted === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.independentReviewPassed === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthReviewerAssigned === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthContentApproved === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.contentQaPassed === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.d068OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.d069OwnerReady === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.ownerIntakeChanged === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.ownerCardScheduled === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.ownerReviewAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.ownerChoiceRecorded === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.decisionAcceptedRecorded === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.px1Authorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.px2Authorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.diagnosisOrTreatmentAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.medicationDetailCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthFreeTextCollectionAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthDataPersistenceAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.automaticDialAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.networkResourceRefreshAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.locationReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.contactsReadAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthKitWriteAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formulaImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.healthCopyImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formalRootProjectAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.nativeIosWorkAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.formalImplementationAuthorized === false,
+      d040NonDiagnosticBoundaryReviewMaterialPacketRecordContractRecord?.data?.gateStatesChanged === false,
+    ].every((value) => value === true),
     sourceDraftQuestionCount: d040AllocationRecord?.data?.sourceDraftQuestionCount ?? null,
     resolvedDecisionAxisCount: d040AllocationRecord?.data?.resolvedDecisionAxisCount ?? null,
     newlyReservedIdCount: d040AllocationRecord?.data?.newlyReservedIdCount ?? null,
@@ -4294,8 +5691,232 @@ export function reconcileProjectOps(model) {
   if (!(
     d040.decisionState === "CANDIDATE" &&
     d040.authoritativeState === "PX-0_INPUT_GAP" &&
-    d040.eventId === "EVT-20260821-007" &&
-    d040.next === "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d040.eventId === "EVT-20260827-005" &&
+    d040.next === "D068_D069_HEALTH_REVIEW_CONTENT_QA_AND_INDEPENDENT_REVIEW_REQUIRED" &&
+    d040.nonDiagnosticBoundaryEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticBoundaryStatus ===
+      "DRAFT_COMPLETE / CROSS_DOMAIN_SELF_REVIEW_PASS / HEALTH_REVIEW_REQUIRED / INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY" &&
+    JSON.stringify(d040.nonDiagnosticBoundaryCardDecisionIds) === JSON.stringify(["D-068", "D-069"]) &&
+    d040.nonDiagnosticBoundaryCardCount === 2 &&
+    d040.d068QuestionId === "d068_non_diagnostic_health_context" &&
+    d040.d069QuestionId === "d069_estimate_uncertainty_copy" &&
+    d040.d068OptionCount === 3 &&
+    d040.d069OptionCount === 3 &&
+    d040.d068RecommendedOptionId === "pause_automatic_estimates_on_yes_or_unsure" &&
+    d040.d069RecommendedOptionId === "plain_language_no_numeric_error_bounds" &&
+    d040.nonDiagnosticYesOrUnsurePausesAutomaticEstimates === true &&
+    d040.nonDiagnosticUnsureCannotBecomeNoRisk === true &&
+    d040.nonDiagnosticEatingDisorderRiskPausesTargets === true &&
+    d040.nonDiagnosticPlainLanguageUncertaintyRecommended === true &&
+    d040.nonDiagnosticNumericUncertaintyRequiresEvidence === true &&
+    d040.nonDiagnosticPopulationErrorNotPersonalBounds === true &&
+    d040.nonDiagnosticNoSideEffects === true &&
+    d040.nonDiagnosticReviewAndOwnerClosed === true &&
+    d040.nonDiagnosticPxAndImplementationClosed === true &&
+    d040.nonDiagnosticHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticHarnessStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION / NOT_OWNER_READY" &&
+    d040.nonDiagnosticHarnessTopLevelTests === 17 &&
+    d040.nonDiagnosticHarnessCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticHarnessRecommendationsNotOwnerChoices === true &&
+    d040.nonDiagnosticHarnessSyntheticIsNotEvidence === true &&
+    d040.nonDiagnosticHarnessCallerHealthContextIsNotDiagnosis === true &&
+    d040.nonDiagnosticHarnessNumericEvidenceCallerAsserted === true &&
+    d040.nonDiagnosticHarnessFailClosedSemantics === true &&
+    d040.nonDiagnosticHarnessNoSideEffects === true &&
+    d040.nonDiagnosticHarnessReviewOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewPacketStatus ===
+      "PACKET_READY / REVIEWER_ASSIGNMENT_REQUIRED / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticReviewPacketVersion === "PACKET-001-R1" &&
+    d040.nonDiagnosticReviewPacketCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewPacketCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewPacketRequiredInputCount === 8 &&
+    d040.nonDiagnosticReviewPacketRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewPacketRequiredCardDispositionCount === 2 &&
+    d040.nonDiagnosticReviewPacketRequiredInvariantCount === 10 &&
+    d040.nonDiagnosticReviewPacketNamedReviewerRequired === true &&
+    d040.nonDiagnosticReviewPacketCannotSelfApprove === true &&
+    d040.nonDiagnosticReviewPacketFailClosedSemantics === true &&
+    d040.nonDiagnosticReviewPacketNoSideEffects === true &&
+    d040.nonDiagnosticReviewPacketReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewRecordHarnessStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    d040.nonDiagnosticReviewRecordHarnessReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewRecordHarnessCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewRecordHarnessCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewRecordHarnessTopLevelTests === 20 &&
+    d040.nonDiagnosticReviewRecordHarnessRequiredInputCount === 8 &&
+    d040.nonDiagnosticReviewRecordHarnessRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewRecordHarnessRequiredCardDispositionCount === 2 &&
+    d040.nonDiagnosticReviewRecordHarnessRequiredInvariantCount === 10 &&
+    d040.nonDiagnosticReviewRecordHarnessDoubleSha256 === true &&
+    d040.nonDiagnosticReviewRecordHarnessStrictAndFailClosed === true &&
+    d040.nonDiagnosticReviewRecordHarnessSyntheticIsNotEvidence === true &&
+    d040.nonDiagnosticReviewRecordHarnessNoSideEffects === true &&
+    d040.nonDiagnosticReviewRecordHarnessReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessStatus === "SPIKE / LOCAL_ONLY / NON_PRODUCTION" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewerAssignmentHarnessTopLevelTests === 21 &&
+    d040.nonDiagnosticReviewerAssignmentHarnessRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewerAssignmentHarnessCandidateMinCount === 1 &&
+    d040.nonDiagnosticReviewerAssignmentHarnessCandidateMaxCount === 20 &&
+    d040.nonDiagnosticReviewerAssignmentHarnessStrictAndFailClosed === true &&
+    d040.nonDiagnosticReviewerAssignmentHarnessSyntheticIsNotEvidence === true &&
+    d040.nonDiagnosticReviewerAssignmentHarnessNoSideEffects === true &&
+    d040.nonDiagnosticReviewerAssignmentHarnessReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticReviewerIntakePacketStatus === "INTAKE_PACKET_READY / LOCAL_ONLY / NON_PRODUCTION" &&
+    d040.nonDiagnosticReviewerIntakePacketReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewerIntakePacketReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewerIntakePacketReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewerIntakePacketCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewerIntakePacketCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewerIntakePacketRequiredInputCount === 8 &&
+    d040.nonDiagnosticReviewerIntakePacketRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewerIntakePacketCandidateMinCount === 1 &&
+    d040.nonDiagnosticReviewerIntakePacketCandidateMaxCount === 20 &&
+    d040.nonDiagnosticReviewerIntakePacketContractCorrected === true &&
+    d040.nonDiagnosticReviewerIntakePacketTemplateResidueRemoved === true &&
+    d040.nonDiagnosticReviewerIntakePacketHandoffReady === true &&
+    d040.nonDiagnosticReviewerIntakePacketReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticReviewHandoffChecklistStatus === "HANDOFF_CHECKLIST_READY / LOCAL_ONLY / NON_PRODUCTION" &&
+    d040.nonDiagnosticReviewHandoffChecklistReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewHandoffChecklistReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewHandoffChecklistReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewHandoffChecklistReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticReviewHandoffChecklistCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewHandoffChecklistCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewHandoffChecklistRequiredInputCount === 8 &&
+    d040.nonDiagnosticReviewHandoffChecklistRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewHandoffChecklistRequiredPrerequisiteCount === 6 &&
+    d040.nonDiagnosticReviewHandoffChecklistStartGateConditionCount === 8 &&
+    d040.nonDiagnosticReviewHandoffChecklistFailClosedConditionCount === 8 &&
+    d040.nonDiagnosticReviewHandoffChecklistSensitiveClassCount === 8 &&
+    d040.nonDiagnosticReviewHandoffChecklistBindingsReady === true &&
+    d040.nonDiagnosticReviewHandoffChecklistReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticReviewStartGapRegisterStatus ===
+      "GAP_REGISTER_READY / LOCAL_ONLY / NON_PRODUCTION / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticReviewStartGapRegisterReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewStartGapRegisterReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewStartGapRegisterReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewStartGapRegisterReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticReviewStartGapRegisterHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticReviewStartGapRegisterCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewStartGapRegisterCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewStartGapRegisterGapCount === 10 &&
+    d040.nonDiagnosticReviewStartGapRegisterOpenGapCount === 10 &&
+    d040.nonDiagnosticReviewStartGapRegisterClosedGapCount === 0 &&
+    d040.nonDiagnosticReviewStartGapRegisterStartBlockerCount === 10 &&
+    d040.nonDiagnosticReviewStartGapRegisterRequiredPrerequisiteCount === 7 &&
+    d040.nonDiagnosticReviewStartGapRegisterRequiredDomainCount === 4 &&
+    d040.nonDiagnosticReviewStartGapRegisterRequiredInputCount === 8 &&
+    d040.nonDiagnosticReviewStartGapRegisterFailClosedConditionCount === 8 &&
+    d040.nonDiagnosticReviewStartGapRegisterSensitiveClassCount === 8 &&
+    d040.nonDiagnosticReviewStartGapRegisterBindingsReady === true &&
+    d040.nonDiagnosticReviewStartGapRegisterReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticFormalAssignmentTemplateEventId === "EVT-20260827-013" &&
+    d040.nonDiagnosticFormalAssignmentTemplateStatus ===
+      "TEMPLATE_READY / LOCAL_ONLY / NON_PRODUCTION / EMPTY_RECORD_ONLY / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticFormalAssignmentTemplateReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticFormalAssignmentTemplateReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticFormalAssignmentTemplateReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticFormalAssignmentTemplateReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticFormalAssignmentTemplateHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticFormalAssignmentTemplateStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticFormalAssignmentTemplateCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticFormalAssignmentTemplateCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticFormalAssignmentTemplateSectionCount === 10 &&
+    d040.nonDiagnosticFormalAssignmentTemplateRequiredBindingCount === 8 &&
+    d040.nonDiagnosticFormalAssignmentTemplateRequiredFutureRecordSectionCount === 10 &&
+    d040.nonDiagnosticFormalAssignmentTemplateSensitiveClassCount === 9 &&
+    d040.nonDiagnosticFormalAssignmentTemplateStartGateConditionCount === 8 &&
+    d040.nonDiagnosticFormalAssignmentTemplateBindingsReady === true &&
+    d040.nonDiagnosticFormalAssignmentTemplateReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightEventId === "EVT-20260827-014" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightStatus ===
+      "PREFLIGHT_CHECKLIST_READY / LOCAL_ONLY / NON_PRODUCTION / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightFormalTemplateEventId === "EVT-20260827-013" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightItemCount === 8 &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightMissingItemCount === 8 &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightClosedItemCount === 0 &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightScopeBindingCount === 9 &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightStartGateConditionCount === 8 &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightBindingsReady === true &&
+    d040.nonDiagnosticAssignmentAuthorizationPreflightReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticContactAuthorizationRecordContractEventId === "EVT-20260827-015" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractStatus ===
+      "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractFormalTemplateEventId === "EVT-20260827-013" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractPreflightChecklistEventId === "EVT-20260827-014" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticContactAuthorizationRecordContractSchemaFieldCount === 12 &&
+    d040.nonDiagnosticContactAuthorizationRecordContractRequiredBoundPriorEventCount === 10 &&
+    d040.nonDiagnosticContactAuthorizationRecordContractSensitiveClassCount === 8 &&
+    d040.nonDiagnosticContactAuthorizationRecordContractAcceptanceRuleCount === 8 &&
+    d040.nonDiagnosticContactAuthorizationRecordContractBindingsReady === true &&
+    d040.nonDiagnosticContactAuthorizationRecordContractReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewerCandidateRosterContractEventId === "EVT-20260827-016" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractStatus ===
+      "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / NO_REAL_CANDIDATES / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractFormalTemplateEventId === "EVT-20260827-013" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractPreflightChecklistEventId === "EVT-20260827-014" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractContactAuthorizationRecordContractEventId === "EVT-20260827-015" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewerCandidateRosterContractSchemaFieldCount === 14 &&
+    d040.nonDiagnosticReviewerCandidateRosterContractRequiredBoundPriorEventCount === 11 &&
+    d040.nonDiagnosticReviewerCandidateRosterContractSensitiveClassCount === 9 &&
+    d040.nonDiagnosticReviewerCandidateRosterContractAcceptanceRuleCount === 9 &&
+    d040.nonDiagnosticReviewerCandidateRosterContractBindingsReady === true &&
+    d040.nonDiagnosticReviewerCandidateRosterContractReviewHealthOwnerPxImplementationClosed === true &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractEventId === "EVT-20260827-017" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractStatus ===
+      "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / MATERIAL_NOT_SENT / NO_REAL_CANDIDATES / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewPacketEventId === "EVT-20260827-007" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewRecordHarnessEventId === "EVT-20260827-008" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerAssignmentHarnessEventId === "EVT-20260827-009" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerIntakePacketEventId === "EVT-20260827-010" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractHandoffChecklistEventId === "EVT-20260827-011" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractStartGapRegisterEventId === "EVT-20260827-012" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractFormalTemplateEventId === "EVT-20260827-013" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractPreflightChecklistEventId === "EVT-20260827-014" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractContactAuthorizationRecordContractEventId === "EVT-20260827-015" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerCandidateRosterContractEventId === "EVT-20260827-016" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractCardSpecEventId === "EVT-20260827-005" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractCardHarnessEventId === "EVT-20260827-006" &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractSchemaFieldCount === 13 &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractRequiredBoundPriorEventCount === 12 &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractSensitiveClassCount === 9 &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractAcceptanceRuleCount === 9 &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractBindingsReady === true &&
+    d040.nonDiagnosticReviewMaterialPacketRecordContractReviewHealthOwnerPxImplementationClosed === true &&
     d040.sourceDraftQuestionCount === 17 &&
     d040.resolvedDecisionAxisCount === 20 &&
     d040.newlyReservedIdCount === 19 &&

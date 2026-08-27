@@ -22,7 +22,7 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
     decisions: 32,
     acceptedDecisions: 29,
     candidateDecisions: 3,
-    events: 210,
+    events: 227,
     messages: 116,
     agents: 25,
     activeAgents: 1,
@@ -242,6 +242,50 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d036.protocolB05Closed, false);
   assert.equal(report.d036.protocolRealNetworkAuthorized, false);
   assert.equal(report.d036.protocolFormalImplementationAuthorized, false);
+  assert.equal(report.d036.reportContractEventId, "EVT-20260827-001");
+  assert.equal(
+    report.d036.reportContractStatus,
+    "CONTRACT_READY / OI07_REQUIRED / NO_RUNS / NO_REPORT / EXECUTION_NOT_AUTHORIZED",
+  );
+  assert.equal(
+    report.d036.reportContractArtifactCommit,
+    "458d81e5feec32fee9ebc887dc3f4d65e5724f40",
+  );
+  assert.equal(report.d036.reportContractRequiredCompatibilityCellCount, 36);
+  assert.equal(report.d036.reportContractRequiredFormalAttemptMinimum, 324);
+  assert.equal(report.d036.reportContractRequiredFormalOfflineResultCount, 108);
+  assert.equal(report.d036.reportContractRequiredFormalNativeBoundaryResultCount, 39);
+  assert.equal(report.d036.reportContractValidatorImplemented, false);
+  assert.equal(report.d036.reportContractAttemptRecordCount, 0);
+  assert.equal(report.d036.reportContractCompatibilityReportRecorded, false);
+  assert.equal(report.d036.reportContractNativeBoundaryEvidenceRecorded, false);
+  assert.equal(report.d036.reportHarnessEventId, "EVT-20260827-002");
+  assert.equal(report.d036.reportHarnessStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(report.d036.reportHarnessArtifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(report.d036.reportHarnessArtifactCommitRecorded, false);
+  assert.equal(report.d036.reportHarnessTopLevelTests, 20);
+  assert.equal(report.d036.reportHarnessToolSuitePassed, 909);
+  assert.equal(report.d036.reportHarnessRequiredCompatibilityCellCount, 36);
+  assert.equal(report.d036.reportHarnessRequiredFormalAttemptMinimum, 324);
+  assert.equal(report.d036.reportHarnessRequiredFormalOfflineResultCount, 108);
+  assert.equal(report.d036.reportHarnessRequiredFormalNativeBoundaryResultCount, 39);
+  assert.equal(report.d036.reportHarnessContractValidatorImplemented, true);
+  assert.equal(report.d036.reportHarnessOi07Reads, 0);
+  assert.equal(report.d036.reportHarnessProviderDocumentReads, 0);
+  assert.equal(report.d036.reportHarnessAttemptRecordReads, 0);
+  assert.equal(report.d036.reportHarnessAttemptRecordWrites, 0);
+  assert.equal(report.d036.reportHarnessNetworkRequests, 0);
+  assert.equal(report.d036.reportHarnessProviderRequests, 0);
+  assert.equal(report.d036.reportHarnessAttemptRecordCount, 0);
+  assert.equal(report.d036.reportHarnessCompatibilityReportRecorded, false);
+  assert.equal(report.d036.reportHarnessNativeBoundaryEvidenceRecorded, false);
+  assert.equal(report.d036.reportHarnessExecutionStarted, false);
+  assert.equal(report.d036.reportHarnessCompatibilityPassed, false);
+  assert.equal(report.d036.reportHarnessNativeEvidencePassed, false);
+  assert.equal(report.d036.reportHarnessIndependentReviewPassed, false);
+  assert.equal(report.d036.reportHarnessOwnerReviewAuthorized, false);
+  assert.equal(report.d036.reportHarnessB05Closed, false);
+  assert.equal(report.d036.reportHarnessFormalImplementationAuthorized, false);
   assert.equal(report.d036.registeredInDecisionLedger, false);
   assert.equal(report.d036.ownerResponseCount, 0);
   assert.equal(report.d053.eventId, "EVT-20260820-002");
@@ -296,6 +340,61 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d053.protocolB05Closed, false);
   assert.equal(report.d053.protocolRealNetworkAuthorized, false);
   assert.equal(report.d053.protocolFormalImplementationAuthorized, false);
+  assert.equal(report.d053.reportContractEventId, "EVT-20260827-003");
+  assert.equal(
+    report.d053.reportContractStatus,
+    "CONTRACT_READY / OI07_REQUIRED / NO_PROVIDER_EVIDENCE / NO_MAPPING / NO_ADMISSION",
+  );
+  assert.equal(report.d053.reportContractArtifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(report.d053.reportContractArtifactCommitRecorded, false);
+  assert.equal(report.d053.reportContractProviderTargetCount, 3);
+  assert.equal(report.d053.reportContractPayloadClassCount, 5);
+  assert.equal(report.d053.reportContractAdmissionProfileCount, 15);
+  assert.equal(report.d053.reportContractRequiredDimensionAssessmentCount, 150);
+  assert.equal(report.d053.reportContractRequiredPolicyPackageComparisonCount, 45);
+  assert.equal(report.d053.reportContractFormalCompleteStillRequiresEvidenceReview, true);
+  assert.equal(report.d053.reportContractProviderEvidenceCollectionStarted, false);
+  assert.equal(report.d053.reportContractAppPrivacyMappingSigned, false);
+  assert.equal(report.d053.reportContractIndependentReviewPassed, false);
+  assert.equal(report.d053.reportContractD053Accepted, false);
+  assert.equal(report.d053.reportContractProviderAdmissionGranted, false);
+  assert.equal(report.d053.reportContractSendAuthorization, "NOT_GRANTED");
+  assert.equal(report.d053.reportContractB05Closed, false);
+  assert.equal(report.d053.reportContractFormalImplementationAuthorized, false);
+  assert.equal(report.d053.reportHarnessEventId, "EVT-20260827-004");
+  assert.equal(report.d053.reportHarnessStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION / NO_ADMISSION");
+  assert.equal(report.d053.reportHarnessArtifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(report.d053.reportHarnessArtifactCommitRecorded, false);
+  assert.equal(report.d053.reportHarnessTopLevelTests, 19);
+  assert.equal(report.d053.reportHarnessProviderTargetCount, 3);
+  assert.equal(report.d053.reportHarnessPayloadClassCount, 5);
+  assert.equal(report.d053.reportHarnessAdmissionProfileCount, 15);
+  assert.equal(report.d053.reportHarnessRequiredDimensionAssessmentCount, 150);
+  assert.equal(report.d053.reportHarnessRequiredPolicyPackageComparisonCount, 45);
+  assert.equal(report.d053.reportHarnessSupportedIncompatibleDerivationEnforced, true);
+  assert.equal(report.d053.reportHarnessOpenConflictKeepsUnknown, true);
+  assert.equal(report.d053.reportHarnessAExpiryWindowDays, 90);
+  assert.equal(report.d053.reportHarnessBExpiryWindowDays, 30);
+  assert.equal(report.d053.reportHarnessCNotOwnerReadyAndNotAssessed, true);
+  assert.equal(report.d053.reportHarnessProviderValuesReturned, false);
+  assert.equal(report.d053.reportHarnessOi07Reads, 0);
+  assert.equal(report.d053.reportHarnessProviderDocumentReads, 0);
+  assert.equal(report.d053.reportHarnessSourceSnapshotReads, 0);
+  assert.equal(report.d053.reportHarnessSignatureReads, 0);
+  assert.equal(report.d053.reportHarnessIndependentReviewReads, 0);
+  assert.equal(report.d053.reportHarnessReportWrites, 0);
+  assert.equal(report.d053.reportHarnessNetworkRequests, 0);
+  assert.equal(report.d053.reportHarnessProviderRequests, 0);
+  assert.equal(report.d053.reportHarnessProviderEvidenceCollectionStarted, false);
+  assert.equal(report.d053.reportHarnessAppPrivacyMappingSigned, false);
+  assert.equal(report.d053.reportHarnessNamedSignersVerified, false);
+  assert.equal(report.d053.reportHarnessIndependentReviewPassed, false);
+  assert.equal(report.d053.reportHarnessD053Accepted, false);
+  assert.equal(report.d053.reportHarnessD053PassCandidate, false);
+  assert.equal(report.d053.reportHarnessProviderAdmissionGranted, false);
+  assert.equal(report.d053.reportHarnessSendAuthorization, "NOT_GRANTED");
+  assert.equal(report.d053.reportHarnessB05Closed, false);
+  assert.equal(report.d053.reportHarnessFormalImplementationAuthorized, false);
   assert.equal(report.d053.registeredInDecisionLedger, true);
   assert.equal(report.d053.ownerResponseCount, 0);
   assert.equal(report.oi07.eventId, "EVT-20260821-013");
@@ -1071,8 +1170,299 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.nativeIosWorkAuthorized, false);
   assert.equal(report.d040ChinaHealthReviewerAssignmentHarness.formalImplementationAuthorized, false);
   assert.equal(report.d040.authoritativeState, "PX-0_INPUT_GAP");
-  assert.equal(report.d040.eventId, "EVT-20260821-007");
-  assert.equal(report.d040.next, "CHINA_HEALTH_REVIEWER_ASSIGNMENT_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d040.eventId, "EVT-20260827-005");
+  assert.equal(report.d040.next, "D068_D069_HEALTH_REVIEW_CONTENT_QA_AND_INDEPENDENT_REVIEW_REQUIRED");
+  assert.equal(report.d040.nonDiagnosticBoundaryEventId, "EVT-20260827-005");
+  assert.equal(
+    report.d040.nonDiagnosticBoundaryStatus,
+    "DRAFT_COMPLETE / CROSS_DOMAIN_SELF_REVIEW_PASS / HEALTH_REVIEW_REQUIRED / INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY",
+  );
+  assert.deepEqual(report.d040.nonDiagnosticBoundaryCardDecisionIds, ["D-068", "D-069"]);
+  assert.equal(report.d040.nonDiagnosticBoundaryCardCount, 2);
+  assert.equal(report.d040.d068QuestionId, "d068_non_diagnostic_health_context");
+  assert.equal(report.d040.d069QuestionId, "d069_estimate_uncertainty_copy");
+  assert.equal(report.d040.d068OptionCount, 3);
+  assert.equal(report.d040.d069OptionCount, 3);
+  assert.equal(report.d040.d068RecommendedOptionId, "pause_automatic_estimates_on_yes_or_unsure");
+  assert.equal(report.d040.d069RecommendedOptionId, "plain_language_no_numeric_error_bounds");
+  assert.equal(report.d040.nonDiagnosticYesOrUnsurePausesAutomaticEstimates, true);
+  assert.equal(report.d040.nonDiagnosticUnsureCannotBecomeNoRisk, true);
+  assert.equal(report.d040.nonDiagnosticEatingDisorderRiskPausesTargets, true);
+  assert.equal(report.d040.nonDiagnosticPlainLanguageUncertaintyRecommended, true);
+  assert.equal(report.d040.nonDiagnosticNumericUncertaintyRequiresEvidence, true);
+  assert.equal(report.d040.nonDiagnosticPopulationErrorNotPersonalBounds, true);
+  assert.equal(report.d040.nonDiagnosticNoSideEffects, true);
+  assert.equal(report.d040.nonDiagnosticReviewAndOwnerClosed, true);
+  assert.equal(report.d040.nonDiagnosticPxAndImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticHarnessStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION / NOT_OWNER_READY");
+  assert.equal(report.d040.nonDiagnosticHarnessTopLevelTests, 17);
+  assert.equal(report.d040.nonDiagnosticHarnessCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticHarnessRecommendationsNotOwnerChoices, true);
+  assert.equal(report.d040.nonDiagnosticHarnessSyntheticIsNotEvidence, true);
+  assert.equal(report.d040.nonDiagnosticHarnessCallerHealthContextIsNotDiagnosis, true);
+  assert.equal(report.d040.nonDiagnosticHarnessNumericEvidenceCallerAsserted, true);
+  assert.equal(report.d040.nonDiagnosticHarnessFailClosedSemantics, true);
+  assert.equal(report.d040.nonDiagnosticHarnessNoSideEffects, true);
+  assert.equal(report.d040.nonDiagnosticHarnessReviewOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(
+    report.d040.nonDiagnosticReviewPacketStatus,
+    "PACKET_READY / REVIEWER_ASSIGNMENT_REQUIRED / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewPacketVersion, "PACKET-001-R1");
+  assert.equal(report.d040.nonDiagnosticReviewPacketCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewPacketCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewPacketRequiredInputCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewPacketRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewPacketRequiredCardDispositionCount, 2);
+  assert.equal(report.d040.nonDiagnosticReviewPacketRequiredInvariantCount, 10);
+  assert.equal(report.d040.nonDiagnosticReviewPacketNamedReviewerRequired, true);
+  assert.equal(report.d040.nonDiagnosticReviewPacketCannotSelfApprove, true);
+  assert.equal(report.d040.nonDiagnosticReviewPacketFailClosedSemantics, true);
+  assert.equal(report.d040.nonDiagnosticReviewPacketNoSideEffects, true);
+  assert.equal(report.d040.nonDiagnosticReviewPacketReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessTopLevelTests, 20);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessRequiredInputCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessRequiredCardDispositionCount, 2);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessRequiredInvariantCount, 10);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessDoubleSha256, true);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessStrictAndFailClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessSyntheticIsNotEvidence, true);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessNoSideEffects, true);
+  assert.equal(report.d040.nonDiagnosticReviewRecordHarnessReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessEventId, "EVT-20260827-009");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessStatus, "SPIKE / LOCAL_ONLY / NON_PRODUCTION");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessTopLevelTests, 21);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessCandidateMinCount, 1);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessCandidateMaxCount, 20);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessStrictAndFailClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessSyntheticIsNotEvidence, true);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessNoSideEffects, true);
+  assert.equal(report.d040.nonDiagnosticReviewerAssignmentHarnessReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(
+    report.d040.nonDiagnosticReviewerIntakePacketStatus,
+    "INTAKE_PACKET_READY / LOCAL_ONLY / NON_PRODUCTION",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(
+    report.d040.nonDiagnosticReviewerIntakePacketReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketRequiredInputCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketCandidateMinCount, 1);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketCandidateMaxCount, 20);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketContractCorrected, true);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketTemplateResidueRemoved, true);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketHandoffReady, true);
+  assert.equal(report.d040.nonDiagnosticReviewerIntakePacketReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(
+    report.d040.nonDiagnosticReviewHandoffChecklistStatus,
+    "HANDOFF_CHECKLIST_READY / LOCAL_ONLY / NON_PRODUCTION",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(
+    report.d040.nonDiagnosticReviewHandoffChecklistReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistRequiredInputCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistRequiredPrerequisiteCount, 6);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistStartGateConditionCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistFailClosedConditionCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistSensitiveClassCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticReviewHandoffChecklistReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(
+    report.d040.nonDiagnosticReviewStartGapRegisterStatus,
+    "GAP_REGISTER_READY / LOCAL_ONLY / NON_PRODUCTION / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(
+    report.d040.nonDiagnosticReviewStartGapRegisterReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterGapCount, 10);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterOpenGapCount, 10);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterClosedGapCount, 0);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterStartBlockerCount, 10);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterRequiredPrerequisiteCount, 7);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterRequiredDomainCount, 4);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterRequiredInputCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterFailClosedConditionCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterSensitiveClassCount, 8);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticReviewStartGapRegisterReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateEventId, "EVT-20260827-013");
+  assert.equal(
+    report.d040.nonDiagnosticFormalAssignmentTemplateStatus,
+    "TEMPLATE_READY / LOCAL_ONLY / NON_PRODUCTION / EMPTY_RECORD_ONLY / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateReviewRecordHarnessEventId, "EVT-20260827-008");
+  assert.equal(
+    report.d040.nonDiagnosticFormalAssignmentTemplateReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateSectionCount, 10);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateRequiredBindingCount, 8);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateRequiredFutureRecordSectionCount, 10);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateSensitiveClassCount, 9);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateStartGateConditionCount, 8);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticFormalAssignmentTemplateReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightEventId, "EVT-20260827-014");
+  assert.equal(
+    report.d040.nonDiagnosticAssignmentAuthorizationPreflightStatus,
+    "PREFLIGHT_CHECKLIST_READY / LOCAL_ONLY / NON_PRODUCTION / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(
+    report.d040.nonDiagnosticAssignmentAuthorizationPreflightReviewRecordHarnessEventId,
+    "EVT-20260827-008",
+  );
+  assert.equal(
+    report.d040.nonDiagnosticAssignmentAuthorizationPreflightReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightFormalTemplateEventId, "EVT-20260827-013");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightItemCount, 8);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightMissingItemCount, 8);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightClosedItemCount, 0);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightScopeBindingCount, 9);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightStartGateConditionCount, 8);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticAssignmentAuthorizationPreflightReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractEventId, "EVT-20260827-015");
+  assert.equal(
+    report.d040.nonDiagnosticContactAuthorizationRecordContractStatus,
+    "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(
+    report.d040.nonDiagnosticContactAuthorizationRecordContractReviewRecordHarnessEventId,
+    "EVT-20260827-008",
+  );
+  assert.equal(
+    report.d040.nonDiagnosticContactAuthorizationRecordContractReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractFormalTemplateEventId, "EVT-20260827-013");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractPreflightChecklistEventId, "EVT-20260827-014");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractSchemaFieldCount, 12);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractRequiredBoundPriorEventCount, 10);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractSensitiveClassCount, 8);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractAcceptanceRuleCount, 8);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticContactAuthorizationRecordContractReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractEventId, "EVT-20260827-016");
+  assert.equal(
+    report.d040.nonDiagnosticReviewerCandidateRosterContractStatus,
+    "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / NO_REAL_CANDIDATES / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(
+    report.d040.nonDiagnosticReviewerCandidateRosterContractReviewRecordHarnessEventId,
+    "EVT-20260827-008",
+  );
+  assert.equal(
+    report.d040.nonDiagnosticReviewerCandidateRosterContractReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractFormalTemplateEventId, "EVT-20260827-013");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractPreflightChecklistEventId, "EVT-20260827-014");
+  assert.equal(
+    report.d040.nonDiagnosticReviewerCandidateRosterContractContactAuthorizationRecordContractEventId,
+    "EVT-20260827-015",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractSchemaFieldCount, 14);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractRequiredBoundPriorEventCount, 11);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractSensitiveClassCount, 9);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractAcceptanceRuleCount, 9);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticReviewerCandidateRosterContractReviewHealthOwnerPxImplementationClosed, true);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractEventId, "EVT-20260827-017");
+  assert.equal(
+    report.d040.nonDiagnosticReviewMaterialPacketRecordContractStatus,
+    "CONTRACT_READY / LOCAL_ONLY / NON_PRODUCTION / MATERIAL_NOT_SENT / NO_REAL_CANDIDATES / NO_AUTHORIZATION_RECORD / AUTHORIZATION_NOT_GRANTED / REVIEW_NOT_STARTED / NOT_OWNER_READY",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewPacketEventId, "EVT-20260827-007");
+  assert.equal(
+    report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewRecordHarnessEventId,
+    "EVT-20260827-008",
+  );
+  assert.equal(
+    report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerAssignmentHarnessEventId,
+    "EVT-20260827-009",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractFormalTemplateEventId, "EVT-20260827-013");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractPreflightChecklistEventId, "EVT-20260827-014");
+  assert.equal(
+    report.d040.nonDiagnosticReviewMaterialPacketRecordContractContactAuthorizationRecordContractEventId,
+    "EVT-20260827-015",
+  );
+  assert.equal(
+    report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewerCandidateRosterContractEventId,
+    "EVT-20260827-016",
+  );
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractCardSpecEventId, "EVT-20260827-005");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractCardHarnessEventId, "EVT-20260827-006");
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractSchemaFieldCount, 13);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractRequiredBoundPriorEventCount, 12);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractSensitiveClassCount, 9);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractAcceptanceRuleCount, 9);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractBindingsReady, true);
+  assert.equal(report.d040.nonDiagnosticReviewMaterialPacketRecordContractReviewHealthOwnerPxImplementationClosed, true);
   assert.equal(report.d040.resolvedDecisionAxisCount, 20);
   assert.equal(report.d040.firstBatchCardCount, 4);
   assert.equal(report.d040.energyBatchCardCount, 5);
@@ -2091,4 +2481,586 @@ test("命令行诊断器不创建或覆盖快照", () => {
   const report = reconcileProjectOps(loadProjectOps(fixture));
   assert.equal(report.ok, true);
   assert.equal(fs.readFileSync(snapshotPath, "utf8"), before);
+});
+
+test("reconciler requires the D-036 Provider/native report contract event", () => {
+  const model = validModel();
+  model.events = model.events.filter(
+    (record) => record.value.eventId !== "EVT-20260827-001",
+  );
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-036 harness claims of real execution evidence", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-002",
+  ).value.data;
+  data.attemptRecordCount = 324;
+  data.compatibilityReportRecorded = true;
+  data.nativeBoundaryEvidenceRecorded = true;
+  data.spikeExecutionStarted = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D036_GATE",
+    ),
+  );
+});
+
+test("reconciler requires the D-053 Provider evidence report contract event", () => {
+  const model = validModel();
+  model.events = model.events.filter(
+    (record) => record.value.eventId !== "EVT-20260827-003",
+  );
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-053 harness claims of evidence collection or admission", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-004",
+  ).value.data;
+  data.providerEvidenceCollectionStarted = true;
+  data.namedSignersVerified = true;
+  data.d053Accepted = true;
+  data.providerAdmissionGranted = true;
+  data.sendAuthorization = "GRANTED";
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D053_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic harness claims of side effects, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-006",
+  ).value.data;
+  data.syntheticFixtureIsNotEvidence = false;
+  data.healthDataWrites = 1;
+  data.ownerIntakeWrites = 1;
+  data.networkRequests = 1;
+  data.healthContentApproved = true;
+  data.d068OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic review packet claims of review, health approval, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-007",
+  ).value.data;
+  data.reviewersAssigned = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic review record harness claims of review, health approval, Owner advancement, side effects, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-008",
+  ).value.data;
+  data.syntheticReviewPassCandidateReturned = true;
+  data.formalCompleteStillRequiresAuthoritativeReviewEvent = false;
+  data.fileWrites = 1;
+  data.healthDataWrites = 1;
+  data.ownerIntakeWrites = 1;
+  data.networkRequests = 1;
+  data.reviewersAssigned = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic reviewer assignment harness claims of real candidates, contact, formal assignment, review, health approval, Owner advancement, side effects, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-009",
+  ).value.data;
+  data.reviewerAssignmentReadyCandidateReturned = true;
+  data.syntheticAssignmentReadyCandidateReturned = true;
+  data.reviewCanStartReturned = true;
+  data.fileWrites = 1;
+  data.healthDataWrites = 1;
+  data.ownerIntakeWrites = 1;
+  data.networkRequests = 1;
+  data.contactsReads = 1;
+  data.formalAssignmentRecords = 1;
+  data.controlledContactRecords = 1;
+  data.realReviewerCandidatesRecorded = 1;
+  data.externalContactAuthorized = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.contactsReadAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic reviewer intake packet claims of real candidates, contact, assignment, review, health approval, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-010",
+  ).value.data;
+  data.contractPacketIdentityCorrected = false;
+  data.contractMacroAxisTemplateResidueRemoved = false;
+  data.unsentRequestTemplateIncluded = false;
+  data.sensitiveStorageBoundaryDocumented = false;
+  data.assignmentRecordMinimumFieldsDocumented = false;
+  data.reviewHandoffRulesDocumented = false;
+  data.formalAssignmentRecords = 1;
+  data.controlledContactRecords = 1;
+  data.realReviewerCandidatesRecorded = 1;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.contactsReadAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic review handoff checklist claims of candidates, contact, review start, health approval, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-011",
+  ).value.data;
+  data.startGateRulesDocumented = false;
+  data.forbiddenHandoffCasesDocumented = false;
+  data.minimumStateVectorDocumented = false;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.formalAssignmentRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.contactsReadAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic review start gap register claims of closed gaps, review, health approval, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-012",
+  ).value.data;
+  data.gapRegisterReady = false;
+  data.allGapsOpen = false;
+  data.closureRequiresSeparateAuthorizedRecords = false;
+  data.openGapCount = 9;
+  data.closedGapCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.formalAssignmentRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.contactsReadAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic formal assignment template claims of assignment, contact, review, health approval, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-013",
+  ).value.data;
+  data.assignmentTemplateReady = false;
+  data.emptyRecordOnly = false;
+  data.closureRequiresSeparateAuthorizedRecords = false;
+  data.formalAssignmentRecordCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.px1Authorized = true;
+  data.contactsReadAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic assignment authorization preflight claims of contact authorization, material send, assignment, review, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-014",
+  ).value.data;
+  data.authorizationPreflightChecklistReady = false;
+  data.authorizationNotGranted = false;
+  data.contactAuthorizationCanBeInferred = true;
+  data.missingPreflightItemCount = 7;
+  data.closedPreflightItemCount = 1;
+  data.formalAssignmentRecordCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.materialPacketSent = true;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthReviewerAssigned = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.ownerChoiceRecorded = true;
+  data.decisionAcceptedRecorded = true;
+  data.px1Authorized = true;
+  data.px2Authorized = true;
+  data.formulaImplementationAuthorized = true;
+  data.healthCopyImplementationAuthorized = true;
+  data.formalRootProjectAuthorized = true;
+  data.nativeIosWorkAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic contact authorization record contract claims of authorization, contact, review, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-015",
+  ).value.data;
+  data.authorizationRecordContractReady = false;
+  data.authorizationRecordCount = 1;
+  data.authorizationRecordSchemaFieldCount = 11;
+  data.requiredBoundPriorEventCount = 9;
+  data.sensitiveStorageForbiddenClassCount = 7;
+  data.acceptanceRuleCount = 7;
+  data.authorizationNotGranted = false;
+  data.contactAuthorizationCanBeInferred = true;
+  data.authorizationRecordCanBeInferred = true;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.materialPacketSent = true;
+  data.formalAssignmentRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthReviewerAssigned = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.ownerChoiceRecorded = true;
+  data.decisionAcceptedRecorded = true;
+  data.px1Authorized = true;
+  data.px2Authorized = true;
+  data.formulaImplementationAuthorized = true;
+  data.healthCopyImplementationAuthorized = true;
+  data.formalRootProjectAuthorized = true;
+  data.nativeIosWorkAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic reviewer candidate roster contract claims of real candidates, authorization, contact, review, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-016",
+  ).value.data;
+  data.reviewerCandidateRosterContractReady = false;
+  data.reviewerCandidateRosterCount = 1;
+  data.reviewerCandidateRosterSchemaFieldCount = 13;
+  data.requiredBoundPriorEventCount = 10;
+  data.sensitiveStorageForbiddenClassCount = 8;
+  data.acceptanceRuleCount = 8;
+  data.authorizationRecordContractReady = false;
+  data.authorizationRecordCount = 1;
+  data.authorizationNotGranted = false;
+  data.contactAuthorizationCanBeInferred = true;
+  data.authorizationRecordCanBeInferred = true;
+  data.reviewerCandidateCanBeInferred = true;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.materialPacketSent = true;
+  data.formalAssignmentRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthReviewerAssigned = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerReviewAuthorized = true;
+  data.ownerChoiceRecorded = true;
+  data.decisionAcceptedRecorded = true;
+  data.px1Authorized = true;
+  data.px2Authorized = true;
+  data.formulaImplementationAuthorized = true;
+  data.healthCopyImplementationAuthorized = true;
+  data.formalRootProjectAuthorized = true;
+  data.nativeIosWorkAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
+});
+
+test("reconciler rejects D-040 non-diagnostic review material packet record contract claims of material send, candidates, authorization, contact, review, Owner advancement, or implementation", () => {
+  const model = validModel();
+  const data = model.events.find(
+    (record) => record.value.eventId === "EVT-20260827-017",
+  ).value.data;
+  data.reviewMaterialPacketRecordContractReady = false;
+  data.reviewMaterialPacketRecordCount = 1;
+  data.reviewMaterialPacketRecordSchemaFieldCount = 12;
+  data.requiredBoundPriorEventCount = 11;
+  data.sensitiveStorageForbiddenClassCount = 8;
+  data.acceptanceRuleCount = 8;
+  data.reviewerCandidateRosterContractReady = false;
+  data.reviewerCandidateRosterCount = 1;
+  data.authorizationRecordContractReady = false;
+  data.authorizationRecordCount = 1;
+  data.authorizationNotGranted = false;
+  data.materialPacketSent = true;
+  data.materialPacketRecordCanBeInferred = true;
+  data.reviewerCandidateCanBeInferred = true;
+  data.contactAuthorizationCanBeInferred = true;
+  data.authorizationRecordCanBeInferred = true;
+  data.externalContactAuthorized = true;
+  data.externalMessagesSent = 1;
+  data.formalAssignmentRecordCount = 1;
+  data.formalReviewRecordCount = 1;
+  data.reviewerCandidateCount = 1;
+  data.controlledContactRecordCount = 1;
+  data.reviewerAttestationRecordCount = 1;
+  data.reviewCanStart = true;
+  data.reviewersAssigned = true;
+  data.reviewerIdentityVerified = true;
+  data.reviewerCompetenceVerified = true;
+  data.reviewerIndependenceVerified = true;
+  data.reviewerSignatureVerified = true;
+  data.conflictOfInterestResolved = true;
+  data.independentReviewStarted = true;
+  data.independentReviewPassed = true;
+  data.healthReviewerAssigned = true;
+  data.healthContentApproved = true;
+  data.contentQaPassed = true;
+  data.d068OwnerReady = true;
+  data.d069OwnerReady = true;
+  data.ownerCardScheduled = true;
+  data.ownerReviewAuthorized = true;
+  data.ownerChoiceRecorded = true;
+  data.decisionAcceptedRecorded = true;
+  data.px1Authorized = true;
+  data.px2Authorized = true;
+  data.formulaImplementationAuthorized = true;
+  data.healthCopyImplementationAuthorized = true;
+  data.formalRootProjectAuthorized = true;
+  data.nativeIosWorkAuthorized = true;
+  data.formalImplementationAuthorized = true;
+
+  const report = reconcileProjectOps(model);
+  assert.equal(report.ok, false);
+  assert.ok(
+    report.diagnostics.some(
+      (diagnostic) => diagnostic.code === "OPS_RECONCILE_D040_GATE",
+    ),
+  );
 });

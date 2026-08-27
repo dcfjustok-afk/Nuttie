@@ -7,7 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
-  PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS,
+  PHASE0_2026_08_27_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACKET_RECORD_CONTRACT,
   ProjectOpsLoadError,
   loadProjectOps,
   validateOperationalInvariants,
@@ -81,15 +81,15 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
 
   assert.equal(report.ok, true);
   assert.deepEqual(report.diagnostics, []);
-  assert.equal(report.baseline, PHASE0_2026_08_22_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS.id);
+  assert.equal(report.baseline, PHASE0_2026_08_27_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACKET_RECORD_CONTRACT.id);
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 329,
+    instancesValidated: 346,
   });
   assert.equal(report.counts.schemas, 5);
   assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 210);
+  assert.equal(report.counts.events, 227);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -113,6 +113,206 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040ReviewerAssignmentEvent.value.data.firstThreeBatchesIndependentReviewPassed, false);
   assert.equal(d040ReviewerAssignmentEvent.value.data.healthContentApproved, false);
   assert.equal(d040ReviewerAssignmentEvent.value.data.contentQaPassed, false);
+  const d040NonDiagnosticReviewerIntakeEvent = findEvent(VALID_MODEL, "EVT-20260827-010");
+  assert.equal(
+    d040NonDiagnosticReviewerIntakeEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-REVIEWER-INTAKE-PACKET-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewerIntakeEvent.value.data.intakePacketId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-REVIEWER-INTAKE-PACKET-001",
+  );
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.contractPacketIdentityCorrected, true);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.contractMacroAxisTemplateResidueRemoved, true);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.realReviewerCandidatesRecorded, 0);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.externalContactAuthorized, false);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.reviewersAssigned, false);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticReviewerIntakeEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticReviewHandoffEvent = findEvent(VALID_MODEL, "EVT-20260827-011");
+  assert.equal(
+    d040NonDiagnosticReviewHandoffEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-REVIEW-HANDOFF-CHECKLIST-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewHandoffEvent.value.data.handoffChecklistId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-REVIEW-HANDOFF-CHECKLIST-001",
+  );
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.reviewerIntakePacketEventId, "EVT-20260827-010");
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.startGateRulesDocumented, true);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.forbiddenHandoffCasesDocumented, true);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticReviewHandoffEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticReviewStartGapEvent = findEvent(VALID_MODEL, "EVT-20260827-012");
+  assert.equal(
+    d040NonDiagnosticReviewStartGapEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-REVIEW-START-GAP-REGISTER-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewStartGapEvent.value.data.gapRegisterId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-REVIEW-START-GAP-REGISTER-001",
+  );
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.reviewHandoffChecklistEventId, "EVT-20260827-011");
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.gapCount, 10);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.openGapCount, 10);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.closedGapCount, 0);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.closureRequiresSeparateAuthorizedRecords, true);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticReviewStartGapEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticAssignmentTemplateEvent = findEvent(VALID_MODEL, "EVT-20260827-013");
+  assert.equal(
+    d040NonDiagnosticAssignmentTemplateEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-FORMAL-ASSIGNMENT-RECORD-TEMPLATE-001",
+  );
+  assert.equal(
+    d040NonDiagnosticAssignmentTemplateEvent.value.data.assignmentRecordTemplateId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-FORMAL-ASSIGNMENT-RECORD-TEMPLATE-001",
+  );
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.reviewStartGapRegisterEventId, "EVT-20260827-012");
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.templateSectionCount, 10);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.requiredBindingCount, 8);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.requiredFutureRecordSectionCount, 10);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.emptyRecordOnly, true);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.formalAssignmentRecordCount, 0);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticAssignmentTemplateEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticAuthorizationPreflightEvent = findEvent(VALID_MODEL, "EVT-20260827-014");
+  assert.equal(
+    d040NonDiagnosticAuthorizationPreflightEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-ASSIGNMENT-AUTHORIZATION-PREFLIGHT-CHECKLIST-001",
+  );
+  assert.equal(
+    d040NonDiagnosticAuthorizationPreflightEvent.value.data.authorizationPreflightChecklistId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-ASSIGNMENT-AUTHORIZATION-PREFLIGHT-CHECKLIST-001",
+  );
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.formalAssignmentRecordTemplateEventId, "EVT-20260827-013");
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.preflightItemCount, 8);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.missingPreflightItemCount, 8);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.closedPreflightItemCount, 0);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.authorizationNotGranted, true);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.contactAuthorizationCanBeInferred, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.externalContactAuthorized, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.materialPacketSent, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.formalAssignmentRecordCount, 0);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticAuthorizationPreflightEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticContactAuthorizationRecordContractEvent = findEvent(VALID_MODEL, "EVT-20260827-015");
+  assert.equal(
+    d040NonDiagnosticContactAuthorizationRecordContractEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-CONTACT-AUTHORIZATION-RECORD-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.contactAuthorizationRecordContractId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-CONTACT-AUTHORIZATION-RECORD-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.assignmentAuthorizationPreflightChecklistEventId,
+    "EVT-20260827-014",
+  );
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.authorizationRecordContractReady, true);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.authorizationRecordCount, 0);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.authorizationRecordSchemaFieldCount, 12);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.requiredBoundPriorEventCount, 10);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.sensitiveStorageForbiddenClassCount, 8);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.acceptanceRuleCount, 8);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.authorizationNotGranted, true);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.contactAuthorizationCanBeInferred, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.authorizationRecordCanBeInferred, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.externalContactAuthorized, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.materialPacketSent, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.formalAssignmentRecordCount, 0);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticContactAuthorizationRecordContractEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticReviewerCandidateRosterContractEvent = findEvent(VALID_MODEL, "EVT-20260827-016");
+  assert.equal(
+    d040NonDiagnosticReviewerCandidateRosterContractEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-REVIEWER-CANDIDATE-ROSTER-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateRosterContractId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-REVIEWER-CANDIDATE-ROSTER-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.contactAuthorizationRecordContractEventId,
+    "EVT-20260827-015",
+  );
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateRosterContractReady, true);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateRosterCount, 0);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateRosterSchemaFieldCount, 14);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.requiredBoundPriorEventCount, 11);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.sensitiveStorageForbiddenClassCount, 9);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.acceptanceRuleCount, 9);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.authorizationRecordCount, 0);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.authorizationNotGranted, true);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.contactAuthorizationCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.authorizationRecordCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.externalContactAuthorized, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.materialPacketSent, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticReviewerCandidateRosterContractEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticReviewMaterialPacketRecordContractEvent = findEvent(VALID_MODEL, "EVT-20260827-017");
+  assert.equal(
+    d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-REVIEW-MATERIAL-PACKET-RECORD-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewMaterialPacketRecordContractId,
+    "D040-NON-DIAGNOSTIC-BOUNDARY-REVIEW-MATERIAL-PACKET-RECORD-CONTRACT-001",
+  );
+  assert.equal(
+    d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewerCandidateRosterContractEventId,
+    "EVT-20260827-016",
+  );
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewMaterialPacketRecordContractReady, true);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewMaterialPacketRecordCount, 0);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewMaterialPacketRecordSchemaFieldCount, 13);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.requiredBoundPriorEventCount, 12);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.sensitiveStorageForbiddenClassCount, 9);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.acceptanceRuleCount, 9);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewerCandidateRosterContractReady, true);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewerCandidateRosterCount, 0);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.authorizationRecordContractReady, true);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.authorizationRecordCount, 0);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.authorizationNotGranted, true);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.materialPacketSent, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.materialPacketRecordCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewerCandidateCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.contactAuthorizationCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.authorizationRecordCanBeInferred, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewerCandidateCount, 0);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.externalContactAuthorized, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.reviewCanStart, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.independentReviewStarted, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticReviewMaterialPacketRecordContractEvent.value.data.formalImplementationAuthorized, false);
   const d040MacroAxisReviewerAssignmentEvent = findEvent(VALID_MODEL, "EVT-20260822-015");
   assert.equal(d040MacroAxisReviewerAssignmentEvent.value.subject.id, "D040-MACRO-AXIS-REVIEWER-ASSIGNMENT-HARNESS-001");
   assert.equal(d040MacroAxisReviewerAssignmentEvent.value.data.reviewPacketVersion, "PACKET-001-R1");
@@ -137,6 +337,40 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.healthReviewStarted, false);
   assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.healthContentApproved, false);
   assert.equal(d040ChinaHealthReviewerAssignmentEvent.value.data.contentQaPassed, false);
+  const d036ReportContractEvent = findEvent(VALID_MODEL, "EVT-20260827-001");
+  assert.equal(
+    d036ReportContractEvent.value.subject.id,
+    "D036-PROVIDER-NATIVE-COMPATIBILITY-REPORT-CONTRACT-001",
+  );
+  assert.equal(d036ReportContractEvent.value.data.contractArtifactCommit, "458d81e5feec32fee9ebc887dc3f4d65e5724f40");
+  assert.equal(d036ReportContractEvent.value.data.requiredCompatibilityCellCount, 36);
+  assert.equal(d036ReportContractEvent.value.data.requiredFormalAttemptMinimum, 324);
+  assert.equal(d036ReportContractEvent.value.data.requiredFormalOfflineResultCount, 108);
+  assert.equal(d036ReportContractEvent.value.data.requiredFormalNativeBoundaryResultCount, 39);
+  assert.equal(d036ReportContractEvent.value.data.reportValidatorImplemented, false);
+  assert.equal(d036ReportContractEvent.value.data.attemptRecordCount, 0);
+  assert.equal(d036ReportContractEvent.value.data.compatibilityReportRecorded, false);
+  assert.equal(d036ReportContractEvent.value.data.nativeBoundaryEvidenceRecorded, false);
+  assert.equal(d036ReportContractEvent.value.data.formalImplementationAuthorized, false);
+  const d036ReportHarnessEvent = findEvent(VALID_MODEL, "EVT-20260827-002");
+  assert.equal(
+    d036ReportHarnessEvent.value.subject.id,
+    "D036-PROVIDER-NATIVE-COMPATIBILITY-REPORT-HARNESS-001",
+  );
+  assert.equal(d036ReportHarnessEvent.value.data.artifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(d036ReportHarnessEvent.value.data.artifactCommitRecorded, false);
+  assert.equal(d036ReportHarnessEvent.value.data.topLevelTests, 20);
+  assert.equal(d036ReportHarnessEvent.value.data.toolSuitePassed, 909);
+  assert.equal(d036ReportHarnessEvent.value.data.requiredCompatibilityCellCount, 36);
+  assert.equal(d036ReportHarnessEvent.value.data.requiredFormalAttemptMinimum, 324);
+  assert.equal(d036ReportHarnessEvent.value.data.requiredFormalOfflineResultCount, 108);
+  assert.equal(d036ReportHarnessEvent.value.data.requiredFormalNativeBoundaryResultCount, 39);
+  assert.equal(d036ReportHarnessEvent.value.data.contractValidatorImplemented, true);
+  assert.equal(d036ReportHarnessEvent.value.data.attemptRecordCount, 0);
+  assert.equal(d036ReportHarnessEvent.value.data.compatibilityReportRecorded, false);
+  assert.equal(d036ReportHarnessEvent.value.data.nativeBoundaryEvidenceRecorded, false);
+  assert.equal(d036ReportHarnessEvent.value.data.networkRequests, 0);
+  assert.equal(d036ReportHarnessEvent.value.data.formalImplementationAuthorized, false);
   const aiCredentialEvent = findEvent(VALID_MODEL, "EVT-20260812-001");
   assert.equal(aiCredentialEvent.value.subject.id, "ai-credential-lifecycle-contract");
   assert.equal(aiCredentialEvent.value.data.formalImplementationAuthorized, false);
@@ -1010,6 +1244,142 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.equal(d053ProtocolEvent.value.data.b05Closed, false);
   assert.equal(d053ProtocolEvent.value.data.realNetworkAuthorized, false);
   assert.equal(d053ProtocolEvent.value.data.formalImplementationAuthorized, false);
+  const d053ReportContractEvent = findEvent(VALID_MODEL, "EVT-20260827-003");
+  assert.equal(
+    d053ReportContractEvent.value.subject.id,
+    "D053-PROVIDER-EVIDENCE-APP-PRIVACY-REPORT-CONTRACT-001",
+  );
+  assert.equal(d053ReportContractEvent.value.data.artifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(d053ReportContractEvent.value.data.artifactCommitRecorded, false);
+  assert.equal(
+    d053ReportContractEvent.value.data.contractWorkingTreeBlobOid,
+    "cf07eb8f54a65ab14fa606381615eb47ac799adc",
+  );
+  assert.equal(
+    d053ReportContractEvent.value.data.contractSha256,
+    "050274d0a4268c8c4c1ae9056f1130330e234c5e6f5dc381d38573e639bedc17",
+  );
+  assert.equal(d053ReportContractEvent.value.data.providerTargetCount, 3);
+  assert.equal(d053ReportContractEvent.value.data.payloadClassCount, 5);
+  assert.equal(d053ReportContractEvent.value.data.admissionProfileCount, 15);
+  assert.equal(d053ReportContractEvent.value.data.requiredDimensionAssessmentCount, 150);
+  assert.equal(d053ReportContractEvent.value.data.requiredPolicyPackageComparisonCount, 45);
+  assert.equal(d053ReportContractEvent.value.data.formalCompleteStillRequiresEvidenceReview, true);
+  assert.equal(d053ReportContractEvent.value.data.providerEvidenceCollectionStarted, false);
+  assert.equal(d053ReportContractEvent.value.data.appPrivacyMappingSigned, false);
+  assert.equal(d053ReportContractEvent.value.data.providerAdmissionGranted, false);
+  assert.equal(d053ReportContractEvent.value.data.sendAuthorization, "NOT_GRANTED");
+  assert.equal(d053ReportContractEvent.value.data.formalImplementationAuthorized, false);
+  const d053ReportHarnessEvent = findEvent(VALID_MODEL, "EVT-20260827-004");
+  assert.equal(
+    d053ReportHarnessEvent.value.subject.id,
+    "D053-PROVIDER-EVIDENCE-APP-PRIVACY-REPORT-HARNESS-001",
+  );
+  assert.equal(d053ReportHarnessEvent.value.data.artifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(d053ReportHarnessEvent.value.data.artifactCommitRecorded, false);
+  assert.equal(d053ReportHarnessEvent.value.data.topLevelTests, 19);
+  assert.equal(d053ReportHarnessEvent.value.data.requiredDimensionAssessmentCount, 150);
+  assert.equal(d053ReportHarnessEvent.value.data.requiredPolicyPackageComparisonCount, 45);
+  assert.equal(d053ReportHarnessEvent.value.data.syntheticContractFixtureOnly, true);
+  assert.equal(d053ReportHarnessEvent.value.data.supportedIncompatibleDerivationEnforced, true);
+  assert.equal(d053ReportHarnessEvent.value.data.openConflictKeepsUnknown, true);
+  assert.equal(d053ReportHarnessEvent.value.data.aExpiryWindowDays, 90);
+  assert.equal(d053ReportHarnessEvent.value.data.bExpiryWindowDays, 30);
+  assert.equal(d053ReportHarnessEvent.value.data.cNotOwnerReadyAndNotAssessed, true);
+  assert.equal(d053ReportHarnessEvent.value.data.providerUrlSignerAndBodyValuesReturned, false);
+  assert.equal(d053ReportHarnessEvent.value.data.providerEvidenceCollectionStarted, false);
+  assert.equal(d053ReportHarnessEvent.value.data.namedSignersVerified, false);
+  assert.equal(d053ReportHarnessEvent.value.data.d053Accepted, false);
+  assert.equal(d053ReportHarnessEvent.value.data.d053PassCandidate, false);
+  assert.equal(d053ReportHarnessEvent.value.data.providerAdmissionGranted, false);
+  assert.equal(d053ReportHarnessEvent.value.data.sendAuthorization, "NOT_GRANTED");
+  assert.equal(d053ReportHarnessEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticBoundaryCardSpecEvent = findEvent(VALID_MODEL, "EVT-20260827-005");
+  assert.equal(
+    d040NonDiagnosticBoundaryCardSpecEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-CARD-SPEC-001",
+  );
+  assert.equal(
+    d040NonDiagnosticBoundaryCardSpecEvent.value.data.contractStatus,
+    "DRAFT_COMPLETE / CROSS_DOMAIN_SELF_REVIEW_PASS / HEALTH_REVIEW_REQUIRED / INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY",
+  );
+  assert.deepEqual(d040NonDiagnosticBoundaryCardSpecEvent.value.data.cardDecisionIds, ["D-068", "D-069"]);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.cardCount, 2);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.d068OptionCount, 3);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.d069OptionCount, 3);
+  assert.equal(
+    d040NonDiagnosticBoundaryCardSpecEvent.value.data.d068RecommendedOptionId,
+    "pause_automatic_estimates_on_yes_or_unsure",
+  );
+  assert.equal(
+    d040NonDiagnosticBoundaryCardSpecEvent.value.data.d069RecommendedOptionId,
+    "plain_language_no_numeric_error_bounds",
+  );
+  assert.equal(
+    d040NonDiagnosticBoundaryCardSpecEvent.value.data.chronicConditionOrMedicationYesPausesAutomaticEstimates,
+    true,
+  );
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.unsureCannotBecomeNoRisk, true);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.populationErrorCannotBecomePersonalBounds, true);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.diagnosisOrTreatmentAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.healthDataPersistenceAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.automaticDialAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.networkResourceRefreshAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.independentReviewPassed, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.d068OwnerReady, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.d069OwnerReady, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.ownerIntakeChanged, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.px1Authorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.px2Authorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardSpecEvent.value.data.formalImplementationAuthorized, false);
+  const d040NonDiagnosticBoundaryCardHarnessEvent = findEvent(VALID_MODEL, "EVT-20260827-006");
+  assert.equal(
+    d040NonDiagnosticBoundaryCardHarnessEvent.value.subject.id,
+    "D040-D068-D069-NON-DIAGNOSTIC-BOUNDARY-CARD-HARNESS-001",
+  );
+  assert.equal(
+    d040NonDiagnosticBoundaryCardHarnessEvent.value.data.contractStatus,
+    "SPIKE / LOCAL_ONLY / NON_PRODUCTION / NOT_OWNER_READY",
+  );
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.cardSpecEventId, "EVT-20260827-005");
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.artifactState, "WORKTREE_UNCOMMITTED");
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.artifactCommitRecorded, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.topLevelTests, 17);
+  assert.deepEqual(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.cardDecisionIds, ["D-068", "D-069"]);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.d068OptionCount, 3);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.d069OptionCount, 3);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.optionRecommendationsAreNotOwnerChoices, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.syntheticFixtureIsNotEvidence, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.callerHealthContextIsNotDiagnosis, true);
+  assert.equal(
+    d040NonDiagnosticBoundaryCardHarnessEvent.value.data.numericUncertaintyEvidenceCallerAssertedNotVerified,
+    true,
+  );
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.yesOrUnsurePausesAutomaticEstimates, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.unsureCannotBecomeNoRisk, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.eatingDisorderRiskPausesWeightLossAndMacroTargets, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.plainLanguageUncertaintyNoNumericBounds, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.validatedNumericUncertaintyStructuralOnly, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.populationErrorCannotBecomePersonalBounds, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.notApplicableIsConditionalSkipNotOwnerChoice, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.contractValidatorImplemented, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.harnessReadsCallerSuppliedDataOnly, true);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.networkRequests, 0);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.healthDataWrites, 0);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.ownerIntakeWrites, 0);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.automaticDialEffects, 0);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.healthDataPersistenceAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.healthContentApproved, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.contentQaPassed, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.independentReviewPassed, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.d068OwnerReady, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.d069OwnerReady, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.ownerReviewAuthorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.px1Authorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.px2Authorized, false);
+  assert.equal(d040NonDiagnosticBoundaryCardHarnessEvent.value.data.formalImplementationAuthorized, false);
   const oi07TemplateEvent = findEvent(VALID_MODEL, "EVT-20260821-013");
   assert.equal(oi07TemplateEvent.value.type, "ARTIFACT_CREATED");
   assert.equal(
@@ -2081,7 +2451,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 328);
+    assert.equal(report.schemaValidation.instancesValidated, 345);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
@@ -6640,4 +7010,528 @@ test("锁定 D-040 中国健康评审人指派 validator", async (t) => {
     });
     assertDiagnostic(report, "OPS_D040_CHINA_HEALTH_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
   });
+});
+
+test("D-036 Provider/native report contract event is mandatory", () => {
+  const report = validateMutation((model) => {
+    model.events = model.events.filter(
+      (record) => record.value.eventId !== "EVT-20260827-001",
+    );
+  });
+
+  assertDiagnostic(report, "OPS_D036_PROVIDER_NATIVE_REPORT_CONTRACT_MISMATCH");
+});
+
+test("D-036 Provider/native report harness cannot claim persisted evidence", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-002").value.data;
+    data.artifactCommitRecorded = true;
+    data.attemptRecordCount = 324;
+    data.compatibilityReportRecorded = true;
+    data.nativeBoundaryEvidenceRecorded = true;
+  });
+
+  assertDiagnostic(report, "OPS_D036_PROVIDER_NATIVE_REPORT_HARNESS_MISMATCH");
+});
+
+test("D-053 Provider evidence report contract cannot claim evidence, signature, or admission", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-003").value.data;
+    data.providerEvidenceCollectionStarted = true;
+    data.sourceSnapshotsRecorded = true;
+    data.appPrivacyMappingSigned = true;
+    data.providerAdmissionGranted = true;
+    data.sendAuthorization = "GRANTED";
+  });
+
+  assertDiagnostic(report, "OPS_D053_PROVIDER_EVIDENCE_REPORT_CONTRACT_MISMATCH");
+});
+
+test("D-053 Provider evidence report harness cannot claim verified review or acceptance", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-004").value.data;
+    data.namedSignersVerified = true;
+    data.independentReviewPassed = true;
+    data.d053Accepted = true;
+    data.d053PassCandidate = true;
+    data.providerAdmissionGranted = true;
+  });
+
+  assertDiagnostic(report, "OPS_D053_PROVIDER_EVIDENCE_REPORT_HARNESS_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary cards cannot claim health approval, Owner readiness, side effects, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-005").value.data;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.independentReviewPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.automaticDialAuthorized = true;
+    data.networkResourceRefreshAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_CARD_SPEC_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary card harness cannot claim side effects, Owner advancement, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-006").value.data;
+    data.syntheticFixtureIsNotEvidence = false;
+    data.healthDataWrites = 1;
+    data.ownerIntakeWrites = 1;
+    data.networkRequests = 1;
+    data.healthContentApproved = true;
+    data.d068OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_CARD_HARNESS_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary review packet cannot claim review, health approval, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-007").value.data;
+    data.reviewersAssigned = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_PACKET_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary review record harness cannot claim formal review, health approval, Owner readiness, or side effects", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-008").value.data;
+    data.syntheticReviewPassCandidateReturned = true;
+    data.formalCompleteStillRequiresAuthoritativeReviewEvent = false;
+    data.fileWrites = 1;
+    data.healthDataWrites = 1;
+    data.ownerIntakeWrites = 1;
+    data.automaticDialEffects = 1;
+    data.networkRequests = 1;
+    data.reviewersAssigned = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.automaticDialAuthorized = true;
+    data.networkResourceRefreshAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_RECORD_HARNESS_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary reviewer assignment harness cannot claim real candidates, contact, formal assignment, review, health approval, Owner readiness, or side effects", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-009").value.data;
+    data.reviewerAssignmentReadyCandidateReturned = true;
+    data.syntheticAssignmentReadyCandidateReturned = true;
+    data.reviewCanStartReturned = true;
+    data.fileWrites = 1;
+    data.healthDataWrites = 1;
+    data.ownerIntakeWrites = 1;
+    data.networkRequests = 1;
+    data.contactsReads = 1;
+    data.formalAssignmentRecords = 1;
+    data.controlledContactRecords = 1;
+    data.realReviewerCandidatesRecorded = 1;
+    data.externalContactAuthorized = true;
+    data.reviewersAssigned = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEWER_ASSIGNMENT_HARNESS_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary reviewer intake packet cannot claim real candidates, contact, formal assignment, review, health approval, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-010").value.data;
+    data.contractPacketIdentityCorrected = false;
+    data.contractMacroAxisTemplateResidueRemoved = false;
+    data.unsentRequestTemplateIncluded = false;
+    data.sensitiveStorageBoundaryDocumented = false;
+    data.assignmentRecordMinimumFieldsDocumented = false;
+    data.reviewHandoffRulesDocumented = false;
+    data.formalAssignmentRecords = 1;
+    data.controlledContactRecords = 1;
+    data.realReviewerCandidatesRecorded = 1;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.reviewersAssigned = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEWER_INTAKE_PACKET_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary review handoff checklist cannot claim candidates, contact, review start, health approval, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-011").value.data;
+    data.startGateRulesDocumented = false;
+    data.forbiddenHandoffCasesDocumented = false;
+    data.minimumStateVectorDocumented = false;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.formalAssignmentRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_HANDOFF_CHECKLIST_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary review start gap register cannot close gaps or claim review, health approval, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-012").value.data;
+    data.gapRegisterReady = false;
+    data.allGapsOpen = false;
+    data.closureRequiresSeparateAuthorizedRecords = false;
+    data.openGapCount = 9;
+    data.closedGapCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.formalAssignmentRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_START_GAP_REGISTER_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary formal assignment record template cannot create assignment, contact, review, health approval, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-013").value.data;
+    data.assignmentTemplateReady = false;
+    data.emptyRecordOnly = false;
+    data.closureRequiresSeparateAuthorizedRecords = false;
+    data.formalAssignmentRecordCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_FORMAL_ASSIGNMENT_RECORD_TEMPLATE_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary assignment authorization preflight checklist cannot grant contact, send materials, create assignment, review, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-014").value.data;
+    data.authorizationPreflightChecklistReady = false;
+    data.authorizationNotGranted = false;
+    data.contactAuthorizationCanBeInferred = true;
+    data.missingPreflightItemCount = 7;
+    data.closedPreflightItemCount = 1;
+    data.formalAssignmentRecordCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.materialPacketSent = true;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.px1Authorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_ASSIGNMENT_AUTHORIZATION_PREFLIGHT_CHECKLIST_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary contact authorization record contract cannot infer authorization, contact, review, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-015").value.data;
+    data.authorizationRecordContractReady = false;
+    data.authorizationRecordCount = 1;
+    data.authorizationRecordSchemaFieldCount = 11;
+    data.requiredBoundPriorEventCount = 9;
+    data.sensitiveStorageForbiddenClassCount = 7;
+    data.acceptanceRuleCount = 7;
+    data.authorizationNotGranted = false;
+    data.contactAuthorizationCanBeInferred = true;
+    data.authorizationRecordCanBeInferred = true;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.materialPacketSent = true;
+    data.formalAssignmentRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthReviewerAssigned = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.ownerChoiceRecorded = true;
+    data.decisionAcceptedRecorded = true;
+    data.px1Authorized = true;
+    data.px2Authorized = true;
+    data.diagnosisOrTreatmentAuthorized = true;
+    data.medicationDetailCollectionAuthorized = true;
+    data.healthFreeTextCollectionAuthorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.automaticDialAuthorized = true;
+    data.networkResourceRefreshAuthorized = true;
+    data.locationReadAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.healthKitWriteAuthorized = true;
+    data.formulaImplementationAuthorized = true;
+    data.healthCopyImplementationAuthorized = true;
+    data.formalRootProjectAuthorized = true;
+    data.nativeIosWorkAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_CONTACT_AUTHORIZATION_RECORD_CONTRACT_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary reviewer candidate roster contract cannot infer candidates, authorization, contact, review, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-016").value.data;
+    data.reviewerCandidateRosterContractReady = false;
+    data.reviewerCandidateRosterCount = 1;
+    data.reviewerCandidateRosterSchemaFieldCount = 13;
+    data.requiredBoundPriorEventCount = 10;
+    data.sensitiveStorageForbiddenClassCount = 8;
+    data.acceptanceRuleCount = 8;
+    data.authorizationRecordContractReady = false;
+    data.authorizationRecordCount = 1;
+    data.authorizationNotGranted = false;
+    data.contactAuthorizationCanBeInferred = true;
+    data.authorizationRecordCanBeInferred = true;
+    data.reviewerCandidateCanBeInferred = true;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.materialPacketSent = true;
+    data.formalAssignmentRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthReviewerAssigned = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerReviewAuthorized = true;
+    data.ownerChoiceRecorded = true;
+    data.decisionAcceptedRecorded = true;
+    data.px1Authorized = true;
+    data.px2Authorized = true;
+    data.diagnosisOrTreatmentAuthorized = true;
+    data.medicationDetailCollectionAuthorized = true;
+    data.healthFreeTextCollectionAuthorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.automaticDialAuthorized = true;
+    data.networkResourceRefreshAuthorized = true;
+    data.locationReadAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.healthKitWriteAuthorized = true;
+    data.formulaImplementationAuthorized = true;
+    data.healthCopyImplementationAuthorized = true;
+    data.formalRootProjectAuthorized = true;
+    data.nativeIosWorkAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEWER_CANDIDATE_ROSTER_CONTRACT_MISMATCH");
+});
+
+test("D-040 non-diagnostic boundary review material packet record contract cannot infer material send, candidates, authorization, contact, review, Owner readiness, or implementation", () => {
+  const report = validateMutation((model) => {
+    const data = findEvent(model, "EVT-20260827-017").value.data;
+    data.reviewMaterialPacketRecordContractReady = false;
+    data.reviewMaterialPacketRecordCount = 1;
+    data.reviewMaterialPacketRecordSchemaFieldCount = 12;
+    data.requiredBoundPriorEventCount = 11;
+    data.sensitiveStorageForbiddenClassCount = 8;
+    data.acceptanceRuleCount = 8;
+    data.reviewerCandidateRosterContractReady = false;
+    data.reviewerCandidateRosterCount = 1;
+    data.authorizationRecordContractReady = false;
+    data.authorizationRecordCount = 1;
+    data.authorizationNotGranted = false;
+    data.materialPacketSent = true;
+    data.materialPacketRecordCanBeInferred = true;
+    data.reviewerCandidateCanBeInferred = true;
+    data.contactAuthorizationCanBeInferred = true;
+    data.authorizationRecordCanBeInferred = true;
+    data.externalContactAuthorized = true;
+    data.externalMessagesSent = 1;
+    data.formalAssignmentRecordCount = 1;
+    data.formalReviewRecordCount = 1;
+    data.reviewerCandidateCount = 1;
+    data.controlledContactRecordCount = 1;
+    data.reviewerAttestationRecordCount = 1;
+    data.reviewCanStart = true;
+    data.reviewersAssigned = true;
+    data.reviewerIdentityVerified = true;
+    data.reviewerCompetenceVerified = true;
+    data.reviewerIndependenceVerified = true;
+    data.reviewerSignatureVerified = true;
+    data.conflictOfInterestResolved = true;
+    data.independentReviewStarted = true;
+    data.independentReviewPassed = true;
+    data.healthReviewerAssigned = true;
+    data.healthContentApproved = true;
+    data.contentQaPassed = true;
+    data.d068OwnerReady = true;
+    data.d069OwnerReady = true;
+    data.ownerCardScheduled = true;
+    data.ownerReviewAuthorized = true;
+    data.ownerChoiceRecorded = true;
+    data.decisionAcceptedRecorded = true;
+    data.px1Authorized = true;
+    data.px2Authorized = true;
+    data.diagnosisOrTreatmentAuthorized = true;
+    data.medicationDetailCollectionAuthorized = true;
+    data.healthFreeTextCollectionAuthorized = true;
+    data.healthDataPersistenceAuthorized = true;
+    data.automaticDialAuthorized = true;
+    data.networkResourceRefreshAuthorized = true;
+    data.locationReadAuthorized = true;
+    data.contactsReadAuthorized = true;
+    data.healthKitWriteAuthorized = true;
+    data.formulaImplementationAuthorized = true;
+    data.healthCopyImplementationAuthorized = true;
+    data.formalRootProjectAuthorized = true;
+    data.nativeIosWorkAuthorized = true;
+    data.formalImplementationAuthorized = true;
+  });
+
+  assertDiagnostic(report, "OPS_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACKET_RECORD_CONTRACT_MISMATCH");
 });
