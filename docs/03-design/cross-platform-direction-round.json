@@ -1,0 +1,121 @@
+{
+  "title": "Nuttie 跨平台产品视觉方向",
+  "question": "保留受约束的生成式成长标记，还是采用一个结构化替代方向？",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Living Growth Mark",
+      "kicker": "THE ROLL",
+      "lineage": "generative-parametric-identity + daily growth rings",
+      "thesis": "同一个成长种子贯穿日记、趋势和设置；状态改变结构，绝不靠随机换肤制造新鲜感。",
+      "palette": ["#A85D3F", "#3F7C59", "#4E88A5", "#F4F0E8", "#252A26"],
+      "materials": ["flat ink", "calibrated arcs", "paper surface"],
+      "viewport": "手机首屏先看到今天的成长标记、能量/宏量摘要和一个可达的新增动作；平板与桌面把同一标记展开成日记与趋势双栏。",
+      "risk": "生成式变化可能削弱工具信任；因此种子只映射到有限、可解释的状态，刷新不改变已保存记录的视觉身份。",
+      "raised": [
+        {"from": "notation-diagram-systems-labanotation", "raise": "趋势与活动使用纵向时间轴，时长由线段长度表达而不是只靠颜色。"},
+        {"from": "paper-folds-pleats-deployable-miura-orbit-sheet", "raise": "日摘要在手机上是紧凑的折叠包，在大屏上可逐步展开为完整复盘场。"}
+      ],
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          {"label": "context rail", "x": 0, "y": 0, "w": 12, "h": 1, "accent": true},
+          {"label": "growth mark", "x": 0, "y": 1, "w": 7, "h": 4, "accent": true},
+          {"label": "today ledger", "x": 7, "y": 1, "w": 5, "h": 4},
+          {"label": "quick capture", "x": 0, "y": 5, "w": 12, "h": 2},
+          {"label": "recent entries", "x": 0, "y": 7, "w": 8, "h": 3},
+          {"label": "sync state", "x": 8, "y": 7, "w": 4, "h": 3}
+        ]
+      }
+    },
+    {
+      "id": "model-pick",
+      "label": "Field Guide Almanac",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "botanical field notes + annotated nutrition atlas",
+      "thesis": "每一天像一页可翻阅的田野记录，事实、来源和下一步都在同一张纸上。",
+      "palette": ["#2C3A2F", "#E7EFE4", "#B76B4B", "#F7F3EA"],
+      "materials": ["field-paper", "ink annotations", "pressed-leaf index"],
+      "viewport": "今日页是一本打开的记录册，左侧是当日事实，右侧是来源与趋势注记；手机按页签顺序折叠。",
+      "risk": "这是同类健康产品最容易落入的熟悉方向，但它的来源注记和跨设备连续页必须做到真正可操作。",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [{"label": "open spread", "x": 0, "y": 0, "w": 12, "h": 8, "accent": true}, {"label": "page index", "x": 0, "y": 8, "w": 12, "h": 2}]}
+    },
+    {
+      "id": "challenger-labanotation",
+      "label": "Daily Movement Score",
+      "verdict": "competitive",
+      "lineage": "labanotation",
+      "thesis": "一天是一条向上生长的动作谱，记录的形状就是持续时间与节奏。",
+      "palette": ["#FFFFFF", "#252A26", "#E8E9E5", "#A85D3F"],
+      "materials": ["score paper", "solid/hatch/dot marks"],
+      "viewport": "趋势页以中心时间轴组织摄入、饮水与活动，最近一天位于视线中心。",
+      "risk": "时间结构很强，但若进入首页会让快速记餐变得过于像编辑谱。",
+      "case": "在产品清晰度上有优势：记录时长与趋势时间轴直接可读；在受众识别上保留为竞争方案。",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [{"label": "center time staff", "x": 5, "y": 0, "w": 2, "h": 10, "accent": true}, {"label": "left measures", "x": 0, "y": 1, "w": 5, "h": 8}, {"label": "right measures", "x": 7, "y": 1, "w": 5, "h": 8}]}
+    },
+    {
+      "id": "challenger-emission-rail",
+      "label": "Calibrated Growth Rail",
+      "verdict": "competitive",
+      "lineage": "operate-c-emission-line-rail",
+      "thesis": "所有入口都落在一条校准轨道上，状态由线高、虚实和重复表达。",
+      "palette": ["#272A28", "#F4F0E8", "#A85D3F", "#3F7C59"],
+      "materials": ["charcoal continuum", "hairline emissions"],
+      "viewport": "桌面端以左侧轨道串起四个目的地，打开的任务在右侧形成大面板；手机把轨道变成底部导航。",
+      "risk": "密度和秩序很适合复盘，但过度仪表盘化会削弱健康记录的温度。",
+      "case": "在大屏工作流与同步状态表达上胜出一轴；保留其线型状态语法，不采用全套深色仪表盘。",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [{"label": "navigation rail", "x": 0, "y": 0, "w": 2, "h": 10, "accent": true}, {"label": "open work plate", "x": 2, "y": 0, "w": 10, "h": 10}]}
+    },
+    {
+      "id": "challenger-miura",
+      "label": "Folded Daily Packet",
+      "verdict": "competitive",
+      "lineage": "Miura-fold sheet",
+      "thesis": "日记从一张小卡展开为一张完整复盘表，折痕本身就是信息层级。",
+      "palette": ["#FFFDF8", "#A85D3F", "#DDE8ED", "#252A26"],
+      "materials": ["scored paper", "crease graph"],
+      "viewport": "手机只呈现当前折页和一个展开手势；桌面同时展示目标、摄入、消耗和来源。",
+      "risk": "展开隐喻可记忆，但手势不能成为唯一入口，否则键盘和辅助技术会失去同等能力。",
+      "case": "在渐进披露上有优势，适合成为摘要组件的响应式行为；整体世界仍不如成长标记稳定。",
+      "wireframe": {"cols": 12, "rows": 10, "regions": [{"label": "folded summary", "x": 1, "y": 1, "w": 10, "h": 4, "accent": true}, {"label": "expanded detail", "x": 1, "y": 5, "w": 10, "h": 4}]}
+    },
+    {
+      "id": "challenger-cloud-quarry",
+      "label": "Weather Quarry",
+      "verdict": "declined",
+      "lineage": "cloud quarry",
+      "palette": ["#FFFFFF", "#85B9D5", "#5D6970"],
+      "materials": ["cloud blocks", "cut sky voids"],
+      "viewport": "记录像切下的天气块，按日期堆叠并在趋势里消散。",
+      "risk": "隐喻太远，用户需要先理解画面再理解自己的数据。",
+      "case": "在受众识别和产品清晰度两轴都不够强，折叠。",
+      "kept": "保留‘状态会变化但历史不消失’的分层动势。"
+    },
+    {
+      "id": "challenger-terminal",
+      "label": "Phosphor Check-in",
+      "verdict": "declined",
+      "lineage": "phosphor terminal",
+      "palette": ["#101512", "#A9D8A0", "#EAF7E3"],
+      "materials": ["phosphor glass", "typed transcript"],
+      "viewport": "所有记录像命令行事件流，输入后立即追加到日志。",
+      "risk": "低可读性、高记忆负担，不适合户外移动使用。",
+      "case": "在两轴都不如成长标记，折叠。",
+      "kept": "保留‘同步和失败状态直接说出来’的文字反馈纪律。"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": false},
+  "canon": true,
+  "canonCard": {
+    "label": "类别标准",
+    "thesis": "白底、卡片、主色按钮和一张趋势图，按健康记录产品的熟悉方式完成。",
+    "palette": ["#FFFFFF", "#111827", "#2563EB"],
+    "materials": ["clean grid", "standard cards"],
+    "viewport": "今日摘要置顶，底部导航切换日记、趋势、食品和设置。",
+    "risk": "易懂但难以形成 Nuttie 的独特记忆。",
+    "wireframe": {"cols": 12, "rows": 10, "regions": [{"label": "standard dashboard", "x": 0, "y": 0, "w": 12, "h": 10}]}
+  },
+  "steer": true
+}
