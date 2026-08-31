@@ -20,8 +20,11 @@ The repository push and a production release remain separate actions.
    Keep the service private. Set `ZBPACK_DOCKERFILE_NAME=api`,
    `NODE_ENV=production`,
    `ALLOW_IN_MEMORY=false`, `DATABASE_URL`, a random
-   `ACCESS_TOKEN_SECRET` of at least 32 characters, and the public web origin
-   in `ALLOWED_ORIGINS`. Use `/ready` as the health check.
+   `ACCESS_TOKEN_SECRET` of at least 32 characters (for example, generate one
+   with `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`),
+   and the public web origin in `ALLOWED_ORIGINS`. The API rejects placeholder
+   secrets, wildcard origins, and origins with a path. Use `/ready` as the
+   health check.
 3. Add a `web` service from the same repository and select `Dockerfile.web`.
    Give only this service the public HTTPS domain. Set
    `ZBPACK_DOCKERFILE_NAME=web` and

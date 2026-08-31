@@ -51,6 +51,60 @@ test("production configuration fails closed without a database and secret", () =
       }),
     ConfigurationError,
   );
+  assert.throws(
+    () =>
+      loadConfig({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgres://example",
+        ACCESS_TOKEN_SECRET:
+          "replace-with-a-random-secret-at-least-32-characters",
+        ALLOWED_ORIGINS: "https://nuttie.example",
+      }),
+    ConfigurationError,
+  );
+  assert.throws(
+    () =>
+      loadConfig({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgres://example",
+        ACCESS_TOKEN_SECRET: "a".repeat(40),
+        ALLOWED_ORIGINS: "*",
+      }),
+    ConfigurationError,
+  );
+  assert.throws(
+    () =>
+      loadConfig({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgres://example",
+        ACCESS_TOKEN_SECRET: "a".repeat(40),
+        ALLOWED_ORIGINS: "https://nuttie.example/app",
+      }),
+    ConfigurationError,
+  );
+  assert.throws(
+    () =>
+      loadConfig({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgres://example",
+        ACCESS_TOKEN_SECRET: "a".repeat(40),
+        ALLOWED_ORIGINS: "https://nuttie.example",
+        PORT: "0",
+      }),
+    ConfigurationError,
+  );
+});
+
+test("normalizes development origins and permits an ephemeral test port", () => {
+  const config = loadConfig({
+    NODE_ENV: "test",
+    ALLOW_IN_MEMORY: "true",
+    ACCESS_TOKEN_SECRET: "test-secret-that-is-long-enough-for-hmac",
+    ALLOWED_ORIGINS: "http://localhost:3000/,http://localhost:3000",
+    PORT: "0",
+  });
+  assert.equal(config.port, 0);
+  assert.deepEqual(config.corsOrigins, ["http://localhost:3000"]);
 });
 
 test("health and readiness are available in memory", async (t) => {
