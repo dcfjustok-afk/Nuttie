@@ -9,7 +9,10 @@ coverage/
 .env
 .env.*
 !.env.example
-.impeccable/
+.impeccable/*
+!.impeccable/design.json
+!.impeccable/surfaces/
+!.impeccable/surfaces/*.md
 playwright-report/
 test-results/
 .playwright-cli/

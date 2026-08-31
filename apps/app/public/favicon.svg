@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>Nuttie</title>
+  <rect width="64" height="64" rx="16" fill="#A85D3F"/>
+  <path d="M32 50c-8.7 0-15.8-6.7-15.8-15.1 0-7.7 5.9-13.3 14.4-14.1 5.8-.5 9.2-3.2 12.6-8.8 1.9 7.6 1.8 13.3-.7 18.8C39.8 45.6 35.7 50 32 50Z" fill="none" stroke="#FFFDF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 51c3.1-7.2 8.4-10.7 15-11.5" fill="none" stroke="#FFFDF8" stroke-width="4" stroke-linecap="round"/>
+</svg>

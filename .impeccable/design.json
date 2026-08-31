@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-31T10:00:00+08:00",
+  "title": "Design System: Nuttie Living Growth Mark",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Paper canvas",
+        "canonical": "#F4F0E8",
+        "tonalRamp": [
+          "#27241F",
+          "#514B42",
+          "#7B7265",
+          "#A59B8B",
+          "#CFC6B7",
+          "#E1D9CC",
+          "#EEE9E1",
+          "#F4F0E8"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Warm surface",
+        "canonical": "#FFFDF8",
+        "tonalRamp": [
+          "#292721",
+          "#5A554C",
+          "#898278",
+          "#B7B0A5",
+          "#D9D4CB",
+          "#EAE6DF",
+          "#F5F2EC",
+          "#FFFDF8"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Living ink",
+        "canonical": "#252A26",
+        "tonalRamp": [
+          "#252A26",
+          "#414740",
+          "#5F6860",
+          "#7B837B",
+          "#9BA19C",
+          "#BEC3BE",
+          "#E0E3DF",
+          "#F3F5F1"
+        ]
+      },
+      "chestnut": {
+        "role": "primary",
+        "displayName": "Chestnut action",
+        "canonical": "#A85D3F",
+        "tonalRamp": [
+          "#4D261A",
+          "#6D3726",
+          "#8A4932",
+          "#A85D3F",
+          "#BA755A",
+          "#CF9782",
+          "#E5BDAE",
+          "#F5E5DF"
+        ]
+      },
+      "sprout": {
+        "role": "secondary",
+        "displayName": "Sprout confirmation",
+        "canonical": "#3F7C59",
+        "tonalRamp": [
+          "#173622",
+          "#255137",
+          "#326A4A",
+          "#3F7C59",
+          "#629679",
+          "#88B19A",
+          "#B4CEBC",
+          "#E4F0E7"
+        ]
+      },
+      "sky": {
+        "role": "tertiary",
+        "displayName": "Sky observation",
+        "canonical": "#4E88A5",
+        "tonalRamp": [
+          "#173746",
+          "#28546B",
+          "#3B6F87",
+          "#4E88A5",
+          "#70A2B8",
+          "#95BDCB",
+          "#BDD9E1",
+          "#E6F1F5"
+        ]
+      },
+      "amber": {
+        "role": "tertiary",
+        "displayName": "Amber attention",
+        "canonical": "#E2A34A",
+        "tonalRamp": [
+          "#56380C",
+          "#805516",
+          "#B07822",
+          "#E2A34A",
+          "#E9B96A",
+          "#F0CC8E",
+          "#F7E1B6",
+          "#FFF2D8"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger correction",
+        "canonical": "#B9574C",
+        "tonalRamp": [
+          "#521B16",
+          "#772A23",
+          "#963A31",
+          "#B9574C",
+          "#C9786E",
+          "#D99991",
+          "#E9BCB7",
+          "#F8E6E2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "A short page statement or diary invitation; never a promotional hero."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Screen title, date, or focal value."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Instructions and explanations that must survive Simplified Chinese wrapping."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Units, provenance, sync state, and supporting metadata."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-small",
+        "value": "0 3px 10px rgba(64,48,33,0.08)",
+        "purpose": "Quiet lift for a feature surface; not used on every row."
+      },
+      {
+        "name": "feature-lift",
+        "value": "0 12px 22px rgba(64,48,33,0.12)",
+        "purpose": "Transient sheet or focal surface that must sit above the page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-standard",
+        "value": "240ms ease-out",
+        "purpose": "A bounded growth-ring or surface state change; never a random identity change."
+      },
+      {
+        "name": "press-feedback",
+        "value": "160ms ease-out",
+        "purpose": "Opacity/tonal response to press, hover, or keyboard focus."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "Remove non-essential movement when the platform requests reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "narrow-phone",
+        "value": "<600px",
+        "purpose": "Single-column forms and stacked metric groups."
+      },
+      {
+        "name": "expanded-phone",
+        "value": "600px",
+        "purpose": "Two-column field rows when each field retains a readable minimum width."
+      },
+      {
+        "name": "rail",
+        "value": "768px",
+        "purpose": "Switch from bottom navigation to the expanded rail and wider hero."
+      },
+      {
+        "name": "wide-review",
+        "value": "1024px",
+        "purpose": "Give the centered content and review panes room without stretching text."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one clear next action for saving or adding a record.",
+      "html": "<button class=\"ds-btn-primary\"><span>保存记录</span></button>",
+      "css": ".ds-btn-primary { min-height: 48px; padding: 12px 16px; border: 0; border-radius: 10px; background: #A85D3F; color: #FFFFFF; font: 600 15px/22px system-ui, sans-serif; cursor: pointer; transition: opacity 160ms ease-out, box-shadow 160ms ease-out; } .ds-btn-primary:hover { opacity: .88; } .ds-btn-primary:active { opacity: .76; } .ds-btn-primary:focus-visible { outline: 3px solid #4E88A5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A low-risk alternative that keeps the primary action visually rare.",
+      "html": "<button class=\"ds-btn-secondary\"><span>先进入本地演示</span></button>",
+      "css": ".ds-btn-secondary { min-height: 44px; padding: 10px 16px; border: 1px solid #E3DBCE; border-radius: 10px; background: #FFFDF8; color: #A85D3F; font: 600 13px/18px system-ui, sans-serif; cursor: pointer; transition: background 160ms ease-out, opacity 160ms ease-out; } .ds-btn-secondary:hover { background: #F5EFE6; } .ds-btn-secondary:active { opacity: .76; } .ds-btn-secondary:focus-visible { outline: 3px solid #4E88A5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "A native-shaped field for facts that can remain incomplete without losing the draft.",
+      "html": "<label class=\"ds-field\"><span>能量（kcal）</span><input placeholder=\"可稍后补充\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 4px; color: #252A26; font: 600 13px/18px system-ui, sans-serif; } .ds-field input { min-height: 48px; padding: 12px; border: 1px solid #E3DBCE; border-radius: 10px; background: #F5EFE6; color: #252A26; font: 400 15px/22px system-ui, sans-serif; } .ds-field input::placeholder { color: #7B837B; } .ds-field input:focus-visible { outline: 3px solid rgba(78,136,165,.28); outline-offset: 1px; border-color: #4E88A5; }"
+    },
+    {
+      "name": "Navigation Item",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "The same destination vocabulary in a phone bar or expanded rail.",
+      "html": "<a class=\"ds-nav-active\" href=\"/diary\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5h16v14H4zM8 3v4M16 3v4M4 9h16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"/></svg><span>日记</span></a>",
+      "css": ".ds-nav-active { min-height: 44px; padding: 8px 12px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; background: #E5F0E7; color: #3F7C59; font: 600 13px/18px system-ui, sans-serif; text-decoration: none; transition: opacity 160ms ease-out; } .ds-nav-active svg { width: 20px; height: 20px; } .ds-nav-active:hover { opacity: .82; } .ds-nav-active:focus-visible { outline: 3px solid #4E88A5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Metric Band",
+      "kind": "card",
+      "refersTo": "metric-band",
+      "description": "A compact fact with unit and provenance hint, suitable for a phone stack or wide grid.",
+      "html": "<section class=\"ds-metric\"><span class=\"ds-metric-marker\"></span><span class=\"ds-metric-label\">今日摄入</span><strong>未记录</strong><small>添加餐食后显示</small></section>",
+      "css": ".ds-metric { min-height: 116px; padding: 16px; border: 1px solid #E3DBCE; border-radius: 16px; background: #FFFDF8; display: flex; flex-direction: column; gap: 4px; color: #252A26; } .ds-metric-marker { width: 24px; height: 4px; border-radius: 2px; background: #A85D3F; } .ds-metric-label, .ds-metric small { color: #5F6860; font: 500 12px/16px system-ui, sans-serif; } .ds-metric strong { font: 700 24px/30px system-ui, sans-serif; margin-top: 2px; } .ds-metric small { margin-top: auto; color: #7B837B; }"
+    },
+    {
+      "name": "Growth Mark",
+      "kind": "custom",
+      "refersTo": "growth-mark",
+      "description": "The deterministic stateful mark that makes today's small records visible as continuity.",
+      "html": "<div class=\"ds-growth\" role=\"img\" aria-label=\"今日成长标记，正在成长，42%\"><svg viewBox=\"0 0 188 188\" aria-hidden=\"true\"><circle cx=\"94\" cy=\"94\" r=\"82\" fill=\"none\" stroke=\"#E3DBCE\" stroke-width=\"12\"/><circle cx=\"94\" cy=\"94\" r=\"82\" fill=\"none\" stroke=\"#A85D3F\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-dasharray=\"515.2\" stroke-dashoffset=\"298.8\" transform=\"rotate(-90 94 94)\"/><path d=\"M94 53c-13 15-13 37 0 64 0-27 0-43 0-64Zm0 40c20-14 31-7 36 5-14 2-26 0-36-5Z\" fill=\"none\" stroke=\"#3F7C59\" stroke-width=\"5\" stroke-linecap=\"round\"/></svg><strong>42%</strong><span>正在成长</span></div>",
+      "css": ".ds-growth { width: 188px; height: 188px; position: relative; display: grid; place-items: center; color: #252A26; } .ds-growth svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-growth strong, .ds-growth span { position: relative; z-index: 1; } .ds-growth strong { margin-top: -4px; font: 700 28px/34px system-ui, sans-serif; } .ds-growth span { margin-top: 34px; margin-left: -42px; color: #5F6860; font: 600 12px/16px system-ui, sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Living Growth Mark",
+    "overview": "Nuttie turns small, repeatable records into a trustworthy daily picture. A bounded growth ring carries continuity across diary, trends, sign-in, and settings; semantic colors and explicit state copy keep the mark supportive rather than judgmental. The system is warm and precise, with paper-toned surfaces, native type, measured corners, and a rail that opens the same work on larger screens.",
+    "keyCharacteristics": [
+      "One deterministic mark, four named states",
+      "Facts, provenance, missingness, and sync status remain readable",
+      "Bottom navigation on phones; rail and wider review topology at 768px+",
+      "Flat-by-default surfaces with restrained depth",
+      "Simplified Chinese and accessibility-first wrapping"
+    ],
+    "rules": [
+      {
+        "name": "Meaning Before Color",
+        "body": "Every important state is named in text or structure; color reinforces it.",
+        "section": "colors"
+      },
+      {
+        "name": "Rare Chestnut",
+        "body": "Chestnut belongs to the next useful action and the identity mark, not to broad decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "Flat By Default",
+        "body": "Use tonal layers and hairlines first; reserve shadows for a focal or transient layer.",
+        "section": "elevation"
+      },
+      {
+        "name": "Native Scale",
+        "body": "Let platform shaping and text enlargement win over a fixed web-only scale.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do keep the growth mark's geometry stable while its bounded state changes.",
+      "Do make the first viewport show today's facts and one reachable add action.",
+      "Do preserve text alternatives for charts, states, and missing values.",
+      "Do switch topology by width instead of stretching a phone screen."
+    ],
+    "donts": [
+      "Don't use gradients, glow, bokeh, or decorative blobs.",
+      "Don't turn progress into a score, streak punishment, or medical conclusion.",
+      "Don't hide core actions behind hover, gestures, or sub-44px targets.",
+      "Don't silently replace missing values with zero or overwrite a revision conflict."
+    ]
+  }
+}
