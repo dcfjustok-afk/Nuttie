@@ -43,6 +43,10 @@ type Store = {
   sync: () => Promise<void>;
 };
 
+// Demo records are part of the exported first frame. Keep their timestamps
+// deterministic; user-created records receive real timestamps in addRecord.
+const seedRecordedAt = "2026-08-31T00:00:00.000Z";
+
 const seedRecords: LocalRecord[] = [
   {
     id: "seed-breakfast",
@@ -55,7 +59,7 @@ const seedRecords: LocalRecord[] = [
     proteinG: 22,
     carbsG: 48,
     fatG: 14,
-    recordedAt: new Date().toISOString(),
+    recordedAt: seedRecordedAt,
     source: "manual",
     revision: 1,
     syncStatus: "synced",
@@ -67,7 +71,7 @@ const seedRecords: LocalRecord[] = [
     subtitle: "上午 · 10:25",
     amount: 350,
     unit: "ml",
-    recordedAt: new Date().toISOString(),
+    recordedAt: seedRecordedAt,
     source: "manual",
     revision: 1,
     syncStatus: "synced",
@@ -79,7 +83,7 @@ const seedRecords: LocalRecord[] = [
     subtitle: "今天 · 07:45",
     amount: 63.4,
     unit: "kg",
-    recordedAt: new Date().toISOString(),
+    recordedAt: seedRecordedAt,
     source: "manual",
     revision: 1,
     syncStatus: "synced",
