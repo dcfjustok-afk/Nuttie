@@ -254,7 +254,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.sm,
   },
-  searchInput: { flex: 1, minWidth: 0, ...typeScale.body },
+  searchInput: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: dimensions.control,
+    ...typeScale.body,
+  },
   filters: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
   filter: {
     minHeight: dimensions.minTouch,

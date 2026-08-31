@@ -112,4 +112,14 @@ for (const file of sourceFiles) {
   );
 }
 
+const foodScreen = await readFile(
+  path.resolve("apps/app/app/(tabs)/food.tsx"),
+  "utf8",
+);
+assert.match(
+  foodScreen,
+  /searchInput:\s*\{[\s\S]*?minHeight:\s*dimensions\.control[\s\S]*?\}/,
+  "food search input must preserve the shared control hit target",
+);
+
 console.log("Design system contract verified.");
