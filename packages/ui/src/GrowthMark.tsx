@@ -90,7 +90,7 @@ export function GrowthMark({
           fill="none"
         />
       </Svg>
-      <View pointerEvents="none" style={styles.center}>
+      <View style={[styles.center, styles.centerPointerEvents]}>
         <Text style={[styles.percent, { color: palette.ink }]}>
           {Math.round(clamped * 100)}%
         </Text>
@@ -112,6 +112,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
+  },
+  centerPointerEvents: {
+    pointerEvents: "none",
   },
   percent: {
     fontSize: componentTokens.growthMark.percentFontSize,
