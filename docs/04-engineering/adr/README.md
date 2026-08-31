@@ -9,6 +9,6 @@ ADR 记录已经 Owner 接受的工程决策、理由、后果和复审条件。
 | [ADR-0003](0003-ai-transport-only-network-boundary.md) | accepted | D-003、D-004、D-014 | AITransport 唯一业务网络边界 |
 | [ADR-0004](0004-sqlcipher-and-keychain.md) | accepted | D-006、D-015 | SQLCipher 与 Keychain 数据库密钥 |
 | [ADR-0005](0005-offline-data-pack-and-manual-backup.md) | accepted | D-002、D-006、D-012、D-013 | 离线数据包与手动加密备份 |
+| [ADR-0007](0007-client-storage-boundary.md) | accepted | D-006、D-015 | 跨端客户端存储边界 |
 
 尚未接受的 package 级选择统一放在 [D-018+ 技术决策候选](../decisions/decision-candidates.md)，不得建立 `accepted` ADR。
-

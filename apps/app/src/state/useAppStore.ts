@@ -4,7 +4,9 @@ import type { AccountExport } from "@nuttie/contracts";
 
 import * as api from "../data/api";
 import {
+  clearCache,
   clearSession,
+  discardLegacyCache,
   readCache,
   readDeviceId,
   readSession,
@@ -83,8 +85,15 @@ const seedRecords: LocalRecord[] = [
   },
 ];
 
-function persist(state: Pick<Store, "records" | "queue" | "cursor">) {
-  return writeCache(state);
+function cacheScope(session: Session | null) {
+  return session?.mode === "authenticated" ? { userId: session.user.id } : {};
+}
+
+function persist(
+  state: Pick<Store, "records" | "queue" | "cursor">,
+  session: Session | null,
+) {
+  return writeCache(state, cacheScope(session));
 }
 
 export const useAppStore = create<Store>((set, get) => ({
@@ -97,10 +106,7 @@ export const useAppStore = create<Store>((set, get) => ({
   lastSyncError: undefined,
 
   hydrate: async () => {
-    const [cacheRaw, persisted] = await Promise.all([
-      readCache<Pick<Store, "records" | "queue" | "cursor">>(),
-      readSession(),
-    ]);
+    const persisted = await readSession();
     let session: Session | null = null;
     try {
       // Web restores through the cookie; native restores through SecureStore.
@@ -113,6 +119,10 @@ export const useAppStore = create<Store>((set, get) => ({
     } catch {
       if (persisted) await clearSession();
     }
+    await discardLegacyCache();
+    const cacheRaw = await readCache<
+      Pick<Store, "records" | "queue" | "cursor">
+    >(cacheScope(session));
     set({
       hydrated: true,
       session,
@@ -125,7 +135,19 @@ export const useAppStore = create<Store>((set, get) => ({
 
   signIn: async (session) => {
     await writeSession(session);
+    const scopedCache = await readCache<
+      Pick<Store, "records" | "queue" | "cursor">
+    >(cacheScope(session));
     set({ session, lastSyncError: undefined });
+    if (scopedCache) {
+      set({
+        records: scopedCache.records?.length
+          ? scopedCache.records
+          : seedRecords,
+        queue: scopedCache.queue ?? [],
+        cursor: scopedCache.cursor,
+      });
+    }
     if (session.mode === "authenticated") await get().sync();
   },
 
@@ -136,7 +158,13 @@ export const useAppStore = create<Store>((set, get) => ({
         .logout(session.accessToken, session.refreshToken)
         .catch(() => undefined);
     await clearSession();
-    set({ session: null, queue: [], cursor: undefined });
+    set({
+      session: null,
+      records: seedRecords,
+      queue: [],
+      cursor: undefined,
+      lastSyncError: undefined,
+    });
   },
 
   exportAccount: async () => {
@@ -176,7 +204,7 @@ export const useAppStore = create<Store>((set, get) => ({
     await clearSession();
     const cleared = { records: [], queue: [], cursor: undefined };
     set({ session: null, ...cleared, lastSyncError: undefined });
-    await persist(cleared);
+    await clearCache(cacheScope(session));
   },
 
   addRecord: async (input) => {
@@ -204,11 +232,14 @@ export const useAppStore = create<Store>((set, get) => ({
     const nextRecords = [record, ...get().records];
     const nextQueue = [...get().queue, mutation];
     set({ records: nextRecords, queue: nextQueue });
-    await persist({
-      records: nextRecords,
-      queue: nextQueue,
-      cursor: get().cursor,
-    });
+    await persist(
+      {
+        records: nextRecords,
+        queue: nextQueue,
+        cursor: get().cursor,
+      },
+      get().session,
+    );
     if (get().session?.mode === "authenticated") void get().sync();
   },
 
@@ -235,11 +266,14 @@ export const useAppStore = create<Store>((set, get) => ({
               cursor: result.cursor,
             }));
             const afterMutation = get();
-            await persist({
-              records: afterMutation.records,
-              queue: afterMutation.queue,
-              cursor: afterMutation.cursor,
-            });
+            await persist(
+              {
+                records: afterMutation.records,
+                queue: afterMutation.queue,
+                cursor: afterMutation.cursor,
+              },
+              active,
+            );
           }
           const pulled = await api.pullSync(active.accessToken, get().cursor);
           set((state) => {
@@ -256,11 +290,14 @@ export const useAppStore = create<Store>((set, get) => ({
             return { records: merged, cursor: pulled.cursor };
           });
           const state = get();
-          await persist({
-            records: state.records,
-            queue: state.queue,
-            cursor: state.cursor,
-          });
+          await persist(
+            {
+              records: state.records,
+              queue: state.queue,
+              cursor: state.cursor,
+            },
+            active,
+          );
           break;
         } catch (error) {
           if (

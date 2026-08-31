@@ -3,24 +3,43 @@ import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 
 import type { PersistedSession, Session } from "../types";
+import {
+  DEVICE_KEY,
+  getCacheKey,
+  LEGACY_CACHE_KEY,
+  SESSION_KEY,
+  type CacheScope,
+} from "./storage-policy";
 
-const CACHE_KEY = "nuttie.cache.v1";
-const SESSION_KEY = "nuttie.session.v1";
-const DEVICE_KEY = "nuttie.device.v1";
+export type { CacheScope } from "./storage-policy";
+export { getCacheKey } from "./storage-policy";
 
-export async function readCache<T>(): Promise<T | null> {
-  const value = await AsyncStorage.getItem(CACHE_KEY);
+export async function readCache<T>(scope: CacheScope = {}): Promise<T | null> {
+  const key = getCacheKey(scope);
+  const value = await AsyncStorage.getItem(key);
   if (!value) return null;
   try {
     return JSON.parse(value) as T;
   } catch {
-    await AsyncStorage.removeItem(CACHE_KEY);
+    await AsyncStorage.removeItem(key);
     return null;
   }
 }
 
-export async function writeCache(value: unknown): Promise<void> {
-  await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(value));
+export async function writeCache(
+  value: unknown,
+  scope: CacheScope = {},
+): Promise<void> {
+  await AsyncStorage.setItem(getCacheKey(scope), JSON.stringify(value));
+}
+
+export async function clearCache(scope: CacheScope = {}): Promise<void> {
+  await AsyncStorage.removeItem(getCacheKey(scope));
+}
+
+/** Discard the pre-partition cache so an unknown account cannot inherit it. */
+export async function discardLegacyCache(): Promise<void> {
+  await AsyncStorage.removeItem(LEGACY_CACHE_KEY);
 }
 
 export async function readSession(): Promise<PersistedSession | null> {
@@ -30,7 +49,11 @@ export async function readSession(): Promise<PersistedSession | null> {
   if (!value) return null;
   try {
     const parsed = JSON.parse(value) as PersistedSession;
-    if (parsed?.mode !== "authenticated" || !parsed.refreshToken || !parsed.user?.id) {
+    if (
+      parsed?.mode !== "authenticated" ||
+      !parsed.refreshToken ||
+      !parsed.user?.id
+    ) {
       await SecureStore.deleteItemAsync(SESSION_KEY);
       return null;
     }
@@ -51,7 +74,11 @@ export async function writeSession(session: Session): Promise<void> {
     await SecureStore.deleteItemAsync(SESSION_KEY);
     return;
   }
-  const persisted: PersistedSession = { mode: "authenticated", refreshToken: session.refreshToken, user: session.user };
+  const persisted: PersistedSession = {
+    mode: "authenticated",
+    refreshToken: session.refreshToken,
+    user: session.user,
+  };
   await SecureStore.setItemAsync(SESSION_KEY, JSON.stringify(persisted), {
     keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
   });
