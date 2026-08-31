@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import {
+  AccountExportSchema,
   DiaryRecordSchema,
   assertSyncPayloadSafe,
+  type AccountExport,
   type DiaryRecord,
   type MutationInput,
   type RecordKind,
@@ -70,6 +72,8 @@ export interface Repository {
     revokedAt: string,
     replacement: SessionRecord,
   ): Promise<SessionRecord | null>;
+  exportAccount(userId: string, exportedAt: string): Promise<AccountExport>;
+  deleteAccount(userId: string): Promise<boolean>;
   commitMutation(
     userId: string,
     mutation: MutationInput,
@@ -147,6 +151,16 @@ function publicRecord(record: StoredRecord): StoredRecord {
   });
 }
 
+function exportRecord(record: StoredRecord): DiaryRecord {
+  const { userId: _userId, ...withoutOwner } = publicRecord(record);
+  return DiaryRecordSchema.parse(withoutOwner);
+}
+
+function publicUser(user: UserRecord): User {
+  const { passwordHash: _passwordHash, ...withoutPassword } = userCopy(user);
+  return clone(withoutPassword);
+}
+
 export class MemoryRepository implements Repository {
   readonly mode = "memory" as const;
   private readonly usersById = new Map<string, UserRecord>();
@@ -192,6 +206,38 @@ export class MemoryRepository implements Repository {
   async findUserById(id: string): Promise<UserRecord | null> {
     const user = this.usersById.get(id);
     return user ? userCopy(user) : null;
+  }
+
+  async exportAccount(
+    userId: string,
+    exportedAt: string,
+  ): Promise<AccountExport> {
+    const user = this.usersById.get(userId);
+    if (!user) throw new RepositoryError("NOT_FOUND", "user does not exist");
+    const result = AccountExportSchema.parse({
+      schemaVersion: "NUTTIE_ACCOUNT_EXPORT_V1",
+      exportedAt,
+      user: publicUser(user),
+      records: (this.recordsByUser.get(userId) ?? []).map(exportRecord),
+    });
+    assertSyncPayloadSafe(result, "accountExport");
+    return clone(result);
+  }
+
+  async deleteAccount(userId: string): Promise<boolean> {
+    const user = this.usersById.get(userId);
+    if (!user) return false;
+    this.usersById.delete(userId);
+    this.userIdByEmail.delete(user.email.toLowerCase());
+    for (const [id, session] of this.sessionsById) {
+      if (session.userId !== userId) continue;
+      this.sessionsById.delete(id);
+      this.sessionIdByHash.delete(session.tokenHash);
+    }
+    this.recordsByUser.delete(userId);
+    this.mutationsByUser.delete(userId);
+    this.revisionByUser.delete(userId);
+    return true;
   }
 
   async createSession(session: SessionRecord): Promise<void> {
@@ -471,6 +517,38 @@ export class PostgresRepository implements Repository {
       [id],
     );
     return result.rows[0] ? rowUser(result.rows[0]) : null;
+  }
+
+  async exportAccount(
+    userId: string,
+    exportedAt: string,
+  ): Promise<AccountExport> {
+    const userResult = await this.pool.query<PgRow>(
+      "SELECT * FROM users WHERE id = $1 LIMIT 1",
+      [userId],
+    );
+    const userRow = userResult.rows[0];
+    if (!userRow) throw new RepositoryError("NOT_FOUND", "user does not exist");
+    const recordResult = await this.pool.query<PgRow>(
+      `SELECT user_id, record_json, server_revision FROM records
+       WHERE user_id = $1 ORDER BY server_revision ASC, kind ASC, id ASC`,
+      [userId],
+    );
+    const result = AccountExportSchema.parse({
+      schemaVersion: "NUTTIE_ACCOUNT_EXPORT_V1",
+      exportedAt,
+      user: publicUser(rowUser(userRow)),
+      records: recordResult.rows.map(rowRecord).map(exportRecord),
+    });
+    assertSyncPayloadSafe(result, "accountExport");
+    return clone(result);
+  }
+
+  async deleteAccount(userId: string): Promise<boolean> {
+    const result = await this.pool.query("DELETE FROM users WHERE id = $1", [
+      userId,
+    ]);
+    return result.rowCount === 1;
   }
 
   async createSession(session: SessionRecord): Promise<void> {

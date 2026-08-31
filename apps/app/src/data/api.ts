@@ -1,6 +1,6 @@
 import type { LocalRecord, MutationDraft, Session } from "../types";
 import { Platform } from "react-native";
-import { assertSyncPayloadSafe } from "@nuttie/contracts";
+import { assertSyncPayloadSafe, type AccountExport } from "@nuttie/contracts";
 
 const configuredBaseUrl = process.env.EXPO_PUBLIC_API_URL;
 const configuredOrigin = configuredBaseUrl?.trim().replace(/\/+$/, "");
@@ -112,6 +112,23 @@ export async function logout(
     {
       method: "POST",
       body: JSON.stringify(refreshToken ? { refreshToken } : {}),
+    },
+    accessToken,
+  );
+}
+
+export async function exportAccount(
+  accessToken: string,
+): Promise<AccountExport> {
+  return request<AccountExport>("/v1/account/export", {}, accessToken);
+}
+
+export async function deleteAccount(accessToken: string): Promise<void> {
+  await request(
+    "/v1/account",
+    {
+      method: "DELETE",
+      body: JSON.stringify({ confirmation: "DELETE" }),
     },
     accessToken,
   );

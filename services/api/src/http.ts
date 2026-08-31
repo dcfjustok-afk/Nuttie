@@ -6,6 +6,7 @@ import {
   type ServerResponse,
 } from "node:http";
 import {
+  DeleteAccountInputSchema,
   LoginInputSchema,
   LogoutInputSchema,
   MutationInputSchema,
@@ -79,7 +80,10 @@ function applyCors(
     "access-control-allow-headers",
     "authorization, content-type, x-request-id, x-client-platform",
   );
-  response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
+  response.setHeader(
+    "access-control-allow-methods",
+    "GET, POST, DELETE, OPTIONS",
+  );
 }
 
 function sendJson(
@@ -242,7 +246,9 @@ function errorResponse(
         ? 409
         : error.code === "BAD_CURSOR"
           ? 400
-          : 503;
+          : error.code === "NOT_FOUND"
+            ? 404
+            : 503;
     const code = error.code === "BAD_CURSOR" ? "BAD_REQUEST" : error.code;
     return {
       status,
@@ -356,6 +362,29 @@ async function route(
     if (browserSession(request))
       response.setHeader("set-cookie", clearRefreshCookie(context.config));
     sendJson(response, 200, { data: { loggedOut: true } });
+    return;
+  }
+  if (isRoute(request.method, url.pathname, "GET", "/api/v1/account/export")) {
+    const user = await context.auth.authenticate(bearerToken(request));
+    const account = await context.repository.exportAccount(
+      user.id,
+      new Date().toISOString(),
+    );
+    response.setHeader(
+      "content-disposition",
+      'attachment; filename="nuttie-account-export.json"',
+    );
+    sendJson(response, 200, { data: account });
+    return;
+  }
+  if (isRoute(request.method, url.pathname, "DELETE", "/api/v1/account")) {
+    const user = await context.auth.authenticate(bearerToken(request));
+    DeleteAccountInputSchema.parse(await readJson(request));
+    const deleted = await context.repository.deleteAccount(user.id);
+    if (!deleted) throw new RepositoryError("NOT_FOUND", "user does not exist");
+    if (browserSession(request))
+      response.setHeader("set-cookie", clearRefreshCookie(context.config));
+    sendJson(response, 200, { data: { deleted: true } });
     return;
   }
   if (isRoute(request.method, url.pathname, "GET", "/api/v1/sync")) {

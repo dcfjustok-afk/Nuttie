@@ -212,6 +212,92 @@ test("browser auth responses keep refresh credentials in the HttpOnly cookie", a
   assert.equal("refreshToken" in (await refreshed.json()).data, false);
 });
 
+test("account export excludes secrets and confirmed deletion revokes the account", async (t) => {
+  const { application, origin } = await startTestApplication();
+  t.after(() => application.close());
+  const registration = await request(origin, "/api/v1/auth/register", {
+    method: "POST",
+    body: JSON.stringify({
+      email: "lifecycle@example.com",
+      password: "correct horse battery",
+      displayName: "Lifecycle",
+    }),
+  });
+  const session = (await registration.json()).data;
+  const mutation = {
+    clientMutationId: "lifecycle-record",
+    entityType: "water",
+    operation: "create",
+    baseRevision: 0,
+    payload: {
+      id: "lifecycle-record",
+      localDate: "2026-08-29",
+      recordedAt: "2026-08-29T08:00:00Z",
+      amount: 250,
+      unit: "ml",
+    },
+  };
+  const created = await request(origin, "/api/v1/mutations", {
+    method: "POST",
+    headers: { authorization: `Bearer ${session.accessToken}` },
+    body: JSON.stringify(mutation),
+  });
+  assert.equal(created.status, 201);
+
+  const exported = await request(origin, "/api/v1/account/export", {
+    method: "GET",
+    headers: { authorization: `Bearer ${session.accessToken}` },
+  });
+  assert.equal(exported.status, 200);
+  assert.match(
+    String(exported.headers.get("content-disposition")),
+    /attachment; filename="nuttie-account-export\.json"/,
+  );
+  const exportBody = (await exported.json()).data;
+  assert.equal(exportBody.schemaVersion, "NUTTIE_ACCOUNT_EXPORT_V1");
+  assert.equal(exportBody.user.email, "lifecycle@example.com");
+  assert.equal("passwordHash" in exportBody.user, false);
+  assert.equal(exportBody.records.length, 1);
+  assert.equal("refreshToken" in exportBody, false);
+  assert.equal("tokenHash" in exportBody, false);
+
+  const rejectedDelete = await request(origin, "/api/v1/account", {
+    method: "DELETE",
+    headers: { authorization: `Bearer ${session.accessToken}` },
+    body: JSON.stringify({ confirmation: "delete" }),
+  });
+  assert.equal(rejectedDelete.status, 400);
+  assert.equal((await rejectedDelete.json()).error.code, "VALIDATION_ERROR");
+
+  const deleted = await request(origin, "/api/v1/account", {
+    method: "DELETE",
+    headers: { authorization: `Bearer ${session.accessToken}` },
+    body: JSON.stringify({ confirmation: "DELETE" }),
+  });
+  assert.equal(deleted.status, 200);
+  assert.deepEqual((await deleted.json()).data, { deleted: true });
+
+  const oldAccess = await request(origin, "/api/v1/sync", {
+    method: "GET",
+    headers: { authorization: `Bearer ${session.accessToken}` },
+  });
+  assert.equal(oldAccess.status, 401);
+  const oldRefresh = await request(origin, "/api/v1/auth/refresh", {
+    method: "POST",
+    body: JSON.stringify({ refreshToken: session.refreshToken }),
+  });
+  assert.equal(oldRefresh.status, 401);
+
+  const recreated = await request(origin, "/api/v1/auth/register", {
+    method: "POST",
+    body: JSON.stringify({
+      email: "lifecycle@example.com",
+      password: "correct horse battery",
+    }),
+  });
+  assert.equal(recreated.status, 201);
+});
+
 test("sync rejects credential and raw AI fields without echoing their values", async (t) => {
   const { application, origin } = await startTestApplication();
   t.after(() => application.close());
@@ -348,6 +434,10 @@ test("web preflight allows the platform header used by cookie clients", async (t
   assert.match(
     String(response.headers.get("access-control-allow-headers")),
     /x-client-platform/,
+  );
+  assert.match(
+    String(response.headers.get("access-control-allow-methods")),
+    /DELETE/,
   );
 });
 

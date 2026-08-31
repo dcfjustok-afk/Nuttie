@@ -353,6 +353,23 @@ export const SyncResponseSchema = z
   .passthrough();
 export type SyncResponse = z.infer<typeof SyncResponseSchema>;
 
+export const AccountExportSchema = z
+  .object({
+    schemaVersion: z.literal("NUTTIE_ACCOUNT_EXPORT_V1"),
+    exportedAt: InstantSchema,
+    user: UserSchema,
+    records: z.array(DiaryRecordSchema),
+  })
+  .strict();
+export type AccountExport = z.infer<typeof AccountExportSchema>;
+
+export const DeleteAccountInputSchema = z
+  .object({
+    confirmation: z.literal("DELETE"),
+  })
+  .strict();
+export type DeleteAccountInput = z.infer<typeof DeleteAccountInputSchema>;
+
 export const MutationOperationSchema = z.enum([
   "create",
   "update",
