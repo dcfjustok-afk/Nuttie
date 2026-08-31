@@ -2,7 +2,9 @@ import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
+  componentTokens,
   dimensions,
+  getGrowthMarkSize,
   getGrowthState,
   radii,
   spacing,
@@ -83,7 +85,7 @@ export default function DiaryScreen() {
           <GrowthMark
             progress={progress}
             state={growthState}
-            size={wide ? 206 : 178}
+            size={getGrowthMarkSize(sizeClass)}
             colors={colors}
           />
         </View>
@@ -279,7 +281,7 @@ const styles = StyleSheet.create({
   },
   dateBlock: { flex: 1, minWidth: 0 },
   kicker: { ...typeScale.caption, fontWeight: "700" },
-  date: { ...typeScale.title, marginTop: 2 },
+  date: { ...typeScale.title, marginTop: spacing.xs },
   hero: {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.feature,
@@ -290,19 +292,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: spacing.xxl,
-    minHeight: 260,
+    minHeight: componentTokens.diary.heroWideMinHeight,
   },
   markWrap: { alignItems: "center", justifyContent: "center" },
   heroCopy: { flex: 1, gap: spacing.sm, minWidth: 0 },
-  heroTitle: { ...typeScale.display, fontSize: 28 },
-  heroBody: { ...typeScale.body, lineHeight: 23, maxWidth: 520 },
+  heroTitle: { ...typeScale.display },
+  heroBody: {
+    ...typeScale.body,
+    maxWidth: componentTokens.diary.heroCopyMaxWidth,
+  },
   heroMeta: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs,
     marginTop: spacing.xs,
   },
-  metaDot: { width: 8, height: 8, borderRadius: 4 },
+  metaDot: {
+    width: componentTokens.diary.metaDotSize,
+    height: componentTokens.diary.metaDotSize,
+    borderRadius: componentTokens.diary.metaDotSize / 2,
+  },
   metaText: { ...typeScale.caption },
   sectionHeading: {
     flexDirection: "row",
@@ -311,7 +320,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   heading: { ...typeScale.heading },
-  caption: { ...typeScale.caption, marginTop: 3 },
+  caption: { ...typeScale.caption, marginTop: spacing.xs },
   addButton: {
     minHeight: dimensions.minTouch,
     borderRadius: radii.compact,
@@ -323,7 +332,12 @@ const styles = StyleSheet.create({
   addText: { ...typeScale.label },
   metricGrid: { gap: spacing.md },
   metricGridWide: { flexDirection: "row", flexWrap: "wrap" },
-  metricCellWide: { flexGrow: 1, flexShrink: 1, flexBasis: 180, minWidth: 160 },
+  metricCellWide: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: componentTokens.diary.metricCellBasis,
+    minWidth: componentTokens.diary.metricCellMinWidth,
+  },
   macroLine: {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.card,
@@ -338,13 +352,21 @@ const styles = StyleSheet.create({
   macroTitle: { ...typeScale.label, fontWeight: "700" },
   macroHint: { ...typeScale.caption },
   macroValues: { flexDirection: "row", gap: spacing.lg, flexWrap: "wrap" },
-  macro: { flex: 1, minWidth: 90, gap: 3 },
-  macroMarker: { width: 20, height: 4, borderRadius: 2 },
+  macro: {
+    flex: 1,
+    minWidth: componentTokens.diary.macroMinWidth,
+    gap: spacing.xs,
+  },
+  macroMarker: {
+    width: componentTokens.diary.macroMarkerWidth,
+    height: spacing.xs,
+    borderRadius: spacing.xs / 2,
+  },
   macroLabel: { ...typeScale.caption },
   macroValue: { ...typeScale.body, fontWeight: "700" },
   recordList: { gap: spacing.sm },
   empty: {
-    minHeight: 190,
+    minHeight: componentTokens.diary.emptyMinHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.card,
     alignItems: "center",
@@ -353,7 +375,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   emptyTitle: { ...typeScale.heading },
-  emptyBody: { ...typeScale.body, textAlign: "center", maxWidth: 340 },
+  emptyBody: {
+    ...typeScale.body,
+    textAlign: "center",
+    maxWidth: componentTokens.diary.emptyBodyMaxWidth,
+  },
   emptyAction: {
     minHeight: dimensions.minTouch,
     borderWidth: 1,

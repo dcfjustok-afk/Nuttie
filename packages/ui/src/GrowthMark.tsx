@@ -32,7 +32,10 @@ export function GrowthMark({
   colors = tokenColors.light,
 }: GrowthMarkProps) {
   const clamped = Math.max(0, Math.min(1, progress));
-  const stroke = Math.max(10, size * componentTokens.growthMark.strokeRatio);
+  const stroke = Math.max(
+    componentTokens.growthMark.minimumStroke,
+    size * componentTokens.growthMark.strokeRatio,
+  );
   const radius = size / 2 - stroke;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - clamped);
@@ -112,12 +115,12 @@ const styles = StyleSheet.create({
   },
   percent: {
     fontSize: componentTokens.growthMark.percentFontSize,
-    lineHeight: 34,
+    lineHeight: componentTokens.growthMark.percentLineHeight,
     fontWeight: "700",
   },
   state: {
     fontSize: componentTokens.growthMark.stateFontSize,
-    lineHeight: 16,
+    lineHeight: componentTokens.growthMark.stateLineHeight,
     fontWeight: "600",
   },
 });

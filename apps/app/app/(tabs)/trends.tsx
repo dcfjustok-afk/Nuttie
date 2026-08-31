@@ -1,7 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
+import {
+  componentTokens,
+  dimensions,
+  radii,
+  spacing,
+  typeScale,
+} from "@nuttie/design-tokens";
 
 import { Screen } from "../../src/components/Screen";
 import { useAppStore } from "../../src/state/useAppStore";
@@ -175,18 +181,18 @@ export default function TrendsScreen() {
 const styles = StyleSheet.create({
   header: { gap: spacing.xs },
   kicker: { ...typeScale.caption, fontWeight: "700" },
-  title: { ...typeScale.title, marginTop: 3 },
+  title: { ...typeScale.title, marginTop: spacing.xs },
   switcher: {
-    minHeight: 48,
+    minHeight: dimensions.control,
     borderRadius: radii.compact,
-    padding: 4,
+    padding: spacing.xs,
     flexDirection: "row",
-    gap: 4,
+    gap: spacing.xs,
   },
   switchItem: {
     minHeight: dimensions.minTouch,
     flex: 1,
-    borderRadius: 8,
+    borderRadius: radii.segment,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "transparent",
     alignItems: "center",
@@ -197,7 +203,7 @@ const styles = StyleSheet.create({
   layoutWide: { flexDirection: "row", alignItems: "stretch" },
   chartPanel: {
     flex: 1,
-    minHeight: 340,
+    minHeight: componentTokens.trends.chartMinHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.card,
     padding: spacing.lg,
@@ -205,7 +211,7 @@ const styles = StyleSheet.create({
   },
   insightPanel: {
     flex: 0.72,
-    minHeight: 220,
+    minHeight: componentTokens.trends.insightMinHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.card,
     padding: spacing.lg,
@@ -217,11 +223,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   panelTitle: { ...typeScale.heading },
-  panelCaption: { ...typeScale.caption, marginTop: 3 },
+  panelCaption: { ...typeScale.caption, marginTop: spacing.xs },
   unit: { ...typeScale.caption },
   chart: {
     flex: 1,
-    minHeight: 220,
+    minHeight: componentTokens.trends.plotMinHeight,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
@@ -231,23 +237,26 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
-    gap: 4,
-    minWidth: 28,
+    gap: spacing.xs,
+    minWidth: componentTokens.trends.barColumnMinWidth,
   },
   barTrack: {
     width: "100%",
-    maxWidth: 34,
-    height: 160,
+    maxWidth: componentTokens.trends.barTrackMaxWidth,
+    height: componentTokens.trends.barTrackHeight,
     justifyContent: "flex-end",
-    borderRadius: 8,
-    backgroundColor: "rgba(127,129,120,0.12)",
+    borderRadius: radii.segment,
     overflow: "hidden",
   },
-  bar: { width: "100%", minHeight: 4, borderRadius: 8 },
-  day: { ...typeScale.caption, fontSize: 11 },
+  bar: {
+    width: "100%",
+    minHeight: componentTokens.trends.barMinHeight,
+    borderRadius: radii.segment,
+  },
+  day: { ...typeScale.caption },
   barValue: { ...typeScale.caption, fontWeight: "700" },
-  summary: { ...typeScale.title, fontSize: 22, lineHeight: 28 },
-  detail: { ...typeScale.body, lineHeight: 22 },
+  summary: { ...typeScale.title },
+  detail: { ...typeScale.body },
   legend: {
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingTop: spacing.md,
@@ -256,7 +265,11 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     marginTop: "auto",
   },
-  legendDot: { width: 8, height: 8, borderRadius: 4 },
+  legendDot: {
+    width: componentTokens.trends.legendDotSize,
+    height: componentTokens.trends.legendDotSize,
+    borderRadius: componentTokens.trends.legendDotSize / 2,
+  },
   legendText: { ...typeScale.caption },
   note: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -265,5 +278,5 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   noteTitle: { ...typeScale.label, fontWeight: "700" },
-  noteBody: { ...typeScale.body, lineHeight: 22 },
+  noteBody: { ...typeScale.body },
 });

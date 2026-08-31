@@ -24,6 +24,7 @@ colors:
   sky-soft: "#E6F1F5"
   danger: "#B9574C"
   danger-soft: "#F8E6E2"
+  scrim: "#14181575"
   dark-canvas: "#181D1A"
   dark-surface: "#222823"
   dark-surface-muted: "#2B332D"

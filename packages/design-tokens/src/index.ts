@@ -41,6 +41,7 @@ export const colors = {
     skySoft: "#E6F1F5",
     danger: "#B9574C",
     dangerSoft: "#F8E6E2",
+    scrim: "#14181575",
   },
   dark: {
     canvas: "#181D1A",
@@ -64,6 +65,7 @@ export const colors = {
     skySoft: "#203B45",
     danger: "#E17B72",
     dangerSoft: "#4B2927",
+    scrim: "#00000099",
   },
 } as const;
 
@@ -184,15 +186,95 @@ export const componentTokens = {
   navigation: {
     bottomHeight: dimensions.bottomNavigation,
     railWidth: dimensions.desktopRail,
+    itemMaxWidth: 120,
+    itemInset: spacing.xs,
+    footerMaxWidth: 150,
+  },
+  brandMark: {
+    size: 40,
+    radius: radii.compact,
+  },
+  sessionHint: {
+    minHeight: 36,
+  },
+  metricBand: {
+    minHeight: 116,
+    markerWidth: spacing.xxl,
+    markerHeight: spacing.xs,
+    markerRadius: spacing.xs / 2,
+  },
+  recordRow: {
+    minHeight: 72,
+    iconSize: 40,
+    iconRadius: radii.compact,
+    copyGap: spacing.xs,
+  },
+  account: {
+    minHeight: 80,
+    avatarSize: dimensions.minTouch,
+    avatarRadius: radii.compact,
+    statusSize: spacing.sm,
+  },
+  feedback: {
+    minHeight: 52,
+  },
+  notice: {
+    minHeight: 76,
+  },
+  modal: {
+    maxWidth: 520,
+    iconSize: 40,
+    actionMinWidth: 112,
   },
   addRecordSheet: {
     maxWidth: dimensions.sheet,
+    keyboardMaxHeight: "92%",
   },
   growthMark: {
     defaultSize: 188,
+    compactSize: 178,
+    wideSize: 206,
     strokeRatio: 0.065,
     percentFontSize: 28,
+    percentLineHeight: 34,
     stateFontSize: 12,
+    stateLineHeight: 16,
+    minimumStroke: 10,
+  },
+  signIn: {
+    maxWidth: 520,
+    logoSize: 46,
+    logoRadius: 15,
+    growthMarkSize: 148,
+  },
+  diary: {
+    heroWideMinHeight: 260,
+    heroCopyMaxWidth: 520,
+    metaDotSize: spacing.sm,
+    metricCellBasis: 180,
+    metricCellMinWidth: 160,
+    macroMinWidth: 90,
+    macroMarkerWidth: 20,
+    emptyMinHeight: 190,
+    emptyBodyMaxWidth: 340,
+  },
+  trends: {
+    chartMinHeight: 340,
+    insightMinHeight: 220,
+    plotMinHeight: 220,
+    barColumnMinWidth: 28,
+    barTrackMaxWidth: 34,
+    barTrackHeight: 160,
+    barMinHeight: spacing.xs,
+    legendDotSize: spacing.sm,
+  },
+  food: {
+    rowMinHeight: 88,
+    iconSize: 42,
+    iconRadius: radii.compact,
+    emptyMinHeight: 190,
+    packMinHeight: 72,
+    packIconSize: 38,
   },
 } as const;
 
@@ -281,6 +363,14 @@ export function getGrowthState(
   if (progress >= 0.85) return "complete";
   if (progress >= 0.35) return "growing";
   return "quiet";
+}
+
+export function getGrowthMarkSize(sizeClass: SizeClass): number {
+  if (sizeClass === "compact") return componentTokens.growthMark.compactSize;
+  if (sizeClass === "expanded" || sizeClass === "wide") {
+    return componentTokens.growthMark.wideSize;
+  }
+  return componentTokens.growthMark.defaultSize;
 }
 
 export function getSemanticColors(scheme: ColorScheme): SemanticColors {

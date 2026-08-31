@@ -10,7 +10,13 @@ import {
   View,
 } from "react-native";
 
-import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
+import {
+  componentTokens,
+  dimensions,
+  radii,
+  spacing,
+  typeScale,
+} from "@nuttie/design-tokens";
 
 import { deliverAccountExport } from "../../src/data/account-export";
 import { Icon, type IconName } from "../../src/components/Icon";
@@ -372,7 +378,7 @@ function DeleteAccountModal({
       animationType="fade"
       onRequestClose={onCancel}
     >
-      <View style={styles.modalRoot}>
+      <View style={[styles.modalRoot, { backgroundColor: colors.scrim }]}>
         <Pressable
           accessibilityLabel="关闭删除确认"
           accessibilityRole="button"
@@ -479,9 +485,9 @@ const styles = StyleSheet.create({
   header: { gap: spacing.sm },
   kicker: { ...typeScale.caption, fontWeight: "700" },
   title: { ...typeScale.title },
-  body: { ...typeScale.body, lineHeight: 22 },
+  body: { ...typeScale.body },
   account: {
-    minHeight: 80,
+    minHeight: componentTokens.account.minHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.card,
     padding: spacing.lg,
@@ -490,20 +496,24 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: componentTokens.account.avatarSize,
+    height: componentTokens.account.avatarSize,
+    borderRadius: componentTokens.account.avatarRadius,
     alignItems: "center",
     justifyContent: "center",
   },
-  accountCopy: { flex: 1, minWidth: 0, gap: 3 },
+  accountCopy: { flex: 1, minWidth: 0, gap: spacing.xs },
   accountName: { ...typeScale.body, fontWeight: "700" },
   accountEmail: { ...typeScale.caption },
-  statusDot: { width: 10, height: 10, borderRadius: 5 },
+  statusDot: {
+    width: componentTokens.account.statusSize,
+    height: componentTokens.account.statusSize,
+    borderRadius: componentTokens.account.statusSize / 2,
+  },
   group: { gap: spacing.sm },
   groupTitle: { ...typeScale.caption, fontWeight: "700" },
   row: {
-    minHeight: 72,
+    minHeight: componentTokens.recordRow.minHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     padding: spacing.md,
@@ -512,17 +522,21 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   rowIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: componentTokens.recordRow.iconSize,
+    height: componentTokens.recordRow.iconSize,
+    borderRadius: componentTokens.recordRow.iconRadius,
     alignItems: "center",
     justifyContent: "center",
   },
-  rowCopy: { flex: 1, minWidth: 0, gap: 2 },
+  rowCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: componentTokens.recordRow.copyGap,
+  },
   rowTitle: { ...typeScale.body, fontWeight: "700" },
   rowDetail: { ...typeScale.caption },
   feedback: {
-    minHeight: 52,
+    minHeight: componentTokens.feedback.minHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     padding: spacing.md,
@@ -532,7 +546,7 @@ const styles = StyleSheet.create({
   },
   feedbackText: { ...typeScale.caption, flex: 1 },
   notice: {
-    minHeight: 76,
+    minHeight: componentTokens.notice.minHeight,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     padding: spacing.md,
@@ -540,7 +554,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: spacing.sm,
   },
-  noticeText: { ...typeScale.body, flex: 1, lineHeight: 22 },
+  noticeText: { ...typeScale.body, flex: 1 },
   logout: {
     minHeight: dimensions.control,
     borderWidth: 1,
@@ -556,11 +570,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: spacing.xl,
-    backgroundColor: "rgba(20,24,21,0.46)",
   },
   dialog: {
     width: "100%",
-    maxWidth: 520,
+    maxWidth: componentTokens.modal.maxWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.feature,
     padding: spacing.xl,
@@ -572,8 +585,8 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   dialogIcon: {
-    width: 40,
-    height: 40,
+    width: componentTokens.modal.iconSize,
+    height: componentTokens.modal.iconSize,
     borderRadius: radii.compact,
     alignItems: "center",
     justifyContent: "center",
@@ -606,7 +619,7 @@ const styles = StyleSheet.create({
   cancelText: { ...typeScale.label },
   deleteButton: {
     minHeight: dimensions.minTouch,
-    minWidth: 112,
+    minWidth: componentTokens.modal.actionMinWidth,
     borderRadius: radii.compact,
     paddingHorizontal: spacing.lg,
     alignItems: "center",

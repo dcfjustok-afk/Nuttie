@@ -122,7 +122,13 @@ export function AddRecordSheet({
       transparent
       onRequestClose={onClose}
     >
-      <View style={[styles.backdrop, large && styles.backdropLarge]}>
+      <View
+        style={[
+          styles.backdrop,
+          { backgroundColor: colors.scrim },
+          large && styles.backdropLarge,
+        ]}
+      >
         <Pressable
           accessibilityLabel="关闭新增记录"
           accessibilityRole="button"
@@ -356,13 +362,13 @@ function Field({
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(20,24,21,0.46)",
-  },
+  backdrop: { flex: 1, justifyContent: "flex-end" },
   backdropLarge: { justifyContent: "center", paddingHorizontal: spacing.xl },
-  keyboard: { width: "100%", maxHeight: "92%", flexShrink: 1 },
+  keyboard: {
+    width: "100%",
+    maxHeight: componentTokens.addRecordSheet.keyboardMaxHeight,
+    flexShrink: 1,
+  },
   sheet: {
     borderTopLeftRadius: radii.feature,
     borderTopRightRadius: radii.feature,
@@ -392,7 +398,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   title: { ...typeScale.title },
-  subtitle: { ...typeScale.caption, marginTop: 3 },
+  subtitle: { ...typeScale.caption, marginTop: spacing.xs },
   close: {
     width: dimensions.minTouch,
     height: dimensions.minTouch,
@@ -435,8 +441,8 @@ const styles = StyleSheet.create({
   twoCol: { flexDirection: "row", gap: spacing.md },
   macroGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   singleCol: { gap: spacing.md },
-  error: { ...typeScale.caption, lineHeight: 18 },
-  note: { ...typeScale.caption, lineHeight: 18 },
+  error: { ...typeScale.caption },
+  note: { ...typeScale.caption },
   save: {
     minHeight: dimensions.control,
     borderRadius: radii.compact,
