@@ -13,6 +13,7 @@ import {
   writeCache,
   writeSession,
 } from "../data/storage";
+import { selectCachedRecords } from "../data/storage-policy";
 import type { LocalRecord, MutationDraft, RecordKind, Session } from "../types";
 
 type Store = {
@@ -85,6 +86,10 @@ const seedRecords: LocalRecord[] = [
   },
 ];
 
+let sessionEpoch = 0;
+let persistenceTail: Promise<void> = Promise.resolve();
+let sessionPersistenceTail: Promise<void> = Promise.resolve();
+
 function cacheScope(session: Session | null) {
   return session?.mode === "authenticated" ? { userId: session.user.id } : {};
 }
@@ -92,8 +97,32 @@ function cacheScope(session: Session | null) {
 function persist(
   state: Pick<Store, "records" | "queue" | "cursor">,
   session: Session | null,
+  epoch = sessionEpoch,
 ) {
-  return writeCache(state, cacheScope(session));
+  const task = persistenceTail.then(async () => {
+    if (epoch !== sessionEpoch) return;
+    await writeCache(state, cacheScope(session));
+  });
+  persistenceTail = task.catch(() => undefined);
+  return task;
+}
+
+function persistSession(session: Session, epoch = sessionEpoch) {
+  const task = sessionPersistenceTail.then(async () => {
+    if (epoch !== sessionEpoch) return;
+    await writeSession(session);
+  });
+  sessionPersistenceTail = task.catch(() => undefined);
+  return task;
+}
+
+function clearPersistedSession(epoch = sessionEpoch) {
+  const task = sessionPersistenceTail.then(async () => {
+    if (epoch !== sessionEpoch) return;
+    await clearSession();
+  });
+  sessionPersistenceTail = task.catch(() => undefined);
+  return task;
 }
 
 export const useAppStore = create<Store>((set, get) => ({
@@ -106,6 +135,7 @@ export const useAppStore = create<Store>((set, get) => ({
   lastSyncError: undefined,
 
   hydrate: async () => {
+    const epoch = ++sessionEpoch;
     const persisted = await readSession();
     let session: Session | null = null;
     try {
@@ -117,16 +147,20 @@ export const useAppStore = create<Store>((set, get) => ({
             ? await api.refresh(persisted.refreshToken)
             : null;
     } catch {
-      if (persisted) await clearSession();
+      if (persisted) await clearPersistedSession(epoch);
     }
     await discardLegacyCache();
     const cacheRaw = await readCache<
       Pick<Store, "records" | "queue" | "cursor">
     >(cacheScope(session));
+    if (epoch !== sessionEpoch) return;
     set({
       hydrated: true,
       session,
-      records: cacheRaw?.records?.length ? cacheRaw.records : seedRecords,
+      records: selectCachedRecords(
+        cacheRaw,
+        session?.mode === "authenticated" ? [] : seedRecords,
+      ),
       queue: cacheRaw?.queue ?? [],
       cursor: cacheRaw?.cursor,
     });
@@ -134,41 +168,49 @@ export const useAppStore = create<Store>((set, get) => ({
   },
 
   signIn: async (session) => {
-    await writeSession(session);
+    const epoch = ++sessionEpoch;
+    await persistSession(session, epoch);
     const scopedCache = await readCache<
       Pick<Store, "records" | "queue" | "cursor">
     >(cacheScope(session));
-    set({ session, lastSyncError: undefined });
-    if (scopedCache) {
-      set({
-        records: scopedCache.records?.length
-          ? scopedCache.records
-          : seedRecords,
-        queue: scopedCache.queue ?? [],
-        cursor: scopedCache.cursor,
-      });
-    }
+    if (epoch !== sessionEpoch) return;
+    set({
+      session,
+      records: selectCachedRecords(
+        scopedCache,
+        session.mode === "authenticated" ? [] : seedRecords,
+      ),
+      queue: scopedCache?.queue ?? [],
+      cursor: scopedCache?.cursor,
+      lastSyncError: undefined,
+      isSyncing: false,
+    });
     if (session.mode === "authenticated") await get().sync();
   },
 
   signOut: async () => {
+    const epoch = ++sessionEpoch;
     const session = get().session;
     if (session?.mode === "authenticated")
       await api
         .logout(session.accessToken, session.refreshToken)
         .catch(() => undefined);
-    await clearSession();
+    await Promise.all([persistenceTail, sessionPersistenceTail]);
+    if (epoch !== sessionEpoch) return;
+    await clearPersistedSession(epoch);
     set({
       session: null,
       records: seedRecords,
       queue: [],
       cursor: undefined,
       lastSyncError: undefined,
+      isSyncing: false,
     });
   },
 
   exportAccount: async () => {
     const session = get().session;
+    const epoch = sessionEpoch;
     if (!session || session.mode !== "authenticated") {
       throw new Error("account export requires an authenticated session");
     }
@@ -179,13 +221,22 @@ export const useAppStore = create<Store>((set, get) => ({
         throw error;
       }
       const refreshed = await api.refresh(session.refreshToken);
-      await writeSession(refreshed);
+      await persistSession(refreshed, epoch);
+      const current = get().session;
+      if (
+        epoch !== sessionEpoch ||
+        current?.mode !== "authenticated" ||
+        current.user.id !== session.user.id
+      ) {
+        throw new Error("session changed during account export");
+      }
       set({ session: refreshed });
       return api.exportAccount(refreshed.accessToken);
     }
   },
 
   deleteAccount: async () => {
+    const epoch = ++sessionEpoch;
     const session = get().session;
     if (!session || session.mode !== "authenticated") {
       throw new Error("account deletion requires an authenticated session");
@@ -197,20 +248,29 @@ export const useAppStore = create<Store>((set, get) => ({
         throw error;
       }
       const refreshed = await api.refresh(session.refreshToken);
-      await writeSession(refreshed);
-      set({ session: refreshed });
+      await persistSession(refreshed, epoch);
+      if (epoch === sessionEpoch) set({ session: refreshed });
       await api.deleteAccount(refreshed.accessToken);
     }
-    await clearSession();
-    const cleared = { records: [], queue: [], cursor: undefined };
-    set({ session: null, ...cleared, lastSyncError: undefined });
+    await Promise.all([persistenceTail, sessionPersistenceTail]);
     await clearCache(cacheScope(session));
+    if (epoch !== sessionEpoch) return;
+    await clearPersistedSession(epoch);
+    const cleared = { records: [], queue: [], cursor: undefined };
+    set({
+      session: null,
+      ...cleared,
+      lastSyncError: undefined,
+      isSyncing: false,
+    });
   },
 
   addRecord: async (input) => {
+    const epoch = sessionEpoch;
     const now = new Date().toISOString();
     const id = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const deviceId = await readDeviceId();
+    if (epoch !== sessionEpoch) return;
     const record: LocalRecord = {
       id,
       ...input,
@@ -239,6 +299,7 @@ export const useAppStore = create<Store>((set, get) => ({
         cursor: get().cursor,
       },
       get().session,
+      epoch,
     );
     if (get().session?.mode === "authenticated") void get().sync();
   },
@@ -246,6 +307,16 @@ export const useAppStore = create<Store>((set, get) => ({
   sync: async () => {
     const session = get().session;
     if (!session || session.mode !== "authenticated" || get().isSyncing) return;
+    const epoch = sessionEpoch;
+    const userId = session.user.id;
+    const isCurrent = () => {
+      const current = get().session;
+      return (
+        sessionEpoch === epoch &&
+        current?.mode === "authenticated" &&
+        current.user.id === userId
+      );
+    };
     set({ isSyncing: true, lastSyncError: undefined });
     try {
       let active = session;
@@ -254,6 +325,7 @@ export const useAppStore = create<Store>((set, get) => ({
           const queue = [...get().queue];
           for (const mutation of queue) {
             const result = await api.pushMutation(active.accessToken, mutation);
+            if (!isCurrent()) return;
             set((state) => ({
               records: state.records.map((record) =>
                 record.id === mutation.clientMutationId
@@ -273,9 +345,12 @@ export const useAppStore = create<Store>((set, get) => ({
                 cursor: afterMutation.cursor,
               },
               active,
+              epoch,
             );
           }
+          if (!isCurrent()) return;
           const pulled = await api.pullSync(active.accessToken, get().cursor);
+          if (!isCurrent()) return;
           set((state) => {
             const pendingIds = new Set(
               state.queue.map((item) => item.clientMutationId),
@@ -290,6 +365,7 @@ export const useAppStore = create<Store>((set, get) => ({
             return { records: merged, cursor: pulled.cursor };
           });
           const state = get();
+          if (!isCurrent()) return;
           await persist(
             {
               records: state.records,
@@ -297,17 +373,21 @@ export const useAppStore = create<Store>((set, get) => ({
               cursor: state.cursor,
             },
             active,
+            epoch,
           );
           break;
         } catch (error) {
+          if (!isCurrent()) return;
           if (
             attempt === 0 &&
             error instanceof api.ApiRequestError &&
             error.status === 401
           ) {
             const refreshed = await api.refresh(active.refreshToken);
+            if (!isCurrent()) return;
             active = refreshed;
-            await writeSession(refreshed);
+            await persistSession(refreshed, epoch);
+            if (!isCurrent()) return;
             set({ session: refreshed });
             continue;
           }
@@ -329,12 +409,13 @@ export const useAppStore = create<Store>((set, get) => ({
         }
       }
     } catch (error) {
+      if (!isCurrent()) return;
       set({
         lastSyncError:
           error instanceof Error ? error.message : "同步暂时不可用",
       });
     } finally {
-      set({ isSyncing: false });
+      if (isCurrent()) set({ isSyncing: false });
     }
   },
 }));

@@ -5,8 +5,22 @@ export const DEVICE_KEY = "nuttie.device.v1";
 
 export type CacheScope = { userId?: string };
 
+export type CacheSnapshot<TRecord = unknown, TMutation = unknown> = {
+  records?: TRecord[];
+  queue?: TMutation[];
+  cursor?: string;
+};
+
 export function getCacheKey(scope: CacheScope = {}): string {
   return scope.userId
     ? `${CACHE_KEY_PREFIX}.account.${encodeURIComponent(scope.userId)}`
     : `${CACHE_KEY_PREFIX}.anonymous`;
+}
+
+/** Preserve an explicit empty cache; only a missing cache should use a fallback. */
+export function selectCachedRecords<T>(
+  cache: CacheSnapshot<T> | null | undefined,
+  fallback: readonly T[],
+): T[] {
+  return Array.isArray(cache?.records) ? [...cache.records] : [...fallback];
 }

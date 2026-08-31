@@ -6,6 +6,7 @@ import {
   DEVICE_KEY,
   getCacheKey,
   LEGACY_CACHE_KEY,
+  selectCachedRecords,
   SESSION_KEY,
 } from "./storage-policy.ts";
 
@@ -31,4 +32,11 @@ test("keeps legacy, session, and device keys explicit", () => {
   assert.equal(LEGACY_CACHE_KEY, CACHE_KEY_PREFIX);
   assert.equal(SESSION_KEY, "nuttie.session.v1");
   assert.equal(DEVICE_KEY, "nuttie.device.v1");
+});
+
+test("preserves an explicit empty account cache and uses fallback when absent", () => {
+  const seed = [{ id: "demo" }];
+  assert.deepEqual(selectCachedRecords({ records: [] }, seed), []);
+  assert.deepEqual(selectCachedRecords(null, seed), seed);
+  assert.deepEqual(selectCachedRecords({ queue: [] }, seed), seed);
 });
