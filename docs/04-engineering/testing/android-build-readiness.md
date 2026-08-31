@@ -83,8 +83,28 @@ Set-Location C:\Y\apps\app\android
 
 产物：`app-debug.apk`，大小 `237,566,832` bytes，SHA-256：
 `639E48E3FF36531F64746061A00FC2D1C74F5CFE3901B95A6488B96B79C5B792`。
-这证明 Debug 原生工程和当前依赖组合可以完成多 ABI 编译与打包，不等同于
-Release 签名、商店发布或真机验收。
+这份 APK 来自依赖收敛前的临时 worktree：`react-native@0.86.2`、
+`react-native-svg@15.12.1`、`react-native-reanimated@4.5.1`。它只能证明旧组合
+曾完成多 ABI Debug 编译与打包，不等同于当前依赖组合、Release 签名、商店发布或真机验收。
+
+### 当前依赖组合的复验结果
+
+当前主分支锁定的是 `react-native@0.86.3`、`react-native-svg@15.15.4`、
+`react-native-reanimated@4.5.1`、`react-native-worklets@0.10.4`。在临时 worktree
+`C:\AN` 中强制重建 pnpm virtual store 到 `C:\z` 后，分别执行了以下验证：
+
+```powershell
+pnpm install --force --frozen-lockfile --virtual-store-dir C:\z
+Set-Location C:\AN\apps\app\android
+.\gradlew.bat :app:assembleDebug --no-daemon --console=plain
+```
+
+结果仍为 `ninja: error: manifest 'build.ninja' still dirty after 100 tries`，失败任务为
+`:react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]`。清理 app 的 Gradle/CMake
+生成物、关闭 Gradle 并行并限制为 `arm64-v8a` 后，结果不变。一次性构建验证中还尝试移除
+临时 pnpm store 包的 CMake `CONFIGURE_DEPENDS`，但 Ninja 仍在 CMake 重生成阶段循环；这些
+改动只存在于 `C:\z`，未进入仓库。当前结论是：应用源码和依赖解析已通过，当前 Windows
+本机的 CMake/Ninja + pnpm store 组合仍阻断 APK 产出，不能把旧 APK 当作当前版本证据。
 
 系统镜像下载目前还受到 Android CLI 网络断开影响，因此尚未创建可用 AVD；
 模拟器、真机、横竖屏、系统字号放大、深色模式和 Release 签名仍属于外部验证缺口，
