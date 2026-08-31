@@ -1,0 +1,59 @@
+# syntax=docker/dockerfile:1.7
+
+FROM node:22-alpine AS build
+
+ENV CI=true \
+    NPM_CONFIG_UPDATE_NOTIFIER=false
+
+WORKDIR /workspace
+
+RUN corepack enable \
+  && corepack prepare pnpm@11.18.0 --activate
+
+# Keep the workspace graph available to pnpm while allowing Docker layer reuse.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json ./
+COPY apps/app/package.json apps/app/tsconfig.json ./apps/app/
+COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
+COPY packages/domain/package.json packages/domain/tsconfig.json ./packages/domain/
+COPY packages/design-tokens/package.json packages/design-tokens/tsconfig.json ./packages/design-tokens/
+COPY packages/ui/package.json packages/ui/tsconfig.json ./packages/ui/
+COPY services/api/package.json services/api/tsconfig.json ./services/api/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages ./packages
+COPY services/api ./services/api
+
+RUN pnpm --filter @nuttie/contracts build \
+  && pnpm --filter @nuttie/domain build \
+  && pnpm --filter @nuttie/api build \
+  && pnpm --filter @nuttie/api deploy --legacy --prod /out
+
+FROM node:22-alpine AS runtime
+
+ENV NODE_ENV=production \
+    HOST=0.0.0.0 \
+    PORT=8787 \
+    ALLOW_IN_MEMORY=false
+
+WORKDIR /app
+
+RUN addgroup -S -g 10001 nuttie \
+  && adduser -S -D -H -u 10001 -G nuttie nuttie
+
+COPY --from=build --chown=nuttie:nuttie /out/ ./
+COPY --from=build --chown=nuttie:nuttie /workspace/services/api/migrations ./migrations
+COPY --from=build --chown=nuttie:nuttie /workspace/services/api/scripts ./scripts
+COPY --chown=nuttie:nuttie services/api/docker-entrypoint.sh /usr/local/bin/nuttie-entrypoint
+
+RUN chmod 0555 /usr/local/bin/nuttie-entrypoint
+
+USER nuttie
+
+EXPOSE 8787
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=75s --retries=5 \
+  CMD-SHELL node -e "fetch('http://127.0.0.1:' + (process.env.PORT || '8787') + '/ready').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1))"
+
+ENTRYPOINT ["/usr/local/bin/nuttie-entrypoint"]
+CMD ["node", "dist/main.js"]

@@ -22,6 +22,14 @@ else
     exit 1
   fi
 
+  retry_delay="${MIGRATION_RETRY_DELAY_SECONDS:-2}"
+  case "$retry_delay" in
+    ''|*[!0-9]*)
+      echo '{"level":"error","message":"MIGRATION_RETRY_DELAY_SECONDS must be a non-negative integer"}' >&2
+      exit 1
+      ;;
+  esac
+
   attempt=1
   while [ "$attempt" -le "$attempts" ]; do
     if node /app/scripts/migrate.mjs; then
@@ -31,7 +39,7 @@ else
       echo '{"level":"error","message":"database migration did not complete; refusing to start"}' >&2
       exit 1
     fi
-    sleep "${MIGRATION_RETRY_DELAY_SECONDS:-2}"
+    sleep "$retry_delay"
     attempt=$((attempt + 1))
   done
 fi

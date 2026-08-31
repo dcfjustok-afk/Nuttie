@@ -2,3 +2,8 @@ packages:
   - apps/*
   - packages/*
   - services/*
+
+# Expo/Metro invokes esbuild during dependency installation; keep the
+# lifecycle-script allowlist explicit for pnpm 11's fail-closed defaults.
+allowBuilds:
+  esbuild: true

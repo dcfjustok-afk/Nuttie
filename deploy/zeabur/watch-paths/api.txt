@@ -1,0 +1,10 @@
+/services/api/**
+/packages/contracts/**
+/packages/domain/**
+/package.json
+/pnpm-lock.yaml
+/pnpm-workspace.yaml
+/.npmrc
+/tsconfig.base.json
+/.dockerignore
+/Dockerfile.api

@@ -34,7 +34,7 @@ PostgreSQL (users, sessions, records, mutations)
 ## 首期部署拓扑
 
 ```text
-Browser (HTTPS) ---> web/Nginx (public)
+Browser or native client (HTTPS) ---> web/Nginx (public)
                          | /api/* private upstream
                          v
                       api (private)
@@ -42,6 +42,14 @@ Browser (HTTPS) ---> web/Nginx (public)
                          v
                     PostgreSQL (private)
 ```
+
+Both browser and native clients use the same public web origin. Web requests
+use same-origin `/api` calls and an HttpOnly refresh cookie; native builds set
+`EXPO_PUBLIC_API_URL` to that origin (the client appends `/api`) and send
+`x-client-platform: native`, so the API returns the refresh token in the
+response body for native secure-store persistence. The API and PostgreSQL
+services remain private and are never
+published as separate public origins.
 
 Android/iOS 从构建时公开配置读取 API origin；公开配置不包含密钥。Zeabur 以 `Dockerfile.web`、`Dockerfile.api` 和官方 PostgreSQL 服务部署，watch paths 只监听相关源码和共享契约。Redis、对象存储、后台队列、远程推送和管理后台留到出现真实需求再单独决策。
 

@@ -1,0 +1,16 @@
+/apps/app/**
+/packages/contracts/**
+/packages/domain/**
+/packages/design-tokens/**
+/packages/ui/**
+/package.json
+/pnpm-lock.yaml
+/pnpm-workspace.yaml
+/.npmrc
+/tsconfig.base.json
+/.dockerignore
+/Dockerfile.web
+/deploy/nginx/**
+/tools/patch-web-export.mjs
+/tools/web-export-contract.mjs
+/tools/verify-web-export.mjs
