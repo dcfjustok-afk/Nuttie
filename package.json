@@ -1,0 +1,25 @@
+{
+  "name": "nuttie",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @nuttie/app --filter @nuttie/api dev",
+    "dev:app": "pnpm --filter @nuttie/app dev",
+    "dev:api": "pnpm --filter @nuttie/api dev",
+    "build": "pnpm run build:packages && pnpm run build:web && pnpm run build:api",
+    "build:packages": "pnpm --filter @nuttie/contracts build && pnpm --filter @nuttie/domain build && pnpm --filter @nuttie/design-tokens build && pnpm --filter @nuttie/ui build",
+    "build:web": "pnpm --filter @nuttie/app export:web",
+    "build:api": "pnpm --filter @nuttie/api build",
+    "typecheck": "pnpm --filter @nuttie/contracts typecheck && pnpm --filter @nuttie/domain typecheck && pnpm --filter @nuttie/design-tokens typecheck && pnpm --filter @nuttie/ui typecheck && pnpm --filter @nuttie/api typecheck && pnpm --filter @nuttie/app typecheck",
+    "test": "pnpm --filter @nuttie/domain test && pnpm --filter @nuttie/api test",
+    "format:check": "pnpm exec prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yaml,yml}\""
+  },
+  "devDependencies": {
+    "prettier": "3.6.2",
+    "typescript": "~6.0.3"
+  }
+}

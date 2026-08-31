@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Nuttie",
+    "slug": "nuttie",
+    "version": "0.1.0",
+    "scheme": "nuttie",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router", "expo-secure-store"],
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "android": {
+      "predictiveBackGestureEnabled": true
+    }
+  }
+}
