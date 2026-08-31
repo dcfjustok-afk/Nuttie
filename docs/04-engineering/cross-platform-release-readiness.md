@@ -14,9 +14,9 @@ production deployment result.
 | Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                |
 | Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; representative 320/390/430/768/1024/1440 browser pass  |
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; live browser used mocked 401 API responses |
-| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | Not run: Android SDK/ADB unavailable                                  |
+| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; system image and emulator run pending |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                      |
-| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Not run: Docker CLI unavailable                                       |
+| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Not run: Docker CLI unavailable; Docker Desktop install attempt blocked in `winget` |
 | Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Not deployed; production mutation is intentionally out of scope       |
 
 ## Required Local Gates
@@ -57,8 +57,32 @@ system-back, or platform permission behavior.
 
 ## Android Pass
 
+The Windows command-line toolchain is installed outside the repository at
+`D:\android-sdk`:
+
+- Android SDK Command-line Tools `23.0.0` (downloaded archive SHA-1
+  `57d04f2d75eb8e8fffc5000a987e5de4b5a63e9d`).
+- Platform Tools `37.0.1` (`adb.exe`).
+- Android Platform `35` and Build Tools `35.0.0`.
+- Android Emulator `37.1.11`.
+- Windows Hypervisor Platform (WHPX) acceleration check passed.
+
+Use a shell with these variables before invoking Expo or the emulator:
+
+```powershell
+$env:ANDROID_HOME = 'D:\android-sdk'
+$env:ANDROID_SDK_ROOT = 'D:\android-sdk'
+$env:Path = "D:\android-sdk\platform-tools;D:\android-sdk\emulator;D:\android-sdk\cmdline-tools\latest\bin;$env:Path"
+```
+
+The Google APIs x86_64 system image is still pending because the current
+Android CLI mirror connection created a zero-byte temporary archive and then
+lost its network connection. Do not treat the installed emulator binary as a
+booted device. Once the image is available, install it with the current CLI
+package syntax and create a named AVD before running the pass below.
+
 Run on at least one compact phone and one expanded/tablet target after the
-Android toolchain is available:
+system image and AVD are available:
 
 ```powershell
 pnpm --filter @nuttie/app android
@@ -92,6 +116,13 @@ deletion. A simulator result cannot replace the real-device evidence for
 Keychain/secure storage, SQLCipher, camera, notifications, or release signing.
 
 ## Container and Zeabur Pass
+
+Docker Desktop is not currently installed on this Windows host. A silent
+`winget install Docker.DockerDesktop` attempt remained in the package manager
+without creating Docker files and was terminated after the bounded wait; no
+Docker service or production container was changed. The GitHub CI Docker job
+remains the executable image-build evidence until Docker Desktop or another
+local engine is available.
 
 With Docker installed, run:
 
