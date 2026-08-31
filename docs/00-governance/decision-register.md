@@ -5,7 +5,7 @@
 - 权威状态：`ACCEPTED`、`SUPERSEDED`、`CANDIDATE`、`REJECTED`。
 - 只有 Owner 的明确回复可以把 `CANDIDATE` 改为 `ACCEPTED`。
 - 已接受决定不可被实现便利、库默认值或 Agent 建议隐式覆盖；变更必须创建新决定并引用被替代项。
-- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-08-15。
+- 日期均使用 Asia/Shanghai 时区。本页当前基线日期为 2026-08-29；历史决定仍保留原接受日期。
 - 机器可读副本位于 [`project-ops/decisions.json`](../../project-ops/decisions.json)。
 
 ## 已接受决定
@@ -17,17 +17,17 @@
 | D-003 | AI API 契约与凭据归属 | 每人配置 OpenAI-compatible Base URL、model 和 key | ACCEPTED |
 | D-004 | Base URL 安全范围 | 仅允许 HTTPS | ACCEPTED |
 | D-005 | React Native 工程形态 | Expo development build + prebuild，并检入 `ios/` | ACCEPTED |
-| D-006 | 本地数据与备份边界 | SQLite + 手动加密导出/导入，默认排除 iCloud | ACCEPTED |
+| D-006 | 本地数据与备份边界 | 本地缓存、SQLite 与手动加密导出/导入的安全语义保留；“永不云同步”范围被 D-073 替代 | SUPERSEDED |
 | D-007 | HealthKit 与系统健康数据 | 首版本地记录，第二阶段再决定 HealthKit | ACCEPTED |
 | D-008 | 给朋友的 iOS 分发方式 | 开发期 TestFlight，稳定后再选长期渠道 | ACCEPTED |
 | D-009 | 项目工作台运行形态 | 本地事件流实时工作台 + 静态快照 | ACCEPTED |
 | D-010 | 项目推进节奏 | 先完成完整功能地图，再小批确认与实现 | ACCEPTED |
-| D-011 | Nuttie 的 iOS 最低版本 | iOS 17+ | ACCEPTED |
+| D-011 | Nuttie 的 iOS 最低版本 | iOS 17+ 仍是 native 客户端下限；“仅 iOS 平台”范围被 D-073 替代 | SUPERSEDED |
 | D-012 | 离线食品数据包更新方式 | 随 App 发版 + Files 签名包导入 | ACCEPTED |
 | D-013 | 首版营养字段范围 | 能量、蛋白质、碳水、脂肪、纤维、糖、钠 | ACCEPTED |
 | D-014 | 营养标签照片发送给 AI | 首次说明 + 每次预览并确认发送 | ACCEPTED |
 | D-015 | 本地数据库加密等级 | SQLCipher + Keychain 数据库密钥 | ACCEPTED |
-| D-016 | 首发语言范围 | 仅简体中文 | ACCEPTED |
+| D-016 | 首发语言范围 | 简体中文仍为跨平台首发基线；“仅单一 iOS UI”范围被 D-073 替代 | SUPERSEDED |
 | D-017 | 功能对标交付方式 | 完整对标范围不删减，分阶段交付 | ACCEPTED |
 | D-018 | 导航实现 | Expo Router；深链参数运行时校验 | ACCEPTED |
 | D-019 | UI 状态管理 | Zustand 仅管理 UI/session/草稿；SQLite 为领域唯一真源 | ACCEPTED |
@@ -41,6 +41,9 @@
 | D-039 | 添加餐食首层体验 | 本地搜索和最近使用优先；扫描与 AI 作为并列辅助入口 | ACCEPTED |
 | D-047 | Apple 分发身份 | 当前暂不加入 Apple Developer Program；只供 Owner 自用 | ACCEPTED |
 | D-048 | 设备与方向 profile | iPhone 竖屏；关闭 Mac/Vision compatibility availability | ACCEPTED |
+| D-073 | 跨平台产品与云同步边界 | iOS、Android、React Native Web/mobile H5 共用 adaptive 信息架构；账号 + PostgreSQL 权威同步；各端本地缓存与离线 outbox；pnpm/Expo 约束和 AI 隐私边界继续有效 | ACCEPTED |
+
+`D-006`、`D-011`、`D-016` 的状态为 `SUPERSEDED`，仅表示其中与 D-073 冲突的产品范围被替代；各自保留条款已在决定详情中明确。机器副本与本表当前均为 27 项 `ACCEPTED`、3 项 `SUPERSEDED`、3 项 `CANDIDATE`。
 
 ## 决定详情
 
@@ -78,9 +81,10 @@
 
 ### D-006：本地数据与备份边界
 
-- 决定：SQLite 为本地业务真源；备份通过用户主动执行的加密文件导出/导入；默认排除 iCloud。
+- 状态：`SUPERSEDED（仅冲突范围）`。D-073 替代本条关于“永不加入业务云同步/业务服务器”的范围表述；本地缓存、SQLite 访问、用户主动加密导出/导入、默认排除 iCloud 与失败时保留旧状态的安全语义继续保留。
+- 决定：SQLite 为每个客户端的本地缓存/离线工作真源；备份通过用户主动执行的加密文件导出/导入；默认排除 iCloud。
 - 后果：卸载或设备损坏前未导出的数据可能无法恢复，产品必须明确提示并验证恢复流程。
-- 限制：不得加入业务云同步、CloudKit 或隐式远程备份。
+- 限制：不得使用 CloudKit 或隐式远程备份；跨设备同步只能通过 D-073 定义的显式账号、API、撤销、删除和审计边界进行。
 
 ### D-007：HealthKit
 
@@ -107,8 +111,9 @@
 
 ### D-011：iOS 最低版本
 
+- 状态：`SUPERSEDED（仅平台范围）`。D-073 将产品平台扩展为 iOS、Android 与 React Native Web；本条的 native iOS 版本下限仍然有效。
 - 决定：iOS 17+。
-- 后果：设计、依赖、原生能力与测试矩阵以 iOS 17 为下限；竞品的 iOS 13+ 元数据不自动成为 Nuttie 约束。
+- 后果：iOS 设计、依赖、原生能力与测试矩阵以 iOS 17 为下限；Android/Web 的最低支持矩阵须在 Build Ready 前单独冻结，不得从竞品元数据推导。
 
 ### D-012：离线数据包更新
 
@@ -135,7 +140,8 @@
 
 ### D-016：首发语言
 
-- 决定：仅简体中文。
+- 状态：`SUPERSEDED（仅产品范围措辞）`。D-073 不改变首发语言；它把该基线从 iOS 客户端扩展到所有首发平台。
+- 决定：首发仍仅提供简体中文（`zh-Hans`）。
 - 后果：首版内容、无障碍标签、错误信息和测试均以简体中文为基线；英文标语属于品牌资产，不代表首发 UI 双语。
 
 ### D-017：完整对标与分阶段交付
@@ -181,6 +187,16 @@
 
 - 决定：iPhone 竖屏，`supportsTablet=false`，关闭 Mac/Vision compatibility availability。
 - 限制：当前只有 iPhone 16 Pro Max / iOS 26.5 且无 Mac；该设备事实不授权 Prebuild、签名、Archive 或原生工作。
+
+### D-073：跨平台产品与云同步边界
+
+- 决定：Nuttie 从 iOS-only、本地无账号产品调整为 iOS、Android 与 React Native Web/mobile H5 的 adaptive 产品。四个平台表面共用一套信息架构和领域合同；手机优先（含 320px 窄屏、横屏和安全区），并在 601px+ 平板、1024px+ 桌面和 1440px+ 大屏上增加信息密度而不无限拉伸表单或图表。
+- 决定：账号认证后，PostgreSQL 是跨设备同步权威；每个客户端保留本地缓存与持久化离线 mutation outbox。首个纵向切片采用版本化 REST，不引入 WebSocket、Redis、对象存储、运营后台或远程 Push。
+- 同步不变量：每条 mutation 必须携带 `clientMutationId`、`deviceId`、`entityId`、`baseRevision`、`clientCreatedAt` 和 payload；服务端以唯一约束实现幂等，以单调 revision 检测冲突。餐食、饮水、体重等 append-only 事实默认合并；profile/goal 等可编辑对象冲突必须显式呈现，服务端响应不得静默覆盖未同步本地数据。
+- 凭据边界：Web 使用同源 HTTPS `/api` 与 `httpOnly`、`Secure`、`SameSite=Lax` refresh cookie；native 使用平台安全存储，短期 access token 只留在内存。API 不接收、保存或代理用户 AI key，AI 仍遵循 D-003、D-004、D-014 和 D-053 的用户主动触发、HTTPS、逐次确认与 fail-closed 约束。
+- 工程关系：正式 monorepo 统一使用 D-037 的 pnpm 11.18.0、`node-linker=hoisted` 和唯一 `pnpm-lock.yaml`；D-032 的 Expo/RN SDK 57 仍是候选 Spike，未因本决定自动升级为最终版本矩阵或原生发布授权。
+- 数据责任：云同步意味着必须新增账号删除、refresh token 撤销、设备撤销、密码恢复/邮箱策略、服务端数据删除、导出、冲突恢复和隐私政策更新；这些是 G2/G4/G6 的退出条件，不得由“本地优先”措辞掩盖。
+- 替代关系：本决定 supersede D-006、D-011、D-016 中与“无业务服务器/仅 iOS/仅单端语言”相关的范围；D-006 的本地缓存与加密备份安全语义、D-011 的 iOS 17+ native 下限、D-016 的 `zh-Hans` 首发语言继续有效。
 
 ## 已登记但未接受的候选
 

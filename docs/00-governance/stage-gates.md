@@ -12,9 +12,9 @@
 
 | Gate | 名称 | 状态 | 2026-08-27 证据/缺口 |
 | --- | --- | --- | --- |
-| G0 | 项目立项 | PASS | 章程、本地硬边界、角色模型、29 项 Owner 决定已接受 |
+| G0 | 项目立项 | PASS | 章程、本地硬边界、跨平台方向与 Owner 决策关系已登记；D-073 已接受 |
 | G1 | 调研可信 | PASS | 24 类、66 条行级证据：37 confirmed、24 cross-source、5 pending；另有 9 组跨行 gap themes；D-001 确认公开口径 |
-| G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；五项追踪整改最终复验通过；首批 Owner 输入已确认；首个 MVP 增量与后续范围边界三选一卡及跨角色复核包已准备，11 项输入清单已冻结到同一提交的原始 Git blob 与规范 SHA-256，复核人接入与指派检查包及 20 项本地 validator 已准备，但真实候选人、受控联系人、联络授权、正式指派与实际复核仍为 0，之后还需 Owner 选择与正式冻结 |
+| G2 | 产品基线 | IN_PROGRESS | F01-F24、REQ-F01-F24、AT-F01-F24 集合完整；D-073 已将账号、跨设备同步、离线 outbox 与平台/响应式边界纳入产品基线。五项追踪整改最终复验通过；首个 MVP 增量与后续范围边界三选一卡及跨角色复核包已准备，11 项输入清单已冻结到同一提交的原始 Git blob 与规范 SHA-256，复核人接入与指派检查包及 20 项本地 validator 已准备，但真实候选人、受控联系人、联络授权、正式指派与实际复核仍为 0，之后还需 Owner 选择与正式冻结；账号删除、token 撤销、冲突恢复、导出和隐私政策更新仍是退出条件 |
 | G3 | 体验基线 | IN_PROGRESS | IA、13 条关键旅程、状态/内容/无障碍和 AT 反向索引已形成；D-038 四入口导航已接受，D-039 方案 A 已冻结 PX-4，首次 PX-5 DoR 为 NOT_READY，B01/B02 已关闭、B03~B07 开放；B03 的 D-045、B04 的 D-031、B05 的 D-033/D-034/D-036/D-053 六张内部卡与 D-040 前三批十三卡均通过自审。D-039 六卡统一独立复核包已形成并固定 10 份输入、3 个阻断项、4 个复核域和 16 条跨卡不变量；10 项输入清单已冻结并记录 blob OID/SHA-256，复核人接入包、指派机器合同与 21 项本地 validator 已固定同一 packet、四域逐域胜任、身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256 与正式/合成隔离；但真实候选人、受控联系人、联络授权、正式指派、实际复核与 B03~B05 关闭仍为 0/false。D-040 十三卡独立复核包、中国健康评审交接包和四张宏量轴卡独立复核包也已形成；十三卡复核人接入包、指派机器合同与 21 项本地 validator 已固定同一 frozen packet、四域逐域胜任、身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256 与正式/合成隔离，但真实候选人、联系人、联络授权、正式指派、复核、PASS、健康批准和 Content QA 仍为 0/false；宏量包 10 份输入已绑定同一提交的原始 Git blob 与规范 SHA-256；宏量轴复核人接入包、指派机器合同与 21 项本地 validator 已固定同一 frozen packet、输入清单事件、四域逐域胜任、身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256 与正式/合成隔离，但真实候选人、联系人、联络授权、正式指派、复核、PASS、健康批准、Content QA、D-063/D-070 接受和四卡 Owner-ready 仍为 0/false；D-068/D-069 非诊断边界复核人接入包已显式固定候选字段、敏感存储边界、未发送请求模板、正式指派最小记录与回执交接规则，并校正指派合同 packet identity，但真实候选人、联系人、联络授权、正式指派、复核、健康批准、Content QA、Owner/PX 与实现仍为 0/false；两类具名复核人、D-063/D-070 接受、健康数值边界与文案、身份/资质/独立性核验、实际复核、批准和独立 Content QA 缺失；未进入 Owner 评审 |
 | G4 | Build Ready | IN_PROGRESS | 工程基础选择已接受；D-032 隔离 SDK 57 Windows JS Spike 的冻结安装、类型检查、Expo 配置、Doctor 20/20 与 Android 1,652/iOS 条件 1,565 模块 Metro export 已通过，Android/iOS export 共用核心已自动失败关闭额外平台、非批准资产类型、路径越界、未声明文件和原生目录，SQLite/SecureStore/Camera/Notifications/Reanimated/Worklets 六个符号已进入 JS/类型路径且原生调用为零，但 D-032 仍为候选。合并后全库 1379/1379，ProjectOps 为 5 份 Schema/345 个实例。G2 首增量跨角色复核回执 20 项本地 validator 已固定 11 输入/5 域/A-B-C/12 不变量/P0~P3/disposition/双 SHA-256，合成 fixture 不是现实证据，正式回执、attestation、复核人、PASS、Owner、范围冻结与实现授权仍为 0/false；G2 复核人指派 20 项本地 validator 只校验 frozen packet、五域逐域胜任、身份/起草/冲突/覆盖、联络/时序/签署、assignment SHA-256 与合成隔离，不读取联系人或创建正式指派，真实候选人、联系人、联络授权、外联、指派、复核与 PASS 仍为 0/false；D-039=A 的 PX-5 仍有 B03~B07 共 5 个 Owner/环境阻断项；六卡复核包只达到 `PACKET_READY`，10 项输入已冻结并记录 blob OID/SHA-256，不等于独立复核、外部证据、Owner 评审或实现授权；D-040 D-068/D-069 非诊断边界 spec/harness、独立复核包、20 项本地回执 validator、复核人接入包、21 项复核人指派 validator、正式交接清单、10 项启动缺口登记、正式指派记录空白模板与 8 项授权预检 checklist 已固定 8 输入/4 域/2 卡/10 不变量/P0~P3/disposition/双 SHA-256/YES-UNSURE fail-closed/候选身份/覆盖/联络授权/时序/签署/敏感存储边界/未发送请求模板/合成隔离/无副作用边界，但 `REVIEW_NOT_STARTED / NOT_OWNER_READY`，不等于真实候选人、联络授权、材料发送、正式指派、正式回执、健康批准、Content QA、Owner/PX 或实现授权；十三卡复核包、四卡复核包与健康评审交接包就绪都不等于复核已开始或通过；D-063/D-070 接受、D-068/D-069、健康数值边界与文案、Content QA 和独立复核均未关闭。F01/F02/F16 共享 request subject/profile/D-053/check 证据、AI 配置—策略预检、不可信响应、完整候选指纹、F18 删除、F19 恢复/导入、F03 数据包/条码、F09 及其他框架无关合同继续 fail closed，但不证明真实 Provider/schema/营养真值、transport 或发送许可；Windows 平台 JS export 也不证明原生运行或可复现构建。D-033/D-034/D-036/D-053 仅完成内部卡；D-034 benchmark 协议、13 项本地 manifest 校验、raw run/report 合同与 17 项本地失败关闭 validator 虽已准备，但 39 条缩小合成记录只验证算法且不落盘，真实 raw run/report 为 0，真实 corpus、最低设备/Mac/Xcode/隔离原生 harness/实测仍未完成；D-036/D-053 共用 OI-07 模板与 11 项本地失败关闭校验合同已固定同一 revision、3 个 slot、每 target 29 字段和 30 个联合字段，但 Owner 输入仍为 0；D-036 Provider/原生兼容协议已固定无 key OI-07 输入、36 个兼容单元、13 个原生边界面及离线 10 次/Provider 路径 3 次重复，但 OI-07/Provider 目标/Mac/Xcode/原生 harness/合成 corpus/凭证注入/真实网络授权/执行与结果/独立复核、D-053 Provider 证据/App Privacy 协议已固定 3 个 Provider、5 类 payload、15 个最小 profile、150 项十维评估和至少 5 行映射，但 OI-07/Provider/证据采集与快照/映射/具名签署/独立复核/Owner/准入、正式根工程、SQLCipher/Keychain、Prebuild、Mac/Xcode/CocoaPods、原生真机和 Release 证据仍未关闭 |
 | G5 | 增量验收 | FAIL | 尚无经批准的实现增量与工程 |
@@ -23,6 +23,14 @@
 | G8 | 复盘关闭 | FAIL | 项目未结束 |
 
 `FAIL` 在尚未达到对应阶段时表示退出条件不存在，不表示项目异常。
+
+## D-073 跨平台门禁增补（2026-08-29）
+
+D-073 已接受跨平台与云同步方向，但不改变当前 Gate 状态。G2 必须补齐账号生命周期、隐私政策、数据删除/导出和跨端信息架构；G3 必须验证 320px 窄屏、手机横竖屏、平板、桌面大屏、键盘/读屏、200% 文本缩放与同步状态文案；G4 必须验证共享 TypeScript contracts/domain、native 与 Web 独立存储适配器、离线 outbox 幂等重放、revision 冲突和 API readiness。正式 monorepo 统一遵循 D-037 的 pnpm 11.18.0/`node-linker=hoisted`/单一 lockfile；D-032 的 Expo/RN SDK 57 仍是 Spike 候选，不能被 D-037 或 D-073 自动升级。
+
+首期部署边界参考 Royal-Flush：Web 静态资源由 Nginx 提供并将同源 `/api/` 反代到私有 API，PostgreSQL 保持私有；Redis、WebSocket、对象存储、后台端、远程 Push 和服务端 AI 代理未获批准。任何 Zeabur、数据库或生产环境变更仍需单独授权，持续 push 不等于生产部署。
+
+本文件顶部的 Phase 0 统计仍引用 2026-08-27 历史 ProjectOps 快照；D-073 造成的 33 条决定（27 accepted、3 superseded、3 candidate）和新方向证据将在后续基线迁移提交中更新，当前不得伪造旧 validator 已通过。
 
 D-036 Provider/原生兼容报告合同与 20 项本地 fail-closed validator 已固定 36 个兼容单元、至少 324 条 raw attempt、108 条离线结果和 39 条原生边界结果，并校验 OI-07 双指纹、raw 聚合、P0~P3/disposition 与 report SHA-256。该 harness 仍是未提交的本地合同，formal-looking 合成夹具不是现实证据；实际 run/report/native evidence、网络、独立复核、Owner、B05 和正式实现均为 0/false，因此不改变 G2/G3/G4 的 `IN_PROGRESS`。
 

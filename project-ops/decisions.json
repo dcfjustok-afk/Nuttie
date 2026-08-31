@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-15T00:03:31+08:00",
+  "generatedAt": "2026-08-29T17:15:39+08:00",
   "authoritativeMarkdown": "docs/00-governance/decision-register.md",
   "decisions": [
     {
@@ -56,10 +56,10 @@
     {
       "id": "D-006",
       "title": "本地数据与备份边界",
-      "status": "ACCEPTED",
+      "status": "SUPERSEDED",
       "acceptedOn": "2026-07-31",
-      "choiceKey": "manual-encrypted",
-      "choice": "SQLite + 手动加密导出/导入，默认排除 iCloud",
+      "choiceKey": "local-cache-manual-encrypted-retained",
+      "choice": "保留 SQLite 本地缓存与手动加密导出/导入、默认排除 iCloud；D-073 替代不得加入业务云同步的范围限制",
       "source": "Owner decision response dated 2026-07-31",
       "supersedes": null
     },
@@ -106,10 +106,10 @@
     {
       "id": "D-011",
       "title": "Nuttie 的 iOS 最低版本",
-      "status": "ACCEPTED",
+      "status": "SUPERSEDED",
       "acceptedOn": "2026-07-31",
-      "choiceKey": "ios-17",
-      "choice": "iOS 17+",
+      "choiceKey": "ios-17-native-floor-retained",
+      "choice": "保留 iOS 17+ 作为 native 下限；D-073 替代仅 iOS 平台范围，Android/Web 下限另行冻结",
       "source": "Owner decision response dated 2026-07-31",
       "supersedes": null
     },
@@ -156,10 +156,10 @@
     {
       "id": "D-016",
       "title": "首发语言范围",
-      "status": "ACCEPTED",
+      "status": "SUPERSEDED",
       "acceptedOn": "2026-07-31",
-      "choiceKey": "zh-hans",
-      "choice": "仅简体中文",
+      "choiceKey": "zh-hans-first-release-retained",
+      "choice": "保留简体中文（zh-Hans）作为所有首发平台的语言基线；D-073 替代仅单端范围措辞",
       "source": "Owner decision response dated 2026-07-31",
       "supersedes": null
     },
@@ -302,6 +302,16 @@
       "choice": "iPhone 竖屏；supportsTablet=false；关闭 Mac/Vision compatibility availability",
       "source": "Owner batch readback confirmation via request_user_input, 2026-08-14; REL-DEC-C alias",
       "supersedes": null
+    },
+    {
+      "id": "D-073",
+      "title": "跨平台产品与云同步边界",
+      "status": "ACCEPTED",
+      "acceptedOn": "2026-08-29",
+      "choiceKey": "adaptive-cross-platform-cloud-sync",
+      "choice": "iOS、Android、React Native Web/mobile H5 的 adaptive 客户端；账号 + PostgreSQL 同步权威；各端本地缓存与离线 mutation outbox；首期版本化 REST，不引入 WebSocket/Redis/对象存储/运营后台/远程 Push",
+      "source": "Owner explicit direction dated 2026-08-29; docs/02-product/platform-reframe.md",
+      "supersedes": "D-006,D-011,D-016 (conflicting scope only)"
     },
     {
       "id": "D-052",

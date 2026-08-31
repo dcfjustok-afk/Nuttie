@@ -2,21 +2,21 @@
 
 | 字段 | 当前事实 |
 | --- | --- |
-| 快照日期 | 2026-08-27（Asia/Shanghai）；ProjectOps 人工归并快照与 2026-08-27 最新事件源一致 |
-| 项目阶段 | Phase 0，产品、体验与 Build Ready 基线形成中 |
+| 快照日期 | 2026-08-29（Asia/Shanghai）；跨平台方向已由 Owner 接受，ProjectOps 历史快照仍待迁移 |
+| 项目阶段 | Phase 0，跨平台产品、体验与 Build Ready 基线形成中 |
 | Gate | G0/G1 `PASS`；G2/G3/G4 `IN_PROGRESS`；G5~G8 `FAIL` |
-| 权威决定 | 29 项 `ACCEPTED`；3 项 `CANDIDATE`，其中 D-032 为 `SPIKE_AUTHORIZED`；D-039=A 已接受 |
-| 当前允许 | 文档、原型、测试设计、许可证据、工作台维护；约定隔离目录中的 SDK 57 JS Spike |
+| 权威决定 | 27 项 `ACCEPTED`；3 项 `SUPERSEDED`；3 项 `CANDIDATE`，其中 D-032 为 `SPIKE_AUTHORIZED`；D-039=A、D-073 已接受 |
+| 当前允许 | 跨平台产品/架构/安全合同、响应式设计验证、文档、原型、测试设计、许可证据、工作台维护；约定隔离目录中的 SDK 57 JS Spike |
 | D-036 报告合同 | 20 项本地 fail-closed validator 已固定 36/324/108/39 覆盖、OI-07 双指纹、raw 聚合、P0~P3/disposition 与 report SHA-256；harness 为 `WORKTREE_UNCOMMITTED`，真实 attempt/report/native evidence 与全部执行授权仍为 0/false |
 | D-053 报告合同 | 19 项本地 fail-closed validator 已固定 15 profile/150 assessment/45 A-B-C comparison、OI-07 双指纹、来源/映射/签名引用、P0~P3/disposition 与多层 SHA-256；harness 为 `WORKTREE_UNCOMMITTED`，真实 OI-07、Provider、来源/快照、映射、签署、独立复核、Owner、准入、B05、联网和实现均为 0/false |
-| 当前禁止 | 正式 React Native 根工程、正式 lockfile、`ios/`、Apple 注册/付费、TestFlight 上传、发布或其他线上变更 |
-| 下一位责任人 | PM 先按 G2 复核人接入与指派检查包取得真实候选人、受控联系人与联络授权，完成五域正式指派并组织实际复核，再提交 Owner 选择；同时为 D-039 B03~B05 六卡复核包取得具名独立复核人，并继续准备 D-034 benchmark、按统一无密钥模板取得 OI-07 三个 Provider target，并按已冻结协议补齐 D-036 Provider/工具链/原生执行前提，以及按已冻结协议补齐 D-053 OI-07/Provider/证据快照/App Privacy 映射与具名签署；ProjectContentOwner 获得外部联络授权后为 D-040 指派具名合格中国健康评审人并核验资质/利益冲突。D-039 保持 PX-4 已冻结、PX-5 未授权 |
+| 当前禁止 | 未满足 G2/G3/G4 退出条件前的正式发布构建、线上数据库/部署、Apple 注册/付费、TestFlight 上传或生产数据变更；正式 RN 根工程、原生目录和 lockfile 仍须按门禁推进 |
+| 下一位责任人 | PM 先把 D-073 的 auth/sync/privacy/平台矩阵转成 G2/G4 可验收合同，补齐账号删除、token 撤销、冲突恢复、导出和隐私政策边界；并继续处理 D-039 B03~B07、D-040 评审与 D-032 第二次 Owner 动作。 |
 
 本文件是恢复入口，不是新的决定源。事实冲突时按 [Codex 连续性运行手册](codex-continuity-runbook.md) 的优先级处理：Owner 明确回复和有效决定事件优先，其次是 [决定台账](decision-register.md) 与 `project-ops/decisions.json` 的一致副本；原型、推荐、工作台和本文件都不能替代 Owner 选择。
 
 ## 1. 权威状态与运行快照
 
-`project-ops/decisions.json` 生成于 `2026-08-15T00:03:31+08:00`，与 [决定台账](decision-register.md) 一致，当前包含 29 项 `ACCEPTED` 和 3 项 `CANDIDATE`。
+`project-ops/decisions.json` 已在 2026-08-29 的 D-073 方向变更后更新，与 [决定台账](decision-register.md) 的决定集合一致；当前包含 27 项 `ACCEPTED`、3 项 `SUPERSEDED`、3 项 `CANDIDATE`。`project-ops/snapshots/current.json` 仍是 2026-08-27 的历史快照，计数迁移待后续单独提交。
 
 `project-ops/snapshots/current.json` 已按 `2026-08-27T14:05:15+08:00` 最新权威来源完成归并，当前记录 29 项 accepted、3 项 candidate、226 个事件、116 条 Agent 消息、25 个角色和 1 个活跃角色；唯一活跃角色是 PM `root`。Owner 首批整批回读仍为 11 项 accepted，D-032 仅获得隔离 SDK 57 JS Spike 授权；后续 Owner 查看冻结 D-039 原型后明确回复 `a`，D-039 方案 A 现为 `ACCEPTED / PX-3_PASS / PX-4_BASELINE_FROZEN`。首次 PX-5 DoR 为 `NOT_READY`；B01/B02 已关闭，当前 `B03~B07 / 5 BLOCKERS / D039-PX5-OWNER_DEPENDENCIES_REQUIRED`。B03 的 D-045 最近/收藏、B04 的 D-031 媒体/AI 保留与 B05 的 D-033 非标签 AI 上传确认、D-034 AI 资源预算、D-036 AITransport 隔离、D-053 Provider 用途准入六张内部卡均已完成四域自审，仍为 `INDEPENDENT_REVIEW_REQUIRED / NOT_OWNER_READY`。D-040 的 20 个决定轴与 D-054~D-072 候选 ID 预留不变，前三批共十三卡、四张宏量轴卡与 D-068/D-069 非诊断边界卡均已形成本地治理工件；D-068/D-069 review packet 已固定 8 份输入、4 个复核域、2 卡处置、10 条跨卡不变量与 P0~P3；对应独立复核回执机器合同与 20 项本地 validator 已固定同一 packet、四域 attestation、两卡、10 条不变量、P0~P3、disposition 与双 SHA-256；复核人接入包已显式化并把指派合同校正到非诊断边界 packet identity，正式交接清单、10 项启动缺口登记、正式指派空白模板、8 项授权预检 checklist 与联络授权记录合同均已准备，但状态仍是 `AUTHORIZATION_NOT_GRANTED / REVIEWER_ASSIGNMENT_REQUIRED / REVIEW_NOT_STARTED / NOT_OWNER_READY`，授权记录、正式候选人、正式指派、正式回执和权威 PASS 仍为 0/false。所有复核/交接包都未发送外部消息；具名复核人/健康评审人、联系人、联络授权、正式指派、实际复核、健康批准、Content QA、Owner/PX 与实现仍为 0/false。OI-02 仍为 Bundle ID 尚未创建、SKU=`N/A`，OI-03 仍为当前只有 `iPhone 16 Pro Max / iOS 26.5`、暂无可用 Mac。隔离 Spike 的 Android/iOS JS export 与共用结构校验保持通过，所有原生调用仍为零。D-039 DoR 进展、ID 预留、卡片自审和输入证据都不授权正式页面、路由、原生或发布工作。
 
@@ -30,7 +30,7 @@ D-040 D-068/D-069 非诊断边界已新增候选名单记录合同 `EVT-20260827
 
 ## 2. 决定状态
 
-### 2.1 已接受 29 项
+### 2.1 已接受 27 项
 
 精确 ID：
 
@@ -38,10 +38,10 @@ D-040 D-068/D-069 非诊断边界已新增候选名单记录合同 `EVT-20260827
 D-001, D-002, D-003, D-004, D-005, D-006, D-007, D-008, D-009,
 D-010, D-011, D-012, D-013, D-014, D-015, D-016, D-017, D-018,
 D-019, D-020, D-021, D-023, D-024, D-025, D-037, D-038, D-039, D-047,
-D-048
+D-048, D-073
 ```
 
-新增接受项固定了 Expo Router、Zustand UI 状态边界、Drizzle + 受控 SQL、React Hook Form + Zod、Jest 单 runner、本地 Maestro + XCTest/XCUITest、StyleSheet semantic tokens、pnpm hoisted profile、四入口导航、D-039 本地搜索/最近优先、当前不加入 Apple Developer Program 只自用，以及 iPhone 竖屏 profile。完整精确语义见决定台账。
+新增接受项固定了 Expo Router、Zustand UI 状态边界、Drizzle + 受控 SQL、React Hook Form + Zod、Jest 单 runner、本地 Maestro + XCTest/XCUITest、StyleSheet semantic tokens、pnpm hoisted profile、四入口导航、D-039 本地搜索/最近优先、当前不加入 Apple Developer Program 只自用、iPhone 竖屏 profile，以及 D-073 的跨平台账号/同步边界。D-006、D-011、D-016 的冲突范围已由 D-073 替代，但其保留条款见决定台账。
 
 ### 2.2 当前候选 3 项
 
@@ -53,6 +53,31 @@ D-032, D-052, D-053
 
 D-032 已选择 SDK 57，但只形成 `CANDIDATE + SPIKE_AUTHORIZED`，等待隔离 Spike 证据后的第二次 Owner 动作。D-052 是 USDA 数据面向美国境外朋友的再分发口径；未决定前，USDA 原始或转换数据只用于本地研发。D-053 是第三方 AI Provider 数据用途准入；未决定且证据不足时，一律按 `UNKNOWN/BLOCKED` 处理。后两项不阻断本地自用、无第三方 AI 的 MVP 开发路径。
 
+### 2.3 D-073 跨平台方向
+
+D-073 已接受，但它是产品与架构方向决定，不等于 G2/G3/G4 已通过，也不授权生产部署。首个跨端纵向切片必须同时证明：
+
+- iOS、Android 与 RN Web/mobile H5 使用同一信息架构；Web 至少覆盖 320px 窄屏、横屏、平板和大屏桌面，采用稳定容器宽度与安全区处理，不以视口宽度缩放字号。
+- 账号认证、PostgreSQL 同步权威、本地缓存和离线 outbox 的数据流可恢复、可重放且幂等；append-only 事实合并，profile/goal 冲突显式呈现。
+- Web refresh cookie、native secure storage、token 撤销、账号/设备撤销、数据删除与导出均有可验证合同。
+- API 首期使用版本化 REST；Redis、WebSocket、对象存储、后台运营端、远程 Push 和服务端 AI 代理仍未获批。
+
+D-073 不改变 D-003/D-004/D-014/D-053 的 AI key 与用户确认边界，也不把本地 Spike 或静态原型当作跨平台发布证据。
+
+### 2.4 跨平台交接检查表
+
+在正式工程进入 G4 前，必须把以下合同落地并分别验证 native 与 Web：
+
+| 领域 | 交接要求 |
+| --- | --- |
+| 平台 | iOS 17+ native 下限保留；Android API 下限、Web 浏览器矩阵和方向支持另行冻结；Web 覆盖 320px、横屏、平板、桌面与 1440px+ 最大内容宽度 |
+| 会话 | Web 使用同源 `httpOnly` refresh cookie；native 使用平台 secure storage；access token 短期且只在内存；支持 refresh 撤销、设备撤销和账号删除 |
+| 同步 | mutation 带 `clientMutationId`、`deviceId`、`entityId`、`baseRevision`、`clientCreatedAt`；离线 outbox 可重放、幂等、可观测；冲突不得静默覆盖 |
+| 数据 | PostgreSQL 是云同步权威；本地缓存仍支持离线记录；导出、删除、恢复和审计边界必须有测试；Web 缓存采用独立 XSS/CSRF/WebCrypto/IndexedDB 威胁模型 |
+| 部署 | 参考 Royal-Flush 的 web/Nginx 同源 `/api` 反代和 readiness；API、PostgreSQL 保持私有；任何 Zeabur/生产变更仍需单独授权 |
+
+当前 `project-ops/snapshots/current.json`、validator 基线和历史报告仍反映变更前的 29 accepted/3 candidate 与 226 events；它们不得被本页的新方向文字误读为已完成迁移，后续应以独立治理迁移提交更新。
+
 ## 3. D-032 的两阶段语义
 
 D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
@@ -60,7 +85,7 @@ D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
 1. **第一次：Spike candidate baseline，已完成。** Owner 已选择 A（SDK 57），只授权在约定的隔离 `spikes/` 边界创建候选 `package.json` 和唯一 lockfile，当前 Windows/无 Mac 条件下仅执行 JS Spike。记录语义是 `CANDIDATE + SPIKE_AUTHORIZED`，不能改为 `ACCEPTED`，也不能创建正式 Nuttie 根工程或执行 Prebuild。
 2. **第二次：Final frozen matrix。** 团队提交 lockfile/Podfile.lock 实际解析版本、Mac/macOS/Xcode/CocoaPods、New Architecture 强制状态、SQLCipher、Keychain、通知、相机、Prebuild diff、Debug/Release/Archive 和真机证据后，Owner 再选择接受最终矩阵、改变候选或停止；只有这次明确确认才能把 D-032 冻结为最终 accepted 版本矩阵。
 
-第一次动作所需的 D-037 pnpm profile 与 OI-03 设备事实已齐备。D-048 已接受；具体 Bundle ID 仍最迟在首次正式签名配置前关闭。D-047/OI-01 继续阻断稳定真机签名、App Store Connect 和 TestFlight。
+第一次动作所需的 D-037 pnpm profile 与 OI-03 设备事实已齐备。D-037 是正式 monorepo 的包管理约束：统一 pnpm 11.18.0、`node-linker=hoisted` 与唯一 `pnpm-lock.yaml`；D-032 只决定 Expo/RN 版本 Spike，二者不能互相推导最终 SDK 或原生工程授权。D-073 不改变 D-048；具体 Bundle ID 仍最迟在首次正式签名配置前关闭。D-047/OI-01 继续阻断稳定真机签名、App Store Connect 和 TestFlight。
 
 隔离 `spikes/sdk57-js` 已用 Node 22.13.0 / pnpm 11.18.0 完成冻结安装、静态边界检查、TypeScript、Expo public config、Doctor 20/20 和 Android/iOS 平台 Hermes export。高风险依赖表面进一步绑定六个具体 JS 符号与四个 config plugin，Metro 分别解析 1,652 个 Android 模块和 1,565 个 iOS 条件模块，同时固定原生 API、权限、数据库、Keychain、通知、worklet 和网络调用均为 0。Android/iOS export 现共用同一校验核心，将平台限定 metadata、唯一 Hermes bundle、明确资产扩展名、声明/实际文件集精确一致、路径越界与原生目录进入导出后自动校验，10 个单测通过；因两平台连续运行都已观测到 SHA 或字节数漂移，两者都不作可复现构建门禁。它没有生成 `ios/`/`android/`，没有运行 Prebuild/Xcode/CocoaPods，也没有验证 SQLCipher、Keychain、权限、原生编译、模拟器、签名 Archive 或 iPhone 运行；因此它只关闭 Windows JS 解析子范围，不触发第二次 Owner 动作，也不把 D-032 改为 accepted。
 
@@ -68,11 +93,11 @@ D-032 保留同一个决定 ID，但必须发生两次独立 Owner 动作：
 
 | 产物 | 当前结论 | 接续时不得误读 |
 | --- | --- | --- |
-| [追踪整改最终复验](../05-quality/traceability-review.md) | `PASS_WITH_OWNER_GATE_BLOCKERS` | 历史 66/37/24/5、F/REQ/AT 和当时 14 项候选可复核；不覆盖当前 29/3 状态 |
+| [追踪整改最终复验](../05-quality/traceability-review.md) | `PASS_WITH_OWNER_GATE_BLOCKERS` | 历史 66/37/24/5、F/REQ/AT 和当时 14 项候选可复核；不覆盖 D-073 前的 29/3 状态 |
 | [Phase 0 机器一致性验证](../05-quality/phase0-validation-report.md) | `PASS_WITH_GATE_BLOCKERS` | 报告只验证首批候选登记前的 7 月 31 日历史快照，不能替代当前计数 |
 | [Phase 0 8 月 5 日验证基线](../05-quality/phase0-validation-report-2026-08-05.md) | `PASS_WITH_GATE_BLOCKERS`；当前权威数据、工作台和 D-039 复验通过 | 固化 31 决定、77 事件、86 消息、17 角色、66 条证据与 D-039 PX-2；不关闭 G2/G3/G4，也不代表 Owner 已选 D-039 |
 | [React Native / Expo 技术栈独立复核](../05-quality/rn-stack-independent-review.md) | `CONDITIONAL PASS`；重写要求已落实到当前决策包 | 没有初始化工程、安装依赖、生成 lockfile、Prebuild 或 Archive |
-| [Owner 启动门禁独立审查](owner-startup-gate-independent-review.md) | 审查完成；发现的两阶段、选项完整性和候选登记问题已由当前决策包/台账收口 | 它是历史审查证据，文中的旧候选计数不能覆盖当前 29/3 权威状态 |
+| [Owner 启动门禁独立审查](owner-startup-gate-independent-review.md) | 审查完成；发现的两阶段、选项完整性和候选登记问题已由当前决策包/台账收口 | 它是历史审查证据，文中的旧候选计数不能覆盖 D-073 后权威状态 |
 | [安全终审](../05-quality/security-review.md) | 总体 `BLOCKED`；安全协议文档发现已关闭 | 无实现、构建、真机、跨工具 corpus 或 Release 抓包证据，G4 不可 PASS |
 | [食品数据许可审查](../05-quality/data-license-review.md) | `CONDITIONAL` | 台湾包须显名；USDA 境外分发由 D-052 fail closed |
 | [iOS Release 独立审查](../05-quality/ios-release-readiness-review.md) | `BLOCKED` | 开发准备、G6 和 G7 都没有退出证据，不得宣称 Beta/Release Ready |
