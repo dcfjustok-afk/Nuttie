@@ -1,6 +1,6 @@
 import { Slot, usePathname, useRouter } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
@@ -8,6 +8,7 @@ import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
 import { Icon, type IconName } from "./Icon";
 import { useAppTheme } from "../theme";
 import { useAppStore } from "../state/useAppStore";
+import { useResponsiveLayout } from "../hooks/useResponsiveLayout";
 
 type Destination = { href: "/diary" | "/trends" | "/food" | "/settings"; label: string; icon: IconName };
 const destinations: Destination[] = [
@@ -61,7 +62,7 @@ function Navigation({ desktop }: { desktop: boolean }) {
 }
 
 export function AppShell() {
-  const { width } = useWindowDimensions();
+  const { width } = useResponsiveLayout();
   const desktop = width >= 768;
   const { colors } = useAppTheme();
   const session = useAppStore((state) => state.session);

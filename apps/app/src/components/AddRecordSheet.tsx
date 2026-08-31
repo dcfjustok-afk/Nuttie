@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
@@ -8,6 +8,7 @@ import { Icon } from "./Icon";
 import { useAppTheme } from "../theme";
 import { useAppStore } from "../state/useAppStore";
 import type { RecordKind } from "../types";
+import { useResponsiveLayout } from "../hooks/useResponsiveLayout";
 
 const kinds: Array<{ kind: RecordKind; label: string; icon: "meal" | "water" | "weight" }> = [
   { kind: "meal", label: "餐食", icon: "meal" },
@@ -18,7 +19,7 @@ const kinds: Array<{ kind: RecordKind; label: string; icon: "meal" | "water" | "
 export function AddRecordSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width } = useResponsiveLayout();
   const compact = width < 600;
   const large = width >= 768;
   const addRecord = useAppStore((state) => state.addRecord);
@@ -78,14 +79,16 @@ export function AddRecordSheet({ visible, onClose }: { visible: boolean; onClose
             <View style={styles.handle} />
             <View style={styles.header}><View><Text style={[styles.title, { color: colors.ink }]}>新增记录</Text><Text style={[styles.subtitle, { color: colors.inkMuted }]}>先记下来，之后仍可补充细节</Text></View><Pressable accessibilityRole="button" accessibilityLabel="关闭" onPress={onClose} style={styles.close}><Icon name="close" size={20} color={colors.inkMuted} /></Pressable></View>
             <View style={[styles.segmented, { backgroundColor: colors.surfaceMuted }]}>{kinds.map((item) => <Pressable key={item.kind} accessibilityRole="tab" accessibilityState={{ selected: kind === item.kind }} onPress={() => selectKind(item.kind)} style={[styles.segment, kind === item.kind && { backgroundColor: colors.surface, borderColor: colors.border }]}><Icon name={item.icon} size={17} color={kind === item.kind ? colors.chestnut : colors.inkMuted} /><Text style={[styles.segmentText, { color: kind === item.kind ? colors.ink : colors.inkMuted }]}>{item.label}</Text></Pressable>)}</View>
-            <ScrollView style={styles.formScroll} contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={large}>
+            <ScrollView style={styles.formScroll} contentContainerStyle={styles.form} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator>
               <Field label={kind === "meal" ? "名称" : "记录名称"} value={title} onChangeText={setTitle} placeholder="例如：番茄鸡蛋面" colors={colors} />
               <View style={compact ? styles.singleCol : styles.twoCol}><Field label="数量" value={amount} onChangeText={setAmount} placeholder={kind === "water" ? "350" : kind === "weight" ? "63.4" : "1"} keyboardType="decimal-pad" colors={colors} /><Field label="单位" value={unit} onChangeText={setUnit} placeholder="份" colors={colors} /></View>
               {kind === "meal" && <View style={compact ? styles.singleCol : styles.macroGrid}><Field label="能量（kcal）" value={energy} onChangeText={setEnergy} placeholder="可稍后补充" keyboardType="decimal-pad" colors={colors} /><Field label="蛋白质（g）" value={protein} onChangeText={setProtein} placeholder="未提供" keyboardType="decimal-pad" colors={colors} /><Field label="碳水（g）" value={carbs} onChangeText={setCarbs} placeholder="未提供" keyboardType="decimal-pad" colors={colors} /><Field label="脂肪（g）" value={fat} onChangeText={setFat} placeholder="未提供" keyboardType="decimal-pad" colors={colors} /></View>}
               {error && <Text accessibilityRole="alert" style={[styles.error, { color: colors.danger }]}>{error}</Text>}
               <Text style={[styles.note, { color: colors.inkMuted }]}>保存后会先写入本机队列；登录且网络可用时自动同步。未填写的营养值保持“未提供”，不会按 0 处理。</Text>
-              <Pressable accessibilityRole="button" accessibilityLabel="保存记录" disabled={saving} onPress={() => void submit()} style={({ pressed }) => [styles.save, { backgroundColor: colors.chestnut }, saving && { opacity: 0.55 }, pressed && { opacity: 0.82 }]}><Text style={[styles.saveText, { color: colors.inverse }]}>{saving ? "保存中…" : "保存记录"}</Text></Pressable>
             </ScrollView>
+            <View style={[styles.footer, { borderTopColor: colors.border, backgroundColor: colors.surface }]}>
+              <Pressable accessibilityRole="button" accessibilityLabel="保存记录" disabled={saving} onPress={() => void submit()} style={({ pressed }) => [styles.save, { backgroundColor: colors.chestnut }, saving && { opacity: 0.55 }, pressed && { opacity: 0.82 }]}><Text style={[styles.saveText, { color: colors.inverse }]}>{saving ? "保存中…" : "保存记录"}</Text></Pressable>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </View>
@@ -100,8 +103,8 @@ function Field({ label, value, onChangeText, placeholder, keyboardType, colors }
 const styles = StyleSheet.create({
   backdrop: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(20,24,21,0.46)" },
   backdropLarge: { justifyContent: "center", paddingHorizontal: spacing.xl },
-  keyboard: { width: "100%", maxHeight: "92%" },
-  sheet: { borderTopLeftRadius: radii.feature, borderTopRightRadius: radii.feature, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, gap: spacing.lg },
+  keyboard: { width: "100%", maxHeight: "92%", flexShrink: 1 },
+  sheet: { borderTopLeftRadius: radii.feature, borderTopRightRadius: radii.feature, paddingHorizontal: spacing.lg, paddingTop: spacing.sm, gap: spacing.lg, flexShrink: 1, overflow: "hidden" },
   sheetLarge: { width: "100%", maxWidth: 600, maxHeight: "88%", alignSelf: "center", borderRadius: radii.feature },
   handle: { alignSelf: "center", width: 44, height: 4, borderRadius: 2, backgroundColor: "#C8C1B6" },
   header: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", gap: spacing.md },
@@ -113,6 +116,7 @@ const styles = StyleSheet.create({
   segmentText: { ...typeScale.label },
   formScroll: { flexShrink: 1 },
   form: { gap: spacing.md },
+  footer: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: spacing.md },
   field: { gap: spacing.xs, flex: 1, minWidth: 0 },
   fieldLabel: { ...typeScale.label },
   input: { minHeight: dimensions.control, borderWidth: StyleSheet.hairlineWidth, borderRadius: radii.compact, paddingHorizontal: spacing.md, ...typeScale.body },

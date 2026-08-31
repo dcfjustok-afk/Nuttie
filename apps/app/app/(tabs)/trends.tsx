@@ -1,18 +1,19 @@
 import React, { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { dimensions, radii, spacing, typeScale } from "@nuttie/design-tokens";
 
 import { Screen } from "../../src/components/Screen";
 import { useAppStore } from "../../src/state/useAppStore";
 import { useAppTheme } from "../../src/theme";
+import { useResponsiveLayout } from "../../src/hooks/useResponsiveLayout";
 
 type Metric = "摄入" | "饮水" | "体重";
 const metricOptions: Metric[] = ["摄入", "饮水", "体重"];
 const sampleDays = ["周一", "周二", "周三", "周四", "周五", "周六", "今天"];
 
 export default function TrendsScreen() {
-  const { width } = useWindowDimensions();
+  const { width } = useResponsiveLayout();
   const wide = width >= 768;
   const { colors } = useAppTheme();
   const records = useAppStore((state) => state.records);

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { dimensions, getGrowthState, radii, spacing, typeScale } from "@nuttie/design-tokens";
 import { GrowthMark } from "@nuttie/ui";
@@ -12,9 +12,10 @@ import { Screen } from "../../src/components/Screen";
 import { SyncBadge } from "../../src/components/SyncBadge";
 import { useAppStore } from "../../src/state/useAppStore";
 import { useAppTheme } from "../../src/theme";
+import { useResponsiveLayout } from "../../src/hooks/useResponsiveLayout";
 
 export default function DiaryScreen() {
-  const { width } = useWindowDimensions();
+  const { width } = useResponsiveLayout();
   const wide = width >= 768;
   const { colors } = useAppTheme();
   const records = useAppStore((state) => state.records);
@@ -29,7 +30,10 @@ export default function DiaryScreen() {
   const fat = meals.reduce((sum, record) => sum + (record.fatG ?? 0), 0);
   const progress = useMemo(() => Math.min(1, (meals.length + (water.length ? 1 : 0) + (weight ? 1 : 0)) / 5), [meals.length, water.length, weight]);
   const growthState = getGrowthState(progress, records.some((record) => record.syncStatus === "pending"));
-  const dateLabel = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "long" }).format(new Date());
+  const [dateLabel, setDateLabel] = React.useState("今天");
+  React.useEffect(() => {
+    setDateLabel(new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "long" }).format(new Date()));
+  }, []);
 
   return (
     <Screen>
