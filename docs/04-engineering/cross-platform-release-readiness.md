@@ -9,15 +9,40 @@ production deployment result.
 
 ## Evidence Matrix
 
-| Surface              | Required evidence                                                                                                   | Current state on Windows                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                |
-| Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; 35 route/width combinations pass with zero hydration errors |
-| Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; live browser used mocked 401 API responses |
-| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; system image and emulator run pending |
-| iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                      |
-| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Not run: Docker CLI unavailable; Docker Desktop install attempt blocked in `winget` |
-| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Not deployed; production mutation is intentionally out of scope       |
+| Surface              | Required evidence                                                                                                   | Current state on Windows                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                                                                                                   |
+| Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; 35 route/width combinations plus a fresh 5-route representative pass have zero hydration/page errors                                      |
+| Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; local API preflight returns 204 and unauthenticated refresh returns expected 401                                              |
+| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; system image and emulator run pending                                                            |
+| iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                                                                                                         |
+| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; Docker CLI unavailable |
+| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Read-only check: candidate `untitled-1` (`6a8bfcecb1c569569969b2b7`) has no services; no deployment mutation                                             |
+
+## Verification Snapshot: 2026-08-31
+
+The following checks were run against the current branch after the navigation
+landmark contract was added:
+
+- `pnpm test`, `pnpm typecheck`, `pnpm build`, and `git diff --check` passed.
+- The real static export was served by `.tmp/acceptance-server.mjs` on
+  `127.0.0.1:4188`; `/healthz` returned `200` and `/sign-in` returned the
+  matching pre-rendered HTML entry.
+- A local development API ran in explicit in-memory mode on `127.0.0.1:8787`
+  with the acceptance origin allowlisted. The browser refresh preflight
+  returned `204`; the expected anonymous refresh response was `401`.
+- Fresh Playwright coverage requested `/sign-in` at 320px, `/diary` at 390px,
+  `/food` at 430px, `/trends` at 768px, and `/settings` at 1440px. Every case
+  reported `document.documentElement.scrollWidth === innerWidth`, complete
+  document readiness, no page errors, and no React hydration error. Phone
+  routes exposed the labeled bottom navigation; 768px and 1440px exposed the
+  232px rail. Dark-mode checks at 390px and 768px used the dark token surfaces
+  without overflow or hydration errors.
+- The 320px add-record flow kept the `保存记录` button visible at the bottom
+  of the viewport with a 48px control height.
+- The Zeabur UI was inspected without opening the service creation flow. The
+  candidate project has no services, so API/Web/PostgreSQL names, public HTTPS
+  origin, secrets, and billing authorization remain unresolved.
 
 ## Required Local Gates
 
