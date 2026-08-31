@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import test from "node:test";
+import {
+  assertSyncPayloadSafe,
+  SyncPayloadSafetyError,
+} from "@nuttie/contracts";
 import { createApplication } from "./index.js";
 import { loadConfig, ConfigurationError } from "./config.js";
 
@@ -19,16 +23,34 @@ async function startTestApplication() {
   return { application, origin: `http://127.0.0.1:${address.port}` };
 }
 
-async function request(origin: string, path: string, init: RequestInit = {}): Promise<Response> {
+async function request(
+  origin: string,
+  path: string,
+  init: RequestInit = {},
+): Promise<Response> {
   return fetch(`${origin}${path}`, {
     ...init,
-    headers: { "content-type": "application/json", ...(init.headers ?? {}) },
+    headers: {
+      "content-type": "application/json",
+      "x-client-platform": "native",
+      ...(init.headers ?? {}),
+    },
   });
 }
 
 test("production configuration fails closed without a database and secret", () => {
-  assert.throws(() => loadConfig({ NODE_ENV: "production" }), ConfigurationError);
-  assert.throws(() => loadConfig({ NODE_ENV: "production", DATABASE_URL: "postgres://example" }), ConfigurationError);
+  assert.throws(
+    () => loadConfig({ NODE_ENV: "production" }),
+    ConfigurationError,
+  );
+  assert.throws(
+    () =>
+      loadConfig({
+        NODE_ENV: "production",
+        DATABASE_URL: "postgres://example",
+      }),
+    ConfigurationError,
+  );
 });
 
 test("health and readiness are available in memory", async (t) => {
@@ -48,17 +70,25 @@ test("register/login/refresh/logout and mutation idempotency work end to end", a
 
   const registration = await request(origin, "/api/v1/auth/register", {
     method: "POST",
-    body: JSON.stringify({ email: "Person@Example.com", password: "correct horse battery", displayName: "栗子" }),
+    body: JSON.stringify({
+      email: "Person@Example.com",
+      password: "correct horse battery",
+      displayName: "栗子",
+    }),
   });
   assert.equal(registration.status, 201);
   const registered = (await registration.json()).data;
   assert.equal(registered.user.email, "person@example.com");
   assert.match(registered.accessToken, /^.+\..+\..+$/);
   assert.ok(registered.refreshToken);
+  assert.equal(registration.headers.get("set-cookie"), null);
 
   const login = await request(origin, "/api/v1/auth/login", {
     method: "POST",
-    body: JSON.stringify({ email: "person@example.com", password: "correct horse battery" }),
+    body: JSON.stringify({
+      email: "person@example.com",
+      password: "correct horse battery",
+    }),
   });
   assert.equal(login.status, 200);
   const loggedIn = (await login.json()).data;
@@ -112,7 +142,10 @@ test("register/login/refresh/logout and mutation idempotency work end to end", a
   const conflict = await request(origin, "/api/v1/mutations", {
     method: "POST",
     headers: { authorization: `Bearer ${loggedIn.accessToken}` },
-    body: JSON.stringify({ ...mutation, payload: { ...mutation.payload, title: "改写" } }),
+    body: JSON.stringify({
+      ...mutation,
+      payload: { ...mutation.payload, title: "改写" },
+    }),
   });
   assert.equal(conflict.status, 409);
   assert.equal((await conflict.json()).error.code, "IDEMPOTENCY_CONFLICT");
@@ -152,7 +185,10 @@ test("browser auth responses keep refresh credentials in the HttpOnly cookie", a
   const response = await request(origin, "/api/v1/auth/register", {
     method: "POST",
     headers: { origin: "http://localhost:3000", "x-client-platform": "web" },
-    body: JSON.stringify({ email: "web@example.com", password: "correct horse battery" }),
+    body: JSON.stringify({
+      email: "web@example.com",
+      password: "correct horse battery",
+    }),
   });
   assert.equal(response.status, 201);
   const body = (await response.json()).data;
@@ -176,6 +212,127 @@ test("browser auth responses keep refresh credentials in the HttpOnly cookie", a
   assert.equal("refreshToken" in (await refreshed.json()).data, false);
 });
 
+test("sync rejects credential and raw AI fields without echoing their values", async (t) => {
+  const { application, origin } = await startTestApplication();
+  t.after(() => application.close());
+  const registration = await request(origin, "/api/v1/auth/register", {
+    method: "POST",
+    body: JSON.stringify({
+      email: "privacy@example.com",
+      password: "correct horse battery",
+    }),
+  });
+  const auth = (await registration.json()).data;
+  const headers = { authorization: `Bearer ${auth.accessToken}` };
+  const cases = [
+    {
+      id: "privacy-api-key",
+      details: { API_KEY: "sk-live-test-value" },
+      expectedPath: /payload\.details\.API_KEY/,
+      forbiddenValues: /sk-live-test-value/,
+    },
+    {
+      id: "privacy-nested-authorization",
+      details: { metadata: { Authorization: "Bearer private-value" } },
+      expectedPath: /payload\.details\.metadata\.Authorization/,
+      forbiddenValues: /Bearer private-value/,
+    },
+    {
+      id: "privacy-array-raw-ai",
+      details: [{ raw_AI_payload: { prompt: "private meal photo" } }],
+      expectedPath: /payload\.details\[0\]\.raw_AI_payload/,
+      forbiddenValues: /private meal photo/,
+    },
+  ] as const;
+  for (const item of cases) {
+    const response = await request(origin, "/api/v1/mutations", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        clientMutationId: item.id,
+        entityType: "meal",
+        operation: "create",
+        baseRevision: 0,
+        payload: {
+          id: item.id,
+          recordedAt: "2026-08-29T08:00:00Z",
+          localDate: "2026-08-29",
+          details: item.details,
+        },
+      }),
+    });
+    assert.equal(response.status, 400);
+    const body = await response.text();
+    assert.doesNotMatch(body, item.forbiddenValues);
+    const parsed = JSON.parse(body);
+    assert.equal(parsed.error.code, "SENSITIVE_DATA_NOT_ALLOWED");
+    assert.match(parsed.error.details.path, item.expectedPath);
+  }
+});
+
+test("sync safety permits shared values but rejects recursive cycles", () => {
+  const shared = { label: "safe" };
+  assert.doesNotThrow(() =>
+    assertSyncPayloadSafe({ left: shared, right: shared }),
+  );
+
+  const cyclic: Record<string, unknown> = {};
+  cyclic.self = cyclic;
+  assert.throws(
+    () => assertSyncPayloadSafe(cyclic),
+    (error) =>
+      error instanceof SyncPayloadSafetyError && error.path === "payload.self",
+  );
+});
+
+test("a refresh token can be rotated only once under concurrent requests", async (t) => {
+  const { application, origin } = await startTestApplication();
+  t.after(() => application.close());
+  const registration = await request(origin, "/api/v1/auth/register", {
+    method: "POST",
+    body: JSON.stringify({
+      email: "rotation@example.com",
+      password: "correct horse battery",
+    }),
+  });
+  const session = (await registration.json()).data;
+  assert.ok(session.refreshToken);
+
+  const attempts = await Promise.all([
+    request(origin, "/api/v1/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refreshToken: session.refreshToken }),
+    }),
+    request(origin, "/api/v1/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refreshToken: session.refreshToken }),
+    }),
+  ]);
+  assert.deepEqual(
+    attempts.map((response) => response.status).sort(),
+    [200, 401],
+  );
+  const rejected = attempts.find((response) => response.status === 401);
+  assert.ok(rejected);
+  assert.equal((await rejected.json()).error.code, "INVALID_REFRESH_TOKEN");
+});
+
+test("a malformed refresh cookie is rejected without becoming an internal error", async (t) => {
+  const { application, origin } = await startTestApplication();
+  t.after(() => application.close());
+  const response = await request(origin, "/api/v1/auth/refresh", {
+    method: "POST",
+    headers: {
+      origin: "http://localhost:3000",
+      "x-client-platform": "web",
+      cookie: "nuttie_refresh=%E0%A4%A",
+    },
+    body: "{}",
+  });
+  assert.equal(response.status, 401);
+  assert.equal((await response.json()).error.code, "INVALID_REFRESH_TOKEN");
+});
+
 test("web preflight allows the platform header used by cookie clients", async (t) => {
   const { application, origin } = await startTestApplication();
   t.after(() => application.close());
@@ -188,7 +345,10 @@ test("web preflight allows the platform header used by cookie clients", async (t
     },
   });
   assert.equal(response.status, 204);
-  assert.match(String(response.headers.get("access-control-allow-headers")), /x-client-platform/);
+  assert.match(
+    String(response.headers.get("access-control-allow-headers")),
+    /x-client-platform/,
+  );
 });
 
 test("stale baseRevision returns a conflict without changing data", async (t) => {
@@ -196,7 +356,10 @@ test("stale baseRevision returns a conflict without changing data", async (t) =>
   t.after(() => application.close());
   const registration = await request(origin, "/api/v1/auth/register", {
     method: "POST",
-    body: JSON.stringify({ email: "revision@example.com", password: "correct horse battery" }),
+    body: JSON.stringify({
+      email: "revision@example.com",
+      password: "correct horse battery",
+    }),
   });
   const auth = (await registration.json()).data;
   const headers = { authorization: `Bearer ${auth.accessToken}` };
@@ -204,11 +367,31 @@ test("stale baseRevision returns a conflict without changing data", async (t) =>
     entityType: "water",
     operation: "create",
     baseRevision: 0,
-    payload: { id: "water-1", localDate: "2026-08-29", recordedAt: "2026-08-29T01:00:00Z", amount: 250, unit: "ml" },
+    payload: {
+      id: "water-1",
+      localDate: "2026-08-29",
+      recordedAt: "2026-08-29T01:00:00Z",
+      amount: 250,
+      unit: "ml",
+    },
   };
-  const first = await request(origin, "/api/v1/mutations", { method: "POST", headers, body: JSON.stringify({ ...base, clientMutationId: "water-1" }) });
+  const first = await request(origin, "/api/v1/mutations", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ ...base, clientMutationId: "water-1" }),
+  });
   assert.equal(first.status, 201);
-  const stale = await request(origin, "/api/v1/mutations", { method: "POST", headers, body: JSON.stringify({ ...base, clientMutationId: "water-2", operation: "update", baseRevision: 0, payload: { ...base.payload, id: "water-1", amount: 500 } }) });
+  const stale = await request(origin, "/api/v1/mutations", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      ...base,
+      clientMutationId: "water-2",
+      operation: "update",
+      baseRevision: 0,
+      payload: { ...base.payload, id: "water-1", amount: 500 },
+    }),
+  });
   assert.equal(stale.status, 409);
   const staleBody = await stale.json();
   assert.equal(staleBody.error.code, "REVISION_CONFLICT");

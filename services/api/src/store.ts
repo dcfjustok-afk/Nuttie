@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import {
   DiaryRecordSchema,
+  assertSyncPayloadSafe,
   type DiaryRecord,
   type MutationInput,
   type RecordKind,
@@ -36,7 +37,12 @@ export type MutationReceipt = {
 export type CommitResult =
   | ({ status: "committed" | "replayed" } & MutationReceipt)
   | { status: "idempotency-conflict"; existingFingerprint: string }
-  | { status: "revision-conflict"; expected: number; actual: number; record?: StoredRecord }
+  | {
+      status: "revision-conflict";
+      expected: number;
+      actual: number;
+      record?: StoredRecord;
+    }
   | { status: "duplicate-record"; record: StoredRecord }
   | { status: "record-not-found" };
 
@@ -58,15 +64,33 @@ export interface Repository {
   findSessionByTokenHash(tokenHash: string): Promise<SessionRecord | null>;
   findSessionById(id: string): Promise<SessionRecord | null>;
   revokeSession(id: string, revokedAt: string): Promise<void>;
-  commitMutation(userId: string, mutation: MutationInput, fingerprint: string): Promise<CommitResult>;
-  listChanges(userId: string, cursor: string | undefined, limit: number): Promise<SyncResult>;
+  /** Atomically consume an active refresh session and persist its replacement. */
+  rotateSession(
+    tokenHash: string,
+    revokedAt: string,
+    replacement: SessionRecord,
+  ): Promise<SessionRecord | null>;
+  commitMutation(
+    userId: string,
+    mutation: MutationInput,
+    fingerprint: string,
+  ): Promise<CommitResult>;
+  listChanges(
+    userId: string,
+    cursor: string | undefined,
+    limit: number,
+  ): Promise<SyncResult>;
 }
 
 export class RepositoryError extends Error {
   readonly code: string;
   readonly details?: Record<string, unknown>;
 
-  constructor(code: string, message: string, details?: Record<string, unknown>) {
+  constructor(
+    code: string,
+    message: string,
+    details?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = "RepositoryError";
     this.code = code;
@@ -93,22 +117,34 @@ function recordCopy(record: StoredRecord): StoredRecord {
 
 function parseCursor(cursor: string | undefined): number {
   if (cursor === undefined || cursor.trim() === "") return 0;
-  if (!/^\d+$/.test(cursor.trim())) throw new RepositoryError("BAD_CURSOR", "cursor must be a non-negative integer");
+  if (!/^\d+$/.test(cursor.trim()))
+    throw new RepositoryError(
+      "BAD_CURSOR",
+      "cursor must be a non-negative integer",
+    );
   const parsed = Number(cursor);
-  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new RepositoryError("BAD_CURSOR", "cursor is out of range");
+  if (!Number.isSafeInteger(parsed) || parsed < 0)
+    throw new RepositoryError("BAD_CURSOR", "cursor is out of range");
   return parsed;
 }
 
 function payloadId(mutation: MutationInput): string {
-  if (typeof mutation.entityId === "string" && mutation.entityId.trim() !== "") return mutation.entityId;
+  if (typeof mutation.entityId === "string" && mutation.entityId.trim() !== "")
+    return mutation.entityId;
   const candidate = mutation.payload.id;
-  return typeof candidate === "string" && candidate.trim() !== "" ? candidate : mutation.clientMutationId;
+  return typeof candidate === "string" && candidate.trim() !== ""
+    ? candidate
+    : mutation.clientMutationId;
 }
 
 function publicRecord(record: StoredRecord): StoredRecord {
   // Validate at the repository boundary so no malformed JSON is propagated to clients.
   const parsed = DiaryRecordSchema.parse(record);
-  return clone({ ...parsed, userId: record.userId, serverRevision: record.serverRevision });
+  return clone({
+    ...parsed,
+    userId: record.userId,
+    serverRevision: record.serverRevision,
+  });
 }
 
 export class MemoryRepository implements Repository {
@@ -118,7 +154,10 @@ export class MemoryRepository implements Repository {
   private readonly sessionsById = new Map<string, SessionRecord>();
   private readonly sessionIdByHash = new Map<string, string>();
   private readonly recordsByUser = new Map<string, StoredRecord[]>();
-  private readonly mutationsByUser = new Map<string, Map<string, MutationReceipt>>();
+  private readonly mutationsByUser = new Map<
+    string,
+    Map<string, MutationReceipt>
+  >();
   private readonly revisionByUser = new Map<string, number>();
 
   async ready(): Promise<{ ready: boolean; detail: string }> {
@@ -132,7 +171,10 @@ export class MemoryRepository implements Repository {
   async createUser(user: UserRecord): Promise<void> {
     const email = user.email.toLowerCase();
     if (this.userIdByEmail.has(email) || this.usersById.has(user.id)) {
-      throw new RepositoryError("EMAIL_TAKEN", "an account with this email already exists");
+      throw new RepositoryError(
+        "EMAIL_TAKEN",
+        "an account with this email already exists",
+      );
     }
     const normalized = userCopy({ ...user, email });
     this.usersById.set(normalized.id, normalized);
@@ -153,13 +195,16 @@ export class MemoryRepository implements Repository {
   }
 
   async createSession(session: SessionRecord): Promise<void> {
-    if (!this.usersById.has(session.userId)) throw new RepositoryError("NOT_FOUND", "user does not exist");
+    if (!this.usersById.has(session.userId))
+      throw new RepositoryError("NOT_FOUND", "user does not exist");
     const copy = sessionCopy(session);
     this.sessionsById.set(copy.id, copy);
     this.sessionIdByHash.set(copy.tokenHash, copy.id);
   }
 
-  async findSessionByTokenHash(tokenHash: string): Promise<SessionRecord | null> {
+  async findSessionByTokenHash(
+    tokenHash: string,
+  ): Promise<SessionRecord | null> {
     const id = this.sessionIdByHash.get(tokenHash);
     return id ? this.findSessionById(id) : null;
   }
@@ -171,16 +216,69 @@ export class MemoryRepository implements Repository {
 
   async revokeSession(id: string, revokedAt: string): Promise<void> {
     const session = this.sessionsById.get(id);
-    if (session && !session.revokedAt) this.sessionsById.set(id, { ...session, revokedAt });
+    if (session && !session.revokedAt)
+      this.sessionsById.set(id, { ...session, revokedAt });
   }
 
-  async commitMutation(userId: string, mutation: MutationInput, fingerprint: string): Promise<CommitResult> {
-    if (!this.usersById.has(userId)) throw new RepositoryError("NOT_FOUND", "user does not exist");
+  async rotateSession(
+    tokenHash: string,
+    revokedAt: string,
+    replacement: SessionRecord,
+  ): Promise<SessionRecord | null> {
+    // This method has no await points, so the lookup, consume, and replacement
+    // writes form one event-loop critical section for the in-memory adapter.
+    const sessionId = this.sessionIdByHash.get(tokenHash);
+    const existing = sessionId ? this.sessionsById.get(sessionId) : undefined;
+    const revokedAtMs = Date.parse(revokedAt);
+    if (
+      !existing ||
+      existing.revokedAt ||
+      !Number.isFinite(revokedAtMs) ||
+      Date.parse(existing.expiresAt) <= revokedAtMs
+    ) {
+      return null;
+    }
+    if (replacement.userId !== existing.userId) {
+      throw new RepositoryError(
+        "INVALID_SESSION_ROTATION",
+        "replacement session belongs to a different user",
+      );
+    }
+    if (!this.usersById.has(replacement.userId)) {
+      throw new RepositoryError("NOT_FOUND", "user does not exist");
+    }
+    if (
+      this.sessionsById.has(replacement.id) ||
+      this.sessionIdByHash.has(replacement.tokenHash)
+    ) {
+      throw new RepositoryError(
+        "SESSION_CONFLICT",
+        "replacement session already exists",
+      );
+    }
+    const replacementCopy = sessionCopy(replacement);
+    this.sessionsById.set(existing.id, { ...existing, revokedAt });
+    this.sessionsById.set(replacementCopy.id, replacementCopy);
+    this.sessionIdByHash.set(replacementCopy.tokenHash, replacementCopy.id);
+    return sessionCopy(existing);
+  }
+
+  async commitMutation(
+    userId: string,
+    mutation: MutationInput,
+    fingerprint: string,
+  ): Promise<CommitResult> {
+    assertSyncPayloadSafe(mutation, "mutation");
+    if (!this.usersById.has(userId))
+      throw new RepositoryError("NOT_FOUND", "user does not exist");
     const receipts = this.mutationsByUser.get(userId)!;
     const existingReceipt = receipts.get(mutation.clientMutationId);
     if (existingReceipt) {
       if (existingReceipt.fingerprint !== fingerprint) {
-        return { status: "idempotency-conflict", existingFingerprint: existingReceipt.fingerprint };
+        return {
+          status: "idempotency-conflict",
+          existingFingerprint: existingReceipt.fingerprint,
+        };
       }
       return { status: "replayed", ...clone(existingReceipt) };
     }
@@ -191,21 +289,51 @@ export class MemoryRepository implements Repository {
       const details = applied.error.details;
       if (applied.error.code === "REVISION_CONFLICT") {
         const actual = typeof details?.actual === "number" ? details.actual : 0;
-        const record = current.find((item) => item.id === payloadId(mutation) && item.kind === mutation.entityType);
-        return { status: "revision-conflict", expected: mutation.baseRevision ?? 0, actual, ...(record ? { record: recordCopy(record) } : {}) };
+        const record = current.find(
+          (item) =>
+            item.id === payloadId(mutation) &&
+            item.kind === mutation.entityType,
+        );
+        return {
+          status: "revision-conflict",
+          expected: mutation.baseRevision ?? 0,
+          actual,
+          ...(record ? { record: recordCopy(record) } : {}),
+        };
       }
       if (applied.error.code === "DUPLICATE_RECORD") {
-        const record = current.find((item) => item.id === payloadId(mutation) && item.kind === mutation.entityType);
-        if (record) return { status: "duplicate-record", record: recordCopy(record) };
+        const record = current.find(
+          (item) =>
+            item.id === payloadId(mutation) &&
+            item.kind === mutation.entityType,
+        );
+        if (record)
+          return { status: "duplicate-record", record: recordCopy(record) };
       }
-      if (applied.error.code === "RECORD_NOT_FOUND") return { status: "record-not-found" };
-      throw new RepositoryError(applied.error.code, applied.error.message, details);
+      if (applied.error.code === "RECORD_NOT_FOUND")
+        return { status: "record-not-found" };
+      throw new RepositoryError(
+        applied.error.code,
+        applied.error.message,
+        details,
+      );
     }
     const nextServerRevision = applied.nextRevision;
-    const committed = { ...recordCopy(applied.record as StoredRecord), userId, serverRevision: nextServerRevision };
+    const committed = {
+      ...recordCopy(applied.record as StoredRecord),
+      userId,
+      serverRevision: nextServerRevision,
+    };
     const nextRecords = applied.records.map((record) => {
-      const existing = record.id === committed.id && record.kind === committed.kind;
-      return existing ? committed : { ...recordCopy(record as StoredRecord), userId, serverRevision: record.serverRevision ?? serverRevision };
+      const existing =
+        record.id === committed.id && record.kind === committed.kind;
+      return existing
+        ? committed
+        : {
+            ...recordCopy(record as StoredRecord),
+            userId,
+            serverRevision: record.serverRevision ?? serverRevision,
+          };
     });
     this.recordsByUser.set(userId, nextRecords);
     this.revisionByUser.set(userId, nextServerRevision);
@@ -220,8 +348,13 @@ export class MemoryRepository implements Repository {
     return { status: "committed", ...clone(receipt) };
   }
 
-  async listChanges(userId: string, cursor: string | undefined, limit: number): Promise<SyncResult> {
-    if (!this.usersById.has(userId)) throw new RepositoryError("NOT_FOUND", "user does not exist");
+  async listChanges(
+    userId: string,
+    cursor: string | undefined,
+    limit: number,
+  ): Promise<SyncResult> {
+    if (!this.usersById.has(userId))
+      throw new RepositoryError("NOT_FOUND", "user does not exist");
     const from = parseCursor(cursor);
     const serverRevision = this.revisionByUser.get(userId) ?? 0;
     const all = (this.recordsByUser.get(userId) ?? [])
@@ -254,13 +387,18 @@ function rowSession(row: PgRow): SessionRecord {
     userId: String(row.user_id),
     tokenHash: String(row.token_hash),
     expiresAt: new Date(String(row.expires_at)).toISOString(),
-    ...(row.revoked_at ? { revokedAt: new Date(String(row.revoked_at)).toISOString() } : {}),
+    ...(row.revoked_at
+      ? { revokedAt: new Date(String(row.revoked_at)).toISOString() }
+      : {}),
     createdAt: new Date(String(row.created_at)).toISOString(),
   };
 }
 
 function rowRecord(row: PgRow): StoredRecord {
-  const raw = typeof row.record_json === "string" ? JSON.parse(row.record_json) : row.record_json;
+  const raw =
+    typeof row.record_json === "string"
+      ? JSON.parse(row.record_json)
+      : row.record_json;
   const record = DiaryRecordSchema.parse(raw) as DiaryRecord;
   return {
     ...record,
@@ -295,22 +433,43 @@ export class PostgresRepository implements Repository {
       await this.pool.query(
         `INSERT INTO users (id, email, password_hash, display_name, timezone, created_at, revision)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [user.id, user.email.toLowerCase(), user.passwordHash, user.displayName, user.timezone ?? null, user.createdAt, user.revision ?? 0],
+        [
+          user.id,
+          user.email.toLowerCase(),
+          user.passwordHash,
+          user.displayName,
+          user.timezone ?? null,
+          user.createdAt,
+          user.revision ?? 0,
+        ],
       );
-      await this.pool.query(`INSERT INTO user_revisions (user_id, revision) VALUES ($1, 0) ON CONFLICT (user_id) DO NOTHING`, [user.id]);
+      await this.pool.query(
+        `INSERT INTO user_revisions (user_id, revision) VALUES ($1, 0) ON CONFLICT (user_id) DO NOTHING`,
+        [user.id],
+      );
     } catch (error) {
-      if (isPgUnique(error)) throw new RepositoryError("EMAIL_TAKEN", "an account with this email already exists");
+      if (isPgUnique(error))
+        throw new RepositoryError(
+          "EMAIL_TAKEN",
+          "an account with this email already exists",
+        );
       throw error;
     }
   }
 
   async findUserByEmail(email: string): Promise<UserRecord | null> {
-    const result = await this.pool.query<PgRow>("SELECT * FROM users WHERE email = $1 LIMIT 1", [email.toLowerCase()]);
+    const result = await this.pool.query<PgRow>(
+      "SELECT * FROM users WHERE email = $1 LIMIT 1",
+      [email.toLowerCase()],
+    );
     return result.rows[0] ? rowUser(result.rows[0]) : null;
   }
 
   async findUserById(id: string): Promise<UserRecord | null> {
-    const result = await this.pool.query<PgRow>("SELECT * FROM users WHERE id = $1 LIMIT 1", [id]);
+    const result = await this.pool.query<PgRow>(
+      "SELECT * FROM users WHERE id = $1 LIMIT 1",
+      [id],
+    );
     return result.rows[0] ? rowUser(result.rows[0]) : null;
   }
 
@@ -318,25 +477,112 @@ export class PostgresRepository implements Repository {
     await this.pool.query(
       `INSERT INTO sessions (id, user_id, token_hash, expires_at, revoked_at, created_at)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [session.id, session.userId, session.tokenHash, session.expiresAt, session.revokedAt ?? null, session.createdAt],
+      [
+        session.id,
+        session.userId,
+        session.tokenHash,
+        session.expiresAt,
+        session.revokedAt ?? null,
+        session.createdAt,
+      ],
     );
   }
 
-  async findSessionByTokenHash(tokenHash: string): Promise<SessionRecord | null> {
-    const result = await this.pool.query<PgRow>("SELECT * FROM sessions WHERE token_hash = $1 LIMIT 1", [tokenHash]);
+  async findSessionByTokenHash(
+    tokenHash: string,
+  ): Promise<SessionRecord | null> {
+    const result = await this.pool.query<PgRow>(
+      "SELECT * FROM sessions WHERE token_hash = $1 LIMIT 1",
+      [tokenHash],
+    );
     return result.rows[0] ? rowSession(result.rows[0]) : null;
   }
 
   async findSessionById(id: string): Promise<SessionRecord | null> {
-    const result = await this.pool.query<PgRow>("SELECT * FROM sessions WHERE id = $1 LIMIT 1", [id]);
+    const result = await this.pool.query<PgRow>(
+      "SELECT * FROM sessions WHERE id = $1 LIMIT 1",
+      [id],
+    );
     return result.rows[0] ? rowSession(result.rows[0]) : null;
   }
 
   async revokeSession(id: string, revokedAt: string): Promise<void> {
-    await this.pool.query("UPDATE sessions SET revoked_at = COALESCE(revoked_at, $2) WHERE id = $1", [id, revokedAt]);
+    await this.pool.query(
+      "UPDATE sessions SET revoked_at = COALESCE(revoked_at, $2) WHERE id = $1",
+      [id, revokedAt],
+    );
   }
 
-  async commitMutation(userId: string, mutation: MutationInput, fingerprint: string): Promise<CommitResult> {
+  async rotateSession(
+    tokenHash: string,
+    revokedAt: string,
+    replacement: SessionRecord,
+  ): Promise<SessionRecord | null> {
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const result = await client.query<PgRow>(
+        "SELECT * FROM sessions WHERE token_hash = $1 FOR UPDATE",
+        [tokenHash],
+      );
+      const row = result.rows[0];
+      if (!row) {
+        await client.query("ROLLBACK");
+        return null;
+      }
+      const existing = rowSession(row);
+      const revokedAtMs = Date.parse(revokedAt);
+      if (
+        existing.revokedAt ||
+        !Number.isFinite(revokedAtMs) ||
+        Date.parse(existing.expiresAt) <= revokedAtMs
+      ) {
+        await client.query("ROLLBACK");
+        return null;
+      }
+      if (replacement.userId !== existing.userId) {
+        await client.query("ROLLBACK");
+        throw new RepositoryError(
+          "INVALID_SESSION_ROTATION",
+          "replacement session belongs to a different user",
+        );
+      }
+      await client.query(
+        "UPDATE sessions SET revoked_at = $2 WHERE id = $1 AND revoked_at IS NULL",
+        [existing.id, revokedAt],
+      );
+      await client.query(
+        `INSERT INTO sessions (id, user_id, token_hash, expires_at, revoked_at, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          replacement.id,
+          replacement.userId,
+          replacement.tokenHash,
+          replacement.expiresAt,
+          replacement.revokedAt ?? null,
+          replacement.createdAt,
+        ],
+      );
+      await client.query("COMMIT");
+      return existing;
+    } catch (error) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {
+        // Preserve the original database error.
+      }
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async commitMutation(
+    userId: string,
+    mutation: MutationInput,
+    fingerprint: string,
+  ): Promise<CommitResult> {
+    assertSyncPayloadSafe(mutation, "mutation");
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -348,22 +594,39 @@ export class PostgresRepository implements Repository {
       if (previous) {
         if (String(previous.fingerprint) !== fingerprint) {
           await client.query("ROLLBACK");
-          return { status: "idempotency-conflict", existingFingerprint: String(previous.fingerprint) };
+          return {
+            status: "idempotency-conflict",
+            existingFingerprint: String(previous.fingerprint),
+          };
         }
-        const response = typeof previous.response_json === "string" ? JSON.parse(previous.response_json) : previous.response_json;
+        const response =
+          typeof previous.response_json === "string"
+            ? JSON.parse(previous.response_json)
+            : previous.response_json;
         await client.query("COMMIT");
         return { status: "replayed", ...(response as MutationReceipt) };
       }
 
-      const revisionResult = await client.query<PgRow>("SELECT revision FROM user_revisions WHERE user_id = $1 FOR UPDATE", [userId]);
-      const currentServerRevision = Number(revisionResult.rows[0]?.revision ?? 0);
+      const revisionResult = await client.query<PgRow>(
+        "SELECT revision FROM user_revisions WHERE user_id = $1 FOR UPDATE",
+        [userId],
+      );
+      const currentServerRevision = Number(
+        revisionResult.rows[0]?.revision ?? 0,
+      );
       const currentResult = await client.query<PgRow>(
         `SELECT user_id, record_json, server_revision FROM records
          WHERE user_id = $1 AND kind = $2 AND id = $3 FOR UPDATE`,
         [userId, mutation.entityType, payloadId(mutation)],
       );
-      const existing = currentResult.rows[0] ? rowRecord(currentResult.rows[0]) : undefined;
-      const applied = applyMutation(existing ? [existing] : [], mutation, currentServerRevision);
+      const existing = currentResult.rows[0]
+        ? rowRecord(currentResult.rows[0])
+        : undefined;
+      const applied = applyMutation(
+        existing ? [existing] : [],
+        mutation,
+        currentServerRevision,
+      );
       if (!applied.ok) {
         await client.query("ROLLBACK");
         const details = applied.error.details;
@@ -371,13 +634,22 @@ export class PostgresRepository implements Repository {
           return {
             status: "revision-conflict",
             expected: mutation.baseRevision ?? 0,
-            actual: typeof details?.actual === "number" ? details.actual : existing?.revision ?? 0,
+            actual:
+              typeof details?.actual === "number"
+                ? details.actual
+                : (existing?.revision ?? 0),
             ...(existing ? { record: existing } : {}),
           };
         }
-        if (applied.error.code === "DUPLICATE_RECORD" && existing) return { status: "duplicate-record", record: existing };
-        if (applied.error.code === "RECORD_NOT_FOUND") return { status: "record-not-found" };
-        throw new RepositoryError(applied.error.code, applied.error.message, details);
+        if (applied.error.code === "DUPLICATE_RECORD" && existing)
+          return { status: "duplicate-record", record: existing };
+        if (applied.error.code === "RECORD_NOT_FOUND")
+          return { status: "record-not-found" };
+        throw new RepositoryError(
+          applied.error.code,
+          applied.error.message,
+          details,
+        );
       }
       const next = applied.record as DiaryRecord;
       const nextServerRevision = applied.nextRevision;
@@ -408,7 +680,11 @@ export class PostgresRepository implements Repository {
          ON CONFLICT (user_id) DO UPDATE SET revision = EXCLUDED.revision`,
         [userId, nextServerRevision],
       );
-      const stored: StoredRecord = { ...next, userId, serverRevision: nextServerRevision };
+      const stored: StoredRecord = {
+        ...next,
+        userId,
+        serverRevision: nextServerRevision,
+      };
       const receipt: MutationReceipt = {
         clientMutationId: mutation.clientMutationId,
         fingerprint,
@@ -427,7 +703,10 @@ export class PostgresRepository implements Repository {
           mutation.entityType,
           mutation.deviceId ?? null,
           mutation.entityId ?? payloadId(mutation),
-          mutation.clientCreatedAt ?? mutation.clientTimestamp ?? mutation.createdAt ?? null,
+          mutation.clientCreatedAt ??
+            mutation.clientTimestamp ??
+            mutation.createdAt ??
+            null,
           mutation.baseRevision ?? 0,
           JSON.stringify(mutation.payload),
           JSON.stringify(receipt),
@@ -447,9 +726,16 @@ export class PostgresRepository implements Repository {
     }
   }
 
-  async listChanges(userId: string, cursor: string | undefined, limit: number): Promise<SyncResult> {
+  async listChanges(
+    userId: string,
+    cursor: string | undefined,
+    limit: number,
+  ): Promise<SyncResult> {
     const from = parseCursor(cursor);
-    const revisionResult = await this.pool.query<PgRow>("SELECT revision FROM user_revisions WHERE user_id = $1", [userId]);
+    const revisionResult = await this.pool.query<PgRow>(
+      "SELECT revision FROM user_revisions WHERE user_id = $1",
+      [userId],
+    );
     const serverRevision = Number(revisionResult.rows[0]?.revision ?? 0);
     const result = await this.pool.query<PgRow>(
       `SELECT user_id, record_json, server_revision FROM records
@@ -462,20 +748,37 @@ export class PostgresRepository implements Repository {
       "SELECT COUNT(*)::text AS count FROM records WHERE user_id = $1 AND server_revision > $2",
       [userId, next],
     );
-    return { cursor: String(next), serverRevision, hasMore: Number(more.rows[0]?.count ?? 0) > 0, records };
+    return {
+      cursor: String(next),
+      serverRevision,
+      hasMore: Number(more.rows[0]?.count ?? 0) > 0,
+      records,
+    };
   }
 }
 
 function isPgUnique(error: unknown): boolean {
-  return typeof error === "object" && error !== null && "code" in error && (error as { code?: unknown }).code === "23505";
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === "23505"
+  );
 }
 
 export function hashMutationFingerprint(mutation: MutationInput): string {
+  assertSyncPayloadSafe(mutation, "mutation");
   return createHash("sha256").update(canonicalize(mutation)).digest("hex");
 }
 
-export function createRepository(config: { allowInMemory: boolean; databaseUrl?: string }): Repository {
+export function createRepository(config: {
+  allowInMemory: boolean;
+  databaseUrl?: string;
+}): Repository {
   if (config.allowInMemory) return new MemoryRepository();
   if (config.databaseUrl) return new PostgresRepository(config.databaseUrl);
-  throw new RepositoryError("DATABASE_UNAVAILABLE", "a persistent DATABASE_URL is required");
+  throw new RepositoryError(
+    "DATABASE_UNAVAILABLE",
+    "a persistent DATABASE_URL is required",
+  );
 }

@@ -91,6 +91,88 @@ const JsonValueSchema: z.ZodType<unknown> = z.lazy(() =>
   ]),
 );
 
+/**
+ * Synchronized records must never become a covert transport for credentials
+ * or raw AI material.  Keep this check structural and deterministic so every
+ * client can reject the same payload before it is fingerprinted or queued.
+ */
+const SENSITIVE_SYNC_KEYS = new Set([
+  "aikey",
+  "apikey",
+  "accesstoken",
+  "refreshtoken",
+  "rawaipayload",
+  "aipayload",
+  "authorization",
+  "password",
+  "secret",
+  "privatekey",
+  "bearertoken",
+  "credential",
+  "credentials",
+  "dataurl",
+  "token",
+]);
+
+function normalizedSyncKey(key: string): string {
+  return key.replace(/[^a-z0-9]/gi, "").toLowerCase();
+}
+
+function isSensitiveSyncKey(key: string): boolean {
+  const normalized = normalizedSyncKey(key);
+  return (
+    SENSITIVE_SYNC_KEYS.has(normalized) ||
+    normalized.endsWith("token") ||
+    normalized.endsWith("apikey") ||
+    normalized.endsWith("secret") ||
+    normalized.endsWith("credential")
+  );
+}
+
+function syncPath(path: string, key: string | number): string {
+  if (typeof key === "number") return `${path}[${key}]`;
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key)
+    ? `${path}.${key}`
+    : `${path}[${JSON.stringify(key)}]`;
+}
+
+export class SyncPayloadSafetyError extends Error {
+  readonly code = "SENSITIVE_DATA_NOT_ALLOWED" as const;
+  readonly path: string;
+
+  constructor(path: string) {
+    super("sensitive fields cannot be synchronized");
+    this.name = "SyncPayloadSafetyError";
+    this.path = path;
+  }
+}
+
+/** Reject credential-like keys without ever including their values in errors. */
+export function assertSyncPayloadSafe(value: unknown, path = "payload"): void {
+  const active = new WeakSet<object>();
+  const visit = (current: unknown, currentPath: string): void => {
+    if (current === null || typeof current !== "object") return;
+    if (active.has(current)) throw new SyncPayloadSafetyError(currentPath);
+    active.add(current);
+    if (Array.isArray(current)) {
+      current.forEach((item, index) =>
+        visit(item, syncPath(currentPath, index)),
+      );
+      active.delete(current);
+      return;
+    }
+    for (const [key, child] of Object.entries(
+      current as Record<string, unknown>,
+    )) {
+      const childPath = syncPath(currentPath, key);
+      if (isSensitiveSyncKey(key)) throw new SyncPayloadSafetyError(childPath);
+      visit(child, childPath);
+    }
+    active.delete(current);
+  };
+  visit(value, path);
+}
+
 export const ProvenanceSchema = z.record(z.string(), JsonValueSchema);
 export type Provenance = z.infer<typeof ProvenanceSchema>;
 
@@ -130,7 +212,10 @@ const factMapShape = Object.fromEntries(
  */
 export const NutritionSnapshotSchema = z
   .object({
-    schemaVersion: z.literal("NUTRITION_FACT_SNAPSHOT_V2").nullable().optional(),
+    schemaVersion: z
+      .literal("NUTRITION_FACT_SNAPSHOT_V2")
+      .nullable()
+      .optional(),
     sourceId: identifier,
     sourceVersion: identifier,
     values: NutritionValuesSchema,
@@ -188,7 +273,10 @@ export type DiaryRecord = z.infer<typeof DiaryRecordSchema>;
 export const UserSchema = z
   .object({
     id: identifier,
-    email: z.string().email().transform((value) => value.toLowerCase()),
+    email: z
+      .string()
+      .email()
+      .transform((value) => value.toLowerCase()),
     displayName: z.string().trim().min(1).max(80),
     createdAt: InstantSchema,
     timezone: z.string().trim().min(1).max(80).optional(),
@@ -199,7 +287,11 @@ export type User = z.infer<typeof UserSchema>;
 
 export const RegisterInputSchema = z
   .object({
-    email: z.string().trim().email().transform((value) => value.toLowerCase()),
+    email: z
+      .string()
+      .trim()
+      .email()
+      .transform((value) => value.toLowerCase()),
     password: z.string().min(8).max(128),
     displayName: z.string().trim().min(1).max(80).default("栗子用户"),
     timezone: z.string().trim().min(1).max(80).optional(),
@@ -209,7 +301,11 @@ export type RegisterInput = z.infer<typeof RegisterInputSchema>;
 
 export const LoginInputSchema = z
   .object({
-    email: z.string().trim().email().transform((value) => value.toLowerCase()),
+    email: z
+      .string()
+      .trim()
+      .email()
+      .transform((value) => value.toLowerCase()),
     password: z.string().min(1).max(128),
   })
   .strict();
@@ -288,12 +384,19 @@ export type NormalizedMutationInput = MutationInput & {
 };
 
 /** Fill D-073 identity aliases while retaining the wire-compatible optional fields. */
-export function normalizeMutationInput(input: unknown): NormalizedMutationInput {
+export function normalizeMutationInput(
+  input: unknown,
+): NormalizedMutationInput {
   const parsed = MutationInputSchema.parse(input);
-  const payloadEntityId = typeof parsed.payload.id === "string" && parsed.payload.id.trim() !== ""
-    ? parsed.payload.id
-    : parsed.clientMutationId;
-  const clientCreatedAt = parsed.clientCreatedAt ?? parsed.clientTimestamp ?? parsed.createdAt;
+  // Validate the complete envelope so passthrough fields cannot smuggle a
+  // credential outside the structured payload either.
+  assertSyncPayloadSafe(parsed, "mutation");
+  const payloadEntityId =
+    typeof parsed.payload.id === "string" && parsed.payload.id.trim() !== ""
+      ? parsed.payload.id
+      : parsed.clientMutationId;
+  const clientCreatedAt =
+    parsed.clientCreatedAt ?? parsed.clientTimestamp ?? parsed.createdAt;
   return {
     ...parsed,
     entityId: parsed.entityId ?? payloadEntityId,
@@ -328,6 +431,7 @@ export const ApiErrorCodeSchema = z.enum([
   "IDEMPOTENCY_CONFLICT",
   "DUPLICATE_RECORD",
   "RECORD_NOT_FOUND",
+  "SENSITIVE_DATA_NOT_ALLOWED",
   "DATABASE_UNAVAILABLE",
   "NOT_READY",
   "INTERNAL_ERROR",
