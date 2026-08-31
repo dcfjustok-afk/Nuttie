@@ -1,6 +1,8 @@
 ---
 name: Nuttie Living Growth Mark
 description: Calm, explainable daily records that become a visible picture of growth.
+priority: P0
+authority: Cross-platform implementation contract for Android, iOS, React Native Web, and mobile H5
 colors:
   canvas: "#F4F0E8"
   surface: "#FFFDF8"
