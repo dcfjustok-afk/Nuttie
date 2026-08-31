@@ -1,5 +1,6 @@
 -- Nuttie API PostgreSQL schema, version 1.
--- Apply this file once before starting the API with DATABASE_URL.
+-- Applied by services/api/scripts/migrate.mjs before the API starts.
+-- Keep migration files immutable after they have been recorded in schema_migrations.
 
 CREATE TABLE IF NOT EXISTS users (
   id            TEXT PRIMARY KEY,
