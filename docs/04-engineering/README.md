@@ -54,6 +54,7 @@
 - [加密备份与恢复](data/encrypted-backup-and-restore.md)：手动导出、加密封装、恢复和默认排除 iCloud。
 - [iOS 原生能力边界](ios/native-capability-boundaries.md)：iOS 17、Expo/Prebuild、权限、后台、扩展、Mac 和分发限制。
 - [测试策略](testing/test-strategy.md)：测试金字塔、真机矩阵、安全测试和发布门禁。
+- [跨端发布 readiness](cross-platform-release-readiness.md)：Web/H5、Android、iOS、Docker 与 Zeabur 的证据矩阵、命令和发布阻断条件。
 - [D-034 最低支持 iPhone benchmark 协议](testing/d034-minimum-iphone-benchmark-protocol.md)：固定三档同 corpus、21 行矩阵/19 项直接硬上限口径、真机采样、清理与失败关闭标准；当前只准备协议，未授权或执行 benchmark。
 - [D-034 benchmark corpus manifest 机器输入合同](testing/d034-benchmark-corpus-manifest-contract.md)：固定三档 21 行机器值、85 个必需语义槽位、38 个 direct-limit 边界/`+1` 与无真实数据/无凭据边界；当前只准备合同，corpus、原生 harness 和执行均未授权或未发生。
 - [D-034 benchmark corpus manifest 本地校验合同](testing/d034-benchmark-corpus-manifest-harness.md)：以 13 项测试执行 3 档/21 行/85 个必需槽位、direct-limit、JPEG、摘要、敏感材料与零授权边界；只检查结构与指纹，不读取或物化 corpus。
