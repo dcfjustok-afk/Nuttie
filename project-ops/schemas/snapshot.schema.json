@@ -35,6 +35,7 @@
       "additionalProperties": false,
       "required": [
         "acceptedDecisions",
+        "supersededDecisions",
         "candidateDecisions",
         "competitorCapabilityGroups",
         "evidenceItems",
@@ -49,6 +50,7 @@
       ],
       "properties": {
         "acceptedDecisions": { "type": "integer" },
+        "supersededDecisions": { "type": "integer" },
         "candidateDecisions": { "type": "integer" },
         "competitorCapabilityGroups": { "type": "integer" },
         "evidenceItems": { "type": "integer" },

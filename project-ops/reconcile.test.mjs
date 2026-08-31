@@ -19,10 +19,11 @@ test("当前 ProjectOps 源、D-039 Owner 选择与下一门禁一致", () => {
   const report = reconcileProjectOps(validModel());
   assert.equal(report.ok, true);
   assert.deepEqual(report.counts, {
-    decisions: 32,
-    acceptedDecisions: 29,
+    decisions: 33,
+    acceptedDecisions: 27,
+    supersededDecisions: 3,
     candidateDecisions: 3,
-    events: 227,
+    events: 228,
     messages: 116,
     agents: 25,
     activeAgents: 1,

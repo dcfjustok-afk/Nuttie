@@ -62,10 +62,11 @@ export const PHASE0_2026_08_27_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACK
   id: "PHASE0_2026_08_27_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACKET_RECORD_CONTRACT",
   counts: Object.freeze({
     schemas: 5,
-    decisions: 32,
-    acceptedDecisions: 29,
+    decisions: 33,
+    acceptedDecisions: 27,
+    supersededDecisions: 3,
     candidateDecisions: 3,
-    events: 227,
+    events: 228,
     messages: 116,
     resolvedResponses: 72,
     agents: 25,
@@ -105,6 +106,7 @@ export const PHASE0_2026_08_27_D040_NON_DIAGNOSTIC_BOUNDARY_REVIEW_MATERIAL_PACK
     "2026-08-21": 17,
     "2026-08-22": 16,
     "2026-08-27": 17,
+    "2026-08-29": 1,
   }),
   pendingEvidenceIds: Object.freeze([
     "LOG-08",
@@ -7638,15 +7640,16 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
   });
 
   const acceptedDecisions = decisions.filter((decision) => decision?.status === "ACCEPTED").length;
+  const supersededDecisions = decisions.filter((decision) => decision?.status === "SUPERSEDED").length;
   const candidateDecisions = decisions.filter((decision) => decision?.status === "CANDIDATE").length;
   const unsupportedDecisionStatuses = decisions
-    .filter((decision) => !["ACCEPTED", "CANDIDATE"].includes(decision?.status))
+    .filter((decision) => !["ACCEPTED", "SUPERSEDED", "CANDIDATE"].includes(decision?.status))
     .map((decision) => ({ id: decision?.id, status: decision?.status }));
   if (unsupportedDecisionStatuses.length > 0) {
     add(
       "OPS_UNSUPPORTED_DECISION_STATUS",
       "project-ops/decisions.json.decisions",
-      "当前基线只允许 ACCEPTED 或 CANDIDATE",
+      "当前基线只允许 ACCEPTED、SUPERSEDED 或 CANDIDATE",
       { unsupportedDecisionStatuses },
     );
   }
@@ -7896,6 +7899,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
     schemas: model.schemas.length,
     decisions: decisions.length,
     acceptedDecisions,
+    supersededDecisions,
     candidateDecisions,
     events: model.events.length,
     messages: model.messages.length,
@@ -7918,6 +7922,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
   const snapshotMetrics = model.snapshot?.metrics ?? {};
   const snapshotExpectations = {
     acceptedDecisions,
+    supersededDecisions,
     candidateDecisions,
     projectEvents: model.events.length,
     agentMessages: model.messages.length,
@@ -12303,6 +12308,7 @@ export function validateOperationalInvariants(model, baseline = PHASE0_2026_08_2
       schemas: model.schemas.length,
       decisions: decisions.length,
       acceptedDecisions,
+      supersededDecisions,
       candidateDecisions,
       events: model.events.length,
       messages: model.messages.length,

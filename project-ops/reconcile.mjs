@@ -390,6 +390,7 @@ export function reconcileProjectOps(model) {
   const counts = {
     decisions: decisions.length,
     acceptedDecisions: decisions.filter((decision) => decision?.status === "ACCEPTED").length,
+    supersededDecisions: decisions.filter((decision) => decision?.status === "SUPERSEDED").length,
     candidateDecisions: decisions.filter((decision) => decision?.status === "CANDIDATE").length,
     events: model.events.length,
     messages: model.messages.length,
@@ -407,6 +408,7 @@ export function reconcileProjectOps(model) {
   const snapshotMetrics = model.snapshot?.metrics ?? {};
   const metricMap = {
     acceptedDecisions: "acceptedDecisions",
+    supersededDecisions: "supersededDecisions",
     candidateDecisions: "candidateDecisions",
     events: "projectEvents",
     messages: "agentMessages",

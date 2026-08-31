@@ -85,11 +85,14 @@ test("当前 Phase 0 Project Ops 基线通过", () => {
   assert.deepEqual(report.schemaValidation, {
     profile: "DRAFT_2020_12_PROJECT_SUBSET_V1",
     schemasChecked: 5,
-    instancesValidated: 346,
+    instancesValidated: 347,
   });
   assert.equal(report.counts.schemas, 5);
-  assert.equal(report.counts.decisions, 32);
-  assert.equal(report.counts.events, 227);
+  assert.equal(report.counts.decisions, 33);
+  assert.equal(report.counts.acceptedDecisions, 27);
+  assert.equal(report.counts.supersededDecisions, 3);
+  assert.equal(report.counts.candidateDecisions, 3);
+  assert.equal(report.counts.events, 228);
   assert.equal(report.counts.messages, 116);
   assert.equal(report.counts.resolvedResponses, 72);
   assert.equal(report.counts.evidenceItems, 66);
@@ -2451,7 +2454,7 @@ test("ProjectOps Schema 定义和全部受控实例必须通过校验", async (t
     });
     assertDiagnostic(report, "OPS_SCHEMA_DEFINITION_INVALID");
     assert.equal(report.schemaValidation.schemasChecked, 5);
-    assert.equal(report.schemaValidation.instancesValidated, 345);
+    assert.equal(report.schemaValidation.instancesValidated, 346);
   });
 
   await t.test("拒绝 Event 缺少 Schema 必需字段", () => {
