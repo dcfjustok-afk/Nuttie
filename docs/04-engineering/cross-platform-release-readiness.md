@@ -12,7 +12,7 @@ production deployment result.
 | Surface              | Required evidence                                                                                                   | Current state on Windows                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                |
-| Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; representative 320/390/430/768/1024/1440 browser pass  |
+| Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; 35 route/width combinations pass with zero hydration errors |
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; live browser used mocked 401 API responses |
 | Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; system image and emulator run pending |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                      |
@@ -38,7 +38,12 @@ border-width literals.
 
 ## Web/H5 Browser Pass
 
-Use the checked-in Web export behind a local server. At every required width:
+Use the checked-in Web export behind a local server that preserves the exported
+HTML entry for each deep link. The production Nginx contract is
+`try_files $uri $uri.html $uri/ $uri/index.html /index.html`; a local server
+that rewrites every unknown path to `index.html` (for example `serve -s`) is
+not valid for hydration testing because it pairs the wrong server HTML with the
+client route and produces a false React `#418` blocker. At every required width:
 
 1. Set light mode and confirm the first frame contains the same deterministic
    content before responsive and theme effects mount.
