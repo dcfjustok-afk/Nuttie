@@ -267,6 +267,7 @@ The silhouette is soft but measured: 10px for controls and compact rows, 16px fo
 - **Phone:** a 64px bottom bar with four stable destinations: 日记, 趋势, 食品资料, 设置. Each item has an icon and label, a 44px minimum target, and a selected state.
 - **Expanded:** a 232px left rail with the Nuttie mark, the same destinations, and a small brand line. The content topology changes to support review; it does not become a stretched phone screen.
 - **State:** selected navigation uses sprout plus a tinted surface; inactive destinations use muted ink. The route remains understandable from text and accessibility state.
+- **Landmark:** the shared navigation container exposes the `navigation` landmark with the accessible label `主要导航`; destination items keep link semantics and selected state on every platform.
 
 ### GrowthMark
 

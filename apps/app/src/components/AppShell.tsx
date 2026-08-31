@@ -74,6 +74,8 @@ function Navigation({ desktop }: { desktop: boolean }) {
   const { colors } = useAppTheme();
   return (
     <View
+      role="navigation"
+      accessibilityLabel="主要导航"
       style={
         desktop
           ? [styles.rail, { backgroundColor: colors.surface }]

@@ -122,4 +122,14 @@ assert.match(
   "food search input must preserve the shared control hit target",
 );
 
+const appShell = await readFile(
+  path.resolve("apps/app/src/components/AppShell.tsx"),
+  "utf8",
+);
+assert.match(
+  appShell,
+  /<View\s+role="navigation"\s+accessibilityLabel="主要导航"/,
+  "shared navigation must expose a labeled navigation landmark",
+);
+
 console.log("Design system contract verified.");
