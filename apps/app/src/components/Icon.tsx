@@ -6,6 +6,7 @@ import {
   CircleUserRound,
   Cloud,
   CloudOff,
+  Download,
   Droplets,
   Leaf,
   LogOut,
@@ -14,6 +15,7 @@ import {
   Scale,
   Search,
   Settings,
+  Trash2,
   Utensils,
   WifiOff,
   X,
@@ -38,11 +40,16 @@ export const icons = {
   next: ChevronRight,
   leaf: Leaf,
   close: X,
+  download: Download,
+  trash: Trash2,
 } as const;
 
 export type IconName = keyof typeof icons;
 
-export function Icon({ name, ...props }: { name: IconName } & Omit<LucideProps, "ref">) {
+export function Icon({
+  name,
+  ...props
+}: { name: IconName } & Omit<LucideProps, "ref">) {
   const Component = icons[name];
   return <Component {...props} />;
 }
