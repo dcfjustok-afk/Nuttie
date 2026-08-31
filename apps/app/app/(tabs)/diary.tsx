@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   emptyAction: {
     minHeight: dimensions.minTouch,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     paddingHorizontal: spacing.lg,
     alignItems: "center",

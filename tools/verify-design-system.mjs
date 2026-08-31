@@ -102,7 +102,7 @@ async function collect(directory) {
 }
 for (const root of uiRoots) await collect(root);
 const forbiddenInlineStyle =
-  /#[0-9A-Fa-f]{3,8}|rgba?\(|(?:fontSize|lineHeight|borderRadius|padding|paddingHorizontal|paddingVertical|margin|marginTop|marginBottom|marginHorizontal|gap|width|height|minHeight|maxWidth|flexBasis):\s*\d+(?:\.\d+)?\b/;
+  /#[0-9A-Fa-f]{3,8}|rgba?\(|(?:fontSize|lineHeight|borderRadius|borderWidth|padding|paddingHorizontal|paddingVertical|margin|marginTop|marginBottom|marginHorizontal|gap|width|height|minHeight|maxWidth|flexBasis):\s*\d+(?:\.\d+)?\b/;
 for (const file of sourceFiles) {
   const source = await readFile(file, "utf8");
   assert.equal(

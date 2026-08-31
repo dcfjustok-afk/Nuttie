@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   filters: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
   filter: {
     minHeight: dimensions.minTouch,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.round,
     paddingHorizontal: spacing.md,
     alignItems: "center",
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   emptyBody: { ...typeScale.body, textAlign: "center" },
   create: {
     minHeight: dimensions.minTouch,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     paddingHorizontal: spacing.lg,
     justifyContent: "center",

@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
   noticeText: { ...typeScale.body, flex: 1 },
   logout: {
     minHeight: dimensions.control,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radii.compact,
     flexDirection: "row",
     alignItems: "center",
