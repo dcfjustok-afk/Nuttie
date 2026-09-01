@@ -14,7 +14,7 @@ production deployment result.
 | Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                                                                                                   |
 | Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; 35 route/width combinations plus a fresh 5-route representative pass have zero hydration/page errors                                      |
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; local API preflight returns 204 and unauthenticated refresh returns expected 401                                              |
-| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; system image and emulator run pending                                                            |
+| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; no AVD/system image; current Windows native build still fails in third-party CMake regeneration |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                                                                                                         |
 | Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; Docker CLI unavailable |
 | Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Read-only check: candidate `untitled-1` (`6a8bfcecb1c569569969b2b7`) has no services; no deployment mutation                                             |
@@ -43,6 +43,31 @@ landmark contract was added:
 - The Zeabur UI was inspected without opening the service creation flow. The
   candidate project has no services, so API/Web/PostgreSQL names, public HTTPS
   origin, secrets, and billing authorization remain unresolved.
+
+## Verification Snapshot: 2026-09-01
+
+The Android build boundary was rechecked after restoring the repository's
+standard pnpm install:
+
+- `D:\android-sdk` still contains Android Platform 35, Build Tools 35,
+  NDK 27.1.12297006, CMake 3.22.1, ADB and the emulator binary. No system
+  image or AVD exists, so no emulator/device behavior was exercised.
+- A clean single-ABI build with
+  `:app:assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon`
+  reproduces `ninja: error: manifest 'build.ninja' still dirty after 100
+  tries`. The failing native libraries vary between
+  `react-native-screens`, `expo-modules-core`, `react-native-worklets`, and
+  `react-native-reanimated`; the common signal is repeated CMake regeneration
+  plus CMake object-path warnings from pnpm's virtual store.
+- Running from a `subst` drive is not a fix: Kotlin incremental compilation
+  then sees source files under both `D:` and the mapped drive. A temporary
+  `CMAKE_SUPPRESS_REGENERATION` dependency edit was also not accepted as
+  evidence because it was not applied to a clean, consistently installed
+  workspace. The repository therefore keeps the native build as an external
+  blocker and does not claim an APK or emulator result.
+- The only reproducible next paths are a clean Linux/WSL or CI native build, or
+  a reviewed dependency/toolchain patch tested from one consistent install.
+  Neither path has been promoted to the product branch yet.
 
 ## Required Local Gates
 
