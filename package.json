@@ -14,8 +14,9 @@
     "build:packages": "pnpm --filter @nuttie/contracts build && pnpm --filter @nuttie/domain build && pnpm --filter @nuttie/design-tokens build && pnpm --filter @nuttie/ui build",
     "build:web": "pnpm --filter @nuttie/app export:web",
     "build:api": "pnpm --filter @nuttie/api build",
+    "smoke:production": "node tools/production-smoke.mjs",
     "typecheck": "pnpm run build:packages && pnpm --filter @nuttie/contracts typecheck && pnpm --filter @nuttie/domain typecheck && pnpm --filter @nuttie/design-tokens typecheck && pnpm --filter @nuttie/ui typecheck && pnpm --filter @nuttie/api typecheck && pnpm --filter @nuttie/app typecheck",
-    "test": "pnpm --filter @nuttie/contracts build && pnpm --filter @nuttie/domain test && pnpm --filter @nuttie/api test && pnpm --filter @nuttie/design-tokens build && node tools/verify-design-system.mjs && node tools/verify-web-export.test.mjs && node --test tools/hydration-safe-contract.test.mjs && node --experimental-strip-types --test apps/app/src/data/storage-policy.test.mjs",
+    "test": "pnpm --filter @nuttie/contracts build && pnpm --filter @nuttie/domain test && pnpm --filter @nuttie/api test && pnpm --filter @nuttie/design-tokens build && node tools/verify-design-system.mjs && node tools/verify-web-export.test.mjs && node --test tools/hydration-safe-contract.test.mjs tools/production-smoke.test.mjs && node --experimental-strip-types --test apps/app/src/data/storage-policy.test.mjs",
     "verify:design-system": "pnpm --filter @nuttie/design-tokens build && node tools/verify-design-system.mjs",
     "format:check": "pnpm exec prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yaml,yml}\""
   },

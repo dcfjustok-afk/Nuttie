@@ -71,3 +71,14 @@ behind HTTPS. The compose file is not a production deployment manifest.
 typechecks/tests/builds, and performs real Docker builds for both images. It
 does not push images or call a deployment API. A Zeabur GitHub integration can
 deploy a reviewed `main` commit after the CI checks pass.
+
+## Production smoke
+
+`.github/workflows/production-smoke.yml` performs read-only checks after a
+successful Zeabur production deployment and can also be started manually. Set
+the repository variable `NUTTIE_WEB_URL` to the public HTTPS origin once the
+Web service has a stable domain. A manual run requires the same origin as its
+`web_url` input. The smoke job verifies the Web health endpoint, the same-origin
+`/api/v1/ready` proxy, the `/sign-in` static entrypoint, and the security headers
+that protect the public gateway. It never registers an account, writes a
+record, changes a setting, or calls a deployment API.

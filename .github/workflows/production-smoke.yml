@@ -1,0 +1,41 @@
+name: Production smoke
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      web_url:
+        description: "Public HTTPS origin, for example https://nuttie.example"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify production
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'production' &&
+       contains(github.event.deployment_status.target_url, 'zeabur.com') &&
+       github.event.deployment_status.creator.login != 'github-actions[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run read-only production checks
+        env:
+          WEB_URL: ${{ inputs.web_url || vars.NUTTIE_WEB_URL || github.event.deployment_status.target_url }}
+        run: node tools/production-smoke.mjs

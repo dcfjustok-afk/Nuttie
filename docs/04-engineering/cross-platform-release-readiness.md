@@ -215,6 +215,12 @@ PostgreSQL and API remain private. In Zeabur, apply the matching watch paths,
 check migration logs, verify the public HTTPS cookie flow, and perform a
 reviewed rollback before treating a deployment as accepted.
 
+The checked-in `production-smoke.yml` workflow is a read-only post-deployment
+gate. After the public Web origin is known, set the GitHub repository variable
+`NUTTIE_WEB_URL` or supply the `web_url` input for a manual run. The check
+requires `/healthz`, same-origin `/api/v1/ready`, `/sign-in`, and the expected
+security headers; it does not create users or mutate production records.
+
 ## Release Stop Conditions
 
 Do not call the release complete when any of the following is true:
