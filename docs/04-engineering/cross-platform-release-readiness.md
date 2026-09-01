@@ -14,7 +14,7 @@ production deployment result.
 | Shared design system | `pnpm test`, `pnpm typecheck`, `pnpm build`, design gate                                                            | Passed                                                                                                                                                   |
 | Static Web/H5        | 13-route export contract and Playwright at 320/390/430/600/768/1024/1440px, light/dark                              | Export passed; 35 route/width combinations plus a fresh 5-route representative pass have zero hydration/page errors                                      |
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; local API preflight returns 204 and unauthenticated refresh returns expected 401                                              |
-| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; no AVD/system image; current Windows native build still fails in third-party CMake regeneration |
+| Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | Windows SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; local native build still fails in third-party CMake regeneration; Linux CI debug APK gate is configured but has not completed on the remote runner |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                                                                                                         |
 | Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; Docker CLI unavailable |
 | Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Read-only check: candidate `untitled-1` (`6a8bfcecb1c569569969b2b7`) has no services; no deployment mutation                                             |
@@ -68,6 +68,23 @@ standard pnpm install:
 - The only reproducible next paths are a clean Linux/WSL or CI native build, or
   a reviewed dependency/toolchain patch tested from one consistent install.
   Neither path has been promoted to the product branch yet.
+
+## CI Android Gate: 2026-09-01
+
+`.github/workflows/ci.yml` now includes an `android` job after the shared
+verification job. The job runs on `ubuntu-latest` with Temurin Java 17 and
+installs Android Platform 35, Build Tools 35.0.0, NDK 27.1.12297006, and CMake
+3.22.1 before running `:app:assembleDebug` for the `arm64-v8a` ABI. A successful
+run uploads the generated `app-debug.apk` for 14 days. The deployment gate now
+requires this Android job in addition to typecheck/test/build and both Docker
+image jobs.
+
+This is intentionally a reproducible Linux build artifact, not native runtime
+acceptance. It does not close the emulator/device, system Back, inset, font
+scale, offline replay, signing, or Google Play evidence items. The first
+remote run must be recorded here with its workflow URL, commit SHA, APK size,
+and SHA-256 before Android can move beyond the current external-targets-pending
+state.
 
 ## Required Local Gates
 

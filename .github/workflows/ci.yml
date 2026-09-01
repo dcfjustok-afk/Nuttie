@@ -55,10 +55,50 @@ jobs:
       - name: Build production image
         run: docker build --file "Dockerfile.${{ matrix.service }}" --tag "nuttie-${{ matrix.service }}:${{ github.sha }}" .
 
+  android:
+    name: Android debug build
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    needs: verify
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.18.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android build tools
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Assemble debug APK
+        working-directory: apps/app/android
+        run: ./gradlew :app:assembleDebug --no-daemon --console=plain --stacktrace -PreactNativeArchitectures=arm64-v8a
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuttie-android-debug-${{ github.sha }}
+          path: apps/app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
   deployment-gate:
     name: Deployment gate
     if: ${{ always() }}
-    needs: [verify, docker]
+    needs: [verify, docker, android]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -66,9 +106,10 @@ jobs:
         env:
           VERIFY_RESULT: ${{ needs.verify.result }}
           DOCKER_RESULT: ${{ needs.docker.result }}
+          ANDROID_RESULT: ${{ needs.android.result }}
         run: |
-          if [ "$VERIFY_RESULT" != "success" ] || [ "$DOCKER_RESULT" != "success" ]; then
-            echo "CI did not produce a deployable revision. verify=$VERIFY_RESULT docker=$DOCKER_RESULT"
+          if [ "$VERIFY_RESULT" != "success" ] || [ "$DOCKER_RESULT" != "success" ] || [ "$ANDROID_RESULT" != "success" ]; then
+            echo "CI did not produce a deployable revision. verify=$VERIFY_RESULT docker=$DOCKER_RESULT android=$ANDROID_RESULT"
             exit 1
           fi
-          echo "Typechecks, tests, builds, and both production images passed."
+          echo "Typechecks, tests, builds, Android APK, and both production images passed."
