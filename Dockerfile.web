@@ -53,7 +53,8 @@ COPY deploy/nginx/security-headers.conf /etc/nginx/snippets/nuttie-security-head
 
 # Validate the rendered template during CI. The official entrypoint renders it
 # again at startup with the service's actual PORT/API_UPSTREAM values.
-RUN envsubst '${PORT} ${API_UPSTREAM} ${ENABLE_HSTS}' \
+RUN API_UPSTREAM=http://127.0.0.1:8787 \
+  envsubst '${PORT} ${API_UPSTREAM} ${ENABLE_HSTS}' \
   < /etc/nginx/templates/default.conf.template \
   > /etc/nginx/conf.d/nuttie-build-check.conf \
   && nginx -t \
