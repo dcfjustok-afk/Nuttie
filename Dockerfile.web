@@ -10,10 +10,14 @@ ENV CI=true \
 WORKDIR /workspace
 
 RUN corepack enable \
-  && corepack prepare pnpm@11.18.0 --activate
+  && corepack prepare pnpm@11.18.0 --activate \
+  && pnpm config set node-linker hoisted --global \
+  && pnpm config set shared-workspace-lockfile true --global \
+  && pnpm config set auto-install-peers true --global \
+  && pnpm config set registry https://registry.npmjs.org/ --global
 
 # Copy manifests first so dependency installation remains cacheable when app code changes.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY apps/app/package.json apps/app/tsconfig.json apps/app/app.json apps/app/expo-env.d.ts ./apps/app/
 COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
 COPY packages/domain/package.json packages/domain/tsconfig.json ./packages/domain/
