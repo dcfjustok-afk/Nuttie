@@ -47,7 +47,14 @@ prefix and never edit a file that has already been applied. Retry settings are
 validated at startup; `MIGRATION_ATTEMPTS` must be at least `1` and
 `MIGRATION_RETRY_DELAY_SECONDS` must be a non-negative integer.
 
-## Local stack
+## Local stack (optional)
+
+The local Compose stack is a convenience for developers who have Docker
+Desktop or another Compose-compatible engine. Docker is not a prerequisite for
+publishing Nuttie: CI and Zeabur build the checked-in Dockerfiles remotely.
+When the Docker CLI is unavailable on a workstation, continue with the
+repository checks and the remote deployment path below; do not report the
+missing local engine as a release blocker.
 
 From the repository root:
 
@@ -68,9 +75,11 @@ behind HTTPS. The compose file is not a production deployment manifest.
 ## CI boundary
 
 `.github/workflows/ci.yml` installs with the frozen pnpm lockfile, runs
-typechecks/tests/builds, and performs real Docker builds for both images. It
-does not push images or call a deployment API. A Zeabur GitHub integration can
-deploy a reviewed `main` commit after the CI checks pass.
+typechecks/tests/builds, and performs real Docker builds for both images on the
+GitHub-hosted runner. It does not push images or call a deployment API. A
+Zeabur GitHub integration can build the same Dockerfiles and deploy a reviewed
+commit after the CI checks pass. The local Docker CLI is therefore optional
+development tooling, not a release prerequisite.
 
 ## Production smoke
 

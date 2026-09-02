@@ -16,8 +16,8 @@ production deployment result.
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; local API preflight returns 204 and unauthenticated refresh returns expected 401                                              |
 | Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | Windows SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; local native build still fails in third-party CMake regeneration; Linux CI debug APK gate is configured but has not completed on the remote runner |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                                                                                                         |
-| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; Docker CLI unavailable |
-| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Read-only check: candidate `untitled-1` (`6a8bfcecb1c569569969b2b7`) has no services; no deployment mutation                                             |
+| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; local Docker CLI unavailable, but remote CI/Zeabur builds are the executable release path and this is not a release blocker |
+| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Project `untitled-1` (`6a8bfcecb1c569569969b2b7`) confirmed; managed PostgreSQL `postgresql` (`6a98045b21fc3e07432ecb4b`) is Running and private; API/Web integration and production evidence remain pending |
 
 ## Verification Snapshot: 2026-08-31
 
@@ -68,6 +68,17 @@ standard pnpm install:
 - The only reproducible next paths are a clean Linux/WSL or CI native build, or
   a reviewed dependency/toolchain patch tested from one consistent install.
   Neither path has been promoted to the product branch yet.
+
+## Verification Snapshot: 2026-09-02
+
+- The workstation still has no Docker CLI or local Compose engine. This only
+  removes optional local container verification; it does not block the release
+  path because `.github/workflows/ci.yml` builds both images on a hosted Linux
+  runner and Zeabur builds the selected Dockerfile from the connected commit.
+- Zeabur authentication is available and project `untitled-1` is selected. A
+  managed private PostgreSQL service named `postgresql` is Running. API/Web
+  services, private-network variables, public HTTPS domain, migration logs,
+  readiness, and rollback evidence are still open items.
 
 ## CI Android Gate: 2026-09-01
 
@@ -189,12 +200,11 @@ Keychain/secure storage, SQLCipher, camera, notifications, or release signing.
 
 ## Container and Zeabur Pass
 
-Docker Desktop is not currently installed on this Windows host. A silent
-`winget install Docker.DockerDesktop` attempt remained in the package manager
-without creating Docker files and was terminated after the bounded wait; no
-Docker service or production container was changed. The GitHub CI Docker job
-remains the executable image-build evidence until Docker Desktop or another
-local engine is available.
+Docker Desktop is not currently installed on this Windows host, so the optional
+local Compose commands below cannot be executed here. No production container
+was changed. The GitHub CI Docker jobs and Zeabur's remote build are the
+executable image-build evidence for this environment; installing Docker later
+can add local parity evidence but is not required to continue deployment.
 
 With Docker installed, run:
 
@@ -232,10 +242,13 @@ Do not call the release complete when any of the following is true:
   another account's records;
 - a native build has not exercised secure storage, system navigation, insets,
   Dynamic Type/font scale, and offline replay on the target platform;
-- Docker/Compose readiness or the Zeabur private-network topology has not been
-  verified;
+- the remote CI/Zeabur image build, API/Web readiness, or the Zeabur
+  private-network topology has not been verified (local Docker/Compose is
+  optional and is not itself a stop condition);
 - production secrets, origins, migrations, or rollback evidence are missing.
 
 The current Windows result is therefore a code, contract, static export, and
 representative browser result. It is not an Android/iOS store release, a
-Docker deployment, or a Zeabur production acceptance.
+completed remote container deployment, or a Zeabur production acceptance. The
+absence of a local Docker CLI is recorded as an external verification note,
+not as a release blocker.
