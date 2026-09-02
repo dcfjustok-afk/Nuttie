@@ -87,9 +87,14 @@ export async function runSmoke(env = process.env, fetchImpl = globalThis.fetch) 
     throw new Error("/sign-in did not return the Nuttie HTML entrypoint");
   }
 
+  for (const path of ["/.env", "/.git/HEAD"]) {
+    const response = await get(path);
+    requireStatus(path, response.response, 404);
+  }
+
   return {
     origin,
-    checks: ["healthz", "security-headers", "api-ready", "sign-in"],
+    checks: ["healthz", "security-headers", "api-ready", "sign-in", "hidden-paths"],
   };
 }
 
