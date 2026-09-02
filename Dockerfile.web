@@ -5,16 +5,16 @@ FROM public.ecr.aws/docker/library/node:22-alpine AS build
 ENV CI=true \
     EXPO_NO_DOCTOR=1 \
     EXPO_NO_TELEMETRY=1 \
-    NPM_CONFIG_UPDATE_NOTIFIER=false
+    NPM_CONFIG_UPDATE_NOTIFIER=false \
+    npm_config_node_linker=hoisted \
+    npm_config_shared_workspace_lockfile=true \
+    npm_config_auto_install_peers=true \
+    npm_config_registry=https://registry.npmjs.org/
 
 WORKDIR /workspace
 
 RUN corepack enable \
-  && corepack prepare pnpm@11.18.0 --activate \
-  && pnpm config set node-linker hoisted --global \
-  && pnpm config set shared-workspace-lockfile true --global \
-  && pnpm config set auto-install-peers true --global \
-  && pnpm config set registry https://registry.npmjs.org/ --global
+  && corepack prepare pnpm@11.18.0 --activate
 
 # Copy manifests first so dependency installation remains cacheable when app code changes.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
