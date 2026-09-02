@@ -76,9 +76,10 @@ standard pnpm install:
   path because `.github/workflows/ci.yml` builds both images on a hosted Linux
   runner and Zeabur builds the selected Dockerfile from the connected commit.
 - Zeabur authentication is available and project `untitled-1` is selected. A
-  managed private PostgreSQL service named `postgresql` is Running. API/Web
-  services, private-network variables, public HTTPS domain, migration logs,
-  readiness, and rollback evidence are still open items.
+  managed private PostgreSQL service named `postgresql` is Running. The API and
+  Web services are Running with private-network variables, and the Web domain
+  is provisioned; migration, readiness, and read-only production smoke
+  evidence are recorded below. Rollback evidence remains open.
 
 - Zeabur remote builds completed for API and Web after switching the base images
   to ECR Public, using `CMD` health checks, removing the uploaded `.npmrc`
@@ -93,6 +94,9 @@ standard pnpm install:
   `healthz`, `security-headers`, `api-ready`, and `sign-in`. The workflow itself
   remains configured to run with normal certificate verification in GitHub
   Actions. No account, record, or setting was created by the smoke check.
+- The GitHub repository variable `NUTTIE_WEB_URL` is configured as
+  `https://nuttie.zeabur.app`, so a manually or deployment-triggered smoke run
+  can resolve the production origin without embedding it in workflow source.
 - Zeabur rollback, GitHub automatic deployment trigger, and the first hosted
   Android CI artifact are still pending; the initial services were uploaded
   from the local workspace through the authenticated Zeabur CLI because GitHub

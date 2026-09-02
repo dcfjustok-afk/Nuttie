@@ -8,9 +8,10 @@ browser or native client (HTTPS) -> web/Nginx (public)
                                                  -> PostgreSQL (private)
 ```
 
-There is no Redis, LiveKit, WebSocket service, admin service, public API
-domain, or production deployment workflow in this first cross-platform slice.
-The repository push and a production release remain separate actions.
+There is no Redis, LiveKit, WebSocket service, admin service, or public API
+domain in this first cross-platform slice. The repository push and a
+production release remain separate actions; the checked-in production smoke
+workflow is read-only and does not deploy anything.
 
 ## Services
 
@@ -27,10 +28,11 @@ The repository push and a production release remain separate actions.
    health check.
 3. Add a `web` service from the same repository and select `Dockerfile.web`.
    Give only this service the public HTTPS domain. Set
-   `ZBPACK_DOCKERFILE_NAME=web` and
-   `API_UPSTREAM=http://api:8787` (replace `api` if the private service name
-   differs). The Nginx config serves the Expo export and proxies `/api/` to the
-   private API. Native builds must set `EXPO_PUBLIC_API_URL` to this same
+   `ZBPACK_DOCKERFILE_NAME=web` and the Zeabur private upstream
+   `API_UPSTREAM=http://api.zeabur.internal:8080` (replace the host and port if
+   the private API service receives different Zeabur values). The Nginx config
+   serves the Expo export and proxies `/api/` to the private API. Native builds
+   must set `EXPO_PUBLIC_API_URL` to this same
    public web origin (the client appends `/api`); the app marks native requests with
    `x-client-platform: native`, so native sessions receive refresh tokens in
    the response body while browser sessions use the HttpOnly cookie.
