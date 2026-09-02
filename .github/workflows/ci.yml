@@ -87,11 +87,22 @@ jobs:
       - name: Assemble debug APK
         working-directory: apps/app/android
         run: ./gradlew :app:assembleDebug --no-daemon --console=plain --stacktrace -PreactNativeArchitectures=arm64-v8a
+      - name: Record APK metadata
+        working-directory: apps/app/android
+        run: |
+          APK_PATH=app/build/outputs/apk/debug/app-debug.apk
+          {
+            stat --printf='apk_size_bytes=%s\n' "$APK_PATH"
+            sha256sum "$APK_PATH" | awk '{print "apk_sha256=" $1}'
+          } | tee app-debug.metadata
+          cat app-debug.metadata >> "$GITHUB_STEP_SUMMARY"
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: nuttie-android-debug-${{ github.sha }}
-          path: apps/app/android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            apps/app/android/app/build/outputs/apk/debug/app-debug.apk
+            apps/app/android/app-debug.metadata
           if-no-files-found: error
           retention-days: 14
 
