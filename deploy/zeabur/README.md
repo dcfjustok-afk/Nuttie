@@ -37,6 +37,13 @@ The repository push and a production release remain separate actions.
 4. Paste the matching files in `watch-paths/` into each service's Watch Paths
    setting. PostgreSQL is managed independently and has no Git watch path.
 
+When the GitHub App cannot yet access a private repository, the same topology
+can be bootstrapped from a checked-out workspace with the authenticated Zeabur
+CLI. Use `zeabur deploy --create --project-id <project-id> --name api` and the
+corresponding `web` command, then set the variables and private/public ports
+described above. This upload path still builds the checked-in Dockerfiles on
+Zeabur; connect the GitHub integration later to enable automatic redeploys.
+
 The API entrypoint runs every checked-in SQL migration in one transaction and
 uses a PostgreSQL advisory lock so concurrent releases do not race. It retries
 temporary database unavailability. A missing `DATABASE_URL`, an empty

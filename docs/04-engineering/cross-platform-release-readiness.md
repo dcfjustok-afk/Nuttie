@@ -16,8 +16,8 @@ production deployment result.
 | Web authentication   | Browser refresh cookie, same-origin `/api`, login, sign-out, export, delete                                         | API contract tests passed; local API preflight returns 204 and unauthenticated refresh returns expected 401                                              |
 | Android              | Expo/React Native bundle, emulator/device install, system Back, insets, dark mode, font scale, offline queue        | Windows SDK/API 35/ADB/emulator/WHPX ready at `D:\android-sdk`; local native build still fails in third-party CMake regeneration; Linux CI debug APK gate is configured but has not completed on the remote runner |
 | iOS                  | Development build, simulator/device install, Keychain/secure storage, safe area, Dynamic Type, VoiceOver, dark mode | Not run: macOS/Xcode unavailable                                                                                                                         |
-| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; local Docker CLI unavailable, but remote CI/Zeabur builds are the executable release path and this is not a release blocker |
-| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Project `untitled-1` (`6a8bfcecb1c569569969b2b7`) confirmed; managed PostgreSQL `postgresql` (`6a98045b21fc3e07432ecb4b`) is Running and private; API/Web integration and production evidence remain pending |
+| Docker/Compose       | `docker compose config`, API/Web image builds, `/ready` and `/healthz` probes                                       | Static Dockerfile/Compose path audit passed; API production deploy layout contains `dist/main.js`, migrations, and `migrate.mjs`; local Docker CLI unavailable, while Zeabur remotely built both images and this is not a release blocker |
+| Zeabur               | Private API/PostgreSQL network, public Web gateway, HTTPS cookie flow, migration and rollback check                 | Project `untitled-1` (`6a8bfcecb1c569569969b2b7`) is active; PostgreSQL `postgresql` (`6a98045b21fc3e07432ecb4b`) is Running/private; API `6a980e5221fc3e07432ece8c` and Web `6a9814bb573ada8b3bbe3b77` are Running; Web `https://nuttie.zeabur.app` and read-only smoke pass, rollback evidence pending |
 
 ## Verification Snapshot: 2026-08-31
 
@@ -79,6 +79,24 @@ standard pnpm install:
   managed private PostgreSQL service named `postgresql` is Running. API/Web
   services, private-network variables, public HTTPS domain, migration logs,
   readiness, and rollback evidence are still open items.
+
+- Zeabur remote builds completed for API and Web after switching the base images
+  to ECR Public, using `CMD` health checks, removing the uploaded `.npmrc`
+  dependency, and making the Nginx build-time config test use a loopback
+  upstream. The API runtime applied one PostgreSQL migration before starting.
+- The Web service has the only public domain,
+  `https://nuttie.zeabur.app`; API and PostgreSQL have no public domains. The
+  Web private upstream is `http://api.zeabur.internal:8080`, matching Zeabur's
+  assigned private port and the API `PORT=${WEB_PORT}` value.
+- With temporary local certificate verification disabled because the host proxy
+  presents an untrusted root, `pnpm smoke:production` passed
+  `healthz`, `security-headers`, `api-ready`, and `sign-in`. The workflow itself
+  remains configured to run with normal certificate verification in GitHub
+  Actions. No account, record, or setting was created by the smoke check.
+- Zeabur rollback, GitHub automatic deployment trigger, and the first hosted
+  Android CI artifact are still pending; the initial services were uploaded
+  from the local workspace through the authenticated Zeabur CLI because GitHub
+  repository installation is still behind sudo mode.
 
 ## CI Android Gate: 2026-09-01
 
